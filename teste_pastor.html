@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teste Pastor</title>
+<style>
+body{font-family:sans-serif;background:#0d1f0f;color:#f8f8f6;padding:20px;max-width:600px;margin:0 auto;}
+.btn{background:#c8a84b;color:#000;border:none;padding:12px 24px;border-radius:6px;cursor:pointer;font-size:1rem;margin:8px 4px;}
+.btn2{background:#1a5c2a;color:#fff;border:none;padding:12px 24px;border-radius:6px;cursor:pointer;font-size:1rem;margin:8px 4px;}
+input,textarea{width:100%;padding:10px;margin:8px 0;background:rgba(255,255,255,0.1);border:1px solid #c8a84b;border-radius:4px;color:#fff;font-size:1rem;}
+pre{background:rgba(255,255,255,0.05);padding:12px;border-radius:6px;font-size:0.8rem;overflow-x:auto;white-space:pre-wrap;}
+.ok{color:#25D366;font-weight:bold;}
+.erro{color:#ff6b6b;font-weight:bold;}
+</style>
+</head>
+<body>
+<h2>🔧 Diagnóstico — Palavra do Pastor</h2>
+
+<h3>1. O que está salvo no localStorage agora?</h3>
+<pre id="atual">Carregando...</pre>
+
+<h3>2. Salvar teste de pastor</h3>
+<input id="t-tema" placeholder="Tema ex: Fé que move montanhas" value="Fé que move montanhas">
+<textarea id="t-txt" rows="3" placeholder="Texto da mensagem">Esta é uma mensagem de teste do Pastor Sérgio para verificar se está aparecendo no index.</textarea>
+<button class="btn" onclick="salvarTeste()">💾 Salvar Pastor de Teste</button>
+<button class="btn2" onclick="limparTudo()">🗑️ Limpar tudo</button>
+<div id="msg" style="margin-top:10px;"></div>
+
+<h3>3. Verificar após salvar</h3>
+<button class="btn2" onclick="verificar()">🔍 Verificar localStorage</button>
+<pre id="verificacao"></pre>
+
+<h3>4. Ir para o index</h3>
+<a href="index.html" target="_blank" style="background:#c8a84b;color:#000;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">🌐 Abrir index.html</a>
+
+<script>
+function verificar() {
+  const raw = localStorage.getItem('obpc_info');
+  const el = document.getElementById('verificacao');
+  if (!raw) {
+    el.innerHTML = '<span class="erro">❌ obpc_info NÃO ENCONTRADO no localStorage</span>';
+    return;
+  }
+  try {
+    const D = JSON.parse(raw);
+    el.innerHTML = '<span class="ok">✅ obpc_info encontrado!</span>\n\n' + JSON.stringify(D, null, 2).substring(0, 2000);
+    if (D.pastor && D.pastor.tema) {
+      el.innerHTML += '\n\n<span class="ok">✅ D.pastor.tema = "' + D.pastor.tema + '"</span>';
+    } else {
+      el.innerHTML += '\n\n<span class="erro">❌ D.pastor NÃO encontrado ou vazio</span>';
+    }
+  } catch(e) {
+    el.innerHTML = '<span class="erro">❌ Erro ao parsear: ' + e + '</span>';
+  }
+}
+
+function salvarTeste() {
+  const tema = document.getElementById('t-tema').value;
+  const txt = document.getElementById('t-txt').value;
+  let D = {};
+  try { D = JSON.parse(localStorage.getItem('obpc_info')||'{}'); } catch(e){}
+  D.pastor = {
+    nome: 'Pastor Sérgio',
+    tema: tema,
+    subtema: 'Mensagem de teste',
+    txt: txt,
+    versiculo: 'Porque Deus amou o mundo de tal maneira...',
+    versiculoRef: 'João 3:16',
+    conselhos: ['Ame a Deus sobre todas as coisas', 'Ame ao próximo como a si mesmo'],
+    img: ''
+  };
+  localStorage.setItem('obpc_info', JSON.stringify(D));
+  document.getElementById('msg').innerHTML = '<span class="ok">✅ Salvo! Agora clique em "Verificar" e depois abra o index.</span>';
+  verificar();
+}
+
+function limparTudo() {
+  localStorage.removeItem('obpc_info');
+  document.getElementById('msg').innerHTML = '<span class="erro">🗑️ Limpo!</span>';
+  verificar();
+}
+
+// Carregar ao abrir
+window.onload = function() {
+  const raw = localStorage.getItem('obpc_info');
+  document.getElementById('atual').textContent = raw ? raw.substring(0, 500) + '...' : '❌ vazio';
+  verificar();
+};
+</script>
+</body>
+</html>
