@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Restaurar Dados OBPC</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:Arial,sans-serif;background:linear-gradient(160deg,#0d2a14,#1a3a6b 60%,#0d1f0f);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+.box{background:rgba(0,0,0,0.7);border:1px solid #c8a84b;border-radius:12px;padding:32px 24px;max-width:500px;width:100%;text-align:center;}
+h2{color:#c8a84b;font-size:1.4rem;margin-bottom:8px;}
+.sub{color:rgba(248,248,246,0.5);font-size:0.83rem;margin-bottom:24px;line-height:1.6;}
+.item{background:rgba(255,255,255,0.04);border:1px solid rgba(200,168,75,0.2);border-radius:6px;padding:12px 14px;margin-bottom:8px;text-align:left;font-size:0.82rem;color:rgba(248,248,246,0.8);}
+.item strong{color:#c8a84b;display:block;margin-bottom:3px;}
+.btn{display:block;width:100%;padding:14px;background:#c8a84b;color:#0d1f0f;border:none;border-radius:6px;font-size:1rem;font-weight:bold;cursor:pointer;margin-bottom:10px;text-decoration:none;text-align:center;}
+.btn:hover{background:#e0bc5a;}
+.btn-sec{display:block;width:100%;padding:12px;background:rgba(255,255,255,0.07);color:#f8f8f6;border:1px solid rgba(255,255,255,0.2);border-radius:6px;font-size:0.9rem;cursor:pointer;margin-bottom:8px;text-decoration:none;text-align:center;}
+.ok{display:none;color:#7dd99a;font-size:0.88rem;margin-top:14px;padding:12px;background:rgba(37,211,102,0.1);border:1px solid rgba(37,211,102,0.3);border-radius:6px;}
+.erro{display:none;color:#ff8080;font-size:0.88rem;margin-top:14px;padding:12px;background:rgba(200,0,0,0.1);border:1px solid rgba(200,0,0,0.3);border-radius:6px;}
+</style>
+</head>
+<body>
+<div class="box">
+  <h2>📋 Restaurar Dados OBPC</h2>
+  <p class="sub">Clique no botão abaixo para restaurar todos os dados salvos da escala e financeiro de Maio 2026.</p>
+
+  <div class="item"><strong>📋 Escala de Obreiros — Maio 2026</strong>11 cultos/eventos preenchidos</div>
+  <div class="item"><strong>💰 Financeiro — Maio 2026</strong>Saldo anterior: R$ 6.429,94 · Depositado: R$ 2.670,00<br>4 movimentações · Despesas: R$ 3.500,00 · Líquido: R$ 5.599,94</div>
+
+  <button class="btn" onclick="restaurar()">✅ Restaurar Todos os Dados</button>
+  
+  <div class="ok" id="ok"></div>
+  <div class="erro" id="erro"></div>
+
+  <div style="margin-top:16px;border-top:1px solid rgba(200,168,75,0.2);padding-top:16px;">
+    <p style="color:rgba(248,248,246,0.4);font-size:0.75rem;margin-bottom:12px;">Após restaurar, abra o sistema desejado:</p>
+    <a href="escala.html" class="btn-sec">📋 Abrir Sistema de Escala</a>
+    <a href="igreja.html" class="btn-sec">💰 Abrir Sistema Financeiro</a>
+    <a href="pix.html" class="btn-sec">💳 Abrir Controle PIX</a>
+  </div>
+</div>
+
+<script>
+function restaurar() {
+  try {
+    var escala = [{"data": "03/05/2026", "dia": "Domingo", "ensaio": "GRUPO LOUVOR", "culto": "Culto da Família", "porta": "Diac. Nair / Diac. Angélica", "dirigente": "Diac. Dorico", "oportunidade": "MENIBRAC", "ministrante": "Pr Sergio"}, {"data": "06/05/2026", "dia": "Quarta-feira", "ensaio": "", "culto": "Culto quarta da adoração", "porta": "Pr Sergio", "dirigente": "Diac. Sergio", "oportunidade": "—", "ministrante": "Diac. Dorico"}, {"data": "09/05/2026", "dia": "Sábado", "ensaio": "", "culto": "Culto Jubrac Sede", "porta": "---", "dirigente": "---", "oportunidade": "---", "ministrante": "----"}, {"data": "10/05/2026", "dia": "Domingo", "ensaio": "UFEBRAC", "culto": "Santa Ceia / Primícias", "porta": "Diac. Charles / Diac. Zilandra", "dirigente": "Diac. Sergio / Pr Sergio", "oportunidade": "JUBRAC", "ministrante": "Preletor Convidado"}, {"data": "13/05/2026", "dia": "Quarta-feira", "ensaio": "", "culto": "Culto quarta da adoração", "porta": "Diac. Dorico", "dirigente": "Pr Sergio", "oportunidade": "—", "ministrante": "Bianca"}, {"data": "17/05/2026", "dia": "Domingo", "ensaio": "GRUPO LOUVOR", "culto": "Culto de Missões", "porta": "Diac. Dorico / Diac. Nair", "dirigente": "Diac. Munique", "oportunidade": "UMASBRAC", "ministrante": "Pr André"}, {"data": "20/05/2026", "dia": "Quarta-feira", "ensaio": "", "culto": "Culto quarta da adoração", "porta": "Diac. Sergio", "dirigente": "Diac. Angélica", "oportunidade": "—", "ministrante": "Flavia"}, {"data": "24/05/2026", "dia": "Domingo", "ensaio": "UFEBRAC", "culto": "Culto de Celebração", "porta": "Diac. Charles / Diac. Zilandra", "dirigente": "Pr André", "oportunidade": "UFEBRAC", "ministrante": "Diac. Sergio"}, {"data": "27/05/2026", "dia": "Quarta-feira", "ensaio": "", "culto": "Culto quarta da adoração", "porta": "Pr André", "dirigente": "Diac. Nair", "oportunidade": "—", "ministrante": "Coop Lucas"}, {"data": "30/05/2026", "dia": "Sábado", "ensaio": "", "culto": "Chá de Mulheres", "porta": "------", "dirigente": "----", "oportunidade": "----", "ministrante": "---"}, {"data": "31/05/2026", "dia": "Domingo", "ensaio": "", "culto": "Culto menibrac São Fernando", "porta": "Diac. Dorico / Diac. Nair", "dirigente": "Nayara", "oportunidade": "MENIBRAC", "ministrante": "—"}];
+    var entradas = [{"dia": "17", "tipo": "Deposito", "origem": "SERGIO ROBERTO", "descricao": "", "categoria": "Dizimo", "ndoc": "", "deposito": 789.0, "saida": 0, "saldo": 7129.94}, {"dia": "17", "tipo": "Deposito", "origem": "CHARLES IVAN", "descricao": "DIZIMO", "categoria": "Dizimo", "ndoc": "", "deposito": 258.0, "saida": 0, "saldo": 7379.94}, {"dia": "17", "tipo": "Deposito", "origem": "WILDER", "descricao": "OFERTAS", "categoria": "Oferta", "ndoc": "", "deposito": 29.0, "saida": 0, "saldo": 7399.94}, {"dia": "17", "tipo": "Deposito", "origem": "ELIANA", "descricao": "DIZIMO", "categoria": "Dizimo", "ndoc": "", "deposito": 1788.0, "saida": 0, "saldo": 9999.94}];
+    var cfg = {"saldoAnterior": 6429.94, "totalDepositado": 2670.0, "despesasPagas": 3500.0, "aDevolver": 5599.94, "mes": "MAIO/2026", "igreja": "Igreja OBPC Jardim São Fernando", "pastor": "Pr. Nelson Lolo", "fluxo": "A Igreja OBPC Jardim São Fernando não possui conta bancária própria. Os valores arrecadados são depositados via PIX na conta da Igreja Sede Regional Ferraz (Pr. Nelson Lolo). Mensalmente, é enviado este relatório ao Pr. Nelson solicitando a devolução dos depósitos, deduzidas as despesas autorizadas (água, luz, aluguel, contabilidade, diversos — exigem Nota Fiscal)."};
+
+    // Salvar escala
+    localStorage.setItem('obpc_1click_scale_v4', JSON.stringify(escala));
+    localStorage.setItem('obpc_1click_scale_v3', JSON.stringify(escala));
+
+    // Salvar financeiro
+    localStorage.setItem('obpc_entradas2', JSON.stringify(entradas));
+    localStorage.setItem('obpc_cfg', JSON.stringify(cfg));
+
+    // Salvar saídas
+    var saidas = [{
+      "dia":"17","descricao":"Despesas do mês","valor":3500.00,"categoria":"Despesas","obs":"Água, luz, aluguel, contabilidade"
+    }];
+    localStorage.setItem('obpc_saidas', JSON.stringify(saidas));
+
+    var ok = document.getElementById('ok');
+    ok.textContent = '✅ Dados restaurados! ' + escala.length + ' entradas na escala e ' + entradas.length + ' movimentações financeiras. Clique nos botões abaixo para abrir os sistemas.';
+    ok.style.display = 'block';
+  } catch(e) {
+    var erro = document.getElementById('erro');
+    erro.textContent = '⚠️ Erro: ' + e.message;
+    erro.style.display = 'block';
+  }
+}
+</script>
+</body>
+</html>
