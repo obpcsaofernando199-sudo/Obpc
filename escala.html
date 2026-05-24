@@ -888,23 +888,5 @@ document.addEventListener('click',function(e){
 
 window.onload = load;
 </script>
-
-<script>
-// Receptor de dados externos via postMessage
-window.addEventListener('message', function(e) {
-  try {
-    var msg = e.data;
-    if (!msg || msg.tipo !== 'RESTAURAR_OBPC') return;
-    if (msg.dados) {
-      var d = msg.dados;
-      if (d.escala)    localStorage.setItem('obpc_1click_scale_v4', JSON.stringify(d.escala));
-      if (d.obreiros)  localStorage.setItem('obpc_set_obreiros_v3', JSON.stringify(d.obreiros));
-      if (d.cultos)    localStorage.setItem('obpc_set_cultos_v3', JSON.stringify(d.cultos));
-      // Recarregar a página para mostrar os dados
-      setTimeout(function() { location.reload(); }, 300);
-    }
-  } catch(err) {}
-});
-</script>
 </body>
 </html>
