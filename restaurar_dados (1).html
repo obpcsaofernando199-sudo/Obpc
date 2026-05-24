@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Restaurar Dados OBPC</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:Arial,sans-serif;background:linear-gradient(160deg,#0d2a14,#1a3a6b 60%,#0d1f0f);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+.box{background:rgba(0,0,0,0.75);border:2px solid #c8a84b;border-radius:12px;padding:32px 24px;max-width:480px;width:100%;text-align:center;}
+h2{color:#c8a84b;font-size:1.3rem;margin-bottom:8px;}
+.sub{color:rgba(255,255,255,0.5);font-size:0.82rem;margin-bottom:20px;line-height:1.6;}
+.info{background:rgba(255,255,255,0.04);border:1px solid rgba(200,168,75,0.2);border-radius:6px;padding:12px;margin-bottom:8px;text-align:left;font-size:0.82rem;color:rgba(255,255,255,0.75);}
+.info strong{color:#c8a84b;display:block;margin-bottom:3px;}
+.btn{width:100%;padding:14px;background:#c8a84b;color:#000;border:none;border-radius:6px;font-size:1rem;font-weight:700;cursor:pointer;margin-bottom:10px;}
+.btn:active{background:#e0bc5a;}
+.link{width:100%;padding:12px;background:rgba(255,255,255,0.07);color:#f8f8f6;border:1px solid rgba(255,255,255,0.2);border-radius:6px;font-size:0.88rem;text-decoration:none;display:block;margin-bottom:8px;}
+.ok{display:none;color:#7dd99a;padding:12px;background:rgba(37,211,102,0.1);border:1px solid rgba(37,211,102,0.3);border-radius:6px;font-size:0.85rem;margin:10px 0;}
+.sep{margin-top:18px;border-top:1px solid rgba(200,168,75,0.2);padding-top:16px;}
+.sep p{color:rgba(255,255,255,0.35);font-size:0.78rem;margin-bottom:10px;}
+</style>
+</head>
+<body>
+<div class="box">
+  <h2>&#128203; Restaurar Dados OBPC</h2>
+  <p class="sub">Restaura os dados da Escala e Financeiro de Maio 2026 neste navegador.</p>
+
+  <div class="info"><strong>&#128203; Escala — Maio 2026</strong>11 cultos/eventos</div>
+  <div class="info"><strong>&#128179; Financeiro — Maio 2026</strong>Saldo anterior: R$ 6.429,94<br>4 entradas · Total depositado: R$ 2.670,00<br>Despesas: R$ 3.500,00 · A devolver: R$ 5.599,94</div>
+
+  <button class="btn" onclick="restaurar()">&#9989; Restaurar Todos os Dados</button>
+  <div class="ok" id="OK"></div>
+
+  <div class="sep">
+    <p>Apos restaurar clique para abrir:</p>
+    <a href="escala.html" class="link">&#128203; Sistema de Escala</a>
+    <a href="igreja.html" class="link">&#128179; Sistema Financeiro</a>
+    <a href="pix.html" class="link">&#128179; Controle PIX</a>
+    <a href="painel.html" class="link">&#128274; Painel da Igreja</a>
+  </div>
+</div>
+
+<script>
+var ESCALA  = [{"data": "03/05/2026", "dia": "Domingo", "ensaio": "GRUPO LOUVOR", "culto": "Culto da Família", "porta": "Diac. Nair / Diac. Angélica", "dirigente": "Diac. Dorico", "oportunidade": "MENIBRAC", "ministrante": "Pr Sergio"}, {"data": "06/05/2026", "dia": "Quarta-feira", "ensaio": "", "culto": "Culto quarta da adoração", "porta": "Pr Sergio", "dirigente": "Diac. Sergio", "oportunidade": "—", "ministrante": "Diac. Dorico"}, {"data": "09/05/2026", "dia": "Sábado", "ensaio": "", "culto": "Culto Jubrac Sede", "porta": "---", "dirigente": "---", "oportunidade": "---", "ministrante": "----"}, {"data": "10/05/2026", "dia": "Domingo", "ensaio": "UFEBRAC", "culto": "Santa Ceia / Primícias", "porta": "Diac. Charles / Diac. Zilandra", "dirigente": "Diac. Sergio / Pr Sergio", "oportunidade": "JUBRAC", "ministrante": "Preletor Convidado"}, {"data": "13/05/2026", "dia": "Quarta-feira", "ensaio": "", "culto": "Culto quarta da adoração", "porta": "Diac. Dorico", "dirigente": "Pr Sergio", "oportunidade": "—", "ministrante": "Bianca"}, {"data": "17/05/2026", "dia": "Domingo", "ensaio": "GRUPO LOUVOR", "culto": "Culto de Missões", "porta": "Diac. Dorico / Diac. Nair", "dirigente": "Diac. Munique", "oportunidade": "UMASBRAC", "ministrante": "Pr André"}, {"data": "20/05/2026", "dia": "Quarta-feira", "ensaio": "", "culto": "Culto quarta da adoração", "porta": "Diac. Sergio", "dirigente": "Diac. Angélica", "oportunidade": "—", "ministrante": "Flavia"}, {"data": "24/05/2026", "dia": "Domingo", "ensaio": "UFEBRAC", "culto": "Culto de Celebração", "porta": "Diac. Charles / Diac. Zilandra", "dirigente": "Pr André", "oportunidade": "UFEBRAC", "ministrante": "Diac. Sergio"}, {"data": "27/05/2026", "dia": "Quarta-feira", "ensaio": "", "culto": "Culto quarta da adoração", "porta": "Pr André", "dirigente": "Diac. Nair", "oportunidade": "—", "ministrante": "Coop Lucas"}, {"data": "30/05/2026", "dia": "Sábado", "ensaio": "", "culto": "Chá de Mulheres", "porta": "------", "dirigente": "----", "oportunidade": "----", "ministrante": "---"}, {"data": "31/05/2026", "dia": "Domingo", "ensaio": "", "culto": "Culto menibrac São Fernando", "porta": "Diac. Dorico / Diac. Nair", "dirigente": "Nayara", "oportunidade": "MENIBRAC", "ministrante": "—"}];
+var ENTRADAS = [{"id": 1716912001, "subtipo": "dizimo", "data": "2026-05-17", "tipo": "Dizimo", "nome": "SERGIO ROBERTO", "valor": 789.0, "forma": "PIX Sede", "pix": "", "obs": "", "docs": {"comp": null, "doc": null}}, {"id": 1716912002, "subtipo": "dizimo", "data": "2026-05-17", "tipo": "Dizimo", "nome": "CHARLES IVAN", "valor": 258.0, "forma": "PIX Sede", "pix": "", "obs": "DIZIMO", "docs": {"comp": null, "doc": null}}, {"id": 1716912003, "subtipo": "dizimo", "data": "2026-05-17", "tipo": "Outros", "nome": "WILDER", "valor": 29.0, "forma": "PIX Sede", "pix": "", "obs": "OFERTAS", "docs": {"comp": null, "doc": null}}, {"id": 1716912004, "subtipo": "dizimo", "data": "2026-05-17", "tipo": "Dizimo", "nome": "ELIANA", "valor": 1788.0, "forma": "PIX Sede", "pix": "", "obs": "DIZIMO", "docs": {"comp": null, "doc": null}}];
+var SAIDAS   = [{"id": 1716912010, "data": "2026-05-17", "descricao": "Despesas do mês", "valor": 3500.0, "categoria": "Utilities (Luz/Agua)", "forma": "PIX", "obs": "Água, luz, aluguel, contabilidade", "docs": {"nota": null}}];
+var CFG      = {"tiposDizimo": ["Dizimo", "Oferta Especial", "Oferta Missionaria", "Oferta de Amor", "Primeira Visita", "Outros"], "tiposGeral": ["Gazofilacio", "Salvas/Bandeja", "Culto Regular", "Evento Especial", "Campanha", "Outros"], "categorias": ["Manutencao", "Alimentacao", "Material de Limpeza", "Sonorizacao", "Grafica/Impressao", "Transporte", "Utilities (Luz/Agua)", "Informatica", "Dizimos/Missoes", "Outros"], "formasPgto": ["Dinheiro", "PIX", "Transferencia", "Cheque", "Cartao Debito", "Cartao Credito", "Boleto"], "saldoAnterior": 6429.94, "mes": "MAIO/2026", "igreja": "Igreja OBPC Jardim São Fernando", "pastor": "Pr. Nelson Lolo"};
+
+function restaurar() {
+  try {
+    localStorage.setItem('obpc_1click_scale_v4', JSON.stringify(ESCALA));
+    localStorage.setItem('obpc_1click_scale_v3', JSON.stringify(ESCALA));
+    localStorage.setItem('obpc_entradas2',  JSON.stringify(ENTRADAS));
+    localStorage.setItem('obpc_saidas',     JSON.stringify(SAIDAS));
+    localStorage.setItem('obpc_cfg',        JSON.stringify(CFG));
+    localStorage.setItem('obpc_forn',       JSON.stringify([]));
+    localStorage.setItem('obpc_fechamentos',JSON.stringify([]));
+    localStorage.setItem('obpc_relatorios', JSON.stringify([]));
+
+    var ok = document.getElementById('OK');
+    ok.innerHTML = '&#9989; Dados restaurados!<br>' +
+      ESCALA.length + ' entradas na escala · ' +
+      ENTRADAS.length + ' movimentacoes financeiras.<br>' +
+      '<strong style="color:#c8a84b;">Agora clique nos botoes abaixo.</strong>';
+    ok.style.display = 'block';
+  } catch(e) {
+    alert('Erro: ' + e.message);
+  }
+}
+</script>
+</body>
+</html>
