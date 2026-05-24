@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Restaurar Dados OBPC</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:Arial,sans-serif;background:linear-gradient(160deg,#0d2a14,#1a3a6b 60%,#0d1f0f);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+.box{background:rgba(0,0,0,0.75);border:2px solid #c8a84b;border-radius:12px;padding:32px 24px;max-width:480px;width:100%;text-align:center;}
+h2{color:#c8a84b;font-size:1.3rem;margin-bottom:8px;}
+p{color:rgba(255,255,255,0.5);font-size:0.82rem;margin-bottom:20px;line-height:1.6;}
+.info{background:rgba(255,255,255,0.04);border:1px solid rgba(200,168,75,0.2);border-radius:6px;padding:12px;margin-bottom:8px;text-align:left;font-size:0.82rem;color:rgba(255,255,255,0.75);}
+.info strong{color:#c8a84b;display:block;margin-bottom:3px;}
+.btn{width:100%;padding:14px;background:#c8a84b;color:#000;border:none;border-radius:6px;font-size:1rem;font-weight:700;cursor:pointer;margin-bottom:10px;}
+.btn:active{background:#e0bc5a;}
+.btn-sec{width:100%;padding:12px;background:rgba(255,255,255,0.07);color:#f8f8f6;border:1px solid rgba(255,255,255,0.2);border-radius:6px;font-size:0.88rem;cursor:pointer;margin-bottom:8px;text-decoration:none;display:block;}
+.ok{display:none;color:#7dd99a;padding:12px;background:rgba(37,211,102,0.1);border:1px solid rgba(37,211,102,0.3);border-radius:6px;font-size:0.85rem;margin-top:10px;}
+.erro{display:none;color:#ff8080;padding:12px;background:rgba(200,0,0,0.1);border:1px solid rgba(200,0,0,0.3);border-radius:6px;font-size:0.85rem;margin-top:10px;}
+iframe{display:none;}
+</style>
+</head>
+<body>
+<div class="box">
+  <h2>&#128203; Restaurar Dados OBPC</h2>
+  <p>Clique no botão para restaurar os dados da Escala e Financeiro de Maio 2026 neste navegador.</p>
+
+  <div class="info"><strong>&#128203; Escala — Maio 2026</strong>11 cultos/eventos preenchidos</div>
+  <div class="info"><strong>&#128179; Financeiro — Maio 2026</strong>Saldo: R$ 6.429,94 · Depositado: R$ 2.670,00 · 4 movimentações</div>
+
+  <button class="btn" onclick="restaurar()">&#9989; Restaurar Todos os Dados</button>
+
+  <div class="ok" id="OK"></div>
+  <div class="erro" id="ERR"></div>
+
+  <div style="margin-top:18px;border-top:1px solid rgba(200,168,75,0.2);padding-top:16px;">
+    <p style="margin-bottom:10px;">Após restaurar, abra:</p>
+    <a href="escala.html" class="btn-sec">&#128203; Sistema de Escala</a>
+    <a href="igreja.html" class="btn-sec">&#128179; Sistema Financeiro</a>
+    <a href="pix.html" class="btn-sec">&#128179; Controle PIX</a>
+    <a href="painel.html" class="btn-sec">&#128274; Painel da Igreja</a>
+  </div>
+</div>
+
+<!-- iframes ocultos para injetar dados -->
+<iframe id="ifr-escala" src=""></iframe>
+<iframe id="ifr-igreja" src=""></iframe>
+
+<script>
+var ESCALA = [{"data": "03/05/2026", "dia": "Domingo", "ensaio": "GRUPO LOUVOR", "culto": "Culto da Família", "porta": "Diac. Nair / Diac. Angélica", "dirigente": "Diac. Dorico", "oportunidade": "MENIBRAC", "ministrante": "Pr Sergio"}, {"data": "06/05/2026", "dia": "Quarta-feira", "ensaio": "", "culto": "Culto quarta da adoração", "porta": "Pr Sergio", "dirigente": "Diac. Sergio", "oportunidade": "—", "ministrante": "Diac. Dorico"}, {"data": "09/05/2026", "dia": "Sábado", "ensaio": "", "culto": "Culto Jubrac Sede", "porta": "---", "dirigente": "---", "oportunidade": "---", "ministrante": "----"}, {"data": "10/05/2026", "dia": "Domingo", "ensaio": "UFEBRAC", "culto": "Santa Ceia / Primícias", "porta": "Diac. Charles / Diac. Zilandra", "dirigente": "Diac. Sergio / Pr Sergio", "oportunidade": "JUBRAC", "ministrante": "Preletor Convidado"}, {"data": "13/05/2026", "dia": "Quarta-feira", "ensaio": "", "culto": "Culto quarta da adoração", "porta": "Diac. Dorico", "dirigente": "Pr Sergio", "oportunidade": "—", "ministrante": "Bianca"}, {"data": "17/05/2026", "dia": "Domingo", "ensaio": "GRUPO LOUVOR", "culto": "Culto de Missões", "porta": "Diac. Dorico / Diac. Nair", "dirigente": "Diac. Munique", "oportunidade": "UMASBRAC", "ministrante": "Pr André"}, {"data": "20/05/2026", "dia": "Quarta-feira", "ensaio": "", "culto": "Culto quarta da adoração", "porta": "Diac. Sergio", "dirigente": "Diac. Angélica", "oportunidade": "—", "ministrante": "Flavia"}, {"data": "24/05/2026", "dia": "Domingo", "ensaio": "UFEBRAC", "culto": "Culto de Celebração", "porta": "Diac. Charles / Diac. Zilandra", "dirigente": "Pr André", "oportunidade": "UFEBRAC", "ministrante": "Diac. Sergio"}, {"data": "27/05/2026", "dia": "Quarta-feira", "ensaio": "", "culto": "Culto quarta da adoração", "porta": "Pr André", "dirigente": "Diac. Nair", "oportunidade": "—", "ministrante": "Coop Lucas"}, {"data": "30/05/2026", "dia": "Sábado", "ensaio": "", "culto": "Chá de Mulheres", "porta": "------", "dirigente": "----", "oportunidade": "----", "ministrante": "---"}, {"data": "31/05/2026", "dia": "Domingo", "ensaio": "", "culto": "Culto menibrac São Fernando", "porta": "Diac. Dorico / Diac. Nair", "dirigente": "Nayara", "oportunidade": "MENIBRAC", "ministrante": "—"}];
+var ENTRADAS = [{"dia": "17", "tipo": "Deposito", "origem": "SERGIO ROBERTO", "descricao": "", "categoria": "Dizimo", "ndoc": "", "deposito": 789.0, "saida": 0}, {"dia": "17", "tipo": "Deposito", "origem": "CHARLES IVAN", "descricao": "DIZIMO", "categoria": "Dizimo", "ndoc": "", "deposito": 258.0, "saida": 0}, {"dia": "17", "tipo": "Deposito", "origem": "WILDER", "descricao": "OFERTAS", "categoria": "Oferta", "ndoc": "", "deposito": 29.0, "saida": 0}, {"dia": "17", "tipo": "Deposito", "origem": "ELIANA", "descricao": "DIZIMO", "categoria": "Dizimo", "ndoc": "", "deposito": 1788.0, "saida": 0}];
+var CFG = {"saldoAnterior": 6429.94, "totalDepositado": 2670.0, "despesasPagas": 3500.0, "aDevolver": 5599.94, "mes": "MAIO/2026", "igreja": "Igreja OBPC Jardim São Fernando", "pastor": "Pr. Nelson Lolo"};
+var SAIDAS = [{"dia": "17", "descricao": "Despesas do mês", "valor": 3500.0, "categoria": "Despesas", "obs": "Água, luz, aluguel, contabilidade"}];
+
+function restaurar() {
+  var ok = document.getElementById('OK');
+  var err = document.getElementById('ERR');
+  ok.style.display = 'none';
+  err.style.display = 'none';
+
+  try {
+    // Salvar direto no localStorage desta página (mesmo domínio)
+    localStorage.setItem('obpc_1click_scale_v4', JSON.stringify(ESCALA));
+    localStorage.setItem('obpc_1click_scale_v3', JSON.stringify(ESCALA));
+    localStorage.setItem('obpc_entradas2', JSON.stringify(ENTRADAS));
+    localStorage.setItem('obpc_cfg', JSON.stringify(CFG));
+    localStorage.setItem('obpc_saidas', JSON.stringify(SAIDAS));
+
+    ok.textContent = '✅ Dados restaurados com sucesso! ' + ESCALA.length + ' entradas na escala e ' + ENTRADAS.length + ' movimentações financeiras. Agora clique nos botões abaixo para abrir os sistemas.';
+    ok.style.display = 'block';
+  } catch(e) {
+    err.textContent = '⚠️ Erro: ' + e.message;
+    err.style.display = 'block';
+  }
+}
+</script>
+</body>
+</html>
