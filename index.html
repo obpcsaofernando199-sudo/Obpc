@@ -692,8 +692,7 @@ function renderSite() {
     var html = '';
     html += '<div class="pastor-tema">'+eH(P.tema||'')+'</div>';
     if(P.subtema) html += '<div class="pastor-sub">'+eH(P.subtema)+'</div>';
-    html += '<div class="pastor-txt">'+(P.txt||'').replace(/
-/g,'<br>')+'</div>';
+    html += '<div class="pastor-txt">'+(P.txt||'').replace(/\n/g,'<br>')+'</div>';
     if(P.conselhos && P.conselhos.length) {
       html += '<div class="pastor-cons"><div class="pastor-cons-t">ACONSELHAMENTOS</div>';
       for(var ci=0; ci<P.conselhos.length; ci++) {
@@ -724,8 +723,7 @@ function renderSite() {
     for(var i=0;i<D.noticias.length;i++){
       var n=D.noticias[i];
       h+='<div class="not-item"><div class="not-tit">'+eH(n.titulo||'')+'</div>';
-      h+='<div class="not-txt">'+(n.txt||'').replace(/
-/g,'<br>')+'</div>';
+      h+='<div class="not-txt">'+(n.txt||'').replace(/\n/g,'<br>')+'</div>';
       if(n.data) h+='<div class="not-dt">&#128197; '+n.data+'</div></div>';
       else h+='</div>';
     }
@@ -766,8 +764,7 @@ function renderSite() {
     for(var i=0;i<D.av.length;i++){
       var a=D.av[i];
       h+='<div class="av-item"><div style="font-size:1rem;flex-shrink:0;margin-top:2px;">&#128204;</div>';
-      h+='<div><div class="av-tit">'+eH(a.titulo||'')+'</div><div class="av-txt">'+(a.texto||'').replace(/
-/g,'<br>')+'</div></div></div>';
+      h+='<div><div class="av-tit">'+eH(a.titulo||'')+'</div><div class="av-txt">'+(a.texto||'').replace(/\n/g,'<br>')+'</div></div></div>';
     }
     var el14=g('s-avisos-lista'); if(el14) el14.innerHTML=h;
     var el15=g('s-avisos'); if(el15) el15.style.display='block';
@@ -940,7 +937,7 @@ function cI(){
 }
 function mkEv(k,i){
   var a=k==='ep'?EP:ES;
-  return '<div class="it"><button class="xb" onclick="rmEv(''+k+'','+i+')">X</button>'+
+  return '<div class="it"><button class="xb" onclick="rmEv(\''+k+'\','+i+')">X</button>'+
     '<div class="g2">'+
     '<div><span class="lbl">Dia</span><input class="campo" value="'+eH(a[i].dia||'')+'" onchange="'+k+'['+i+'].dia=this.value"></div>'+
     '<div><span class="lbl">Mes</span><input class="campo" value="'+eH(a[i].mes||'')+'" onchange="'+k+'['+i+'].mes=this.value"></div>'+
@@ -1039,7 +1036,7 @@ function rM(t){
     var h='';
     for(var i=0;i<list.length;i++){
       var item=list[i];
-      h+='<div class="mi"><button class="mr" onclick="dM(''+t+'','+item.id+')">X</button>';
+      h+='<div class="mi"><button class="mr" onclick="dM(\''+t+'\','+item.id+')">X</button>';
       h+=isV?'<video src="'+item.src+'" controls playsinline preload="metadata"></video>':'<img src="'+item.src+'" alt="">';
       h+='<div class="ml">'+eH(item.tam||'')+' '+eH(item.data||'')+'</div></div>';
     }
@@ -1054,7 +1051,7 @@ function rBios(){
     var b=bios[i];
     h+='<div class="bloco"><div class="bt">'+eH(b.nome)+' - '+eH(b.cargo)+'</div>';
     if(b.foto)h+='<img src="'+b.foto+'" style="width:68px;height:68px;border-radius:50%;object-fit:cover;object-position:center top;border:2px solid var(--g);margin-bottom:10px;display:block;">';
-    h+='<button class="ab" onclick="tF(''+b.id+'')">Trocar foto</button>';
+    h+='<button class="ab" onclick="tF(\''+b.id+'\')"  >Trocar foto</button>';
     h+='<span class="lbl">Nome</span><input class="campo" id="bN'+b.id+'" value="'+eH(b.nome)+'">';
     h+='<span class="lbl">Cargo</span><input class="campo" id="bC'+b.id+'" value="'+eH(b.cargo)+'">';
     h+='<span class="lbl">Biografia</span><textarea class="campo" id="bB'+b.id+'" rows="3">'+eH(b.bio||'')+'</textarea>';
