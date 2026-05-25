@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel ADM — OBPC São Fernando</title>
+<style>
+:root{--azul:#1E3A5F;--azul2:#3B9BD6;--branco:#fff;--cinza:#f4f6f9;--borda:#dde2ea;--txt:#1a2535;--muted:#6b7a90;--verde:#27ae60;--vermelho:#e74c3c;--laranja:#e67e22;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',sans-serif;background:var(--cinza);color:var(--txt);}
+header{background:var(--azul);color:#fff;padding:0 1.5rem;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,.25);}
+header h1{font-size:1rem;font-weight:700;}
+.layout{display:flex;min-height:calc(100vh - 56px);}
+nav{width:210px;background:var(--azul);flex-shrink:0;padding:1rem 0;}
+nav .grp{padding:.6rem 1.2rem .2rem;font-size:.65rem;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:1px;}
+nav a{display:flex;align-items:center;gap:8px;padding:.55rem 1.2rem;color:rgba(255,255,255,.7);font-size:.82rem;cursor:pointer;border-left:3px solid transparent;transition:.2s;}
+nav a:hover,nav a.on{background:rgba(59,155,214,.18);color:#fff;border-left-color:var(--azul2);}
+main{flex:1;padding:1.5rem;overflow-y:auto;}
+.aba{display:none;}.aba.on{display:block;}
+h2{font-size:1.1rem;font-weight:700;color:var(--azul);margin-bottom:1.2rem;padding-bottom:.5rem;border-bottom:2px solid var(--azul2);}
+.card{background:#fff;border-radius:10px;padding:1.2rem;margin-bottom:1rem;box-shadow:0 1px 6px rgba(0,0,0,.07);}
+label{font-size:.78rem;font-weight:600;color:var(--muted);display:block;margin:.6rem 0 .2rem;}
+input,textarea,select{width:100%;padding:.5rem .75rem;border:1.5px solid var(--borda);border-radius:6px;font-size:.85rem;font-family:inherit;background:#fff;color:var(--txt);transition:.2s;}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--azul2);}
+textarea{resize:vertical;min-height:70px;}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.8rem;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:.45rem 1rem;border:none;border-radius:6px;font-size:.82rem;font-weight:600;cursor:pointer;transition:.2s;}
+.btn-primary{background:var(--azul);color:#fff;}.btn-primary:hover{background:var(--azul2);}
+.btn-success{background:var(--verde);color:#fff;}
+.btn-danger{background:var(--vermelho);color:#fff;}
+.btn-sm{padding:.3rem .7rem;font-size:.75rem;}
+.lista-item{display:flex;align-items:center;justify-content:space-between;padding:.6rem .8rem;background:#f8fafd;border:1px solid var(--borda);border-radius:7px;margin-bottom:.4rem;}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.7rem;font-weight:600;}
+.badge-normal{background:#e3f2fd;color:#1565c0;}.badge-importante{background:#fff3e0;color:#e65100;}.badge-urgente{background:#fce4ec;color:#c62828;}
+.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.2rem;}
+.dash-card{background:#fff;border-radius:10px;padding:1rem 1.2rem;box-shadow:0 1px 6px rgba(0,0,0,.07);border-left:4px solid var(--azul2);}
+.dash-card .num{font-size:1.8rem;font-weight:700;color:var(--azul);}
+.dash-card .label{font-size:.75rem;color:var(--muted);margin-top:2px;}
+.semana-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:.5rem;}
+.dia-col{background:#fff;border-radius:8px;padding:.6rem;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+.dia-col.hoje{border:2px solid var(--azul2);}
+.dia-nome{font-size:.7rem;font-weight:700;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:.4rem;}
+.dia-col.hoje .dia-nome{color:var(--azul2);}
+.dia-item{font-size:.72rem;background:var(--cinza);border-radius:4px;padding:3px 6px;margin-bottom:3px;}
+.dia-item.tipo-obr{background:#e3f2fd;color:#1565c0;}
+.dia-item.tipo-evt{background:#e8f5e9;color:#2e7d32;}
+.obr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.8rem;}
+.obr-card{background:#fff;border-radius:10px;padding:1rem;box-shadow:0 1px 5px rgba(0,0,0,.07);text-align:center;}
+.obr-foto{width:64px;height:64px;border-radius:50%;object-fit:cover;margin:0 auto .5rem;border:2px solid var(--azul2);}
+.obr-nome{font-size:.85rem;font-weight:700;}
+.obr-func{font-size:.72rem;color:var(--muted);}
+
+/* ESCALA TABELA */
+.escala-wrap{overflow-x:auto;}
+.escala-tabela{width:100%;border-collapse:collapse;font-size:.8rem;min-width:700px;}
+.escala-tabela th{background:var(--azul);color:#fff;padding:6px 8px;text-align:center;font-size:.72rem;text-transform:uppercase;letter-spacing:.4px;border:1px solid #0d2f4a;white-space:nowrap;}
+.escala-tabela td{border:1px solid var(--borda);padding:4px 6px;vertical-align:middle;background:#fff;}
+.escala-tabela tr.row-dom td{background:#fff8f8;}
+.escala-tabela tr.row-qua td{background:#f0f9ff;}
+.escala-tabela tr.row-sab td{background:#f0fdf4;}
+.escala-tabela tr.row-ceia td{border-top:2px solid #7C3AED!important;}
+.escala-tabela td.td-data{font-weight:700;text-align:center;white-space:nowrap;}
+.escala-tabela td.td-dia{text-align:center;font-size:.75rem;color:var(--muted);}
+.cel-edit{width:100%;border:none;background:transparent;font-size:.8rem;font-family:inherit;color:var(--txt);text-align:center;outline:none;padding:2px;}
+.cel-edit:focus{background:#f0f7ff;border-radius:4px;}
+.cel-obr-area{font-size:.78rem;color:var(--txt);text-align:center;min-height:22px;cursor:pointer;padding:2px 4px;border-radius:4px;line-height:1.4;}
+.cel-obr-area:hover{background:#e3f2fd;}
+.cel-obr-area.ativo{background:#e3f2fd;}
+.obr-chips-wrap{display:flex;flex-wrap:wrap;gap:3px;justify-content:center;}
+.obr-chip{background:var(--azul);color:#fff;border-radius:10px;padding:1px 7px;font-size:.7rem;cursor:pointer;}
+.obr-chip:hover{background:var(--vermelho);}
+.escala-toolbar{background:var(--azul2);border-radius:8px;padding:8px 10px;margin-bottom:.5rem;display:none;flex-wrap:wrap;gap:5px;}
+.escala-toolbar.show{display:flex;}
+.esc-chip{background:#fff;color:var(--azul);border-radius:12px;padding:3px 10px;font-size:.75rem;font-weight:700;cursor:pointer;border:none;}
+.esc-chip:hover{background:var(--azul);color:#fff;}
+.btn-add-linha{background:var(--verde);color:#fff;border:none;border-radius:6px;padding:6px 14px;font-size:.8rem;font-weight:700;cursor:pointer;margin-bottom:.8rem;}
+.btn-del-esc{background:none;border:none;color:var(--vermelho);cursor:pointer;font-size:.9rem;padding:2px 5px;}
+.escala-mes-ctrl{display:flex;align-items:center;gap:10px;margin-bottom:1rem;}
+.escala-mes-ctrl button{background:var(--azul);color:#fff;border:none;border-radius:50%;width:28px;height:28px;font-size:1rem;cursor:pointer;}
+.escala-mes-ctrl span{font-size:1rem;font-weight:700;color:var(--azul);}
+.cel-ceia-wrap{display:flex;border:none;}
+.cel-ceia-sub{flex:1;text-align:center;}
+.cel-ceia-sub:first-child{border-right:1px solid var(--borda);}
+.cel-ceia-label{font-size:.58rem;font-weight:900;text-transform:uppercase;background:#ede9fe;color:#7c3aed;padding:1px 0;display:block;margin-bottom:2px;}
+
+/* upload preview */
+.upload-area{border:2px dashed var(--borda);border-radius:8px;padding:1rem;text-align:center;cursor:pointer;transition:.2s;background:#fafbfd;}
+.upload-area:hover{border-color:var(--azul2);background:#f0f7ff;}
+.upload-area input[type=file]{display:none;}
+.preview-img{max-width:100%;max-height:160px;border-radius:8px;margin-top:.6rem;display:none;}
+.msg-ok{color:var(--verde);font-size:.8rem;margin-top:.4rem;display:none;}
+/* pix info box */
+.pix-info-box{background:linear-gradient(135deg,#1E3A5F,#3B9BD6);color:#fff;border-radius:12px;padding:1.5rem;margin-bottom:1rem;}
+.pix-info-box .pix-chave-big{font-size:1.1rem;font-weight:700;letter-spacing:.5px;word-break:break-all;}
+.pix-info-box .pix-label{font-size:.75rem;opacity:.8;margin-bottom:.2rem;}
+/* culto foi assim */
+.culto-card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.08);margin-bottom:.8rem;}
+.culto-img-strip{display:flex;gap:4px;flex-wrap:wrap;}
+.culto-img-strip img{width:calc(33.3% - 3px);height:120px;object-fit:cover;}
+.culto-body{padding:1rem;}
+</style>
+</head>
+<body>
+<header>
+  <h1>⛪ Painel ADM — OBPC São Fernando</h1>
+  <div style="display:flex;align-items:center;gap:.8rem">
+    <span id="hd-data" style="font-size:.75rem;background:var(--azul2);padding:3px 10px;border-radius:20px;"></span>
+    <a href="index.html" style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.4);color:#fff;padding:5px 14px;border-radius:20px;font-size:.78rem;font-weight:600;text-decoration:none;">🏠 Voltar ao Site</a>
+  </div>
+</header>
+<div class="layout">
+  <nav>
+    <div class="grp">Geral</div>
+    <a onclick="ir('dashboard')" class="on">📊 Dashboard</a>
+    <a onclick="ir('info')">🏛️ Info da Igreja</a>
+    <a onclick="ir('horarios')">🕐 Horários</a>
+    <div class="grp">Comunicação</div>
+    <a onclick="ir('avisos')">📢 Avisos</a>
+    <a onclick="ir('eventos')">📅 Eventos</a>
+    <a onclick="ir('informativos')">📰 Informativos</a>
+    <a onclick="ir('sermoes')">📖 Sermões</a>
+    <a onclick="ir('culto')">📸 Nosso Culto Foi Assim</a>
+    <div class="grp">Ministério</div>
+    <a onclick="ir('obreiros')">👷 Obreiros</a>
+    <a onclick="ir('escala')">📋 Escala Semanal</a>
+    <a onclick="ir('lideranca')">🎖️ Liderança</a>
+    <div class="grp">Financeiro</div>
+    <a onclick="ir('dizimos')">💠 PIX / Dízimos</a>
+    <div class="grp">Mídia</div>
+    <a onclick="ir('galeria')">🖼️ Galeria de Fotos</a>
+    <a onclick="ir('videos')">▶️ Vídeos</a>
+  </nav>
+  <main>
+
+    <!-- DASHBOARD -->
+    <div id="aba-dashboard" class="aba on">
+      <h2>📊 Dashboard</h2>
+      <div class="dash-grid">
+        <div class="dash-card"><div class="num" id="cnt-avisos">0</div><div class="label">Avisos ativos</div></div>
+        <div class="dash-card"><div class="num" id="cnt-eventos">0</div><div class="label">Próximos eventos</div></div>
+        <div class="dash-card"><div class="num" id="cnt-obreiros">0</div><div class="label">Obreiros</div></div>
+        <div class="dash-card"><div class="num" id="cnt-membros">0</div><div class="label">Líderes</div></div>
+      </div>
+      <div class="card"><strong>Obreiro(s) de Hoje:</strong><div id="dash-obr-hoje" style="margin-top:.5rem;font-size:.85rem;color:var(--azul2)">—</div></div>
+      <div class="card"><strong>Agenda da Semana</strong><div class="semana-grid" id="semana-dash" style="margin-top:.8rem"></div></div>
+    </div>
+
+    <!-- INFO -->
+    <div id="aba-info" class="aba">
+      <h2>🏛️ Informações da Igreja</h2>
+      <div class="card">
+        <div class="row">
+          <div><label>Nome da Igreja</label><input id="ig-nome" placeholder="OBPC São Fernando"></div>
+          <div><label>Pastor(es)</label><input id="ig-pastor" placeholder="Pr. Nome Sobrenome"></div>
+        </div>
+        <div class="row" style="margin-top:.6rem">
+          <div><label>Endereço</label><input id="ig-end" value="Rua Senador José Ermírio de Moraes, 199"></div>
+          <div><label>Cidade / UF</label><input id="ig-cidade" placeholder="Cidade — SP"></div>
+        </div>
+        <div class="row" style="margin-top:.6rem">
+          <div><label>Telefone / WhatsApp</label><input id="ig-tel" placeholder="(11) 99999-9999"></div>
+          <div><label>E-mail</label><input id="ig-email" placeholder="contato@igreja.com"></div>
+        </div>
+        <label>CNPJ</label><input id="ig-cnpj" value="03.360.287/0002-59">
+        <label>Logo da Igreja (upload ou URL)</label>
+        <div class="row">
+          <div>
+            <div class="upload-area" onclick="document.getElementById('logo-file').click()">
+              📷 Clique para fazer upload da logo<br><small style="color:var(--muted)">JPG, PNG — recomendado 300x300px</small>
+              <input type="file" id="logo-file" accept="image/*" onchange="uploadImagem(this,'logo-preview','logo-b64')">
+            </div>
+            <img id="logo-preview" class="preview-img">
+          </div>
+          <div><label>Ou cole URL da logo</label><input id="ig-logo" placeholder="https://..."></div>
+        </div>
+        <input type="hidden" id="logo-b64">
+        <label>Mensagem de Boas-vindas</label>
+        <textarea id="ig-bv" rows="3" placeholder="Texto exibido no topo do site..."></textarea>
+        <label>Sobre a Igreja (história)</label>
+        <textarea id="ig-sobre" rows="4" placeholder="História, missão e visão..."></textarea>
+        <div style="margin-top:.8rem"><button class="btn btn-primary" onclick="salvarInfo()">💾 Salvar Informações</button><span class="msg-ok" id="ok-info">✔ Salvo!</span></div>
+      </div>
+    </div>
+
+    <!-- HORÁRIOS -->
+    <div id="aba-horarios" class="aba">
+      <h2>🕐 Horários de Culto</h2>
+      <div class="card" id="lista-horarios"></div>
+      <div class="card">
+        <div class="row3">
+          <div><label>Dia</label>
+            <select id="hor-dia"><option>Domingo</option><option>Segunda</option><option>Terça</option><option>Quarta</option><option>Quinta</option><option>Sexta</option><option>Sábado</option></select>
+          </div>
+          <div><label>Horário</label><input id="hor-hora" placeholder="19:30"></div>
+          <div><label>Tipo de Culto</label><input id="hor-tipo" placeholder="Culto de Ensino"></div>
+        </div>
+        <div style="margin-top:.8rem"><button class="btn btn-success" onclick="addHorario()">+ Adicionar</button></div>
+      </div>
+    </div>
+
+    <!-- AVISOS -->
+    <div id="aba-avisos" class="aba">
+      <h2>📢 Avisos</h2>
+      <div class="card">
+        <label>Título</label><input id="av-titulo" placeholder="Ex: Retiro de Jovens">
+        <label>Texto</label><textarea id="av-texto" rows="3" placeholder="Detalhes do aviso..."></textarea>
+        <div class="row" style="margin-top:.4rem">
+          <div><label>Prioridade</label>
+            <select id="av-prioridade"><option value="normal">Normal</option><option value="importante">Importante</option><option value="urgente">Urgente</option></select>
+          </div>
+          <div><label>Data (opcional)</label><input type="date" id="av-data"></div>
+        </div>
+        <label>Imagem (upload ou URL)</label>
+        <div class="row">
+          <div>
+            <div class="upload-area" onclick="document.getElementById('av-file').click()">
+              📷 Upload de imagem<br><small style="color:var(--muted)">JPG, PNG</small>
+              <input type="file" id="av-file" accept="image/*" onchange="uploadImagem(this,'av-preview','av-img-b64')">
+            </div>
+            <img id="av-preview" class="preview-img">
+          </div>
+          <div><label>Ou cole URL da imagem</label><input id="av-img-url" placeholder="https://..."></div>
+        </div>
+        <input type="hidden" id="av-img-b64">
+        <div style="margin-top:.8rem"><button class="btn btn-success" onclick="addAviso()">+ Adicionar Aviso</button></div>
+      </div>
+      <div id="lista-avisos"></div>
+    </div>
+
+    <!-- EVENTOS -->
+    <div id="aba-eventos" class="aba">
+      <h2>📅 Eventos</h2>
+      <div class="card">
+        <div class="row">
+          <div><label>Nome do Evento</label><input id="ev-nome" placeholder="Ex: Culto de Aniversário"></div>
+          <div><label>Data</label><input type="date" id="ev-data"></div>
+        </div>
+        <div class="row" style="margin-top:.4rem">
+          <div><label>Horário</label><input id="ev-hora" placeholder="19:30"></div>
+          <div><label>Local</label><input id="ev-local" placeholder="Templo principal"></div>
+        </div>
+        <div class="row" style="margin-top:.4rem">
+          <div><label>Tipo</label>
+            <select id="ev-tipo"><option>Culto</option><option>Retiro</option><option>Conferência</option><option>Encontro</option><option>Evangelismo</option><option>Outro</option></select>
+          </div>
+          <div><label>Descrição</label><input id="ev-desc" placeholder="Detalhes adicionais..."></div>
+        </div>
+        <label>Imagem do Evento (upload ou URL)</label>
+        <div class="row">
+          <div>
+            <div class="upload-area" onclick="document.getElementById('ev-file').click()">
+              📷 Upload<br><small style="color:var(--muted)">JPG, PNG</small>
+              <input type="file" id="ev-file" accept="image/*" onchange="uploadImagem(this,'ev-preview','ev-img-b64')">
+            </div>
+            <img id="ev-preview" class="preview-img">
+          </div>
+          <div><label>Ou URL</label><input id="ev-img-url" placeholder="https://..."></div>
+        </div>
+        <input type="hidden" id="ev-img-b64">
+        <div style="margin-top:.8rem"><button class="btn btn-success" onclick="addEvento()">+ Adicionar Evento</button></div>
+      </div>
+      <div id="lista-eventos"></div>
+    </div>
+
+    <!-- INFORMATIVOS -->
+    <div id="aba-informativos" class="aba">
+      <h2>📰 Informativos</h2>
+      <div class="card">
+        <div class="row">
+          <div><label>Título</label><input id="inf-titulo" placeholder="Título do informativo"></div>
+          <div><label>Categoria</label><input id="inf-cat" placeholder="Ex: Ministério, Jovens..."></div>
+        </div>
+        <label>Conteúdo</label>
+        <textarea id="inf-texto" rows="5" placeholder="Texto completo..."></textarea>
+        <label>Imagem (upload ou URL)</label>
+        <div class="row">
+          <div>
+            <div class="upload-area" onclick="document.getElementById('inf-file').click()">
+              📷 Upload<br><small style="color:var(--muted)">JPG, PNG</small>
+              <input type="file" id="inf-file" accept="image/*" onchange="uploadImagem(this,'inf-preview','inf-img-b64')">
+            </div>
+            <img id="inf-preview" class="preview-img">
+          </div>
+          <div><label>Ou URL</label><input id="inf-img-url" placeholder="https://..."></div>
+        </div>
+        <input type="hidden" id="inf-img-b64">
+        <div style="margin-top:.8rem"><button class="btn btn-success" onclick="addInformativo()">+ Publicar</button></div>
+      </div>
+      <div id="lista-informativos"></div>
+    </div>
+
+    <!-- SERMÕES -->
+    <div id="aba-sermoes" class="aba">
+      <h2>📖 Sermões</h2>
+      <div class="card">
+        <div class="row">
+          <div><label>Título do Sermão</label><input id="ser-titulo" placeholder="Ex: A Graça de Deus"></div>
+          <div><label>Pregador</label><input id="ser-pregador" placeholder="Nome do pregador"></div>
+        </div>
+        <div class="row" style="margin-top:.4rem">
+          <div><label>Data</label><input type="date" id="ser-data"></div>
+          <div><label>Link do Vídeo (YouTube)</label><input id="ser-url" placeholder="https://youtu.be/..."></div>
+        </div>
+        <label>Passagem Bíblica</label>
+        <input id="ser-passagem" placeholder="Ex: João 3:16">
+        <label>Resumo</label>
+        <textarea id="ser-resumo" rows="3" placeholder="Resumo da mensagem..."></textarea>
+        <div style="margin-top:.8rem"><button class="btn btn-success" onclick="addSermao()">+ Publicar Sermão</button></div>
+      </div>
+      <div id="lista-sermoes"></div>
+    </div>
+
+    <!-- CULTO FOI ASSIM -->
+    <div id="aba-culto" class="aba">
+      <h2>📸 Nosso Culto Foi Assim</h2>
+      <div class="card">
+        <div class="row">
+          <div><label>Título (ex: Culto de Domingo — 25/05)</label><input id="clt-titulo" placeholder="Culto de Domingo — 25/05/2026"></div>
+          <div><label>Data do Culto</label><input type="date" id="clt-data"></div>
+        </div>
+        <label>Relato / Descrição</label>
+        <textarea id="clt-relato" rows="4" placeholder="Conte como foi o culto, mensagem pregada, momentos especiais..."></textarea>
+        <label>Fotos do Culto (até 6 — upload ou URL)</label>
+        <div style="margin-bottom:.5rem">
+          <div class="upload-area" onclick="document.getElementById('clt-files').click()">
+            📷🎬 Upload de fotos e vídeos (até 8)<br><small style="color:var(--muted)">JPG, PNG, MP4, MOV — celular ou PC</small>
+            <input type="file" id="clt-files" accept="image/*,video/*" multiple onchange="uploadMultiplas(this)">
+          </div>
+          <div id="clt-previews" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:.5rem"></div>
+        </div>
+        <label>Ou cole URLs de fotos/vídeos (uma por linha) — aceita links do YouTube</label>
+        <textarea id="clt-urls" rows="3" placeholder="https://foto1.jpg&#10;https://youtu.be/...&#10;https://foto2.jpg"></textarea>
+        <div style="margin-top:.8rem"><button class="btn btn-success" onclick="addCulto()">+ Publicar</button></div>
+      </div>
+      <div id="lista-cultos"></div>
+    </div>
+
+    <!-- OBREIROS -->
+    <div id="aba-obreiros" class="aba">
+      <h2>👷 Cadastro de Obreiros</h2>
+      <div class="card">
+        <div class="row">
+          <div><label>Nome Completo</label><input id="ob-nome" placeholder="Nome do obreiro"></div>
+          <div><label>Função</label><input id="ob-funcao" placeholder="Ex: Diácono, Acólito..."></div>
+        </div>
+        <div class="row" style="margin-top:.4rem">
+          <div><label>Telefone</label><input id="ob-tel" placeholder="(11) 99999-9999"></div>
+          <div></div>
+        </div>
+        <label>Foto (upload ou URL)</label>
+        <div class="row">
+          <div>
+            <div class="upload-area" onclick="document.getElementById('ob-file').click()">
+              📷 Upload<br><small style="color:var(--muted)">JPG, PNG</small>
+              <input type="file" id="ob-file" accept="image/*" onchange="uploadImagem(this,'ob-preview','ob-foto-b64')">
+            </div>
+            <img id="ob-preview" class="preview-img">
+          </div>
+          <div><label>Ou URL</label><input id="ob-foto" placeholder="https://..."></div>
+        </div>
+        <input type="hidden" id="ob-foto-b64">
+        <div style="margin-top:.8rem"><button class="btn btn-success" onclick="addObreiro()">+ Cadastrar</button></div>
+      </div>
+      <div class="obr-grid" id="lista-obreiros"></div>
+    </div>
+
+    <!-- ESCALA -->
+    <div id="aba-escala" class="aba">
+      <h2>📋 Escala de Obreiros — Agenda Completa</h2>
+
+      <!-- Controle de mês -->
+      <div class="escala-mes-ctrl">
+        <button onclick="escMudaMes(-1)">‹</button>
+        <span id="esc-mes-label">—</span>
+        <button onclick="escMudaMes(1)">›</button>
+      </div>
+
+      <!-- Toolbar de seleção -->
+      <div class="escala-toolbar" id="esc-toolbar"></div>
+
+      <!-- Botão add linha -->
+      <button class="btn-add-linha" onclick="escAddLinha()">➕ Novo Culto</button>
+
+      <!-- Tabela -->
+      <div class="escala-wrap">
+        <table class="escala-tabela">
+          <thead>
+            <tr>
+              <th style="width:95px">DATA</th>
+              <th style="width:80px">DIA</th>
+              <th style="width:95px">ENSAIO</th>
+              <th style="width:140px">CULTO / EVENTO</th>
+              <th style="width:120px">PORTA / RECEPÇÃO</th>
+              <th style="width:120px">DIRIGENTE</th>
+              <th style="width:100px">OPORTUNIDADE</th>
+              <th style="width:100px">MINISTRANTE</th>
+              <th style="width:30px"></th>
+            </tr>
+          </thead>
+          <tbody id="esc-tbody"></tbody>
+        </table>
+      </div>
+      <div style="margin-top:.8rem;font-size:.75rem;color:var(--muted)">💡 Clique nas células de obreiro para abrir o seletor. Clique em um nome para adicionar/remover.</div>
+    </div>
+
+    <!-- LIDERANÇA -->
+    <div id="aba-lideranca" class="aba">
+      <h2>🎖️ Liderança</h2>
+      <div class="card">
+        <div class="row">
+          <div><label>Nome</label><input id="lid-nome" placeholder="Nome do líder"></div>
+          <div><label>Cargo</label><input id="lid-cargo" placeholder="Ex: Pastor, Diácono..."></div>
+        </div>
+        <div style="margin-top:.4rem"><label>Descrição</label><input id="lid-desc" placeholder="Mini-bio ou mensagem"></div>
+        <label>Foto (upload ou URL)</label>
+        <div class="row">
+          <div>
+            <div class="upload-area" onclick="document.getElementById('lid-file').click()">
+              📷 Upload<br><small style="color:var(--muted)">JPG, PNG</small>
+              <input type="file" id="lid-file" accept="image/*" onchange="uploadImagem(this,'lid-preview','lid-foto-b64')">
+            </div>
+            <img id="lid-preview" class="preview-img">
+          </div>
+          <div><label>Ou URL</label><input id="lid-foto" placeholder="https://..."></div>
+        </div>
+        <input type="hidden" id="lid-foto-b64">
+        <div style="margin-top:.8rem"><button class="btn btn-success" onclick="addLider()">+ Adicionar</button></div>
+      </div>
+      <div id="lista-lideranca" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.8rem;margin-top:.8rem"></div>
+    </div>
+
+    <!-- DÍZIMOS / PIX -->
+    <div id="aba-dizimos" class="aba">
+      <h2>💠 PIX / Dízimos & Ofertas</h2>
+      <div class="pix-info-box">
+        <div class="pix-label">🏦 Chave PIX — Conta da Igreja Sede</div>
+        <div class="pix-chave-big">CNPJ: 03.360.287/0002-59</div>
+        <div style="font-size:.8rem;margin-top:.6rem;opacity:.9">Após realizar o PIX ou depósito, envie o comprovante pelo WhatsApp para controle da igreja local:</div>
+        <a href="https://wa.me/5511993509109?text=Segue+meu+comprovante+de+dízimo/oferta" target="_blank" style="display:inline-flex;align-items:center;gap:6px;margin-top:.6rem;background:#25D366;color:#fff;padding:6px 16px;border-radius:20px;font-size:.82rem;font-weight:700;text-decoration:none;">
+          📲 Enviar comprovante — (11) 99350-9109
+        </a>
+      </div>
+      <div class="card">
+        <p style="font-size:.85rem;color:var(--muted)">Esta seção exibe no site as instruções de como contribuir. A mensagem acima já está configurada e aparece no Index.</p>
+        <label style="margin-top:.8rem">Mensagem adicional (opcional)</label>
+        <textarea id="diz-msg" rows="3" placeholder="Ex: Contribuições para o fundo de construção..."></textarea>
+        <div style="margin-top:.8rem"><button class="btn btn-primary" onclick="salvarMsgDizimo()">💾 Salvar mensagem</button><span class="msg-ok" id="ok-diz">✔ Salvo!</span></div>
+      </div>
+    </div>
+
+    <!-- GALERIA -->
+    <div id="aba-galeria" class="aba">
+      <h2>🖼️ Galeria de Fotos</h2>
+      <div class="card">
+        <label>Upload de fotos (celular ou PC)</label>
+        <div class="upload-area" onclick="document.getElementById('gal-files').click()">
+          📷 Selecionar fotos (múltiplas)<br><small style="color:var(--muted)">JPG, PNG</small>
+          <input type="file" id="gal-files" accept="image/*" multiple onchange="uploadGaleria(this)">
+        </div>
+        <div id="gal-upload-previews" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:.5rem"></div>
+        <div class="row" style="margin-top:.8rem">
+          <div><label>Ou URL da foto</label><input id="gal-url" placeholder="https://..."></div>
+          <div><label>Legenda</label><input id="gal-leg" placeholder="Descrição"></div>
+        </div>
+        <div><label>Categoria</label><input id="gal-cat" placeholder="Ex: Culto, Retiro..."></div>
+        <div style="margin-top:.8rem"><button class="btn btn-success" onclick="addFotoUrl()">+ Adicionar por URL</button></div>
+      </div>
+      <div id="lista-galeria" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.6rem;margin-top:.8rem"></div>
+    </div>
+
+    <!-- VÍDEOS -->
+    <div id="aba-videos" class="aba">
+      <h2>▶️ Vídeos</h2>
+      <div class="card">
+        <p style="font-size:.82rem;color:var(--muted);margin-bottom:.8rem">Cole o link do YouTube ou YouTube Shorts</p>
+        <div class="row">
+          <div><label>Link do YouTube</label><input id="vid-url" placeholder="https://youtu.be/..."></div>
+          <div><label>Título</label><input id="vid-titulo" placeholder="Nome do vídeo"></div>
+        </div>
+        <div class="row" style="margin-top:.4rem">
+          <div><label>Descrição</label><input id="vid-desc" placeholder="Breve descrição"></div>
+          <div><label>Categoria</label><input id="vid-cat" placeholder="Ex: Pregação, Louvor..."></div>
+        </div>
+        <div style="margin-top:.8rem"><button class="btn btn-success" onclick="addVideo()">+ Adicionar Vídeo</button></div>
+      </div>
+      <div id="lista-videos" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.8rem;margin-top:.8rem"></div>
+    </div>
+
+  </main>
+</div>
+<script>
+const DB={
+  get:k=>{try{return JSON.parse(localStorage.getItem('obpc_'+k));}catch{return null;}},
+  set:(k,v)=>{localStorage.setItem('obpc_'+k,JSON.stringify(v));}
+};
+const DIAS=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+
+function ir(aba){
+  document.querySelectorAll('.aba').forEach(a=>a.classList.remove('on'));
+  document.querySelectorAll('nav a').forEach(a=>a.classList.remove('on'));
+  document.getElementById('aba-'+aba).classList.add('on');
+  event.currentTarget.classList.add('on');
+  const mapa={dashboard:renderDash,escala:renderEscalaForm,obreiros:renderObreiros,horarios:renderHorarios,avisos:renderAvisos,eventos:renderEventos,informativos:renderInformativos,sermoes:renderSermoes,lideranca:renderLideranca,dizimos:renderDizimos,galeria:renderGaleria,videos:renderVideos,info:carregarInfo,culto:renderCultos};
+  if(mapa[aba])mapa[aba]();
+}
+
+// HORA
+setInterval(()=>{const n=new Date();document.getElementById('hd-data').textContent=n.toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'2-digit'})+' '+n.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});},1000);
+
+// UPLOAD GENÉRICO — usa objectURL para preview imediato, base64 para salvar
+function uploadImagem(input,previewId,hiddenId){
+  const f=input.files[0];if(!f)return;
+  // Preview imediato via objectURL
+  const prev=document.getElementById(previewId);
+  prev.src=URL.createObjectURL(f);prev.style.display='block';
+  // Salvar como base64 (suporte a localStorage)
+  if(f.size>3*1024*1024){
+    // Arquivo grande: usar objectURL temporário (só dura a sessão)
+    document.getElementById(hiddenId).value='__blob__'+URL.createObjectURL(f);
+  } else {
+    const r=new FileReader();
+    r.onload=e=>{document.getElementById(hiddenId).value=e.target.result;};
+    r.readAsDataURL(f);
+  }
+}
+function getImgSrc(b64Id,urlId){
+  const b64=document.getElementById(b64Id).value;
+  const url=document.getElementById(urlId)?document.getElementById(urlId).value:'';
+  return b64||url||'';
+}
+
+// UPLOAD MÚLTIPLO (culto) — fotos e vídeos
+let cltMidia=[];
+function uploadMultiplas(input){
+  cltMidia=[];
+  const prev=document.getElementById('clt-previews');prev.innerHTML='';
+  const files=Array.from(input.files).slice(0,8);
+  let processados=0;
+  files.forEach(f=>{
+    const isVideo=f.type.startsWith('video/');
+    const blobUrl=URL.createObjectURL(f);
+    if(isVideo){
+      // Vídeo: guardar blob url + tipo
+      cltMidia.push({tipo:'video',src:blobUrl,nome:f.name});
+      const vid=document.createElement('video');
+      vid.src=blobUrl;vid.style.cssText='width:80px;height:60px;object-fit:cover;border-radius:6px';
+      vid.muted=true;vid.preload='metadata';
+      prev.appendChild(vid);
+    } else {
+      // Foto: converter para base64 se < 3MB, senão blob
+      if(f.size>3*1024*1024){
+        cltMidia.push({tipo:'img',src:blobUrl});
+        const img=document.createElement('img');img.src=blobUrl;
+        img.style.cssText='width:80px;height:60px;object-fit:cover;border-radius:6px';
+        prev.appendChild(img);
+      } else {
+        const r=new FileReader();
+        r.onload=e=>{
+          cltMidia.push({tipo:'img',src:e.target.result});
+          const img=document.createElement('img');img.src=e.target.result;
+          img.style.cssText='width:80px;height:60px;object-fit:cover;border-radius:6px';
+          prev.appendChild(img);
+        };r.readAsDataURL(f);
+      }
+    }
+  });
+}
+
+// UPLOAD GALERIA MÚLTIPLO
+function uploadGaleria(input){
+  const prev=document.getElementById('gal-upload-previews');
+  const files=Array.from(input.files).slice(0,20);
+  files.forEach(f=>{
+    const blobUrl=URL.createObjectURL(f);
+    const img=document.createElement('img');
+    img.src=blobUrl;
+    img.style.cssText='width:70px;height:60px;object-fit:cover;border-radius:6px';
+    prev.appendChild(img);
+    if(f.size>2*1024*1024){
+      // grande: blob url (temporário na sessão)
+      const lista=DB.get('galeria')||[];
+      lista.push({url:blobUrl,leg:f.name,cat:'Upload'});
+      DB.set('galeria',lista);renderGaleria();
+    } else {
+      const r=new FileReader();
+      r.onload=e=>{
+        const lista=DB.get('galeria')||[];
+        lista.push({url:e.target.result,leg:f.name,cat:'Upload'});
+        DB.set('galeria',lista);renderGaleria();
+      };r.readAsDataURL(f);
+    }
+  });
+}
+
+// INFO
+function carregarInfo(){
+  const d=DB.get('info')||{};
+  ['nome','pastor','end','cidade','tel','email','bv','sobre','logo','cnpj'].forEach(f=>{
+    const el=document.getElementById('ig-'+f);if(el&&d[f]){el.value=d[f];if(f==='logo'&&d.logoB64){document.getElementById('logo-preview').src=d.logoB64;document.getElementById('logo-preview').style.display='block';}}
+  });
+  if(d.logoB64){document.getElementById('logo-b64').value=d.logoB64;}
+}
+function salvarInfo(){
+  const d={};
+  ['nome','pastor','end','cidade','tel','email','bv','sobre','logo','cnpj'].forEach(f=>{const el=document.getElementById('ig-'+f);if(el)d[f]=el.value;});
+  const b64=document.getElementById('logo-b64').value;
+  if(b64)d.logoB64=b64;
+  DB.set('info',d);
+  const ok=document.getElementById('ok-info');ok.style.display='inline';setTimeout(()=>ok.style.display='none',2000);
+}
+
+// HORÁRIOS
+function addHorario(){
+  const lista=DB.get('horarios')||[];
+  lista.push({dia:document.getElementById('hor-dia').value,hora:document.getElementById('hor-hora').value,tipo:document.getElementById('hor-tipo').value});
+  DB.set('horarios',lista);renderHorarios();
+}
+function renderHorarios(){
+  const lista=DB.get('horarios')||[];
+  document.getElementById('lista-horarios').innerHTML=lista.length?lista.map((h,i)=>`
+    <div class="lista-item"><span>📅 <strong>${h.dia}</strong> — ${h.hora} — ${h.tipo}</span>
+    <button class="btn btn-danger btn-sm" onclick="delItem('horarios',${i},renderHorarios)">✕</button></div>`).join(''):'<p style="color:var(--muted);font-size:.82rem">Nenhum horário cadastrado.</p>';
+}
+
+// AVISOS
+function addAviso(){
+  const lista=DB.get('avisos')||[];
+  const img=getImgSrc('av-img-b64','av-img-url');
+  lista.push({titulo:document.getElementById('av-titulo').value,texto:document.getElementById('av-texto').value,prioridade:document.getElementById('av-prioridade').value,data:document.getElementById('av-data').value,img,ts:Date.now()});
+  DB.set('avisos',lista);
+  ['av-titulo','av-texto','av-data','av-img-url'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('av-img-b64').value='';document.getElementById('av-preview').style.display='none';
+  renderAvisos();
+}
+function renderAvisos(){
+  const lista=DB.get('avisos')||[];
+  document.getElementById('lista-avisos').innerHTML=lista.map((a,i)=>`
+    <div class="lista-item" style="flex-direction:column;align-items:flex-start">
+      ${a.img?`<img src="${a.img}" style="width:100%;max-height:140px;object-fit:cover;border-radius:6px;margin-bottom:.4rem">`:''}
+      <div style="display:flex;width:100%;justify-content:space-between;align-items:center">
+        <strong style="font-size:.85rem">${a.titulo}</strong>
+        <div style="display:flex;gap:6px"><span class="badge badge-${a.prioridade}">${a.prioridade}</span>
+        <button class="btn btn-danger btn-sm" onclick="delItem('avisos',${i},renderAvisos)">✕</button></div>
+      </div>
+      <p style="font-size:.78rem;color:var(--muted);margin-top:4px">${a.texto||''}</p>
+    </div>`).join('');
+  document.getElementById('cnt-avisos').textContent=lista.length;
+}
+
+// EVENTOS
+function addEvento(){
+  const lista=DB.get('eventos')||[];
+  const img=getImgSrc('ev-img-b64','ev-img-url');
+  lista.push({nome:document.getElementById('ev-nome').value,data:document.getElementById('ev-data').value,hora:document.getElementById('ev-hora').value,local:document.getElementById('ev-local').value,tipo:document.getElementById('ev-tipo').value,desc:document.getElementById('ev-desc').value,img});
+  DB.set('eventos',lista);
+  document.getElementById('ev-img-b64').value='';document.getElementById('ev-preview').style.display='none';
+  renderEventos();
+}
+function renderEventos(){
+  const lista=DB.get('eventos')||[];
+  document.getElementById('lista-eventos').innerHTML=lista.map((e,i)=>`
+    <div class="lista-item">
+      ${e.img?`<img src="${e.img}" style="width:60px;height:50px;object-fit:cover;border-radius:6px;margin-right:.5rem">`:''}
+      <span>📅 <strong>${e.nome}</strong> — ${e.data?new Date(e.data+'T12:00').toLocaleDateString('pt-BR'):''} ${e.hora} — ${e.local}</span>
+      <button class="btn btn-danger btn-sm" onclick="delItem('eventos',${i},renderEventos)">✕</button>
+    </div>`).join('');
+  document.getElementById('cnt-eventos').textContent=lista.length;
+}
+
+// INFORMATIVOS
+function addInformativo(){
+  const lista=DB.get('informativos')||[];
+  const img=getImgSrc('inf-img-b64','inf-img-url');
+  lista.push({titulo:document.getElementById('inf-titulo').value,cat:document.getElementById('inf-cat').value,texto:document.getElementById('inf-texto').value,img,ts:Date.now()});
+  DB.set('informativos',lista);
+  document.getElementById('inf-img-b64').value='';document.getElementById('inf-preview').style.display='none';
+  renderInformativos();
+}
+function renderInformativos(){
+  const lista=DB.get('informativos')||[];
+  document.getElementById('lista-informativos').innerHTML=lista.map((inf,i)=>`
+    <div class="lista-item" style="flex-direction:column;align-items:flex-start">
+      ${inf.img?`<img src="${inf.img}" style="width:100%;max-height:120px;object-fit:cover;border-radius:6px;margin-bottom:.4rem">`:''}
+      <div style="display:flex;width:100%;justify-content:space-between">
+        <strong>${inf.titulo}</strong>
+        <button class="btn btn-danger btn-sm" onclick="delItem('informativos',${i},renderInformativos)">✕</button>
+      </div>
+      <span class="badge badge-normal" style="margin-top:4px">${inf.cat}</span>
+      <p style="font-size:.78rem;margin-top:4px;color:var(--muted)">${(inf.texto||'').substring(0,100)}...</p>
+    </div>`).join('');
+}
+
+// SERMÕES
+function addSermao(){
+  const lista=DB.get('sermoes')||[];
+  lista.push({titulo:document.getElementById('ser-titulo').value,pregador:document.getElementById('ser-pregador').value,data:document.getElementById('ser-data').value,url:document.getElementById('ser-url').value,passagem:document.getElementById('ser-passagem').value,resumo:document.getElementById('ser-resumo').value});
+  DB.set('sermoes',lista);renderSermoes();
+}
+function renderSermoes(){
+  const lista=DB.get('sermoes')||[];
+  document.getElementById('lista-sermoes').innerHTML=lista.map((s,i)=>`
+    <div class="lista-item" style="flex-direction:column;align-items:flex-start">
+      <div style="display:flex;width:100%;justify-content:space-between">
+        <strong>${s.titulo}</strong>
+        <button class="btn btn-danger btn-sm" onclick="delItem('sermoes',${i},renderSermoes)">✕</button>
+      </div>
+      <p style="font-size:.78rem;color:var(--muted)">${s.pregador} — ${s.passagem}</p>
+    </div>`).join('');
+}
+
+// CULTO FOI ASSIM
+function addCulto(){
+  const lista=DB.get('cultos')||[];
+  const urlsTexto=(document.getElementById('clt-urls').value||'').split('\n').filter(u=>u.trim());
+  const midiaUrls=urlsTexto.map(u=>({tipo:'img',src:u.trim()}));
+  const midia=[...cltMidia,...midiaUrls].slice(0,8);
+  lista.unshift({titulo:document.getElementById('clt-titulo').value,data:document.getElementById('clt-data').value,relato:document.getElementById('clt-relato').value,midia,ts:Date.now()});
+  DB.set('cultos',lista);
+  document.getElementById('clt-titulo').value='';document.getElementById('clt-data').value='';
+  document.getElementById('clt-relato').value='';document.getElementById('clt-urls').value='';
+  document.getElementById('clt-previews').innerHTML='';cltMidia=[];
+  renderCultos();
+}
+function renderCultos(){
+  const lista=DB.get('cultos')||[];
+  document.getElementById('lista-cultos').innerHTML=lista.map((c,i)=>{
+    const midia=c.midia||(c.fotos||[]).map(f=>({tipo:'img',src:f}));
+    const midiaHtml=midia.slice(0,8).map(m=>{
+      if(m.tipo==='video')return `<video src="${m.src}" style="width:100%;height:140px;object-fit:cover;border-radius:6px" controls playsinline muted></video>`;
+      return `<img src="${m.src}" style="width:100%;height:140px;object-fit:cover;border-radius:6px" onerror="this.style.display='none'">`;
+    }).join('');
+    return `<div class="culto-card" style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,.08);margin-bottom:.8rem">
+      <div style="display:grid;grid-template-columns:${midia.length===1?'1fr':midia.length===2?'1fr 1fr':'1fr 1fr 1fr'};gap:3px">${midiaHtml}</div>
+      <div class="culto-body" style="padding:1rem">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <strong style="color:var(--azul)">${c.titulo}</strong>
+          <button class="btn btn-danger btn-sm" onclick="delItem('cultos',${i},renderCultos)">✕</button>
+        </div>
+        ${c.data?`<div style="font-size:.75rem;color:var(--muted);margin-top:2px">${new Date(c.data+'T12:00').toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'})}</div>`:''}
+        <p style="font-size:.82rem;margin-top:.5rem;line-height:1.6">${c.relato||''}</p>
+      </div>
+    </div>`;}).join('');
+}
+
+// OBREIROS
+function addObreiro(){
+  const lista=DB.get('obreiros')||[];
+  const fotoB64=document.getElementById('ob-foto-b64').value;
+  const fotoUrl=document.getElementById('ob-foto').value;
+  lista.push({nome:document.getElementById('ob-nome').value,funcao:document.getElementById('ob-funcao').value,tel:document.getElementById('ob-tel').value,foto:fotoB64||fotoUrl});
+  DB.set('obreiros',lista);
+  document.getElementById('ob-foto-b64').value='';document.getElementById('ob-preview').style.display='none';
+  renderObreiros();renderEscalaForm();
+}
+function renderObreiros(){
+  const lista=DB.get('obreiros')||[];
+  document.getElementById('lista-obreiros').innerHTML=lista.map((o,i)=>`
+    <div class="obr-card">
+      <img class="obr-foto" src="${o.foto||'https://ui-avatars.com/api/?name='+encodeURIComponent(o.nome)+'&background=3B9BD6&color=fff'}" onerror="this.src='https://ui-avatars.com/api/?name=OB&background=3B9BD6&color=fff'">
+      <div class="obr-nome">${o.nome}</div><div class="obr-func">${o.funcao}</div>
+      <button class="btn btn-danger btn-sm" style="margin-top:.4rem" onclick="delObreiro(${i})">✕ Remover</button>
+    </div>`).join('');
+  document.getElementById('cnt-obreiros').textContent=lista.length;
+}
+function delObreiro(i){const lista=DB.get('obreiros')||[];lista.splice(i,1);DB.set('obreiros',lista);renderObreiros();renderEscalaForm();}
+
+// ============ ESCALA COMPLETA ============
+const MESES_ESC=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const DIAS_ESC=['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+let escPeriodo=new Date();
+let escCelAtiva=null;
+let escTipoAtivo=''; // 'obr' ou 'clt'
+
+const DEFAULT_OBREIROS_ESC='Pr Sergio\nPr André\nDiac. Sergio\nDiac. Dorico\nDiac. Charles\nDiac. Lucimar\nDiac. Nair\nDiac. Katia\nDiac. Zilandra\nDiac. Angélica\nDiac. Munique\nFlavia\nBianca\nCoop. Carol\nCoop. Wallace\nPreletor Convidado\nUFEBRAC\nUMASBRAC\nMENIBRAC\nJUBRAC';
+const DEFAULT_CULTOS_ESC='Culto de Louvor\nCulto de Ensino\nCulto de Jovens\nSanta Ceia\nPrimícias\nCulto de Oração\nUFEBRAC\nUMASBRAC\nMENIBRAC\nJUBRAC\nCulto Especial\nConferência\nCulto da Família\nCulto quarta da adoração\nCulto Jubrac Sede';
+
+function escRenderMes(){
+  document.getElementById('esc-mes-label').textContent=MESES_ESC[escPeriodo.getMonth()]+' / '+escPeriodo.getFullYear();
+}
+function escMudaMes(d){
+  escPeriodo.setMonth(escPeriodo.getMonth()+d);
+  escRenderMes();escSalvar();
+}
+function escFmtData(v){if(!v)return'';const p=v.split('-');return p[2]+'/'+p[1]+'/'+p[0];}
+function escEhCeia(t){return (t||'').toLowerCase().includes('ceia')||(t||'').toLowerCase().includes('primícias');}
+function escCorLinha(tr,dia){
+  tr.classList.remove('row-dom','row-qua','row-sab','row-ceia');
+  if(dia==='Domingo')tr.classList.add('row-dom');
+  if(dia==='Quarta-feira')tr.classList.add('row-qua');
+  if(dia==='Sábado')tr.classList.add('row-sab');
+}
+
+function escAddLinha(dados){
+  const tbody=document.getElementById('esc-tbody');
+  const tr=document.createElement('tr');
+  tr.innerHTML=`
+    <td class="td-data"><input type="date" class="cel-edit" style="font-weight:700;width:100%" onchange="escOnData(this)"></td>
+    <td class="td-dia" style="font-size:.73rem;color:var(--muted);text-align:center"></td>
+    <td><div class="cel-obr-area" data-tipo="clt" onclick="escAtivarCel(this,'clt')" data-val=""></div></td>
+    <td><div class="cel-obr-area" data-tipo="clt2" onclick="escAtivarCel(this,'clt')" data-val="" style="font-weight:700"></div></td>
+    <td class="td-porta"><div class="cel-obr-area" data-tipo="obr" onclick="escAtivarCel(this,'obr')" data-val=""></div></td>
+    <td class="td-dir"><div class="cel-obr-area" data-tipo="obr" onclick="escAtivarCel(this,'obr')" data-val=""></div></td>
+    <td><div class="cel-obr-area" data-tipo="obr" onclick="escAtivarCel(this,'obr')" data-val=""></div></td>
+    <td><div class="cel-obr-area" data-tipo="obr" onclick="escAtivarCel(this,'obr')" data-val=""></div></td>
+    <td><button class="btn-del-esc" onclick="this.closest('tr').remove();escSalvar()">✕</button></td>`;
+  tbody.appendChild(tr);
+  if(dados){
+    const tds=tr.querySelectorAll('td');
+    const dtInp=tds[0].querySelector('input');
+    if(dados.dt){dtInp.value=dados.dt;escOnData(dtInp,true);}
+    const cells=tr.querySelectorAll('.cel-obr-area');
+    // cells: 0=ensaio,1=culto,2=porta,3=dir,4=opt,5=min
+    if(dados.ensaio!==undefined)escSetCel(cells[0],dados.ensaio);
+    if(dados.clt!==undefined)escSetCel(cells[1],dados.clt);
+    if(dados.p1!==undefined)escSetCel(cells[2],dados.p1);
+    if(dados.dir!==undefined){
+      if(escEhCeia(dados.clt)){
+        // mount ceia split
+        escMontarCeia(tds[5],dados.dir,dados.cel||'');
+      } else {
+        escSetCel(cells[3],dados.dir);
+      }
+    }
+    if(dados.opt!==undefined)escSetCel(cells[4],dados.opt);
+    if(dados.min!==undefined)escSetCel(cells[5],dados.min);
+    if(dados.day)escCorLinha(tr,dados.day);
+  }
+  escSalvar();
+}
+
+function escOnData(input,silencioso){
+  const tr=input.closest('tr');
+  const tdDia=tr.querySelector('.td-dia');
+  if(input.value){
+    const d=new Date(input.value+'T12:00');
+    const dia=DIAS_ESC[d.getDay()]||'';
+    tdDia.textContent=dia;
+    escCorLinha(tr,dia);
+  } else {tdDia.textContent='';}
+  if(!silencioso)escSalvar();
+}
+
+function escSetCel(cel,val){
+  cel.setAttribute('data-val',val||'');
+  escRenderCel(cel);
+}
+
+function escRenderCel(cel){
+  const val=cel.getAttribute('data-val')||'';
+  if(!val){cel.innerHTML='<span style="color:#ccc;font-size:.7rem">—</span>';return;}
+  const nomes=val.split('\n').map(n=>n.trim()).filter(Boolean);
+  cel.innerHTML=`<div class="obr-chips-wrap">${nomes.map(n=>`<span class="obr-chip" onclick="escRemoverNome(this,'${n.replace(/'/g,"\'")}');event.stopPropagation()">${n} ✕</span>`).join('')}</div>`;
+}
+
+function escRemoverNome(chip,nome){
+  const cel=chip.closest('.cel-obr-area');
+  const val=cel.getAttribute('data-val')||'';
+  const novos=val.split('\n').map(n=>n.trim()).filter(n=>n&&n!==nome);
+  escSetCel(cel,novos.join('\n'));
+  escSalvar();
+  if(escCelAtiva===cel)escAbrirToolbar(cel,cel.dataset.tipo==='clt'?'clt':'obr');
+}
+
+function escAtivarCel(cel,tipo){
+  escCelAtiva=cel;escTipoAtivo=tipo;
+  escAbrirToolbar(cel,tipo);
+}
+
+function escAbrirToolbar(cel,tipo){
+  const tb=document.getElementById('esc-toolbar');
+  const lista=tipo==='clt'?
+    (DEFAULT_CULTOS_ESC).split('\n').filter(Boolean):
+    (DB.get('obreiros')||[]).map(o=>o.nome).filter(Boolean).concat(DEFAULT_OBREIROS_ESC.split('\n').filter(Boolean)).filter((v,i,a)=>a.indexOf(v)===i);
+  tb.innerHTML=lista.map(n=>`<button class="esc-chip" onclick="escPushNome('${n.replace(/'/g,"\'")}');event.stopPropagation()">${n}</button>`).join('')+
+    `<button class="esc-chip" style="background:#e74c3c;color:#fff;margin-left:auto" onclick="escFecharToolbar()">✕ Fechar</button>`;
+  tb.classList.add('show');
+  tb.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function escFecharToolbar(){
+  document.getElementById('esc-toolbar').classList.remove('show');
+  escCelAtiva=null;
+}
+
+function escPushNome(nome){
+  if(!escCelAtiva)return;
+  const val=escCelAtiva.getAttribute('data-val')||'';
+  const nomes=val.split('\n').map(n=>n.trim()).filter(Boolean);
+  if(nomes.includes(nome)){
+    // toggle: remove se já existe
+    const novos=nomes.filter(n=>n!==nome);
+    escSetCel(escCelAtiva,novos.join('\n'));
+  } else {
+    nomes.push(nome);
+    escSetCel(escCelAtiva,nomes.join('\n'));
+    // se culto ceia, montar split na col dirigente
+    const tr=escCelAtiva.closest('tr');
+    const tds=tr.querySelectorAll('td');
+    if(escCelAtiva===tr.querySelectorAll('.cel-obr-area')[1]){
+      // é a col culto
+      if(escEhCeia(nome)){
+        const tdDir=tds[5];
+        const dirAtual=tdDir.querySelector('.cel-obr-area')?tdDir.querySelector('.cel-obr-area').getAttribute('data-val')||'':'';
+        escMontarCeia(tdDir,dirAtual,'');
+      }
+    }
+  }
+  escSalvar();
+}
+
+function escMontarCeia(tdDir,dirVal,celVal){
+  tdDir.innerHTML=`<div class="cel-ceia-wrap">
+    <div class="cel-ceia-sub">
+      <span class="cel-ceia-label">Dirigente</span>
+      <div class="cel-obr-area" data-tipo="obr" data-val="${(dirVal||'').replace(/"/g,'&quot;')}" onclick="escAtivarCel(this,'obr')"></div>
+    </div>
+    <div class="cel-ceia-sub">
+      <span class="cel-ceia-label">Celebração</span>
+      <div class="cel-obr-area" data-tipo="obr" data-val="${(celVal||'').replace(/"/g,'&quot;')}" onclick="escAtivarCel(this,'obr')"></div>
+    </div>
+  </div>`;
+  tdDir.querySelectorAll('.cel-obr-area').forEach(c=>escRenderCel(c));
+  tdDir.closest('tr').classList.add('row-ceia');
+}
+
+function escSalvar(){
+  const rows=[];
+  document.querySelectorAll('#esc-tbody tr').forEach(tr=>{
+    const dtInp=tr.querySelector('input[type=date]');
+    const cells=tr.querySelectorAll('.cel-obr-area');
+    const tds=tr.querySelectorAll('td');
+    // dirigente pode ter split (ceia)
+    let dir='',cel='';
+    const tdDir=tds[5];
+    const dirCells=tdDir?tdDir.querySelectorAll('.cel-obr-area'):[];
+    if(dirCells.length>=2){dir=dirCells[0].getAttribute('data-val')||'';cel=dirCells[1].getAttribute('data-val')||'';}
+    else if(cells[3])dir=cells[3].getAttribute('data-val')||'';
+    rows.push({
+      dt:dtInp?dtInp.value:'',
+      day:tr.querySelector('.td-dia')?tr.querySelector('.td-dia').textContent:'',
+      ensaio:cells[0]?cells[0].getAttribute('data-val')||'':'',
+      clt:cells[1]?cells[1].getAttribute('data-val')||'':'',
+      p1:cells[2]?cells[2].getAttribute('data-val')||'':'',
+      dir,cel,
+      opt:cells[4]?cells[4].getAttribute('data-val')||'':'',
+      min:cells[5]?cells[5].getAttribute('data-val')||'':''
+    });
+  });
+  const dados={versao:'obpc_v4',periodoMes:escPeriodo.getMonth(),periodoAno:escPeriodo.getFullYear(),rows};
+  DB.set('escala_agenda',dados);
+  // Salvar também no formato legado para o index
+  const escLegado={};
+  rows.forEach(r=>{
+    if(r.day&&r.p1){
+      const dia=r.day.replace('-feira','').replace('Quarta','Quarta-feira').replace('Terça','Terça-feira');
+      if(!escLegado[dia])escLegado[dia]=[];
+      const nomes=(r.p1||'').split('\n').filter(Boolean);
+      nomes.forEach(n=>{if(!escLegado[dia].includes(n))escLegado[dia].push(n);});
+    }
+  });
+  DB.set('escala',escLegado);
+}
+
+function renderEscalaForm(){
+  // Carregar dados salvos
+  const dados=DB.get('escala_agenda');
+  if(dados&&dados.periodoMes!==undefined){
+    escPeriodo=new Date(dados.periodoAno,dados.periodoMes,1);
+  }
+  escRenderMes();
+  const tbody=document.getElementById('esc-tbody');
+  tbody.innerHTML='';
+  if(dados&&dados.rows&&dados.rows.length){
+    dados.rows.forEach(r=>escAddLinha(r));
+  }
+}
+
+// manter compatibilidade — não usada mais mas declarada
+function toggleEscala(){}
+
+// LIDERANÇA
+function addLider(){
+  const lista=DB.get('lideranca')||[];
+  const fotoB64=document.getElementById('lid-foto-b64').value;
+  const fotoUrl=document.getElementById('lid-foto').value;
+  lista.push({nome:document.getElementById('lid-nome').value,cargo:document.getElementById('lid-cargo').value,desc:document.getElementById('lid-desc').value,foto:fotoB64||fotoUrl});
+  DB.set('lideranca',lista);
+  document.getElementById('lid-foto-b64').value='';document.getElementById('lid-preview').style.display='none';
+  renderLideranca();
+}
+function renderLideranca(){
+  const lista=DB.get('lideranca')||[];
+  document.getElementById('lista-lideranca').innerHTML=lista.map((l,i)=>`
+    <div class="obr-card">
+      <img class="obr-foto" src="${l.foto||'https://ui-avatars.com/api/?name='+encodeURIComponent(l.nome)+'&background=1E3A5F&color=fff'}">
+      <div class="obr-nome">${l.nome}</div><div class="obr-func">${l.cargo}</div>
+      <button class="btn btn-danger btn-sm" style="margin-top:.4rem" onclick="delItem('lideranca',${i},renderLideranca)">✕</button>
+    </div>`).join('');
+  document.getElementById('cnt-membros').textContent=lista.length;
+}
+
+// DÍZIMOS/PIX
+function salvarMsgDizimo(){
+  DB.set('diz-msg',document.getElementById('diz-msg').value);
+  const ok=document.getElementById('ok-diz');ok.style.display='inline';setTimeout(()=>ok.style.display='none',2000);
+}
+function renderDizimos(){
+  const msg=DB.get('diz-msg')||'';
+  document.getElementById('diz-msg').value=msg;
+}
+
+// GALERIA
+function addFotoUrl(){
+  const lista=DB.get('galeria')||[];
+  const url=document.getElementById('gal-url').value;
+  if(!url)return;
+  lista.push({url,leg:document.getElementById('gal-leg').value,cat:document.getElementById('gal-cat').value});
+  DB.set('galeria',lista);renderGaleria();
+}
+function renderGaleria(){
+  const lista=DB.get('galeria')||[];
+  document.getElementById('lista-galeria').innerHTML=lista.map((f,i)=>`
+    <div style="position:relative">
+      <img src="${f.url}" style="width:100%;height:120px;object-fit:cover;border-radius:8px" onerror="this.style.background='#ddd'">
+      <p style="font-size:.7rem;margin-top:3px">${f.leg||''}</p>
+      <button class="btn btn-danger btn-sm" style="position:absolute;top:4px;right:4px;padding:2px 7px" onclick="delItem('galeria',${i},renderGaleria)">✕</button>
+    </div>`).join('');
+}
+
+// VÍDEOS
+function ytId(u){const m=(u||'').match(/(?:youtu\.be\/|v=|shorts\/)([a-zA-Z0-9_-]+)/);return m?m[1]:null;}
+function addVideo(){
+  const lista=DB.get('videos')||[];
+  lista.push({url:document.getElementById('vid-url').value,titulo:document.getElementById('vid-titulo').value,desc:document.getElementById('vid-desc').value,cat:document.getElementById('vid-cat').value});
+  DB.set('videos',lista);renderVideos();
+}
+function renderVideos(){
+  const lista=DB.get('videos')||[];
+  document.getElementById('lista-videos').innerHTML=lista.map((v,i)=>{
+    const vid=ytId(v.url);
+    return `<div class="card" style="padding:.6rem">
+      ${vid?`<img src="https://img.youtube.com/vi/${vid}/mqdefault.jpg" style="width:100%;border-radius:6px">`:``}
+      <div style="font-size:.82rem;font-weight:600;margin-top:.4rem">${v.titulo}</div>
+      <div style="font-size:.72rem;color:var(--muted)">${v.cat}</div>
+      <button class="btn btn-danger btn-sm" style="margin-top:.4rem" onclick="delItem('videos',${i},renderVideos)">✕ Remover</button>
+    </div>`;}).join('');
+}
+
+// DASHBOARD
+function renderDash(){
+  renderAvisos();renderEventos();renderLideranca();renderObreiros();
+  const escala=DB.get('escala')||{};
+  const hoje=DIAS[new Date().getDay()];
+  document.getElementById('dash-obr-hoje').textContent=hoje+': '+((escala[hoje]||[]).join(', ')||'Nenhum escalado');
+  const eventos=DB.get('eventos')||[];
+  document.getElementById('semana-dash').innerHTML=DIAS.map(dia=>{
+    const isHoje=dia===hoje;
+    const obrs=(escala[dia]||[]);
+    const evts=eventos.filter(e=>e.data&&DIAS[new Date(e.data+'T12:00').getDay()]===dia);
+    return `<div class="dia-col ${isHoje?'hoje':''}">
+      <div class="dia-nome">${dia.substring(0,3)}</div>
+      ${obrs.map(o=>`<div class="dia-item tipo-obr">👷 ${o}</div>`).join('')}
+      ${evts.map(e=>`<div class="dia-item tipo-evt">📅 ${e.nome}</div>`).join('')}
+    </div>`;}).join('');
+}
+
+function delItem(key,i,fn){const lista=DB.get(key)||[];lista.splice(i,1);DB.set(key,lista);fn();}
+
+// INIT
+renderDash();carregarInfo();
+</script>
+</body>
+</html>
