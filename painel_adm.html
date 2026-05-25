@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel ADM - Igreja</title>
+<style>
+  :root {
+    --azul: #1E3A5F;
+    --azul-claro: #3B9BD6;
+    --branco: #ffffff;
+    --cinza-bg: #f4f6f9;
+    --cinza-borda: #dde2ea;
+    --texto: #1a2535;
+    --texto-muted: #6b7a90;
+    --verde: #27ae60;
+    --vermelho: #e74c3c;
+    --laranja: #e67e22;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: var(--cinza-bg); color: var(--texto); }
+  header {
+    background: var(--azul);
+    color: var(--branco);
+    padding: 0 2rem;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  header h1 { font-size: 1.1rem; font-weight: 600; letter-spacing: 0.5px; }
+  header span { font-size: 0.8rem; background: var(--azul-claro); padding: 4px 12px; border-radius: 20px; }
+  .layout { display: flex; min-height: calc(100vh - 60px); }
+  nav {
+    width: 220px; background: var(--azul); color: var(--branco);
+    padding: 1.5rem 0; flex-shrink: 0;
+  }
+  nav a {
+    display: block; padding: 0.75rem 1.5rem; color: rgba(255,255,255,0.75);
+    text-decoration: none; font-size: 0.88rem; cursor: pointer;
+    transition: all 0.2s; border-left: 3px solid transparent;
+  }
+  nav a:hover, nav a.ativo { background: rgba(59,155,214,0.2); color: #fff; border-left-color: var(--azul-claro); }
+  nav .secao { padding: 1rem 1.5rem 0.25rem; font-size: 0.7rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; }
+  main { flex: 1; padding: 2rem; overflow-y: auto; }
+  .aba { display: none; }
+  .aba.ativa { display: block; }
+  h2 { font-size: 1.2rem; font-weight: 600; color: var(--azul); margin-bottom: 1.5rem; border-bottom: 2px solid var(--azul-claro); padding-bottom: 0.5rem; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+  .card { background: var(--branco); border-radius: 10px; padding: 1.5rem; box-shadow: 0 1px 4px rgba(0,0,0,0.07); border: 1px solid var(--cinza-borda); }
+  .card h3 { font-size: 0.95rem; font-weight: 600; color: var(--azul); margin-bottom: 1rem; }
+  label { display: block; font-size: 0.82rem; color: var(--texto-muted); margin-bottom: 0.3rem; margin-top: 0.8rem; font-weight: 500; }
+  label:first-child { margin-top: 0; }
+  input, select, textarea {
+    width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--cinza-borda);
+    border-radius: 6px; font-size: 0.88rem; color: var(--texto);
+    background: #fff; transition: border-color 0.2s;
+  }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--azul-claro); }
+  textarea { resize: vertical; min-height: 80px; }
+  .btn { display: inline-block; padding: 0.55rem 1.25rem; border-radius: 6px; border: none; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s; }
+  .btn-primary { background: var(--azul-claro); color: #fff; }
+  .btn-primary:hover { background: #2e87c0; }
+  .btn-danger { background: var(--vermelho); color: #fff; }
+  .btn-danger:hover { background: #c0392b; }
+  .btn-success { background: var(--verde); color: #fff; }
+  .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.78rem; }
+  .btn-group { display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th { background: var(--azul); color: #fff; padding: 0.6rem 0.8rem; text-align: left; font-weight: 500; }
+  td { padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--cinza-borda); }
+  tr:hover td { background: #f0f5fb; }
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
+  .badge-verde { background: #d5f5e3; color: #1a7a45; }
+  .badge-azul { background: #d6eaf8; color: #1565c0; }
+  .badge-laranja { background: #fdebd0; color: #a04000; }
+  .badge-cinza { background: #eaecee; color: #555; }
+  .msg-ok { background: #d5f5e3; color: #1a7a45; padding: 0.6rem 1rem; border-radius: 6px; font-size: 0.85rem; margin-top: 0.75rem; display: none; }
+  .dias-semana { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem; }
+  .dia-btn { padding: 0.3rem 0.7rem; border: 1px solid var(--cinza-borda); border-radius: 6px; font-size: 0.8rem; cursor: pointer; background: #fff; transition: all 0.2s; }
+  .dia-btn.sel { background: var(--azul-claro); color: #fff; border-color: var(--azul-claro); }
+  .obreiro-card { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; border: 1px solid var(--cinza-borda); border-radius: 8px; margin-bottom: 0.5rem; background: #fff; }
+  .avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--azul-claro); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 0.9rem; flex-shrink: 0; }
+  .stat-card { background: var(--branco); border-radius: 10px; padding: 1.25rem; text-align: center; border: 1px solid var(--cinza-borda); }
+  .stat-num { font-size: 2rem; font-weight: 700; color: var(--azul-claro); }
+  .stat-label { font-size: 0.8rem; color: var(--texto-muted); margin-top: 0.25rem; }
+  .semana-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; }
+  .dia-col { background: var(--branco); border-radius: 8px; padding: 0.75rem; border: 1px solid var(--cinza-borda); min-height: 120px; }
+  .dia-col h4 { font-size: 0.75rem; font-weight: 700; color: var(--azul); text-transform: uppercase; margin-bottom: 0.5rem; text-align: center; }
+  .dia-col.hoje { border-color: var(--azul-claro); box-shadow: 0 0 0 2px rgba(59,155,214,0.25); }
+  .evento-item { font-size: 0.72rem; background: #e8f4fd; color: #1565c0; border-radius: 4px; padding: 3px 6px; margin-bottom: 3px; }
+  .obreiro-tag { font-size: 0.7rem; background: #d5f5e3; color: #1a7a45; border-radius: 4px; padding: 2px 6px; margin-bottom: 2px; }
+  @media(max-width:900px){ nav{display:none} .grid2{grid-template-columns:1fr} .grid3{grid-template-columns:1fr 1fr} .semana-grid{grid-template-columns:repeat(3,1fr)} }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>⛪ Painel ADM — Igreja</h1>
+  <span id="data-header"></span>
+</header>
+
+<div class="layout">
+  <nav id="nav-lateral">
+    <div class="secao">Visão Geral</div>
+    <a onclick="mostrarAba('dashboard')" class="ativo" id="nav-dashboard">📊 Dashboard</a>
+    <a onclick="mostrarAba('semana')" id="nav-semana">📅 Agenda da Semana</a>
+    <div class="secao">Cadastros</div>
+    <a onclick="mostrarAba('avisos')" id="nav-avisos">📢 Avisos</a>
+    <a onclick="mostrarAba('eventos')" id="nav-eventos">🗓️ Eventos</a>
+    <a onclick="mostrarAba('obreiros')" id="nav-obreiros">👥 Obreiros</a>
+    <a onclick="mostrarAba('escala')" id="nav-escala">📋 Escala</a>
+    <a onclick="mostrarAba('informacoes')" id="nav-informacoes">ℹ️ Informações</a>
+    <div class="secao">Mídia</div>
+    <a onclick="mostrarAba('galeria')" id="nav-galeria">🖼️ Galeria de Fotos</a>
+    <a onclick="mostrarAba('videos')" id="nav-videos">🎬 Vídeos</a>
+  </nav>
+
+  <main>
+
+    <!-- DASHBOARD -->
+    <div class="aba ativa" id="aba-dashboard">
+      <h2>📊 Dashboard</h2>
+      <div class="grid3" style="margin-bottom:1.5rem">
+        <div class="stat-card"><div class="stat-num" id="total-avisos">0</div><div class="stat-label">Avisos Ativos</div></div>
+        <div class="stat-card"><div class="stat-num" id="total-eventos">0</div><div class="stat-label">Eventos Cadastrados</div></div>
+        <div class="stat-card"><div class="stat-num" id="total-obreiros">0</div><div class="stat-label">Obreiros</div></div>
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <h3>📢 Últimos Avisos</h3>
+          <div id="dash-avisos"><p style="color:var(--texto-muted);font-size:0.85rem">Nenhum aviso cadastrado.</p></div>
+        </div>
+        <div class="card">
+          <h3>🗓️ Próximos Eventos</h3>
+          <div id="dash-eventos"><p style="color:var(--texto-muted);font-size:0.85rem">Nenhum evento cadastrado.</p></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:1.5rem">
+        <h3>👤 Obreiro de Hoje</h3>
+        <div id="dash-obreiro-hoje"><p style="color:var(--texto-muted);font-size:0.85rem">Nenhuma escala configurada para hoje.</p></div>
+      </div>
+    </div>
+
+    <!-- AGENDA DA SEMANA -->
+    <div class="aba" id="aba-semana">
+      <h2>📅 Agenda da Semana</h2>
+      <div class="semana-grid" id="semana-grid"></div>
+    </div>
+
+    <!-- AVISOS -->
+    <div class="aba" id="aba-avisos">
+      <h2>📢 Gerenciar Avisos</h2>
+      <div class="grid2">
+        <div class="card">
+          <h3>➕ Novo Aviso</h3>
+          <label>Título</label>
+          <input type="text" id="av-titulo" placeholder="Título do aviso">
+          <label>Mensagem</label>
+          <textarea id="av-msg" placeholder="Texto do aviso..."></textarea>
+          <label>Prioridade</label>
+          <select id="av-prioridade">
+            <option value="normal">Normal</option>
+            <option value="importante">Importante</option>
+            <option value="urgente">Urgente</option>
+          </select>
+          <div class="btn-group">
+            <button class="btn btn-primary" onclick="salvarAviso()">💾 Salvar Aviso</button>
+          </div>
+          <div class="msg-ok" id="ok-aviso">✅ Aviso salvo com sucesso!</div>
+        </div>
+        <div class="card">
+          <h3>📋 Avisos Cadastrados</h3>
+          <div id="lista-avisos"><p style="color:var(--texto-muted);font-size:0.85rem">Nenhum aviso ainda.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EVENTOS -->
+    <div class="aba" id="aba-eventos">
+      <h2>🗓️ Gerenciar Eventos</h2>
+      <div class="grid2">
+        <div class="card">
+          <h3>➕ Novo Evento</h3>
+          <label>Nome do Evento</label>
+          <input type="text" id="ev-nome" placeholder="Ex: Culto de Domingo">
+          <label>Data</label>
+          <input type="date" id="ev-data">
+          <label>Horário</label>
+          <input type="time" id="ev-hora">
+          <label>Local</label>
+          <input type="text" id="ev-local" placeholder="Ex: Templo Principal">
+          <label>Descrição</label>
+          <textarea id="ev-desc" placeholder="Detalhes do evento..."></textarea>
+          <label>Tipo</label>
+          <select id="ev-tipo">
+            <option value="culto">Culto</option>
+            <option value="reuniao">Reunião</option>
+            <option value="evento">Evento Especial</option>
+            <option value="outro">Outro</option>
+          </select>
+          <div class="btn-group">
+            <button class="btn btn-primary" onclick="salvarEvento()">💾 Salvar Evento</button>
+          </div>
+          <div class="msg-ok" id="ok-evento">✅ Evento salvo!</div>
+        </div>
+        <div class="card">
+          <h3>📋 Eventos Cadastrados</h3>
+          <div id="lista-eventos"><p style="color:var(--texto-muted);font-size:0.85rem">Nenhum evento.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OBREIROS -->
+    <div class="aba" id="aba-obreiros">
+      <h2>👥 Gerenciar Obreiros</h2>
+      <div class="grid2">
+        <div class="card">
+          <h3>➕ Novo Obreiro</h3>
+          <label>Nome Completo</label>
+          <input type="text" id="ob-nome" placeholder="Nome do obreiro">
+          <label>Função</label>
+          <input type="text" id="ob-funcao" placeholder="Ex: Diácono, Presbítero, Líder...">
+          <label>Telefone / WhatsApp</label>
+          <input type="text" id="ob-tel" placeholder="(11) 99999-9999">
+          <label>Foto (URL ou deixe em branco)</label>
+          <input type="text" id="ob-foto" placeholder="https://...">
+          <div class="btn-group">
+            <button class="btn btn-primary" onclick="salvarObreiro()">💾 Salvar Obreiro</button>
+          </div>
+          <div class="msg-ok" id="ok-obreiro">✅ Obreiro salvo!</div>
+        </div>
+        <div class="card">
+          <h3>📋 Obreiros Cadastrados</h3>
+          <div id="lista-obreiros"><p style="color:var(--texto-muted);font-size:0.85rem">Nenhum obreiro.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ESCALA -->
+    <div class="aba" id="aba-escala">
+      <h2>📋 Escala de Obreiros</h2>
+      <div class="card" style="margin-bottom:1.5rem">
+        <h3>⚙️ Configurar Escala Automática</h3>
+        <p style="font-size:0.83rem;color:var(--texto-muted);margin-bottom:1rem">Selecione quais dias da semana cada obreiro está de serviço. O sistema mostrará automaticamente o obreiro do dia no Index.</p>
+        <div id="config-escala"><p style="color:var(--texto-muted);font-size:0.85rem">Cadastre obreiros primeiro para configurar a escala.</p></div>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="salvarEscala()">💾 Salvar Escala</button>
+        </div>
+        <div class="msg-ok" id="ok-escala">✅ Escala salva com sucesso!</div>
+      </div>
+      <div class="card">
+        <h3>📅 Visualização Semanal da Escala</h3>
+        <div style="overflow-x:auto">
+          <table id="tabela-escala">
+            <thead><tr><th>Obreiro</th><th>Dom</th><th>Seg</th><th>Ter</th><th>Qua</th><th>Qui</th><th>Sex</th><th>Sáb</th></tr></thead>
+            <tbody id="corpo-escala"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- INFORMAÇÕES -->
+    <div class="aba" id="aba-informacoes">
+      <h2>ℹ️ Informações da Igreja</h2>
+      <div class="card">
+        <h3>✏️ Editar Informações</h3>
+        <div class="grid2">
+          <div>
+            <label>Nome da Igreja</label>
+            <input type="text" id="info-nome" placeholder="Nome da Igreja">
+            <label>Pastor/Responsável</label>
+            <input type="text" id="info-pastor" placeholder="Nome do pastor">
+            <label>Endereço</label>
+            <input type="text" id="info-endereco" placeholder="Rua, número, bairro...">
+            <label>Telefone</label>
+            <input type="text" id="info-tel" placeholder="(11) 99999-9999">
+            <label>E-mail</label>
+            <input type="email" id="info-email" placeholder="contato@igreja.com">
+          </div>
+          <div>
+            <label>Horários de Culto</label>
+            <textarea id="info-horarios" placeholder="Ex: Domingo 9h e 19h&#10;Quarta 20h"></textarea>
+            <label>Mensagem de Boas-vindas</label>
+            <textarea id="info-boas-vindas" placeholder="Texto de boas-vindas para o site..."></textarea>
+            <label>WhatsApp (número com DDI)</label>
+            <input type="text" id="info-whats" placeholder="5511999999999">
+          </div>
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="salvarInfo()">💾 Salvar Informações</button>
+        </div>
+        <div class="msg-ok" id="ok-info">✅ Informações salvas!</div>
+      </div>
+    </div>
+
+    <!-- GALERIA -->
+    <div class="aba" id="aba-galeria">
+      <h2>🖼️ Galeria de Fotos</h2>
+      <div class="card" style="margin-bottom:1.5rem">
+        <h3>➕ Adicionar Foto</h3>
+        <label>URL da Imagem</label>
+        <input type="text" id="foto-url" placeholder="https://...">
+        <label>Legenda</label>
+        <input type="text" id="foto-leg" placeholder="Descrição da foto...">
+        <label>Categoria</label>
+        <select id="foto-cat">
+          <option value="culto">Culto</option>
+          <option value="evento">Evento</option>
+          <option value="congregacao">Congregação</option>
+          <option value="obra">Obra Social</option>
+        </select>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="salvarFoto()">💾 Adicionar Foto</button>
+        </div>
+        <div class="msg-ok" id="ok-foto">✅ Foto adicionada!</div>
+      </div>
+      <div class="card">
+        <h3>📸 Fotos Cadastradas</h3>
+        <div id="lista-fotos" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1rem"></div>
+      </div>
+    </div>
+
+    <!-- VÍDEOS -->
+    <div class="aba" id="aba-videos">
+      <h2>🎬 Vídeos</h2>
+      <div class="card" style="margin-bottom:1.5rem">
+        <h3>➕ Adicionar Vídeo</h3>
+        <label>Título</label>
+        <input type="text" id="vid-titulo" placeholder="Título do vídeo">
+        <label>URL do YouTube</label>
+        <input type="text" id="vid-url" placeholder="https://youtube.com/watch?v=...">
+        <label>Descrição</label>
+        <input type="text" id="vid-desc" placeholder="Breve descrição...">
+        <label>Categoria</label>
+        <select id="vid-cat">
+          <option value="pregacao">Pregação</option>
+          <option value="louvor">Louvor</option>
+          <option value="evento">Evento</option>
+          <option value="outro">Outro</option>
+        </select>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="salvarVideo()">💾 Adicionar Vídeo</button>
+        </div>
+        <div class="msg-ok" id="ok-video">✅ Vídeo adicionado!</div>
+      </div>
+      <div class="card">
+        <h3>📹 Vídeos Cadastrados</h3>
+        <div id="lista-videos"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ===== STORAGE (localStorage como base de dados) =====
+const DB = {
+  get: k => JSON.parse(localStorage.getItem('igreja_'+k) || 'null'),
+  set: (k,v) => localStorage.setItem('igreja_'+k, JSON.stringify(v)),
+  push: (k,v) => { let arr = DB.get(k)||[]; arr.push(v); DB.set(k,arr); return arr; },
+  remove: (k,i) => { let arr = DB.get(k)||[]; arr.splice(i,1); DB.set(k,arr); return arr; }
+};
+
+const DIAS = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+const DIAS_CURTO = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+
+function mostrarAba(id) {
+  document.querySelectorAll('.aba').forEach(a => a.classList.remove('ativa'));
+  document.querySelectorAll('nav a').forEach(a => a.classList.remove('ativo'));
+  document.getElementById('aba-'+id).classList.add('ativa');
+  document.getElementById('nav-'+id).classList.add('ativo');
+  if(id==='dashboard') renderDashboard();
+  if(id==='semana') renderSemana();
+  if(id==='avisos') renderAvisos();
+  if(id==='eventos') renderEventos();
+  if(id==='obreiros') renderObreiros();
+  if(id==='escala') renderEscala();
+  if(id==='galeria') renderGaleria();
+  if(id==='videos') renderVideos();
+  if(id==='informacoes') carregarInfo();
+}
+
+function msgOk(id) {
+  const el = document.getElementById(id);
+  el.style.display='block';
+  setTimeout(()=>el.style.display='none',2500);
+}
+
+function initData() {
+  if(!DB.get('avisos')) DB.set('avisos',[]);
+  if(!DB.get('eventos')) DB.set('eventos',[]);
+  if(!DB.get('obreiros')) DB.set('obreiros',[]);
+  if(!DB.get('escala')) DB.set('escala',{});
+  if(!DB.get('fotos')) DB.set('fotos',[]);
+  if(!DB.get('videos')) DB.set('videos',[]);
+  if(!DB.get('info')) DB.set('info',{});
+}
+
+// DATA HEADER
+function setDataHeader() {
+  const d = new Date();
+  document.getElementById('data-header').textContent = d.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+}
+
+// ===== AVISOS =====
+function salvarAviso() {
+  const t = document.getElementById('av-titulo').value.trim();
+  const m = document.getElementById('av-msg').value.trim();
+  const p = document.getElementById('av-prioridade').value;
+  if(!t||!m) return alert('Preencha título e mensagem.');
+  DB.push('avisos', {id:Date.now(), titulo:t, msg:m, prioridade:p, data: new Date().toLocaleDateString('pt-BR')});
+  document.getElementById('av-titulo').value='';
+  document.getElementById('av-msg').value='';
+  msgOk('ok-aviso');
+  renderAvisos();
+  renderDashboard();
+}
+
+function renderAvisos() {
+  const lista = DB.get('avisos')||[];
+  const el = document.getElementById('lista-avisos');
+  if(!lista.length){ el.innerHTML='<p style="color:var(--texto-muted);font-size:0.85rem">Nenhum aviso ainda.</p>'; return; }
+  el.innerHTML = lista.map((a,i)=>`
+    <div style="border:1px solid var(--cinza-borda);border-radius:8px;padding:0.75rem;margin-bottom:0.5rem">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <strong style="font-size:0.88rem">${a.titulo}</strong>
+        <span class="badge ${a.prioridade==='urgente'?'badge-laranja':a.prioridade==='importante'?'badge-azul':'badge-cinza'}">${a.prioridade}</span>
+      </div>
+      <p style="font-size:0.8rem;color:var(--texto-muted);margin:0.3rem 0">${a.msg}</p>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.4rem">
+        <span style="font-size:0.75rem;color:var(--texto-muted)">${a.data||''}</span>
+        <button class="btn btn-danger btn-sm" onclick="deletarAviso(${i})">🗑 Excluir</button>
+      </div>
+    </div>`).join('');
+}
+
+function deletarAviso(i) {
+  if(!confirm('Excluir este aviso?')) return;
+  DB.remove('avisos',i); renderAvisos(); renderDashboard();
+}
+
+// ===== EVENTOS =====
+function salvarEvento() {
+  const n=document.getElementById('ev-nome').value.trim();
+  const d=document.getElementById('ev-data').value;
+  const h=document.getElementById('ev-hora').value;
+  const l=document.getElementById('ev-local').value.trim();
+  const desc=document.getElementById('ev-desc').value.trim();
+  const t=document.getElementById('ev-tipo').value;
+  if(!n||!d) return alert('Preencha nome e data.');
+  DB.push('eventos',{id:Date.now(),nome:n,data:d,hora:h,local:l,desc:desc,tipo:t});
+  ['ev-nome','ev-data','ev-hora','ev-local','ev-desc'].forEach(x=>document.getElementById(x).value='');
+  msgOk('ok-evento');
+  renderEventos(); renderDashboard(); renderSemana();
+}
+
+function renderEventos() {
+  const lista = (DB.get('eventos')||[]).sort((a,b)=>a.data>b.data?1:-1);
+  const el = document.getElementById('lista-eventos');
+  if(!lista.length){ el.innerHTML='<p style="color:var(--texto-muted);font-size:0.85rem">Nenhum evento.</p>'; return; }
+  el.innerHTML = lista.map((e,i)=>`
+    <div style="border:1px solid var(--cinza-borda);border-radius:8px;padding:0.75rem;margin-bottom:0.5rem">
+      <div style="display:flex;justify-content:space-between">
+        <strong style="font-size:0.88rem">${e.nome}</strong>
+        <span class="badge badge-azul">${e.tipo}</span>
+      </div>
+      <p style="font-size:0.8rem;color:var(--texto-muted);margin:0.25rem 0">📅 ${formatarData(e.data)} ${e.hora?'às '+e.hora:''} ${e.local?'• '+e.local:''}</p>
+      ${e.desc?`<p style="font-size:0.8rem;margin:0.25rem 0">${e.desc}</p>`:''}
+      <button class="btn btn-danger btn-sm" style="margin-top:0.4rem" onclick="deletarEvento(${i})">🗑 Excluir</button>
+    </div>`).join('');
+}
+
+function deletarEvento(i) {
+  if(!confirm('Excluir?')) return;
+  DB.remove('eventos',i); renderEventos(); renderDashboard(); renderSemana();
+}
+
+function formatarData(d) {
+  if(!d) return '';
+  const [y,m,day] = d.split('-');
+  return `${day}/${m}/${y}`;
+}
+
+// ===== OBREIROS =====
+function salvarObreiro() {
+  const n=document.getElementById('ob-nome').value.trim();
+  const f=document.getElementById('ob-funcao').value.trim();
+  const t=document.getElementById('ob-tel').value.trim();
+  const foto=document.getElementById('ob-foto').value.trim();
+  if(!n) return alert('Informe o nome.');
+  DB.push('obreiros',{id:Date.now(),nome:n,funcao:f,tel:t,foto:foto});
+  ['ob-nome','ob-funcao','ob-tel','ob-foto'].forEach(x=>document.getElementById(x).value='');
+  msgOk('ok-obreiro');
+  renderObreiros(); renderEscala(); renderDashboard();
+}
+
+function renderObreiros() {
+  const lista = DB.get('obreiros')||[];
+  const el = document.getElementById('lista-obreiros');
+  document.getElementById('total-obreiros').textContent = lista.length;
+  if(!lista.length){ el.innerHTML='<p style="color:var(--texto-muted);font-size:0.85rem">Nenhum obreiro cadastrado.</p>'; return; }
+  el.innerHTML = lista.map((o,i)=>`
+    <div class="obreiro-card">
+      ${o.foto?`<img src="${o.foto}" style="width:38px;height:38px;border-radius:50%;object-fit:cover">`
+        :`<div class="avatar">${o.nome[0].toUpperCase()}</div>`}
+      <div style="flex:1">
+        <strong style="font-size:0.88rem">${o.nome}</strong>
+        <p style="font-size:0.78rem;color:var(--texto-muted)">${o.funcao||''}</p>
+      </div>
+      <button class="btn btn-danger btn-sm" onclick="deletarObreiro(${i})">🗑</button>
+    </div>`).join('');
+}
+
+function deletarObreiro(i) {
+  if(!confirm('Excluir obreiro?')) return;
+  DB.remove('obreiros',i); renderObreiros(); renderEscala(); renderDashboard();
+}
+
+// ===== ESCALA =====
+function renderEscala() {
+  const obreiros = DB.get('obreiros')||[];
+  const escala = DB.get('escala')||{};
+  const el = document.getElementById('config-escala');
+  if(!obreiros.length){ el.innerHTML='<p style="color:var(--texto-muted);font-size:0.85rem">Cadastre obreiros primeiro.</p>'; return; }
+  el.innerHTML = obreiros.map((o,oi)=>{
+    const diasSel = escala[o.id]||[];
+    const diasHtml = DIAS.map((d,di)=>`
+      <button class="dia-btn ${diasSel.includes(di)?'sel':''}" onclick="toggleDia(this,${oi},${di})" data-obreiro="${o.id}" data-dia="${di}">${DIAS_CURTO[di]}</button>
+    `).join('');
+    return `<div style="border:1px solid var(--cinza-borda);border-radius:8px;padding:0.75rem;margin-bottom:0.75rem">
+      <strong style="font-size:0.88rem">${o.nome}</strong>
+      <p style="font-size:0.78rem;color:var(--texto-muted);margin-bottom:0.5rem">${o.funcao||''}</p>
+      <div class="dias-semana">${diasHtml}</div>
+    </div>`;
+  }).join('');
+
+  // Tabela
+  const corpo = document.getElementById('corpo-escala');
+  corpo.innerHTML = obreiros.map(o=>{
+    const diasSel = escala[o.id]||[];
+    const cels = [0,1,2,3,4,5,6].map(d=>`<td style="text-align:center">${diasSel.includes(d)?'✅':''}</td>`).join('');
+    return `<tr><td>${o.nome}</td>${cels}</tr>`;
+  }).join('');
+}
+
+function toggleDia(btn, oi, di) {
+  btn.classList.toggle('sel');
+}
+
+function salvarEscala() {
+  const obreiros = DB.get('obreiros')||[];
+  const escala = {};
+  obreiros.forEach(o=>{
+    const btns = document.querySelectorAll(`[data-obreiro="${o.id}"]`);
+    const dias = [];
+    btns.forEach(b=>{ if(b.classList.contains('sel')) dias.push(parseInt(b.dataset.dia)); });
+    escala[o.id] = dias;
+  });
+  DB.set('escala', escala);
+  msgOk('ok-escala');
+  renderEscala(); renderDashboard(); renderSemana();
+}
+
+// ===== INFORMAÇÕES =====
+function carregarInfo() {
+  const info = DB.get('info')||{};
+  ['nome','pastor','endereco','tel','email','horarios','boas-vindas','whats'].forEach(k=>{
+    const el = document.getElementById('info-'+k);
+    if(el) el.value = info[k]||'';
+  });
+}
+
+function salvarInfo() {
+  const info = {};
+  ['nome','pastor','endereco','tel','email','horarios','boas-vindas','whats'].forEach(k=>{
+    const el = document.getElementById('info-'+k);
+    if(el) info[k] = el.value;
+  });
+  DB.set('info', info);
+  msgOk('ok-info');
+}
+
+// ===== GALERIA =====
+function salvarFoto() {
+  const url=document.getElementById('foto-url').value.trim();
+  const leg=document.getElementById('foto-leg').value.trim();
+  const cat=document.getElementById('foto-cat').value;
+  if(!url) return alert('Informe a URL da imagem.');
+  DB.push('fotos',{id:Date.now(),url,leg,cat});
+  document.getElementById('foto-url').value='';
+  document.getElementById('foto-leg').value='';
+  msgOk('ok-foto'); renderGaleria();
+}
+
+function renderGaleria() {
+  const lista = DB.get('fotos')||[];
+  const el = document.getElementById('lista-fotos');
+  if(!lista.length){ el.innerHTML='<p style="color:var(--texto-muted);font-size:0.85rem">Nenhuma foto.</p>'; return; }
+  el.innerHTML = lista.map((f,i)=>`
+    <div style="position:relative;border-radius:8px;overflow:hidden;border:1px solid var(--cinza-borda)">
+      <img src="${f.url}" style="width:100%;height:120px;object-fit:cover">
+      <div style="padding:0.4rem;background:#fff">
+        <p style="font-size:0.75rem;font-weight:600">${f.leg||'Sem legenda'}</p>
+        <p style="font-size:0.7rem;color:var(--texto-muted)">${f.cat}</p>
+        <button class="btn btn-danger btn-sm" style="margin-top:4px;width:100%" onclick="deletarFoto(${i})">🗑</button>
+      </div>
+    </div>`).join('');
+}
+
+function deletarFoto(i) {
+  if(!confirm('Excluir foto?')) return;
+  DB.remove('fotos',i); renderGaleria();
+}
+
+// ===== VÍDEOS =====
+function salvarVideo() {
+  const t=document.getElementById('vid-titulo').value.trim();
+  const u=document.getElementById('vid-url').value.trim();
+  const d=document.getElementById('vid-desc').value.trim();
+  const c=document.getElementById('vid-cat').value;
+  if(!t||!u) return alert('Preencha título e URL.');
+  const vid_id = extrairYoutubeId(u);
+  DB.push('videos',{id:Date.now(),titulo:t,url:u,vid_id,desc:d,cat:c});
+  document.getElementById('vid-titulo').value='';
+  document.getElementById('vid-url').value='';
+  document.getElementById('vid-desc').value='';
+  msgOk('ok-video'); renderVideos();
+}
+
+function extrairYoutubeId(url) {
+  const m = url.match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([a-zA-Z0-9_-]{11})/);
+  return m?m[1]:'';
+}
+
+function renderVideos() {
+  const lista = DB.get('videos')||[];
+  const el = document.getElementById('lista-videos');
+  if(!lista.length){ el.innerHTML='<p style="color:var(--texto-muted);font-size:0.85rem">Nenhum vídeo.</p>'; return; }
+  el.innerHTML = lista.map((v,i)=>`
+    <div style="display:flex;gap:0.75rem;border:1px solid var(--cinza-borda);border-radius:8px;padding:0.75rem;margin-bottom:0.5rem;align-items:center">
+      ${v.vid_id?`<img src="https://img.youtube.com/vi/${v.vid_id}/mqdefault.jpg" style="width:100px;height:60px;object-fit:cover;border-radius:6px">`:''}
+      <div style="flex:1">
+        <strong style="font-size:0.88rem">${v.titulo}</strong>
+        <p style="font-size:0.78rem;color:var(--texto-muted)">${v.desc||''}</p>
+        <span class="badge badge-azul">${v.cat}</span>
+      </div>
+      <button class="btn btn-danger btn-sm" onclick="deletarVideo(${i})">🗑</button>
+    </div>`).join('');
+}
+
+function deletarVideo(i) {
+  if(!confirm('Excluir vídeo?')) return;
+  DB.remove('videos',i); renderVideos();
+}
+
+// ===== DASHBOARD =====
+function renderDashboard() {
+  const avisos = DB.get('avisos')||[];
+  const eventos = (DB.get('eventos')||[]).sort((a,b)=>a.data>b.data?1:-1);
+  const obreiros = DB.get('obreiros')||[];
+  const escala = DB.get('escala')||{};
+
+  document.getElementById('total-avisos').textContent = avisos.length;
+  document.getElementById('total-eventos').textContent = eventos.length;
+  document.getElementById('total-obreiros').textContent = obreiros.length;
+
+  // Avisos
+  const dAv = document.getElementById('dash-avisos');
+  if(!avisos.length) dAv.innerHTML='<p style="color:var(--texto-muted);font-size:0.85rem">Nenhum aviso.</p>';
+  else dAv.innerHTML = avisos.slice(-3).reverse().map(a=>`
+    <div style="padding:0.5rem 0;border-bottom:1px solid var(--cinza-borda)">
+      <strong style="font-size:0.85rem">${a.titulo}</strong>
+      <span class="badge ${a.prioridade==='urgente'?'badge-laranja':a.prioridade==='importante'?'badge-azul':'badge-cinza'}" style="margin-left:6px">${a.prioridade}</span>
+      <p style="font-size:0.78rem;color:var(--texto-muted);margin-top:2px">${a.msg.substring(0,80)}${a.msg.length>80?'...':''}</p>
+    </div>`).join('');
+
+  // Eventos
+  const hoje = new Date().toISOString().split('T')[0];
+  const proximos = eventos.filter(e=>e.data>=hoje).slice(0,4);
+  const dEv = document.getElementById('dash-eventos');
+  if(!proximos.length) dEv.innerHTML='<p style="color:var(--texto-muted);font-size:0.85rem">Nenhum evento próximo.</p>';
+  else dEv.innerHTML = proximos.map(e=>`
+    <div style="padding:0.5rem 0;border-bottom:1px solid var(--cinza-borda)">
+      <strong style="font-size:0.85rem">${e.nome}</strong>
+      <p style="font-size:0.78rem;color:var(--texto-muted)">📅 ${formatarData(e.data)} ${e.hora?'• '+e.hora:''}</p>
+    </div>`).join('');
+
+  // Obreiro do dia
+  const diaSemana = new Date().getDay();
+  const obHoje = obreiros.filter(o=>(escala[o.id]||[]).includes(diaSemana));
+  const dOb = document.getElementById('dash-obreiro-hoje');
+  if(!obHoje.length) dOb.innerHTML='<p style="color:var(--texto-muted);font-size:0.85rem">Nenhuma escala configurada para hoje ('+DIAS[diaSemana]+').</p>';
+  else dOb.innerHTML = obHoje.map(o=>`
+    <div style="display:flex;align-items:center;gap:0.75rem;padding:0.5rem 0">
+      ${o.foto?`<img src="${o.foto}" style="width:44px;height:44px;border-radius:50%;object-fit:cover">`
+        :`<div class="avatar" style="width:44px;height:44px">${o.nome[0].toUpperCase()}</div>`}
+      <div>
+        <strong>${o.nome}</strong>
+        <p style="font-size:0.82rem;color:var(--texto-muted)">${o.funcao||''} — Serviço: ${DIAS[diaSemana]}</p>
+      </div>
+    </div>`).join('');
+}
+
+// ===== AGENDA DA SEMANA =====
+function renderSemana() {
+  const grid = document.getElementById('semana-grid');
+  const hoje = new Date();
+  const diaSemanaHoje = hoje.getDay();
+  const eventos = DB.get('eventos')||[];
+  const obreiros = DB.get('obreiros')||[];
+  const escala = DB.get('escala')||{};
+
+  grid.innerHTML = '';
+  for(let d=0;d<7;d++){
+    const dataCol = new Date(hoje);
+    dataCol.setDate(hoje.getDate() - diaSemanaHoje + d);
+    const dataStr = dataCol.toISOString().split('T')[0];
+    const isHoje = d===diaSemanaHoje;
+
+    const evsDia = eventos.filter(e=>e.data===dataStr);
+    const obsDia = obreiros.filter(o=>(escala[o.id]||[]).includes(d));
+
+    const col = document.createElement('div');
+    col.className = 'dia-col' + (isHoje?' hoje':'');
+    col.innerHTML = `
+      <h4>${DIAS_CURTO[d]}<br><span style="font-size:0.7rem;color:var(--texto-muted)">${dataCol.getDate()}/${dataCol.getMonth()+1}</span></h4>
+      ${obsDia.map(o=>`<div class="obreiro-tag">👤 ${o.nome.split(' ')[0]}</div>`).join('')}
+      ${evsDia.map(e=>`<div class="evento-item">⛪ ${e.nome}${e.hora?' '+e.hora:''}</div>`).join('')}
+      ${(!obsDia.length&&!evsDia.length)?'<p style="font-size:0.7rem;color:var(--texto-muted)">—</p>':''}
+    `;
+    grid.appendChild(col);
+  }
+}
+
+// ===== INIT =====
+initData();
+setDataHeader();
+renderDashboard();
+</script>
+</body>
+</html>
