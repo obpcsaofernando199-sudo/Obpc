@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="pg-titulo">OBPC São Fernando</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Open+Sans:wght@400;600&display=swap');
+:root{--azul:#1E3A5F;--azul2:#3B9BD6;--branco:#fff;--cinza:#f4f6f9;--borda:#dde2ea;--txt:#1a2535;--muted:#6b7a90;--verde:#27ae60;--laranja:#e67e22;--vermelho:#e74c3c;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Open Sans',sans-serif;background:#f0f4f8;color:var(--txt);}
+h1,h2,h3,.sec-titulo{font-family:'Montserrat',sans-serif;}
+.hidden{display:none!important;}
+
+/* TICKER */
+.ticker-wrap{background:var(--vermelho);color:#fff;overflow:hidden;padding:6px 0;position:sticky;top:0;z-index:300;}
+.ticker-inner{display:flex;gap:4rem;animation:ticker 30s linear infinite;white-space:nowrap;}
+.ticker-inner span{font-size:.8rem;font-weight:600;}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* HEADER */
+header{background:var(--azul);color:#fff;padding:1.4rem 1.5rem;text-align:center;position:relative;}
+.header-logo{width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,.4);margin:0 auto .6rem;display:block;}
+.header-logo-placeholder{width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.12);margin:0 auto .6rem;display:flex;align-items:center;justify-content:center;font-size:2rem;}
+header h1{font-size:1.5rem;font-weight:900;letter-spacing:.5px;}
+header p.bv{font-size:.85rem;opacity:.8;margin-top:.3rem;}
+.header-cnpj{font-size:.72rem;opacity:.6;margin-top:.2rem;}
+.header-end{font-size:.78rem;opacity:.75;margin-top:.3rem;}
+.header-info{display:flex;justify-content:center;gap:1rem;margin-top:.7rem;flex-wrap:wrap;}
+.header-info span{font-size:.75rem;background:rgba(255,255,255,.12);padding:4px 10px;border-radius:20px;}
+.header-btns{display:flex;justify-content:center;gap:.6rem;margin-top:.8rem;flex-wrap:wrap;}
+.header-btns button,.header-btns a{display:inline-flex;align-items:center;gap:5px;border:1.5px solid rgba(255,255,255,.4);color:#fff;padding:5px 14px;border-radius:20px;font-size:.75rem;cursor:pointer;background:rgba(255,255,255,.12);text-decoration:none;font-family:inherit;}
+
+/* MODAL SENHA */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;align-items:center;justify-content:center;}
+.modal-bg.show{display:flex;}
+.modal-box{background:#fff;border-radius:16px;padding:2rem;width:320px;box-shadow:0 8px 40px rgba(0,0,0,.25);text-align:center;}
+
+/* SEÇÕES */
+.sec{padding:1.2rem 1.5rem;max-width:1100px;margin:0 auto;}
+.sec-titulo{font-size:1.1rem;font-weight:700;color:var(--azul);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:3px solid var(--azul2);display:flex;align-items:center;gap:.5rem;}
+
+/* OBREIRO HOJE */
+.obreiro-hoje{background:linear-gradient(135deg,var(--azul),var(--azul2));color:#fff;border-radius:14px;padding:1.2rem 1.5rem;display:flex;align-items:center;gap:1rem;box-shadow:0 4px 16px rgba(59,155,214,.3);}
+.obreiro-hoje .ico{font-size:2.5rem;}
+.obreiro-hoje .nome{font-size:1.1rem;font-weight:700;}
+.obreiro-hoje .dia{font-size:.8rem;opacity:.8;margin-top:2px;}
+
+/* SEMANA */
+.semana{display:grid;grid-template-columns:repeat(7,1fr);gap:.5rem;overflow-x:auto;}
+.semana-dia{background:#fff;border-radius:10px;padding:.6rem .5rem;box-shadow:0 1px 5px rgba(0,0,0,.06);min-width:110px;}
+.semana-dia.hoje{border:2px solid var(--azul2);}
+.dia-head{font-size:.68rem;font-weight:700;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:.4rem;}
+.semana-dia.hoje .dia-head{color:var(--azul2);}
+.dia-item{font-size:.71rem;padding:3px 5px;border-radius:4px;margin-bottom:3px;}
+.di-obr{background:#e3f2fd;color:#1565c0;}
+.di-evt{background:#e8f5e9;color:#256029;}
+
+/* EVENTOS */
+.eventos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.8rem;}
+.evt-card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,.07);}
+.evt-img{width:100%;height:120px;object-fit:cover;}
+.evt-data-bar{background:var(--azul);color:#fff;padding:.6rem;text-align:center;}
+.evt-data-bar .dia-num{font-size:1.8rem;font-weight:900;line-height:1;}
+.evt-data-bar .mes{font-size:.7rem;text-transform:uppercase;opacity:.8;}
+.evt-body{padding:.8rem;}
+.evt-nome{font-weight:700;font-size:.9rem;}
+.evt-detalhe{font-size:.75rem;color:var(--muted);margin-top:3px;}
+.evt-badge{display:inline-block;background:var(--azul2);color:#fff;border-radius:20px;padding:2px 8px;font-size:.7rem;margin-top:.4rem;}
+.share-btn{display:inline-flex;align-items:center;gap:4px;margin-top:.5rem;background:#25D366;color:#fff;border:none;border-radius:20px;padding:4px 10px;font-size:.72rem;cursor:pointer;font-family:inherit;}
+
+/* AVISOS */
+.aviso-card{background:#fff;border-radius:10px;overflow:hidden;margin-bottom:.6rem;box-shadow:0 1px 5px rgba(0,0,0,.06);border-left:4px solid var(--azul2);}
+.aviso-card.urgente{border-left-color:var(--vermelho);}
+.aviso-card.importante{border-left-color:var(--laranja);}
+.aviso-img{width:100%;max-height:200px;object-fit:cover;}
+.aviso-body{padding:.8rem 1rem;}
+.aviso-titulo{font-weight:700;font-size:.9rem;}
+.aviso-texto{font-size:.8rem;color:var(--muted);margin-top:.3rem;}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.7rem;font-weight:600;margin-top:.3rem;}
+.bn{background:#e3f2fd;color:#1565c0;}.bi{background:#fff3e0;color:#e65100;}.bu{background:#fce4ec;color:#c62828;}
+
+/* INFORMATIVOS */
+.inf-card{background:#fff;border-radius:10px;overflow:hidden;margin-bottom:.6rem;box-shadow:0 1px 5px rgba(0,0,0,.06);}
+.inf-img{width:100%;max-height:180px;object-fit:cover;}
+.inf-body{padding:.8rem 1rem;}
+.inf-titulo{font-weight:700;font-size:.9rem;color:var(--azul);}
+.inf-cat{display:inline-block;background:var(--cinza);color:var(--muted);border-radius:20px;padding:2px 8px;font-size:.7rem;margin:.3rem 0;}
+.inf-texto{font-size:.8rem;line-height:1.6;}
+
+/* SERMÕES */
+.vid-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.8rem;}
+.ser-card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 1px 5px rgba(0,0,0,.06);}
+.ser-thumb{position:relative;width:100%;height:150px;background:#111;overflow:hidden;}
+.ser-thumb img{width:100%;height:100%;object-fit:cover;}
+.ser-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:2rem;background:rgba(0,0,0,.3);}
+.ser-body{padding:.7rem 1rem;}
+.ser-titulo{font-weight:700;font-size:.85rem;}
+.ser-meta{font-size:.75rem;color:var(--muted);margin-top:3px;}
+.ser-link{display:inline-block;margin-top:.5rem;background:var(--vermelho);color:#fff;padding:4px 12px;border-radius:6px;font-size:.75rem;text-decoration:none;}
+
+/* CULTO FOI ASSIM */
+.culto-card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.08);margin-bottom:1rem;}
+.culto-fotos{display:grid;gap:3px;}
+.culto-fotos.f1{grid-template-columns:1fr;}
+.culto-fotos.f2{grid-template-columns:1fr 1fr;}
+.culto-fotos.f3,.culto-fotos.f4,.culto-fotos.f5,.culto-fotos.f6{grid-template-columns:1fr 1fr 1fr;}
+.culto-fotos img{width:100%;height:160px;object-fit:cover;}
+.culto-body{padding:1rem 1.2rem;}
+.culto-titulo{font-weight:700;font-size:1rem;color:var(--azul);}
+.culto-data{font-size:.75rem;color:var(--muted);margin-top:2px;}
+.culto-relato{font-size:.85rem;line-height:1.7;margin-top:.6rem;}
+
+/* LIDERANÇA */
+.lid-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.8rem;}
+.lid-card{background:#fff;border-radius:12px;padding:1rem;text-align:center;box-shadow:0 1px 5px rgba(0,0,0,.06);}
+.lid-foto{width:70px;height:70px;border-radius:50%;object-fit:cover;margin:0 auto .5rem;border:3px solid var(--azul2);}
+.lid-nome{font-weight:700;font-size:.85rem;}
+.lid-cargo{font-size:.75rem;color:var(--azul2);font-weight:600;}
+.lid-desc{font-size:.72rem;color:var(--muted);margin-top:.3rem;}
+
+/* HORÁRIOS */
+.hor-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:.6rem;}
+.hor-card{background:#fff;border-radius:10px;padding:.8rem 1rem;box-shadow:0 1px 5px rgba(0,0,0,.06);text-align:center;}
+.hor-dia{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;}
+.hor-hora{font-size:1.3rem;font-weight:900;color:var(--azul);}
+.hor-tipo{font-size:.78rem;color:var(--muted);margin-top:2px;}
+
+/* PIX */
+.pix-box{background:linear-gradient(135deg,var(--azul),var(--azul2));color:#fff;border-radius:16px;padding:1.5rem;box-shadow:0 4px 16px rgba(59,155,214,.3);}
+.pix-titulo{font-size:.75rem;opacity:.75;margin-bottom:.3rem;font-weight:600;}
+.pix-chave-big{font-size:1.1rem;font-weight:900;letter-spacing:.5px;word-break:break-all;}
+.pix-info{font-size:.82rem;margin-top:.7rem;opacity:.9;line-height:1.6;}
+.pix-wap{display:inline-flex;align-items:center;gap:6px;margin-top:.8rem;background:#25D366;color:#fff;padding:8px 18px;border-radius:20px;font-size:.85rem;font-weight:700;text-decoration:none;}
+
+/* GALERIA */
+.gal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.5rem;}
+.gal-img{width:100%;height:110px;object-fit:cover;border-radius:8px;}
+.gal-leg{font-size:.7rem;color:var(--muted);margin-top:3px;text-align:center;}
+
+/* VÍDEOS */
+.vid-card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 1px 5px rgba(0,0,0,.06);}
+.vid-thumb{position:relative;width:100%;height:150px;background:#111;}
+.vid-thumb img{width:100%;height:100%;object-fit:cover;}
+.vid-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:2rem;background:rgba(0,0,0,.3);}
+.vid-body{padding:.7rem 1rem;}
+.vid-titulo{font-weight:700;font-size:.85rem;}
+.vid-cat{font-size:.72rem;color:var(--azul2);margin-top:2px;}
+
+/* SOBRE */
+.sobre-box{background:#fff;border-radius:12px;padding:1.5rem;box-shadow:0 1px 5px rgba(0,0,0,.06);}
+.contatos{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.8rem;}
+.contato-item{background:var(--cinza);border-radius:8px;padding:.4rem .8rem;font-size:.8rem;}
+
+footer{background:var(--azul);color:rgba(255,255,255,.6);text-align:center;padding:1rem;font-size:.75rem;margin-top:1.5rem;}
+</style>
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker-wrap" id="ticker-wrap" style="display:none">
+  <div class="ticker-inner" id="ticker-inner"></div>
+</div>
+
+<!-- MODAL SENHA -->
+<div class="modal-bg" id="modal-senha">
+  <div class="modal-box">
+    <div style="font-size:2rem;margin-bottom:.5rem">🔒</div>
+    <h3 style="font-family:'Montserrat',sans-serif;color:#1E3A5F;margin-bottom:.3rem">Área Restrita</h3>
+    <p style="font-size:.8rem;color:#6b7a90;margin-bottom:1rem">Digite a senha para acessar o Painel ADM</p>
+    <input id="inp-senha" type="password" placeholder="••••" maxlength="10"
+      style="width:100%;padding:.6rem 1rem;border:2px solid #dde2ea;border-radius:8px;font-size:1.1rem;text-align:center;letter-spacing:.3rem;margin-bottom:.5rem;font-family:inherit"
+      onkeydown="if(event.key==='Enter')verificarSenha()">
+    <p id="msg-senha" style="font-size:.78rem;color:#e74c3c;min-height:1rem;margin-bottom:.5rem"></p>
+    <div style="display:flex;gap:.6rem;justify-content:center">
+      <button onclick="fecharModal()" style="padding:.5rem 1.2rem;border:1.5px solid #dde2ea;border-radius:8px;background:#fff;cursor:pointer;font-size:.82rem">Cancelar</button>
+      <button onclick="verificarSenha()" style="padding:.5rem 1.4rem;border:none;border-radius:8px;background:#1E3A5F;color:#fff;cursor:pointer;font-size:.82rem;font-weight:600">Entrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div id="header-logo-wrap">
+    <div class="header-logo-placeholder" id="logo-placeholder">⛪</div>
+    <img id="header-logo" class="header-logo" style="display:none" alt="Logo">
+  </div>
+  <h1 id="ig-nome">OBPC São Fernando</h1>
+  <p class="bv" id="ig-bv">Bem-vindo! A paz do Senhor esteja com você.</p>
+  <p class="header-cnpj" id="ig-cnpj-hd">CNPJ: 03.360.287/0002-59</p>
+  <p class="header-end" id="ig-end-hd">📍 Rua Senador José Ermírio de Moraes, 199</p>
+  <div class="header-info">
+    <span id="ig-pastor-hd">👨‍💼 Pastor</span>
+    <span id="ig-tel-hd">📞 Telefone</span>
+  </div>
+  <div class="header-btns">
+    <button onclick="abrirModal()">🔐 Painel ADM</button>
+    <a href="https://maps.google.com/?q=Rua+Senador+José+Ermírio+de+Moraes,199" target="_blank" id="btn-mapa">📍 Como Chegar</a>
+    <a href="https://wa.me/5511993509109" target="_blank">📲 WhatsApp</a>
+  </div>
+</header>
+
+<!-- OBREIRO DO DIA -->
+<div class="sec">
+  <div class="sec-titulo">👷 Obreiro de Hoje</div>
+  <div class="obreiro-hoje">
+    <div class="ico">👷</div>
+    <div>
+      <div class="nome" id="obr-nome-hoje">Carregando...</div>
+      <div class="dia" id="obr-dia-hoje"></div>
+    </div>
+  </div>
+</div>
+
+<!-- AGENDA DA SEMANA -->
+<div class="sec">
+  <div class="sec-titulo">📅 Agenda da Semana</div>
+  <div class="semana" id="semana"></div>
+</div>
+
+<!-- PRÓXIMOS EVENTOS -->
+<div class="sec hidden" id="sec-eventos">
+  <div class="sec-titulo">🎉 Próximos Eventos</div>
+  <div class="eventos-grid" id="eventos-grid"></div>
+</div>
+
+<!-- CULTO FOI ASSIM -->
+<div class="sec hidden" id="sec-cultos">
+  <div class="sec-titulo">📸 Nosso Culto Foi Assim</div>
+  <div id="cultos-lista"></div>
+</div>
+
+<!-- AVISOS -->
+<div class="sec hidden" id="sec-avisos">
+  <div class="sec-titulo">📢 Avisos</div>
+  <div id="avisos-lista"></div>
+</div>
+
+<!-- INFORMATIVOS -->
+<div class="sec hidden" id="sec-informativos">
+  <div class="sec-titulo">📰 Informativos</div>
+  <div id="informativos-lista"></div>
+</div>
+
+<!-- SERMÕES -->
+<div class="sec hidden" id="sec-sermoes">
+  <div class="sec-titulo">📖 Sermões</div>
+  <div class="vid-grid" id="sermoes-lista"></div>
+</div>
+
+<!-- LIDERANÇA -->
+<div class="sec hidden" id="sec-lideranca">
+  <div class="sec-titulo">🎖️ Liderança</div>
+  <div class="lid-grid" id="lideranca-lista"></div>
+</div>
+
+<!-- HORÁRIOS -->
+<div class="sec hidden" id="sec-horarios">
+  <div class="sec-titulo">🕐 Horários de Culto</div>
+  <div class="hor-grid" id="horarios-lista"></div>
+</div>
+
+<!-- PIX / DÍZIMOS -->
+<div class="sec">
+  <div class="sec-titulo">💠 Como Contribuir — PIX / Dízimos</div>
+  <div class="pix-box">
+    <div class="pix-titulo">🏦 Chave PIX — Conta da Igreja Sede</div>
+    <div class="pix-chave-big">CNPJ: 03.360.287/0002-59</div>
+    <div class="pix-info">
+      Após realizar o seu PIX ou depósito, <strong>envie o comprovante pelo WhatsApp</strong> para controle da Igreja Local:
+    </div>
+    <a class="pix-wap" href="https://wa.me/5511993509109?text=Olá!+Segue+meu+comprovante+de+dízimo/oferta." target="_blank">
+      📲 Enviar comprovante — (11) 99350-9109
+    </a>
+    <div id="diz-msg-extra" style="margin-top:.8rem;font-size:.82rem;opacity:.85"></div>
+  </div>
+</div>
+
+<!-- GALERIA -->
+<div class="sec hidden" id="sec-galeria">
+  <div class="sec-titulo">🖼️ Galeria</div>
+  <div class="gal-grid" id="galeria-lista"></div>
+</div>
+
+<!-- VÍDEOS -->
+<div class="sec hidden" id="sec-videos">
+  <div class="sec-titulo">▶️ Vídeos</div>
+  <div class="vid-grid" id="videos-lista"></div>
+</div>
+
+<!-- SOBRE -->
+<div class="sec">
+  <div class="sec-titulo">🏛️ Sobre Nós</div>
+  <div class="sobre-box">
+    <p id="ig-sobre" style="font-size:.88rem;line-height:1.7"></p>
+    <div class="contatos" id="contatos"></div>
+  </div>
+</div>
+
+<footer id="footer-txt">OBPC São Fernando — CNPJ 03.360.287/0002-59</footer>
+
+<script>
+const DB={get:k=>{try{return JSON.parse(localStorage.getItem('obpc_'+k));}catch{return null;}}};
+const DIAS=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+function ytId(u){const m=(u||'').match(/(?:youtu\.be\/|v=|shorts\/)([a-zA-Z0-9_-]+)/);return m?m[1]:null;}
+function show(id){const el=document.getElementById(id);if(el)el.classList.remove('hidden');}
+function compartilharEvento(nome,data,hora,local){
+  const txt=`📅 *${nome}*\n🗓️ ${data}\n🕐 ${hora}\n📍 ${local}\n\nInformações: OBPC São Fernando`;
+  if(navigator.share){navigator.share({title:nome,text:txt}).catch(()=>{});}
+  else{window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank');}
+}
+function compartilharAviso(titulo,texto){
+  const txt=`📢 *${titulo}*\n\n${texto}\n\n— OBPC São Fernando`;
+  if(navigator.share){navigator.share({title:titulo,text:txt}).catch(()=>{});}
+  else{window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank');}
+}
+function compartilharInformativo(titulo,texto){
+  const txt=`📰 *${titulo}*\n\n${texto}\n\n— OBPC São Fernando`;
+  if(navigator.share){navigator.share({title:titulo,text:txt}).catch(()=>{});}
+  else{window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank');}
+}
+
+// MODAL
+function abrirModal(){
+  document.getElementById('modal-senha').classList.add('show');
+  document.getElementById('inp-senha').value='';
+  document.getElementById('msg-senha').textContent='';
+  setTimeout(()=>document.getElementById('inp-senha').focus(),100);
+}
+function fecharModal(){document.getElementById('modal-senha').classList.remove('show');}
+function verificarSenha(){
+  if(document.getElementById('inp-senha').value==='1020'){fecharModal();window.location.href='painel_adm.html';}
+  else{const m=document.getElementById('msg-senha');m.textContent='❌ Senha incorreta.';document.getElementById('inp-senha').value='';setTimeout(()=>m.textContent='',2500);}
+}
+document.getElementById('modal-senha').addEventListener('click',e=>{if(e.target===e.currentTarget)fecharModal();});
+
+// INFO
+function carregarInfo(){
+  const d=DB.get('info')||{};
+  if(d.nome){document.getElementById('ig-nome').textContent=d.nome;document.title=d.nome;document.getElementById('footer-txt').textContent=d.nome+' — CNPJ 03.360.287/0002-59';}
+  if(d.bv)document.getElementById('ig-bv').textContent=d.bv;
+  if(d.pastor)document.getElementById('ig-pastor-hd').textContent='👨‍💼 '+d.pastor;
+  const end=d.end||'Rua Senador José Ermírio de Moraes, 199';
+  document.getElementById('ig-end-hd').textContent='📍 '+end+(d.cidade?' — '+d.cidade:'');
+  if(d.tel)document.getElementById('ig-tel-hd').textContent='📞 '+d.tel;
+  if(d.sobre)document.getElementById('ig-sobre').textContent=d.sobre;
+  // logo
+  const logoSrc=d.logoB64||d.logo||'';
+  if(logoSrc){document.getElementById('header-logo').src=logoSrc;document.getElementById('header-logo').style.display='block';document.getElementById('logo-placeholder').style.display='none';}
+  // contatos
+  const c=[];
+  if(d.tel)c.push('📞 '+d.tel);
+  if(d.email)c.push('✉️ '+d.email);
+  c.push('📍 '+end+(d.cidade?' — '+d.cidade:''));
+  c.push('CNPJ: 03.360.287/0002-59');
+  document.getElementById('contatos').innerHTML=c.map(x=>`<span class="contato-item">${x}</span>`).join('');
+  // mapa
+  const mapUrl='https://maps.google.com/?q='+encodeURIComponent(end+(d.cidade?', '+d.cidade:''));
+  document.getElementById('btn-mapa').href=mapUrl;
+}
+
+function carregarTicker(){
+  const avisos=(DB.get('avisos')||[]).filter(a=>a.prioridade==='urgente'||a.prioridade==='importante');
+  if(!avisos.length){document.getElementById('ticker-wrap').style.display='none';return;}
+  document.getElementById('ticker-wrap').style.display='block';
+  const txt=avisos.map(a=>`🔔 ${a.titulo}`).join('   •   ');
+  document.getElementById('ticker-inner').innerHTML=`<span>${txt}</span><span>${txt}</span>`;
+}
+
+function carregarObreiro(){
+  const escala=DB.get('escala')||{};
+  const hoje=DIAS[new Date().getDay()];
+  const obrs=(escala[hoje]||[]);
+  document.getElementById('obr-dia-hoje').textContent=hoje+' — '+new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long'});
+  document.getElementById('obr-nome-hoje').textContent=obrs.length?obrs.join(', '):'Nenhum obreiro escalado para hoje';
+}
+
+function carregarSemana(){
+  const escala=DB.get('escala')||{};
+  const eventos=DB.get('eventos')||[];
+  const hojeIdx=new Date().getDay();
+  document.getElementById('semana').innerHTML=DIAS.map((dia,i)=>{
+    const isHoje=i===hojeIdx;
+    const obrs=(escala[dia]||[]);
+    const evts=eventos.filter(e=>e.data&&DIAS[new Date(e.data+'T12:00').getDay()]===dia);
+    return `<div class="semana-dia ${isHoje?'hoje':''}">
+      <div class="dia-head">${dia.substring(0,3)}</div>
+      ${obrs.map(o=>`<div class="dia-item di-obr">👷 ${o}</div>`).join('')}
+      ${evts.map(e=>`<div class="dia-item di-evt">📅 ${e.nome}</div>`).join('')}
+    </div>`;}).join('');
+}
+
+function carregarEventos(){
+  const lista=(DB.get('eventos')||[]).filter(e=>e.data).sort((a,b)=>a.data>b.data?1:-1);
+  if(!lista.length)return;
+  show('sec-eventos');
+  document.getElementById('eventos-grid').innerHTML=lista.map(e=>{
+    const d=new Date(e.data+'T12:00');
+    const dataFmt=d.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+    return `<div class="evt-card">
+      ${e.img?`<img class="evt-img" src="${e.img}">`:''}
+      <div class="evt-data-bar">
+        <div class="dia-num">${d.getDate().toString().padStart(2,'0')}</div>
+        <div class="mes">${d.toLocaleDateString('pt-BR',{month:'short',year:'numeric'})}</div>
+      </div>
+      <div class="evt-body">
+        <div class="evt-nome">${e.nome}</div>
+        <div class="evt-detalhe">🕐 ${e.hora||'—'} &nbsp; 📍 ${e.local||'—'}</div>
+        ${e.desc?`<div class="evt-detalhe" style="margin-top:4px">${e.desc}</div>`:''}
+        <span class="evt-badge">${e.tipo}</span>
+        <br><button class="share-btn" onclick="compartilharEvento('${e.nome.replace(/'/g,"\\'")}','${dataFmt}','${e.hora||''}','${e.local||''}')">📤 Compartilhar</button>
+      </div>
+    </div>`;}).join('');
+}
+
+function carregarCultos(){
+  const lista=DB.get('cultos')||[];
+  if(!lista.length)return;
+  show('sec-cultos');
+  document.getElementById('cultos-lista').innerHTML=lista.map(c=>{
+    const fotos=c.fotos||[];
+    const cls=fotos.length===1?'f1':fotos.length===2?'f2':'f3';
+    return `<div class="culto-card">
+      ${fotos.length?`<div class="culto-fotos ${cls}">${fotos.slice(0,6).map(f=>`<img src="${f}" onerror="this.style.display='none'">`).join('')}</div>`:''}
+      <div class="culto-body">
+        <div class="culto-titulo">${c.titulo}</div>
+        ${c.data?`<div class="culto-data">${new Date(c.data+'T12:00').toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'})}</div>`:''}
+        ${c.relato?`<div class="culto-relato">${c.relato}</div>`:''}
+      </div>
+    </div>`;}).join('');
+}
+
+function carregarAvisos(){
+  const lista=DB.get('avisos')||[];
+  if(!lista.length)return;
+  show('sec-avisos');
+  document.getElementById('avisos-lista').innerHTML=lista.map(a=>`
+    <div class="aviso-card ${a.prioridade}">
+      ${a.img?`<img class="aviso-img" src="${a.img}">`:''}
+      <div class="aviso-body">
+        <div class="aviso-titulo">${a.titulo}</div>
+        ${a.texto?`<div class="aviso-texto">${a.texto}</div>`:''}
+        <span class="badge b${a.prioridade.charAt(0)}">${a.prioridade}</span>
+        ${a.data?`<span style="font-size:.7rem;color:var(--muted);margin-left:.5rem">${new Date(a.data+'T12:00').toLocaleDateString('pt-BR')}</span>`:''}
+        <br><button class="share-btn" onclick="compartilharAviso('${(a.titulo||'').replace(/'/g,"\\'")}','${(a.texto||'').replace(/'/g,"\\'").replace(/\n/g,' ')}')">📤 Compartilhar</button>
+      </div>
+    </div>`).join('');
+}
+
+function carregarInformativos(){
+  const lista=DB.get('informativos')||[];
+  if(!lista.length)return;
+  show('sec-informativos');
+  document.getElementById('informativos-lista').innerHTML=lista.map(inf=>`
+    <div class="inf-card">
+      ${inf.img?`<img class="inf-img" src="${inf.img}">`:''}
+      <div class="inf-body">
+        <div class="inf-titulo">${inf.titulo}</div>
+        <span class="inf-cat">${inf.cat}</span>
+        <div class="inf-texto">${inf.texto}</div>
+        <button class="share-btn" style="margin-top:.5rem" onclick="compartilharInformativo('${(inf.titulo||'').replace(/'/g,"\\'")}','${(inf.texto||'').substring(0,200).replace(/'/g,"\\'").replace(/\n/g,' ')}')">📤 Compartilhar</button>
+      </div>
+    </div>`).join('');
+}
+
+function carregarSermoes(){
+  const lista=DB.get('sermoes')||[];
+  if(!lista.length)return;
+  show('sec-sermoes');
+  document.getElementById('sermoes-lista').innerHTML=lista.map(s=>{
+    const vid=ytId(s.url);
+    return `<div class="ser-card">
+      ${vid?`<div class="ser-thumb"><a href="${s.url}" target="_blank"><img src="https://img.youtube.com/vi/${vid}/mqdefault.jpg"><div class="ser-play">▶</div></a></div>`:''}
+      <div class="ser-body">
+        <div class="ser-titulo">${s.titulo}</div>
+        <div class="ser-meta">${s.pregador} ${s.passagem?'— '+s.passagem:''} ${s.data?'— '+new Date(s.data+'T12:00').toLocaleDateString('pt-BR'):''}</div>
+        ${s.resumo?`<p style="font-size:.78rem;margin-top:.4rem;color:var(--muted)">${s.resumo}</p>`:''}
+        ${s.url?`<a class="ser-link" href="${s.url}" target="_blank">▶ Assistir</a>`:''}
+      </div>
+    </div>`;}).join('');
+}
+
+function carregarLideranca(){
+  const lista=DB.get('lideranca')||[];
+  if(!lista.length)return;
+  show('sec-lideranca');
+  document.getElementById('lideranca-lista').innerHTML=lista.map(l=>`
+    <div class="lid-card">
+      <img class="lid-foto" src="${l.foto||'https://ui-avatars.com/api/?name='+encodeURIComponent(l.nome)+'&background=1E3A5F&color=fff'}">
+      <div class="lid-nome">${l.nome}</div>
+      <div class="lid-cargo">${l.cargo}</div>
+      ${l.desc?`<div class="lid-desc">${l.desc}</div>`:''}
+    </div>`).join('');
+}
+
+function carregarHorarios(){
+  const lista=DB.get('horarios')||[];
+  if(!lista.length)return;
+  show('sec-horarios');
+  document.getElementById('horarios-lista').innerHTML=lista.map(h=>`
+    <div class="hor-card"><div class="hor-dia">${h.dia}</div><div class="hor-hora">${h.hora}</div><div class="hor-tipo">${h.tipo}</div></div>`).join('');
+}
+
+function carregarDizMsgExtra(){
+  const msg=DB.get('diz-msg')||'';
+  const el=document.getElementById('diz-msg-extra');
+  if(el&&msg)el.textContent=msg;
+}
+
+function carregarGaleria(){
+  const lista=DB.get('galeria')||[];
+  if(!lista.length)return;
+  show('sec-galeria');
+  document.getElementById('galeria-lista').innerHTML=lista.map(f=>`
+    <div><img class="gal-img" src="${f.url}" onerror="this.style.background='#dde2ea'"><div class="gal-leg">${f.leg||''}</div></div>`).join('');
+}
+
+function carregarVideos(){
+  const lista=DB.get('videos')||[];
+  if(!lista.length)return;
+  show('sec-videos');
+  document.getElementById('videos-lista').innerHTML=lista.map(v=>{
+    const vid=ytId(v.url);
+    return `<div class="vid-card">
+      <a href="${v.url}" target="_blank">
+        <div class="vid-thumb">${vid?`<img src="https://img.youtube.com/vi/${vid}/mqdefault.jpg">`:'<div style="width:100%;height:100%;background:#1a2535"></div>'}<div class="vid-play">▶</div></div>
+      </a>
+      <div class="vid-body"><div class="vid-titulo">${v.titulo}</div><div class="vid-cat">${v.cat}</div></div>
+    </div>`;}).join('');
+}
+
+function init(){
+  carregarInfo();carregarTicker();carregarObreiro();carregarSemana();
+  carregarEventos();carregarCultos();carregarAvisos();carregarInformativos();
+  carregarSermoes();carregarLideranca();carregarHorarios();
+  carregarDizMsgExtra();carregarGaleria();carregarVideos();
+}
+init();
+setInterval(init,30000);
+</script>
+</body>
+</html>
