@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel ADM — OBPC São Fernando</title>
+<style>
+:root {
+  --azul: #1a2f4e;
+  --azul2: #1e3a5f;
+  --azul-claro: #3B9BD6;
+  --branco: #ffffff;
+  --bg: #f0f4f9;
+  --borda: #dde3ed;
+  --texto: #1a2535;
+  --muted: #6b7a90;
+  --verde: #22a86a;
+  --vermelho: #e74c3c;
+  --laranja: #f39c12;
+  --sidebar: 230px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--texto);display:flex;flex-direction:column;min-height:100vh}
+/* HEADER */
+.hdr{background:var(--azul);color:#fff;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;position:sticky;top:0;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.hdr-logo{display:flex;align-items:center;gap:.6rem;font-weight:700;font-size:1rem}
+.hdr-logo span{background:var(--azul-claro);width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem}
+.hdr-right{font-size:.78rem;color:rgba(255,255,255,.65)}
+/* LAYOUT */
+.layout{display:flex;flex:1}
+/* SIDEBAR */
+.sidebar{width:var(--sidebar);background:var(--azul2);color:#fff;padding:1rem 0;flex-shrink:0;overflow-y:auto}
+.sb-section{padding:.6rem 1.2rem .2rem;font-size:.65rem;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:1.2px;margin-top:.5rem}
+.sb-link{display:flex;align-items:center;gap:.55rem;padding:.6rem 1.2rem;color:rgba(255,255,255,.72);font-size:.82rem;cursor:pointer;border-left:3px solid transparent;transition:all .15s;text-decoration:none}
+.sb-link:hover{background:rgba(59,155,214,.15);color:#fff}
+.sb-link.on{background:rgba(59,155,214,.2);color:#fff;border-left-color:var(--azul-claro)}
+/* MAIN */
+main{flex:1;padding:1.75rem;overflow-y:auto}
+.aba{display:none}.aba.on{display:block}
+h2{font-size:1.1rem;font-weight:700;color:var(--azul2);border-bottom:2px solid var(--azul-claro);padding-bottom:.45rem;margin-bottom:1.25rem}
+/* CARDS */
+.card{background:#fff;border-radius:10px;border:1px solid var(--borda);padding:1.25rem;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.card h3{font-size:.88rem;font-weight:700;color:var(--azul2);margin-bottom:.9rem}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+/* FORMS */
+label{display:block;font-size:.75rem;color:var(--muted);font-weight:600;margin:.7rem 0 .25rem}
+label:first-child{margin-top:0}
+input,select,textarea{width:100%;padding:.5rem .7rem;border:1px solid var(--borda);border-radius:6px;font-size:.85rem;color:var(--texto);background:#fff;transition:border-color .2s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--azul-claro)}
+textarea{resize:vertical;min-height:72px}
+.row{display:flex;gap:.6rem;margin-top:.9rem;flex-wrap:wrap}
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:.35rem;padding:.48rem 1rem;border-radius:6px;border:none;cursor:pointer;font-size:.8rem;font-weight:600;transition:all .2s}
+.btn-pri{background:var(--azul-claro);color:#fff}.btn-pri:hover{background:#2e87c0}
+.btn-suc{background:var(--verde);color:#fff}.btn-suc:hover{background:#1a8a57}
+.btn-dan{background:var(--vermelho);color:#fff}.btn-dan:hover{background:#c0392b}
+.btn-war{background:var(--laranja);color:#fff}.btn-war:hover{background:#d68910}
+.btn-sm{padding:.3rem .65rem;font-size:.73rem}
+/* TOAST */
+.toast{display:none;background:#d5f5e3;color:#1a7a45;padding:.5rem .9rem;border-radius:6px;font-size:.8rem;margin-top:.75rem;border:1px solid #a9dfbf}
+/* TABLE */
+table{width:100%;border-collapse:collapse;font-size:.82rem}
+th{background:var(--azul2);color:#fff;padding:.55rem .75rem;text-align:left;font-weight:500}
+td{padding:.55rem .75rem;border-bottom:1px solid var(--borda);vertical-align:middle}
+tr:hover td{background:#f5f8fc}
+/* BADGES */
+.badge{display:inline-block;padding:2px 9px;border-radius:12px;font-size:.7rem;font-weight:600}
+.b-azul{background:#dbeafe;color:#1e40af}
+.b-verde{background:#d1fae5;color:#065f46}
+.b-lar{background:#fef3c7;color:#92400e}
+.b-verm{background:#fee2e2;color:#991b1b}
+.b-cinz{background:#f1f5f9;color:#475569}
+/* DIAS */
+.dias-wrap{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.4rem}
+.dia-pill{padding:.28rem .65rem;border:1px solid var(--borda);border-radius:20px;font-size:.75rem;cursor:pointer;background:#fff;transition:all .2s}
+.dia-pill.on{background:var(--azul-claro);color:#fff;border-color:var(--azul-claro)}
+/* AVATAR */
+.av{width:36px;height:36px;border-radius:50%;background:var(--azul-claro);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;flex-shrink:0}
+/* STAT */
+.stat{background:#fff;border-radius:10px;border:1px solid var(--borda);padding:1rem 1.25rem;text-align:center}
+.stat-n{font-size:2rem;font-weight:800;color:var(--azul-claro)}
+.stat-l{font-size:.75rem;color:var(--muted);margin-top:.15rem}
+/* SEMANA GRID */
+.sem-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:.5rem;margin-top:.25rem}
+.sem-col{background:#fff;border:1px solid var(--borda);border-radius:8px;padding:.6rem;min-height:100px}
+.sem-col.hoje{border-color:var(--azul-claro);box-shadow:0 0 0 2px rgba(59,155,214,.2)}
+.sem-col h4{font-size:.68rem;font-weight:700;color:var(--azul2);text-transform:uppercase;text-align:center;margin-bottom:.4rem}
+.sem-ev{font-size:.67rem;background:#dbeafe;color:#1e40af;border-radius:3px;padding:2px 5px;margin-bottom:2px}
+.sem-ob{font-size:.66rem;background:#d1fae5;color:#065f46;border-radius:3px;padding:2px 5px;margin-bottom:2px}
+/* FOTO GRID */
+.foto-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.75rem;margin-top:.75rem}
+.foto-item{border-radius:8px;overflow:hidden;border:1px solid var(--borda);background:#fff}
+.foto-item img{width:100%;height:110px;object-fit:cover}
+.foto-info{padding:.4rem .5rem;font-size:.72rem}
+/* FINANCEIRO */
+.fin-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.75rem;margin-bottom:1.25rem}
+.fin-box{background:#fff;border-radius:8px;border:1px solid var(--borda);padding:.9rem 1rem}
+.fin-box .val{font-size:1.3rem;font-weight:800;color:var(--azul-claro)}
+.fin-box .lbl{font-size:.72rem;color:var(--muted);margin-top:.1rem}
+/* ESCALA VISUAL */
+.esc-visual{overflow-x:auto;margin-top:.75rem}
+/* INFORMATIVO */
+.info-item{display:flex;gap:.75rem;align-items:flex-start;padding:.75rem;border:1px solid var(--borda);border-radius:8px;background:#fff;margin-bottom:.6rem}
+.info-item .icone{font-size:1.3rem;flex-shrink:0}
+/* PIX ITEM */
+.pix-item{display:flex;align-items:center;justify-content:space-between;padding:.6rem .75rem;border:1px solid var(--borda);border-radius:7px;background:#fff;margin-bottom:.4rem;font-size:.82rem}
+@media(max-width:900px){.sidebar{display:none}.g2{grid-template-columns:1fr}.g3{grid-template-columns:1fr 1fr}.sem-grid{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-logo"><span>⛪</span> Painel ADM — OBPC São Fernando</div>
+  <div class="hdr-right" id="hdr-data"></div>
+</div>
+
+<div class="layout">
+  <nav class="sidebar">
+    <div class="sb-section">Geral</div>
+    <div class="sb-link on" id="nav-dash" onclick="ir('dash')">📊 Dashboard</div>
+    <div class="sb-link" id="nav-semana" onclick="ir('semana')">📅 Agenda Semana</div>
+
+    <div class="sb-section">Conteúdo</div>
+    <div class="sb-link" id="nav-avisos" onclick="ir('avisos')">📢 Avisos</div>
+    <div class="sb-link" id="nav-eventos" onclick="ir('eventos')">🗓 Eventos</div>
+    <div class="sb-link" id="nav-informativos" onclick="ir('informativos')">📋 Informativos</div>
+    <div class="sb-link" id="nav-sermons" onclick="ir('sermons')">✝️ Sermões</div>
+
+    <div class="sb-section">Equipe</div>
+    <div class="sb-link" id="nav-lideranca" onclick="ir('lideranca')">👑 Liderança</div>
+    <div class="sb-link" id="nav-obreiros" onclick="ir('obreiros')">👥 Obreiros</div>
+    <div class="sb-link" id="nav-escala" onclick="ir('escala')">📋 Escala</div>
+
+    <div class="sb-section">Financeiro</div>
+    <div class="sb-link" id="nav-pix" onclick="ir('pix')">💰 PIX / Financeiro</div>
+    <div class="sb-link" id="nav-dizimos" onclick="ir('dizimos')">🙏 Dízimos</div>
+
+    <div class="sb-section">Mídia</div>
+    <div class="sb-link" id="nav-galeria" onclick="ir('galeria')">🖼 Galeria</div>
+    <div class="sb-link" id="nav-videos" onclick="ir('videos')">🎬 Vídeos</div>
+
+    <div class="sb-section">Igreja</div>
+    <div class="sb-link" id="nav-info" onclick="ir('info')">ℹ️ Informações</div>
+    <div class="sb-link" id="nav-horarios" onclick="ir('horarios')">🕐 Horários</div>
+  </nav>
+
+  <main>
+
+    <!-- ===== DASHBOARD ===== -->
+    <div class="aba on" id="aba-dash">
+      <h2>📊 Dashboard</h2>
+      <div class="g3" style="margin-bottom:1.25rem">
+        <div class="stat"><div class="stat-n" id="st-avisos">0</div><div class="stat-l">Avisos</div></div>
+        <div class="stat"><div class="stat-n" id="st-eventos">0</div><div class="stat-l">Eventos</div></div>
+        <div class="stat"><div class="stat-n" id="st-obreiros">0</div><div class="stat-l">Obreiros</div></div>
+      </div>
+      <div class="g2">
+        <div class="card"><h3>📢 Últimos Avisos</h3><div id="d-avisos"></div></div>
+        <div class="card"><h3>🗓 Próximos Eventos</h3><div id="d-eventos"></div></div>
+      </div>
+      <div class="card" style="margin-top:1.25rem"><h3>👤 Obreiro(s) de Hoje</h3><div id="d-obreiro"></div></div>
+    </div>
+
+    <!-- ===== SEMANA ===== -->
+    <div class="aba" id="aba-semana">
+      <h2>📅 Agenda da Semana</h2>
+      <div class="sem-grid" id="sem-grid"></div>
+    </div>
+
+    <!-- ===== AVISOS ===== -->
+    <div class="aba" id="aba-avisos">
+      <h2>📢 Avisos</h2>
+      <div class="g2">
+        <div class="card">
+          <h3>Novo Aviso</h3>
+          <label>Título</label><input id="av-t" placeholder="Título">
+          <label>Mensagem</label><textarea id="av-m" placeholder="Texto..."></textarea>
+          <label>Prioridade</label>
+          <select id="av-p"><option value="normal">Normal</option><option value="importante">Importante</option><option value="urgente">Urgente</option></select>
+          <div class="row"><button class="btn btn-pri" onclick="salvar('avisos')">💾 Salvar</button></div>
+          <div class="toast" id="ok-avisos">✅ Aviso salvo!</div>
+        </div>
+        <div class="card"><h3>Cadastrados</h3><div id="lst-avisos"></div></div>
+      </div>
+    </div>
+
+    <!-- ===== EVENTOS ===== -->
+    <div class="aba" id="aba-eventos">
+      <h2>🗓 Eventos</h2>
+      <div class="g2">
+        <div class="card">
+          <h3>Novo Evento</h3>
+          <label>Nome</label><input id="ev-n" placeholder="Nome do evento">
+          <label>Data</label><input id="ev-d" type="date">
+          <label>Hora</label><input id="ev-h" type="time">
+          <label>Local</label><input id="ev-l" placeholder="Local">
+          <label>Descrição</label><textarea id="ev-desc" placeholder="Detalhes..."></textarea>
+          <label>Tipo</label>
+          <select id="ev-t"><option value="culto">Culto</option><option value="reuniao">Reunião</option><option value="evento">Evento Especial</option><option value="santa-ceia">Santa Ceia</option><option value="primícias">Primícias</option><option value="outro">Outro</option></select>
+          <div class="row"><button class="btn btn-pri" onclick="salvar('eventos')">💾 Salvar</button></div>
+          <div class="toast" id="ok-eventos">✅ Evento salvo!</div>
+        </div>
+        <div class="card"><h3>Cadastrados</h3><div id="lst-eventos"></div></div>
+      </div>
+    </div>
+
+    <!-- ===== INFORMATIVOS ===== -->
+    <div class="aba" id="aba-informativos">
+      <h2>📋 Informativos</h2>
+      <div class="g2">
+        <div class="card">
+          <h3>Novo Informativo</h3>
+          <label>Título</label><input id="inf-t" placeholder="Título">
+          <label>Conteúdo</label><textarea id="inf-c" placeholder="Texto completo..." style="min-height:120px"></textarea>
+          <label>Categoria</label>
+          <select id="inf-cat"><option value="geral">Geral</option><option value="financeiro">Financeiro</option><option value="ministerio">Ministério</option><option value="pastoral">Pastoral</option></select>
+          <div class="row"><button class="btn btn-pri" onclick="salvar('informativos')">💾 Salvar</button></div>
+          <div class="toast" id="ok-informativos">✅ Informativo salvo!</div>
+        </div>
+        <div class="card"><h3>Cadastrados</h3><div id="lst-informativos"></div></div>
+      </div>
+    </div>
+
+    <!-- ===== SERMÕES ===== -->
+    <div class="aba" id="aba-sermons">
+      <h2>✝️ Sermões</h2>
+      <div class="g2">
+        <div class="card">
+          <h3>Novo Sermão</h3>
+          <label>Título</label><input id="sr-t" placeholder="Título do sermão">
+          <label>Pregador</label><input id="sr-pr" placeholder="Nome do pregador">
+          <label>Data</label><input id="sr-d" type="date">
+          <label>Texto Bíblico</label><input id="sr-tb" placeholder="Ex: João 3:16">
+          <label>Esboço / Resumo</label><textarea id="sr-r" placeholder="Resumo ou esboço..." style="min-height:120px"></textarea>
+          <label>URL Vídeo (opcional)</label><input id="sr-v" placeholder="https://youtube.com/...">
+          <div class="row"><button class="btn btn-pri" onclick="salvar('sermons')">💾 Salvar</button></div>
+          <div class="toast" id="ok-sermons">✅ Sermão salvo!</div>
+        </div>
+        <div class="card"><h3>Cadastrados</h3><div id="lst-sermons"></div></div>
+      </div>
+    </div>
+
+    <!-- ===== LIDERANÇA ===== -->
+    <div class="aba" id="aba-lideranca">
+      <h2>👑 Liderança</h2>
+      <div class="g2">
+        <div class="card">
+          <h3>Novo Membro</h3>
+          <label>Nome</label><input id="lid-n" placeholder="Nome completo">
+          <label>Cargo</label>
+          <select id="lid-c"><option value="pastor">Pastor</option><option value="presbitero">Presbítero</option><option value="evangelista">Evangelista</option><option value="diacono">Diácono</option><option value="lider">Líder</option><option value="auxiliar">Auxiliar</option></select>
+          <label>Telefone</label><input id="lid-tel" placeholder="(11) 99999-9999">
+          <label>Foto (URL)</label><input id="lid-foto" placeholder="https://...">
+          <label>Observação</label><input id="lid-obs" placeholder="Responsabilidade ou área">
+          <div class="row"><button class="btn btn-pri" onclick="salvar('lideranca')">💾 Salvar</button></div>
+          <div class="toast" id="ok-lideranca">✅ Membro salvo!</div>
+        </div>
+        <div class="card"><h3>Equipe</h3><div id="lst-lideranca"></div></div>
+      </div>
+    </div>
+
+    <!-- ===== OBREIROS ===== -->
+    <div class="aba" id="aba-obreiros">
+      <h2>👥 Obreiros</h2>
+      <div class="g2">
+        <div class="card">
+          <h3>Novo Obreiro</h3>
+          <label>Nome</label><input id="ob-n" placeholder="Nome completo">
+          <label>Função</label><input id="ob-f" placeholder="Ex: Diácono, Presbítero...">
+          <label>Telefone</label><input id="ob-tel" placeholder="(11) 99999-9999">
+          <label>Foto (URL)</label><input id="ob-foto" placeholder="https://...">
+          <div class="row"><button class="btn btn-pri" onclick="salvar('obreiros')">💾 Salvar</button></div>
+          <div class="toast" id="ok-obreiros">✅ Obreiro salvo!</div>
+        </div>
+        <div class="card"><h3>Cadastrados</h3><div id="lst-obreiros"></div></div>
+      </div>
+    </div>
+
+    <!-- ===== ESCALA ===== -->
+    <div class="aba" id="aba-escala">
+      <h2>📋 Escala de Obreiros</h2>
+      <div class="card" style="margin-bottom:1.25rem">
+        <h3>⚙️ Configurar Dias por Obreiro</h3>
+        <p style="font-size:.8rem;color:var(--muted);margin-bottom:1rem">Clique nos dias da semana de cada obreiro. O index mostrará automaticamente quem está de serviço hoje.</p>
+        <div id="cfg-escala"></div>
+        <div class="row">
+          <button class="btn btn-suc" onclick="salvarEscala()">💾 Salvar Escala</button>
+        </div>
+        <div class="toast" id="ok-escala">✅ Escala salva!</div>
+      </div>
+      <div class="card">
+        <h3>📊 Tabela Semanal</h3>
+        <div style="overflow-x:auto">
+          <table id="tab-escala">
+            <thead><tr><th>Obreiro</th><th>Dom</th><th>Seg</th><th>Ter</th><th>Qua</th><th>Qui</th><th>Sex</th><th>Sáb</th></tr></thead>
+            <tbody id="corpo-escala"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PIX / FINANCEIRO ===== -->
+    <div class="aba" id="aba-pix">
+      <h2>💰 PIX / Financeiro</h2>
+      <div class="g2" style="margin-bottom:1.25rem">
+        <div class="card">
+          <h3>Configurar Chaves PIX</h3>
+          <label>PIX Sede (chave)</label><input id="pix-sede" placeholder="Ex: CNPJ ou telefone">
+          <label>PIX Regional Ferraz</label><input id="pix-ferraz" placeholder="Ex: CPF ou e-mail">
+          <label>Titular da Conta</label><input id="pix-titular" placeholder="Nome do titular">
+          <label>Banco</label><input id="pix-banco" placeholder="Ex: Nubank, Caixa...">
+          <div class="row"><button class="btn btn-pri" onclick="salvarPix()">💾 Salvar PIX</button></div>
+          <div class="toast" id="ok-pix">✅ PIX salvo!</div>
+        </div>
+        <div class="card">
+          <h3>Saldo / Resumo do Mês</h3>
+          <label>Mês/Ano</label><input id="fin-mes" type="month">
+          <label>Saldo Anterior (R$)</label><input id="fin-saldo-ant" type="number" step="0.01" placeholder="0,00">
+          <label>Total Arrecadado (R$)</label><input id="fin-total" type="number" step="0.01" placeholder="0,00">
+          <label>Total Despesas (R$)</label><input id="fin-desp" type="number" step="0.01" placeholder="0,00">
+          <label>Observação</label><input id="fin-obs" placeholder="Observações do mês">
+          <div class="row"><button class="btn btn-pri" onclick="salvarFinanceiro()">💾 Salvar</button></div>
+          <div class="toast" id="ok-financeiro">✅ Dados salvos!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== DÍZIMOS ===== -->
+    <div class="aba" id="aba-dizimos">
+      <h2>🙏 Dízimos e Ofertas</h2>
+      <div class="g2">
+        <div class="card">
+          <h3>Registrar Entrada</h3>
+          <label>Data</label><input id="diz-d" type="date">
+          <label>Tipo</label>
+          <select id="diz-t"><option value="dizimo">Dízimo</option><option value="oferta">Oferta</option><option value="primicias">Primícias</option><option value="missoes">Missões</option><option value="outro">Outro</option></select>
+          <label>Contribuinte</label><input id="diz-nome" placeholder="Nome (ou 'Anônimo')">
+          <label>Valor (R$)</label><input id="diz-val" type="number" step="0.01" placeholder="0,00">
+          <label>Forma</label>
+          <select id="diz-forma"><option value="pix-sede">PIX Sede</option><option value="pix-ferraz">PIX Ferraz</option><option value="especie">Espécie</option></select>
+          <label>Obs.</label><input id="diz-obs" placeholder="Observação">
+          <div class="row"><button class="btn btn-pri" onclick="salvar('dizimos')">💾 Registrar</button></div>
+          <div class="toast" id="ok-dizimos">✅ Registrado!</div>
+        </div>
+        <div class="card"><h3>Últimos Registros</h3><div id="lst-dizimos"></div></div>
+      </div>
+    </div>
+
+    <!-- ===== GALERIA ===== -->
+    <div class="aba" id="aba-galeria">
+      <h2>🖼 Galeria de Fotos</h2>
+      <div class="card" style="margin-bottom:1.25rem">
+        <h3>Adicionar Foto</h3>
+        <div class="g2">
+          <div>
+            <label>URL da Imagem</label><input id="foto-url" placeholder="https://...">
+            <label>Legenda</label><input id="foto-leg" placeholder="Descrição...">
+          </div>
+          <div>
+            <label>Categoria</label>
+            <select id="foto-cat"><option value="culto">Culto</option><option value="evento">Evento</option><option value="congregacao">Congregação</option><option value="obra">Obra Social</option><option value="louvor">Louvor</option></select>
+          </div>
+        </div>
+        <div class="row"><button class="btn btn-pri" onclick="salvar('fotos')">💾 Adicionar</button></div>
+        <div class="toast" id="ok-fotos">✅ Foto adicionada!</div>
+      </div>
+      <div class="card"><h3>Fotos Cadastradas</h3><div class="foto-grid" id="lst-fotos"></div></div>
+    </div>
+
+    <!-- ===== VÍDEOS ===== -->
+    <div class="aba" id="aba-videos">
+      <h2>🎬 Vídeos</h2>
+      <div class="g2">
+        <div class="card">
+          <h3>Adicionar Vídeo</h3>
+          <label>Título</label><input id="vid-t" placeholder="Título">
+          <label>URL YouTube</label><input id="vid-url" placeholder="https://youtube.com/...">
+          <label>Descrição</label><input id="vid-desc" placeholder="Breve descrição">
+          <label>Categoria</label>
+          <select id="vid-cat"><option value="pregacao">Pregação</option><option value="louvor">Louvor</option><option value="evento">Evento</option><option value="outro">Outro</option></select>
+          <div class="row"><button class="btn btn-pri" onclick="salvar('videos')">💾 Adicionar</button></div>
+          <div class="toast" id="ok-videos">✅ Vídeo adicionado!</div>
+        </div>
+        <div class="card"><h3>Vídeos Cadastrados</h3><div id="lst-videos"></div></div>
+      </div>
+    </div>
+
+    <!-- ===== INFORMAÇÕES ===== -->
+    <div class="aba" id="aba-info">
+      <h2>ℹ️ Informações da Igreja</h2>
+      <div class="card">
+        <div class="g2">
+          <div>
+            <label>Nome da Igreja</label><input id="ig-nome" placeholder="Nome completo">
+            <label>Pastor/Responsável</label><input id="ig-pastor" placeholder="Nome">
+            <label>Endereço</label><input id="ig-end" placeholder="Rua, número, bairro...">
+            <label>Telefone</label><input id="ig-tel" placeholder="(11) 99999-9999">
+            <label>E-mail</label><input id="ig-email" placeholder="contato@...">
+            <label>WhatsApp (com DDI)</label><input id="ig-whats" placeholder="5511999999999">
+          </div>
+          <div>
+            <label>Mensagem de Boas-vindas</label>
+            <textarea id="ig-bv" style="min-height:100px" placeholder="Texto de boas-vindas..."></textarea>
+            <label>Sobre a Igreja</label>
+            <textarea id="ig-sobre" style="min-height:100px" placeholder="História, missão, visão..."></textarea>
+            <label>Redes Sociais (Instagram)</label>
+            <input id="ig-insta" placeholder="@usuario">
+            <label>Facebook</label>
+            <input id="ig-face" placeholder="URL ou @pagina">
+          </div>
+        </div>
+        <div class="row"><button class="btn btn-pri" onclick="salvarInfo()">💾 Salvar</button></div>
+        <div class="toast" id="ok-info">✅ Informações salvas!</div>
+      </div>
+    </div>
+
+    <!-- ===== HORÁRIOS ===== -->
+    <div class="aba" id="aba-horarios">
+      <h2>🕐 Horários de Culto</h2>
+      <div class="g2">
+        <div class="card">
+          <h3>Adicionar Horário</h3>
+          <label>Dia da Semana</label>
+          <select id="hor-dia"><option value="Domingo">Domingo</option><option value="Segunda">Segunda-feira</option><option value="Terça">Terça-feira</option><option value="Quarta">Quarta-feira</option><option value="Quinta">Quinta-feira</option><option value="Sexta">Sexta-feira</option><option value="Sábado">Sábado</option></select>
+          <label>Nome do Culto</label><input id="hor-nome" placeholder="Ex: Culto de Adoração">
+          <label>Horário</label><input id="hor-hora" type="time">
+          <label>Local</label><input id="hor-local" placeholder="Ex: Templo Principal">
+          <div class="row"><button class="btn btn-pri" onclick="salvar('horarios')">💾 Adicionar</button></div>
+          <div class="toast" id="ok-horarios">✅ Horário adicionado!</div>
+        </div>
+        <div class="card"><h3>Horários Cadastrados</h3><div id="lst-horarios"></div></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+const DB = {
+  get: k => JSON.parse(localStorage.getItem('obpc_'+k)||'null'),
+  set: (k,v) => localStorage.setItem('obpc_'+k, JSON.stringify(v)),
+  push(k,v){ const a=this.get(k)||[]; a.push(v); this.set(k,a); return a; },
+  del(k,i){ const a=this.get(k)||[]; a.splice(i,1); this.set(k,a); return a; }
+};
+
+const DIAS=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+const DS=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+const MESES=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+
+// Init
+['avisos','eventos','informativos','sermons','lideranca','obreiros','fotos','videos','horarios','dizimos']
+  .forEach(k=>{ if(!DB.get(k)) DB.set(k,[]); });
+['escala','pixcfg','financeiro','iginfo'].forEach(k=>{ if(!DB.get(k)) DB.set(k,{}); });
+
+// Nav
+function ir(id){
+  document.querySelectorAll('.aba').forEach(a=>a.classList.remove('on'));
+  document.querySelectorAll('.sb-link').forEach(a=>a.classList.remove('on'));
+  document.getElementById('aba-'+id).classList.add('on');
+  document.getElementById('nav-'+id).classList.add('on');
+  renders[id]&&renders[id]();
+}
+
+// Toast
+function toast(id){ const e=document.getElementById('ok-'+id); e.style.display='block'; setTimeout(()=>e.style.display='none',2500); }
+
+// Data header
+const d=new Date(); document.getElementById('hdr-data').textContent=d.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+
+// fmtData
+function fmtD(s){ if(!s)return''; const[y,m,d]=s.split('-'); return `${d}/${m}/${y}`; }
+function ytId(u){ const m=u.match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([a-zA-Z0-9_-]{11})/); return m?m[1]:''; }
+function fmtVal(v){ return parseFloat(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
+
+// ===== SALVADORES GENÉRICOS =====
+const campos = {
+  avisos:     ()=>({ id:Date.now(), titulo:g('av-t'), msg:g('av-m'), prioridade:g('av-p'), data:new Date().toLocaleDateString('pt-BR') }),
+  eventos:    ()=>({ id:Date.now(), nome:g('ev-n'), data:g('ev-d'), hora:g('ev-h'), local:g('ev-l'), desc:g('ev-desc'), tipo:g('ev-t') }),
+  informativos:()=>({ id:Date.now(), titulo:g('inf-t'), conteudo:g('inf-c'), cat:g('inf-cat'), data:new Date().toLocaleDateString('pt-BR') }),
+  sermons:    ()=>({ id:Date.now(), titulo:g('sr-t'), pregador:g('sr-pr'), data:g('sr-d'), texto:g('sr-tb'), resumo:g('sr-r'), video:g('sr-v') }),
+  lideranca:  ()=>({ id:Date.now(), nome:g('lid-n'), cargo:g('lid-c'), tel:g('lid-tel'), foto:g('lid-foto'), obs:g('lid-obs') }),
+  obreiros:   ()=>({ id:Date.now(), nome:g('ob-n'), funcao:g('ob-f'), tel:g('ob-tel'), foto:g('ob-foto') }),
+  fotos:      ()=>({ id:Date.now(), url:g('foto-url'), leg:g('foto-leg'), cat:g('foto-cat') }),
+  videos:     ()=>({ id:Date.now(), titulo:g('vid-t'), url:g('vid-url'), desc:g('vid-desc'), cat:g('vid-cat') }),
+  horarios:   ()=>({ id:Date.now(), dia:g('hor-dia'), nome:g('hor-nome'), hora:g('hor-hora'), local:g('hor-local') }),
+  dizimos:    ()=>({ id:Date.now(), data:g('diz-d'), tipo:g('diz-t'), nome:g('diz-nome'), valor:g('diz-val'), forma:g('diz-forma'), obs:g('diz-obs') }),
+};
+
+const validar = {
+  avisos:k=>k.titulo&&k.msg, eventos:k=>k.nome&&k.data, informativos:k=>k.titulo&&k.conteudo,
+  sermons:k=>k.titulo, lideranca:k=>k.nome, obreiros:k=>k.nome, fotos:k=>k.url,
+  videos:k=>k.titulo&&k.url, horarios:k=>k.nome&&k.hora, dizimos:k=>k.valor
+};
+
+function g(id){ const e=document.getElementById(id); return e?e.value.trim():''; }
+
+function salvar(chave){
+  const item = campos[chave]();
+  if(!validar[chave](item)){ alert('Preencha os campos obrigatórios.'); return; }
+  DB.push(chave, item);
+  // limpar campos
+  const inputs = document.querySelectorAll('#aba-'+chave+' input, #aba-'+chave+' textarea');
+  inputs.forEach(el=>{ if(el.type!=='submit') el.value=''; });
+  toast(chave); renders[chave]&&renders[chave](); renderDash();
+}
+
+// ===== RENDERS =====
+const renders = {};
+
+// -- DASH --
+renders.dash = function(){
+  const avisos=DB.get('avisos')||[];
+  const eventos=(DB.get('eventos')||[]).sort((a,b)=>a.data>b.data?1:-1);
+  const obreiros=DB.get('obreiros')||[];
+  const escala=DB.get('escala')||{};
+  document.getElementById('st-avisos').textContent=avisos.length;
+  document.getElementById('st-eventos').textContent=eventos.length;
+  document.getElementById('st-obreiros').textContent=obreiros.length;
+
+  const dA=document.getElementById('d-avisos');
+  dA.innerHTML=avisos.length?avisos.slice(-3).reverse().map(a=>`
+    <div style="padding:.5rem 0;border-bottom:1px solid var(--borda)">
+      <b style="font-size:.84rem">${a.titulo}</b>
+      <span class="badge ${a.prioridade==='urgente'?'b-verm':a.prioridade==='importante'?'b-lar':'b-cinz'}" style="margin-left:6px">${a.prioridade}</span>
+      <p style="font-size:.78rem;color:var(--muted)">${a.msg.slice(0,70)}${a.msg.length>70?'...':''}</p>
+    </div>`).join(''):'<p style="font-size:.82rem;color:var(--muted)">Nenhum aviso.</p>';
+
+  const hoje=new Date().toISOString().split('T')[0];
+  const prox=eventos.filter(e=>e.data>=hoje).slice(0,4);
+  const dE=document.getElementById('d-eventos');
+  dE.innerHTML=prox.length?prox.map(e=>`
+    <div style="padding:.5rem 0;border-bottom:1px solid var(--borda)">
+      <b style="font-size:.84rem">${e.nome}</b>
+      <p style="font-size:.78rem;color:var(--muted)">📅 ${fmtD(e.data)} ${e.hora?'• '+e.hora:''} ${e.local?'• '+e.local:''}</p>
+    </div>`).join(''):'<p style="font-size:.82rem;color:var(--muted)">Nenhum evento.</p>';
+
+  const ds=new Date().getDay();
+  const obHj=obreiros.filter(o=>(escala[o.id]||[]).includes(ds));
+  const dO=document.getElementById('d-obreiro');
+  dO.innerHTML=obHj.length?obHj.map(o=>`
+    <div style="display:flex;align-items:center;gap:.75rem;padding:.5rem 0">
+      ${o.foto?`<img src="${o.foto}" style="width:42px;height:42px;border-radius:50%;object-fit:cover">`:`<div class="av">${o.nome[0]}</div>`}
+      <div><b>${o.nome}</b><p style="font-size:.8rem;color:var(--muted)">${o.funcao||''} — ${DIAS[ds]}</p></div>
+    </div>`).join(''):'<p style="font-size:.82rem;color:var(--muted)">Nenhuma escala para hoje ('+DIAS[ds]+').</p>';
+};
+
+// -- SEMANA --
+renders.semana = function(){
+  const grid=document.getElementById('sem-grid');
+  const hoje=new Date(); const ds=hoje.getDay();
+  const eventos=DB.get('eventos')||[];
+  const obreiros=DB.get('obreiros')||[];
+  const escala=DB.get('escala')||{};
+  grid.innerHTML='';
+  for(let d=0;d<7;d++){
+    const dt=new Date(hoje); dt.setDate(hoje.getDate()-ds+d);
+    const dStr=dt.toISOString().split('T')[0];
+    const evs=eventos.filter(e=>e.data===dStr);
+    const obs=obreiros.filter(o=>(escala[o.id]||[]).includes(d));
+    const col=document.createElement('div');
+    col.className='sem-col'+(d===ds?' hoje':'');
+    col.innerHTML=`<h4>${DS[d]}<br><span style="font-weight:400;color:var(--muted)">${dt.getDate()}/${dt.getMonth()+1}</span></h4>
+      ${obs.map(o=>`<div class="sem-ob">👤 ${o.nome.split(' ')[0]}</div>`).join('')}
+      ${evs.map(e=>`<div class="sem-ev">⛪ ${e.nome}${e.hora?' '+e.hora:''}</div>`).join('')}
+      ${!obs.length&&!evs.length?'<span style="font-size:.7rem;color:var(--muted)">—</span>':''}`;
+    grid.appendChild(col);
+  }
+};
+
+// -- AVISOS --
+renders.avisos = function(){
+  const lst=DB.get('avisos')||[];
+  const el=document.getElementById('lst-avisos');
+  el.innerHTML=lst.length?lst.map((a,i)=>`
+    <div style="border:1px solid var(--borda);border-radius:8px;padding:.65rem;margin-bottom:.4rem">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <b style="font-size:.84rem">${a.titulo}</b>
+        <span class="badge ${a.prioridade==='urgente'?'b-verm':a.prioridade==='importante'?'b-lar':'b-cinz'}">${a.prioridade}</span>
+      </div>
+      <p style="font-size:.78rem;color:var(--muted);margin:.25rem 0">${a.msg}</p>
+      <button class="btn btn-dan btn-sm" onclick="del('avisos',${i})">🗑</button>
+    </div>`).join(''):'<p style="font-size:.82rem;color:var(--muted)">Nenhum.</p>';
+};
+
+// -- EVENTOS --
+renders.eventos = function(){
+  const lst=(DB.get('eventos')||[]).sort((a,b)=>a.data>b.data?1:-1);
+  const el=document.getElementById('lst-eventos');
+  el.innerHTML=lst.length?lst.map((e,i)=>`
+    <div style="border:1px solid var(--borda);border-radius:8px;padding:.65rem;margin-bottom:.4rem">
+      <div style="display:flex;justify-content:space-between">
+        <b style="font-size:.84rem">${e.nome}</b>
+        <span class="badge b-azul">${e.tipo}</span>
+      </div>
+      <p style="font-size:.78rem;color:var(--muted)">📅 ${fmtD(e.data)} ${e.hora?'• '+e.hora:''} ${e.local?'• '+e.local:''}</p>
+      <button class="btn btn-dan btn-sm" style="margin-top:.3rem" onclick="del('eventos',${i})">🗑</button>
+    </div>`).join(''):'<p style="font-size:.82rem;color:var(--muted)">Nenhum.</p>';
+};
+
+// -- INFORMATIVOS --
+renders.informativos = function(){
+  const lst=DB.get('informativos')||[];
+  const el=document.getElementById('lst-informativos');
+  el.innerHTML=lst.length?lst.map((a,i)=>`
+    <div style="border:1px solid var(--borda);border-radius:8px;padding:.65rem;margin-bottom:.4rem">
+      <div style="display:flex;justify-content:space-between"><b style="font-size:.84rem">${a.titulo}</b><span class="badge b-azul">${a.cat}</span></div>
+      <p style="font-size:.78rem;color:var(--muted);margin:.25rem 0">${a.conteudo.slice(0,100)}...</p>
+      <button class="btn btn-dan btn-sm" onclick="del('informativos',${i})">🗑</button>
+    </div>`).join(''):'<p style="font-size:.82rem;color:var(--muted)">Nenhum.</p>';
+};
+
+// -- SERMÕES --
+renders.sermons = function(){
+  const lst=DB.get('sermons')||[];
+  const el=document.getElementById('lst-sermons');
+  el.innerHTML=lst.length?lst.map((s,i)=>`
+    <div style="border:1px solid var(--borda);border-radius:8px;padding:.65rem;margin-bottom:.4rem">
+      <b style="font-size:.84rem">${s.titulo}</b>
+      <p style="font-size:.78rem;color:var(--muted)">✝️ ${s.texto||''} — ${s.pregador||''} — ${fmtD(s.data)}</p>
+      ${s.resumo?`<p style="font-size:.77rem;margin:.2rem 0">${s.resumo.slice(0,80)}...</p>`:''}
+      <button class="btn btn-dan btn-sm" onclick="del('sermons',${i})">🗑</button>
+    </div>`).join(''):'<p style="font-size:.82rem;color:var(--muted)">Nenhum.</p>';
+};
+
+// -- LIDERANÇA --
+renders.lideranca = function(){
+  const lst=DB.get('lideranca')||[];
+  const el=document.getElementById('lst-lideranca');
+  el.innerHTML=lst.length?lst.map((l,i)=>`
+    <div style="display:flex;align-items:center;gap:.65rem;border:1px solid var(--borda);border-radius:8px;padding:.6rem;margin-bottom:.4rem">
+      ${l.foto?`<img src="${l.foto}" style="width:36px;height:36px;border-radius:50%;object-fit:cover">`:`<div class="av">${l.nome[0]}</div>`}
+      <div style="flex:1"><b style="font-size:.85rem">${l.nome}</b><p style="font-size:.75rem;color:var(--muted)">${l.cargo} ${l.obs?'— '+l.obs:''}</p></div>
+      <button class="btn btn-dan btn-sm" onclick="del('lideranca',${i})">🗑</button>
+    </div>`).join(''):'<p style="font-size:.82rem;color:var(--muted)">Nenhum.</p>';
+};
+
+// -- OBREIROS --
+renders.obreiros = function(){
+  const lst=DB.get('obreiros')||[];
+  document.getElementById('st-obreiros').textContent=lst.length;
+  const el=document.getElementById('lst-obreiros');
+  el.innerHTML=lst.length?lst.map((o,i)=>`
+    <div style="display:flex;align-items:center;gap:.65rem;border:1px solid var(--borda);border-radius:8px;padding:.6rem;margin-bottom:.4rem">
+      ${o.foto?`<img src="${o.foto}" style="width:36px;height:36px;border-radius:50%;object-fit:cover">`:`<div class="av">${o.nome[0]}</div>`}
+      <div style="flex:1"><b style="font-size:.85rem">${o.nome}</b><p style="font-size:.75rem;color:var(--muted)">${o.funcao||''}</p></div>
+      <button class="btn btn-dan btn-sm" onclick="del('obreiros',${i});renders.escala&&renders.escala()">🗑</button>
+    </div>`).join(''):'<p style="font-size:.82rem;color:var(--muted)">Nenhum.</p>';
+};
+
+// -- ESCALA --
+renders.escala = function(){
+  const obreiros=DB.get('obreiros')||[];
+  const escala=DB.get('escala')||{};
+  const el=document.getElementById('cfg-escala');
+  el.innerHTML=obreiros.length?obreiros.map((o,oi)=>{
+    const sel=escala[o.id]||[];
+    return `<div style="border:1px solid var(--borda);border-radius:8px;padding:.7rem;margin-bottom:.6rem">
+      <b style="font-size:.85rem">${o.nome}</b><span style="font-size:.75rem;color:var(--muted);margin-left:.5rem">${o.funcao||''}</span>
+      <div class="dias-wrap">${DIAS.map((d,di)=>`<button class="dia-pill${sel.includes(di)?' on':''}" data-ob="${o.id}" data-d="${di}" onclick="this.classList.toggle('on')">${DS[di]}</button>`).join('')}</div>
+    </div>`;
+  }).join(''):'<p style="font-size:.82rem;color:var(--muted)">Cadastre obreiros primeiro.</p>';
+
+  // tabela
+  const corpo=document.getElementById('corpo-escala');
+  corpo.innerHTML=obreiros.map(o=>{
+    const sel=escala[o.id]||[];
+    return `<tr><td>${o.nome}</td>${[0,1,2,3,4,5,6].map(d=>`<td style="text-align:center">${sel.includes(d)?'✅':''}</td>`).join('')}</tr>`;
+  }).join('');
+};
+
+function salvarEscala(){
+  const obreiros=DB.get('obreiros')||[];
+  const escala={};
+  obreiros.forEach(o=>{
+    const btns=document.querySelectorAll(`[data-ob="${o.id}"]`);
+    escala[o.id]=[...btns].filter(b=>b.classList.contains('on')).map(b=>parseInt(b.dataset.d));
+  });
+  DB.set('escala',escala);
+  toast('escala'); renders.escala(); renderDash();
+}
+
+// -- PIX --
+function salvarPix(){
+  DB.set('pixcfg',{ sede:g('pix-sede'), ferraz:g('pix-ferraz'), titular:g('pix-titular'), banco:g('pix-banco') });
+  toast('pix');
+}
+function salvarFinanceiro(){
+  const fin=DB.get('financeiro')||{};
+  fin[g('fin-mes')]={ ant:g('fin-saldo-ant'), total:g('fin-total'), desp:g('fin-desp'), obs:g('fin-obs') };
+  DB.set('financeiro',fin); toast('financeiro');
+}
+renders.pix = function(){
+  const cfg=DB.get('pixcfg')||{};
+  if(cfg.sede) document.getElementById('pix-sede').value=cfg.sede||'';
+  if(cfg.ferraz) document.getElementById('pix-ferraz').value=cfg.ferraz||'';
+  if(cfg.titular) document.getElementById('pix-titular').value=cfg.titular||'';
+  if(cfg.banco) document.getElementById('pix-banco').value=cfg.banco||'';
+};
+
+// -- DÍZIMOS --
+renders.dizimos = function(){
+  const lst=(DB.get('dizimos')||[]).slice(-20).reverse();
+  const el=document.getElementById('lst-dizimos');
+  const total=lst.reduce((s,d)=>s+parseFloat(d.valor||0),0);
+  el.innerHTML=`<p style="font-size:.82rem;font-weight:700;margin-bottom:.5rem;color:var(--verde)">Total exibido: ${fmtVal(total)}</p>`+
+    (lst.length?lst.map((d,i)=>`
+    <div class="pix-item">
+      <div><b style="font-size:.82rem">${d.nome||'Anônimo'}</b> <span class="badge b-azul">${d.tipo}</span><br><span style="font-size:.73rem;color:var(--muted)">${fmtD(d.data)} • ${d.forma}</span></div>
+      <div style="text-align:right"><b style="font-size:.88rem;color:var(--verde)">${fmtVal(d.valor)}</b><br><button class="btn btn-dan btn-sm" onclick="del('dizimos',${(DB.get('dizimos')||[]).length-1-i})">🗑</button></div>
+    </div>`).join(''):'<p style="font-size:.82rem;color:var(--muted)">Nenhum registro.</p>');
+};
+
+// -- GALERIA --
+renders.galeria = function(){
+  const lst=DB.get('fotos')||[];
+  const el=document.getElementById('lst-fotos');
+  el.innerHTML=lst.length?lst.map((f,i)=>`
+    <div class="foto-item">
+      <img src="${f.url}" onerror="this.src='https://via.placeholder.com/150x110?text=Foto'">
+      <div class="foto-info">
+        <p style="font-weight:600">${f.leg||'Sem legenda'}</p>
+        <p style="color:var(--muted)">${f.cat}</p>
+        <button class="btn btn-dan btn-sm" style="margin-top:4px;width:100%" onclick="del('fotos',${i})">🗑</button>
+      </div>
+    </div>`).join(''):'<p style="font-size:.82rem;color:var(--muted)">Nenhuma foto.</p>';
+};
+
+// -- VÍDEOS --
+renders.videos = function(){
+  const lst=DB.get('videos')||[];
+  const el=document.getElementById('lst-videos');
+  el.innerHTML=lst.length?lst.map((v,i)=>{
+    const vid=ytId(v.url);
+    return `<div style="display:flex;gap:.65rem;border:1px solid var(--borda);border-radius:8px;padding:.65rem;margin-bottom:.4rem;align-items:center">
+      ${vid?`<img src="https://img.youtube.com/vi/${vid}/mqdefault.jpg" style="width:90px;height:55px;object-fit:cover;border-radius:5px">`:''}
+      <div style="flex:1"><b style="font-size:.85rem">${v.titulo}</b><p style="font-size:.75rem;color:var(--muted)">${v.desc||''}</p><span class="badge b-azul">${v.cat}</span></div>
+      <button class="btn btn-dan btn-sm" onclick="del('videos',${i})">🗑</button>
+    </div>`;
+  }).join(''):'<p style="font-size:.82rem;color:var(--muted)">Nenhum.</p>';
+};
+
+// -- INFO --
+renders.info = function(){
+  const ig=DB.get('iginfo')||{};
+  ['nome','pastor','end','tel','email','whats','bv','sobre','insta','face'].forEach(k=>{
+    const el=document.getElementById('ig-'+k); if(el) el.value=ig[k]||'';
+  });
+};
+function salvarInfo(){
+  const ig={};
+  ['nome','pastor','end','tel','email','whats','bv','sobre','insta','face'].forEach(k=>{
+    const el=document.getElementById('ig-'+k); if(el) ig[k]=el.value;
+  });
+  DB.set('iginfo',ig); toast('info');
+}
+
+// -- HORÁRIOS --
+renders.horarios = function(){
+  const lst=DB.get('horarios')||[];
+  const el=document.getElementById('lst-horarios');
+  const ord=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+  const sorted=[...lst].sort((a,b)=>ord.indexOf(a.dia)-ord.indexOf(b.dia));
+  el.innerHTML=sorted.length?sorted.map((h,i)=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:.6rem .75rem;border:1px solid var(--borda);border-radius:7px;background:#fff;margin-bottom:.4rem">
+      <div><b style="font-size:.84rem">${h.nome}</b><p style="font-size:.76rem;color:var(--muted)">📅 ${h.dia} • ⏰ ${h.hora} ${h.local?'• '+h.local:''}</p></div>
+      <button class="btn btn-dan btn-sm" onclick="del('horarios',${lst.indexOf(lst.find(x=>x.id===h.id))})">🗑</button>
+    </div>`).join(''):'<p style="font-size:.82rem;color:var(--muted)">Nenhum horário.</p>';
+};
+
+// DELETE
+function del(chave,i){ if(!confirm('Excluir?'))return; DB.del(chave,i); renders[chave]&&renders[chave](); renderDash(); }
+
+// renderDash alias
+function renderDash(){ renders.dash&&renders.dash(); }
+
+// INIT
+renders.dash();
+</script>
+</body>
+</html>

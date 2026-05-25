@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="pg-title">OBPC São Fernando</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --azul:#1a2f4e;
+  --azul2:#1e3a5f;
+  --azul-claro:#3B9BD6;
+  --branco:#ffffff;
+  --bg:#f4f7fb;
+  --borda:#dde3ed;
+  --texto:#1a2535;
+  --muted:#6b7a90;
+  --verde:#22a86a;
+  --ouro:#c8a96e;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Source Sans 3',sans-serif;background:var(--bg);color:var(--texto)}
+
+/* NAV */
+nav{background:var(--azul);position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.25)}
+.nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;height:64px}
+.logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+.logo-ic{width:44px;height:44px;border-radius:10px;background:var(--azul-claro);display:flex;align-items:center;justify-content:center;font-size:1.25rem}
+.logo-txt{color:#fff}
+.logo-txt strong{display:block;font-family:'Playfair Display',serif;font-size:1rem;line-height:1.1}
+.logo-txt span{font-size:.7rem;color:rgba(255,255,255,.55)}
+.nav-links{display:flex;gap:.15rem}
+.nav-links a{color:rgba(255,255,255,.75);text-decoration:none;padding:.4rem .8rem;border-radius:6px;font-size:.82rem;transition:all .2s}
+.nav-links a:hover{background:rgba(255,255,255,.1);color:#fff}
+.nav-adm{background:rgba(255,255,255,.12)!important;color:#fff!important}
+.hamburger{display:none;background:none;border:none;color:#fff;font-size:1.4rem;cursor:pointer}
+
+/* AVISOS BANNER */
+#banner-avisos{background:linear-gradient(90deg,#c0392b,#e74c3c);color:#fff;font-size:.82rem;padding:.5rem 1.5rem;display:none}
+.ticker-wrap{overflow:hidden;white-space:nowrap}
+.ticker-items{display:inline-flex;gap:2.5rem;animation:ticker 30s linear infinite}
+.ticker-items span{display:flex;align-items:center;gap:.4rem}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* HERO */
+.hero{
+  background:linear-gradient(135deg,var(--azul) 0%,#253e62 55%,#1a5480 100%);
+  color:#fff;padding:4.5rem 1.5rem 3.5rem;text-align:center;position:relative;overflow:hidden
+}
+.hero::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:60px;
+  background:var(--bg);clip-path:ellipse(55% 100% at 50% 100%)}
+.hero-content{max-width:720px;margin:0 auto;position:relative}
+.hero-tag{display:inline-block;background:rgba(200,169,110,.2);border:1px solid rgba(200,169,110,.4);
+  color:var(--ouro);padding:.3rem .9rem;border-radius:20px;font-size:.78rem;letter-spacing:.5px;margin-bottom:1rem;font-weight:600}
+.hero h1{font-family:'Playfair Display',serif;font-size:2.6rem;font-weight:800;line-height:1.15;margin-bottom:.75rem}
+.hero h1 span{color:var(--azul-claro)}
+.hero p{font-size:1rem;opacity:.82;max-width:520px;margin:0 auto 2rem;line-height:1.7}
+.hero-btns{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
+.btn-h{padding:.7rem 1.6rem;border-radius:8px;font-size:.88rem;font-weight:700;cursor:pointer;border:none;text-decoration:none;transition:all .2s}
+.btn-h-pri{background:var(--azul-claro);color:#fff}.btn-h-pri:hover{background:#2e87c0;transform:translateY(-1px)}
+.btn-h-sec{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25)}.btn-h-sec:hover{background:rgba(255,255,255,.2)}
+.btn-h-gold{background:var(--ouro);color:var(--azul)}.btn-h-gold:hover{background:#b8956a;transform:translateY(-1px)}
+
+/* SECTION */
+.container{max-width:1100px;margin:0 auto;padding:0 1.5rem}
+.section{padding:3rem 0;border-bottom:1px solid var(--borda)}
+.section:last-child{border-bottom:none}
+.sec-header{margin-bottom:2rem}
+.sec-tag{font-size:.7rem;font-weight:700;color:var(--azul-claro);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:.35rem}
+.sec-title{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:700;color:var(--azul2)}
+.sec-sub{font-size:.9rem;color:var(--muted);margin-top:.3rem}
+.sec-divider{width:48px;height:3px;background:linear-gradient(90deg,var(--azul-claro),transparent);border-radius:2px;margin-top:.6rem}
+
+/* OBREIRO DO DIA */
+.obreiro-card{
+  background:linear-gradient(135deg,var(--azul2),#1a5480);
+  border-radius:16px;padding:2rem;color:#fff;
+  display:flex;align-items:center;gap:1.75rem;
+  box-shadow:0 8px 32px rgba(30,58,95,.25)
+}
+.ob-avatar{width:90px;height:90px;border-radius:50%;border:3px solid rgba(255,255,255,.3);
+  background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;
+  font-size:2.2rem;font-weight:800;flex-shrink:0;overflow:hidden}
+.ob-avatar img{width:100%;height:100%;object-fit:cover}
+.ob-info .tag{font-size:.7rem;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:1px;margin-bottom:.25rem}
+.ob-info h2{font-family:'Playfair Display',serif;font-size:1.5rem;margin-bottom:.2rem}
+.ob-info p{font-size:.88rem;opacity:.75}
+.ob-badge{display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);
+  padding:.25rem .75rem;border-radius:20px;font-size:.75rem;margin-top:.6rem}
+
+/* AGENDA SEMANA */
+.semana-scroll{overflow-x:auto;padding:.25rem 0}
+.semana-flex{display:flex;gap:.85rem;min-width:max-content}
+.dia-card{
+  background:var(--branco);border:1.5px solid var(--borda);border-radius:12px;
+  padding:1rem .85rem;width:148px;flex-shrink:0;transition:box-shadow .2s
+}
+.dia-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.dia-card.hoje{border-color:var(--azul-claro);background:linear-gradient(180deg,#eef7fd,#fff)}
+.dc-nome{font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px}
+.dc-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:800;color:var(--azul2);line-height:1}
+.dia-card.hoje .dc-num{color:var(--azul-claro)}
+.dc-hoje-badge{font-size:.62rem;background:var(--azul-claro);color:#fff;border-radius:4px;padding:1px 6px;display:inline-block;margin-bottom:.5rem}
+.dc-ob{font-size:.71rem;background:#d1fae5;color:#065f46;border-radius:5px;padding:3px 7px;margin-bottom:3px;display:flex;align-items:center;gap:3px}
+.dc-ev{font-size:.71rem;background:#dbeafe;color:#1e40af;border-radius:5px;padding:3px 7px;margin-bottom:3px}
+.dc-vazio{font-size:.73rem;color:#c0c8d4;padding-top:.4rem}
+
+/* AVISOS CARDS */
+.avisos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+.aviso-card{background:var(--branco);border-radius:10px;border:1px solid var(--borda);padding:1.1rem 1.25rem;
+  border-left:4px solid var(--muted)}
+.aviso-card.urgente{border-left-color:#e74c3c}
+.aviso-card.importante{border-left-color:var(--ouro)}
+.aviso-card.normal{border-left-color:var(--azul-claro)}
+.av-titulo{font-weight:700;font-size:.92rem;color:var(--azul2);margin-bottom:.35rem}
+.av-msg{font-size:.83rem;color:var(--muted);line-height:1.5}
+.av-badge{display:inline-block;font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:12px;margin-top:.5rem}
+
+/* EVENTOS */
+.eventos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.1rem}
+.ev-card{background:var(--branco);border-radius:12px;border:1px solid var(--borda);overflow:hidden;transition:transform .2s,box-shadow .2s}
+.ev-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.09)}
+.ev-data{background:var(--azul2);color:#fff;text-align:center;padding:.9rem}
+.ev-data .dia{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:800;line-height:1}
+.ev-data .mes{font-size:.7rem;text-transform:uppercase;letter-spacing:1px;opacity:.7}
+.ev-body{padding:.9rem 1rem}
+.ev-nome{font-weight:700;font-size:.92rem;color:var(--azul2);margin-bottom:.35rem}
+.ev-meta{font-size:.78rem;color:var(--muted);line-height:1.5}
+.ev-tipo{display:inline-block;font-size:.68rem;background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:12px;margin-top:.4rem;font-weight:600}
+
+/* INFORMATIVOS */
+.inf-lista{}
+.inf-card{background:var(--branco);border-radius:10px;border:1px solid var(--borda);padding:1.1rem 1.4rem;margin-bottom:.85rem}
+.inf-cat{font-size:.68rem;font-weight:700;color:var(--azul-claro);text-transform:uppercase;letter-spacing:1px;margin-bottom:.3rem}
+.inf-title{font-weight:700;font-size:.95rem;color:var(--azul2);margin-bottom:.4rem}
+.inf-text{font-size:.85rem;color:var(--muted);line-height:1.6}
+
+/* SERMÕES */
+.sr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem}
+.sr-card{background:var(--branco);border-radius:10px;border:1px solid var(--borda);padding:1.1rem 1.25rem;position:relative}
+.sr-cross{position:absolute;top:1rem;right:1rem;color:var(--azul-claro);font-size:1.1rem;opacity:.4}
+.sr-data{font-size:.72rem;color:var(--muted);margin-bottom:.3rem}
+.sr-titulo{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--azul2);margin-bottom:.3rem}
+.sr-texto{font-size:.78rem;color:var(--azul-claro);font-weight:600;margin-bottom:.4rem}
+.sr-pregador{font-size:.78rem;color:var(--muted)}
+.sr-resumo{font-size:.8rem;color:var(--texto);margin-top:.5rem;line-height:1.5}
+.sr-video{display:inline-block;margin-top:.6rem;font-size:.75rem;color:var(--azul-claro);text-decoration:none;font-weight:600}
+.sr-video:hover{text-decoration:underline}
+
+/* LIDERANÇA */
+.lideranca-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem}
+.lid-card{background:var(--branco);border-radius:12px;border:1px solid var(--borda);padding:1.25rem;text-align:center}
+.lid-foto{width:72px;height:72px;border-radius:50%;background:var(--azul-claro);margin:0 auto .75rem;display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:800;color:#fff;overflow:hidden}
+.lid-foto img{width:100%;height:100%;object-fit:cover}
+.lid-nome{font-weight:700;font-size:.9rem;color:var(--azul2)}
+.lid-cargo{font-size:.75rem;color:var(--muted);text-transform:capitalize;margin-top:.15rem}
+.lid-obs{font-size:.73rem;color:var(--azul-claro);margin-top:.3rem}
+.lid-tel{font-size:.73rem;color:var(--muted);margin-top:.2rem}
+
+/* HORÁRIOS */
+.hor-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem}
+.hor-card{background:var(--branco);border-radius:10px;border:1px solid var(--borda);padding:1rem 1.2rem;
+  display:flex;align-items:center;gap:.85rem}
+.hor-ic{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--azul2),var(--azul-claro));
+  display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;flex-shrink:0}
+.hor-dia{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.hor-nome{font-weight:700;font-size:.88rem;color:var(--azul2)}
+.hor-hora{font-size:.82rem;color:var(--azul-claro);font-weight:600;margin-top:.1rem}
+.hor-local{font-size:.73rem;color:var(--muted)}
+
+/* PIX */
+.pix-box{background:linear-gradient(135deg,#1a2f4e,#1a5480);border-radius:16px;padding:2rem;color:#fff}
+.pix-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1.25rem}
+.pix-item{background:rgba(255,255,255,.1);border-radius:10px;padding:1rem 1.25rem;border:1px solid rgba(255,255,255,.15)}
+.pix-lbl{font-size:.68rem;opacity:.6;text-transform:uppercase;letter-spacing:.8px;margin-bottom:.3rem}
+.pix-val{font-size:1rem;font-weight:700}
+.pix-sub{font-size:.75rem;opacity:.65;margin-top:.15rem}
+.fin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.85rem;margin-top:1.25rem}
+.fin-box{background:rgba(255,255,255,.08);border-radius:10px;padding:.9rem 1rem;border:1px solid rgba(255,255,255,.12)}
+.fin-val{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700}
+.fin-lbl{font-size:.72rem;opacity:.6;margin-top:.15rem}
+
+/* GALERIA */
+.galeria-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.85rem}
+.gal-item{border-radius:10px;overflow:hidden;position:relative;aspect-ratio:4/3;background:#e2e8f0}
+.gal-item img{width:100%;height:100%;object-fit:cover;transition:transform .3s}
+.gal-item:hover img{transform:scale(1.05)}
+.gal-overlay{position:absolute;bottom:0;left:0;right:0;padding:.6rem .75rem;
+  background:linear-gradient(transparent,rgba(0,0,0,.7));color:#fff;font-size:.75rem;opacity:0;transition:opacity .3s}
+.gal-item:hover .gal-overlay{opacity:1}
+
+/* VÍDEOS */
+.vid-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem}
+.vid-card{background:var(--branco);border-radius:10px;border:1px solid var(--borda);overflow:hidden}
+.vid-thumb{position:relative;aspect-ratio:16/9;background:#1a2535}
+.vid-thumb img{width:100%;height:100%;object-fit:cover}
+.vid-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.35);font-size:2.5rem;transition:background .2s}
+.vid-card:hover .vid-play{background:rgba(0,0,0,.55)}
+.vid-body{padding:.75rem 1rem}
+.vid-titulo{font-weight:700;font-size:.88rem;color:var(--azul2)}
+.vid-desc{font-size:.78rem;color:var(--muted);margin-top:.2rem}
+.vid-cat{display:inline-block;font-size:.65rem;background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:12px;margin-top:.35rem}
+
+/* INFO GERAL */
+.info-geral{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.ig-box{background:var(--branco);border-radius:12px;border:1px solid var(--borda);padding:1.5rem}
+.ig-box h3{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--azul2);margin-bottom:1rem}
+.ig-item{display:flex;align-items:flex-start;gap:.65rem;padding:.5rem 0;border-bottom:1px solid var(--borda)}
+.ig-item:last-child{border-bottom:none}
+.ig-ic{font-size:1rem;flex-shrink:0;margin-top:.1rem}
+.ig-lbl{font-size:.72rem;color:var(--muted);margin-bottom:.1rem}
+.ig-val{font-size:.88rem;font-weight:600;color:var(--texto)}
+.sobre-box{background:linear-gradient(135deg,var(--azul2),#1a5480);border-radius:12px;padding:1.75rem;color:#fff}
+.sobre-box p{font-size:.9rem;line-height:1.75;opacity:.88}
+
+/* DÍZIMOS */
+.diz-total{background:linear-gradient(135deg,var(--verde),#1a8a57);border-radius:10px;padding:1rem 1.5rem;color:#fff;margin-bottom:1.25rem;display:flex;align-items:center;gap:1rem}
+.diz-total .val{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:800}
+.diz-lista{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.75rem}
+.diz-item{background:var(--branco);border-radius:9px;border:1px solid var(--borda);padding:.75rem 1rem;display:flex;justify-content:space-between;align-items:center}
+.diz-nome{font-size:.84rem;font-weight:600;color:var(--azul2)}
+.diz-tipo{font-size:.7rem;color:var(--muted)}
+.diz-valor{font-size:.95rem;font-weight:800;color:var(--verde)}
+
+/* FOOTER */
+footer{background:var(--azul);color:rgba(255,255,255,.65);padding:2.5rem 1.5rem;text-align:center}
+.footer-logo{font-family:'Playfair Display',serif;font-size:1.4rem;color:#fff;margin-bottom:.5rem}
+.footer-sub{font-size:.82rem;margin-bottom:1.25rem}
+.footer-links{display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap;font-size:.8rem;margin-bottom:1.25rem}
+.footer-links a{color:var(--azul-claro);text-decoration:none}.footer-links a:hover{text-decoration:underline}
+.footer-copy{font-size:.73rem;opacity:.45}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .nav-links{display:none}.hamburger{display:block}
+  .hero h1{font-size:1.75rem}
+  .pix-grid,.info-geral{grid-template-columns:1fr}
+  .obreiro-card{flex-direction:column;text-align:center}
+}
+@media(max-width:480px){.hero{padding:3rem 1rem 2.5rem}.container{padding:0 1rem}}
+
+.empty{color:var(--muted);font-size:.85rem;padding:1.5rem;text-align:center;background:var(--branco);border-radius:10px;border:1px solid var(--borda)}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a class="logo" href="#">
+      <div class="logo-ic">⛪</div>
+      <div class="logo-txt">
+        <strong id="nav-nome">OBPC São Fernando</strong>
+        <span id="nav-sub">Bem-vindo!</span>
+      </div>
+    </a>
+    <div class="nav-links">
+      <a href="#agenda">Agenda</a>
+      <a href="#eventos">Eventos</a>
+      <a href="#informativos">Informativos</a>
+      <a href="#sermoes">Sermões</a>
+      <a href="#horarios">Horários</a>
+      <a href="#sobre">Sobre</a>
+      <a href="painel_adm.html" class="nav-adm">🔐 ADM</a>
+    </div>
+    <button class="hamburger" onclick="document.querySelector('.nav-links').style.display='flex'">☰</button>
+  </div>
+</nav>
+
+<!-- BANNER AVISOS -->
+<div id="banner-avisos">
+  <div class="ticker-wrap"><div class="ticker-items" id="ticker-items"></div></div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-content">
+    <div class="hero-tag">⛪ Igreja O Brasil Para Cristo</div>
+    <h1 id="hero-titulo">Bem-vindo à <span id="hero-nome">OBPC São Fernando</span></h1>
+    <p id="hero-sub">Um lugar de fé, esperança e amor. Venha fazer parte desta família!</p>
+    <div class="hero-btns">
+      <a class="btn-h btn-h-pri" href="#agenda">📅 Ver Agenda</a>
+      <a class="btn-h btn-h-sec" href="#eventos">🗓 Eventos</a>
+      <a class="btn-h btn-h-gold" id="btn-whats" href="#" style="display:none">💬 WhatsApp</a>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ===== OBREIRO DO DIA ===== -->
+  <div class="section" id="obreiro-section" style="display:none">
+    <div class="sec-header">
+      <div class="sec-tag">Escala</div>
+      <div class="sec-title">Obreiro de Hoje</div>
+      <div class="sec-divider"></div>
+    </div>
+    <div id="obreiro-hoje"></div>
+  </div>
+
+  <!-- ===== AGENDA DA SEMANA ===== -->
+  <div class="section" id="agenda">
+    <div class="sec-header">
+      <div class="sec-tag">Semana</div>
+      <div class="sec-title">Agenda da Semana</div>
+      <div class="sec-sub" id="agenda-sub"></div>
+      <div class="sec-divider"></div>
+    </div>
+    <div class="semana-scroll">
+      <div class="semana-flex" id="semana-flex"></div>
+    </div>
+  </div>
+
+  <!-- ===== AVISOS ===== -->
+  <div class="section" id="avisos-section" style="display:none">
+    <div class="sec-header">
+      <div class="sec-tag">Comunicados</div>
+      <div class="sec-title">Avisos</div>
+      <div class="sec-divider"></div>
+    </div>
+    <div class="avisos-grid" id="avisos-grid"></div>
+  </div>
+
+  <!-- ===== EVENTOS ===== -->
+  <div class="section" id="eventos">
+    <div class="sec-header">
+      <div class="sec-tag">Programação</div>
+      <div class="sec-title">Próximos Eventos</div>
+      <div class="sec-divider"></div>
+    </div>
+    <div class="eventos-grid" id="eventos-grid"></div>
+  </div>
+
+  <!-- ===== INFORMATIVOS ===== -->
+  <div class="section" id="informativos" style="display:none">
+    <div class="sec-header">
+      <div class="sec-tag">Comunicação</div>
+      <div class="sec-title">Informativos</div>
+      <div class="sec-divider"></div>
+    </div>
+    <div class="inf-lista" id="inf-lista"></div>
+  </div>
+
+  <!-- ===== SERMÕES ===== -->
+  <div class="section" id="sermoes" style="display:none">
+    <div class="sec-header">
+      <div class="sec-tag">Palavra</div>
+      <div class="sec-title">Sermões</div>
+      <div class="sec-divider"></div>
+    </div>
+    <div class="sr-grid" id="sr-grid"></div>
+  </div>
+
+  <!-- ===== LIDERANÇA ===== -->
+  <div class="section" id="lideranca-section" style="display:none">
+    <div class="sec-header">
+      <div class="sec-tag">Equipe</div>
+      <div class="sec-title">Nossa Liderança</div>
+      <div class="sec-divider"></div>
+    </div>
+    <div class="lideranca-grid" id="lideranca-grid"></div>
+  </div>
+
+  <!-- ===== HORÁRIOS ===== -->
+  <div class="section" id="horarios">
+    <div class="sec-header">
+      <div class="sec-tag">Cultos</div>
+      <div class="sec-title">Horários de Culto</div>
+      <div class="sec-divider"></div>
+    </div>
+    <div class="hor-grid" id="hor-grid"></div>
+  </div>
+
+  <!-- ===== PIX / FINANCEIRO ===== -->
+  <div class="section" id="pix-section" style="display:none">
+    <div class="sec-header">
+      <div class="sec-tag">Contribuições</div>
+      <div class="sec-title">PIX & Financeiro</div>
+      <div class="sec-divider"></div>
+    </div>
+    <div class="pix-box">
+      <p style="font-size:.82rem;opacity:.7;margin-bottom:.5rem">Contribua com dízimos e ofertas via PIX</p>
+      <div class="pix-grid" id="pix-grid"></div>
+      <div class="fin-grid" id="fin-grid" style="margin-top:1.25rem"></div>
+    </div>
+  </div>
+
+  <!-- ===== DÍZIMOS ===== -->
+  <div class="section" id="diz-section" style="display:none">
+    <div class="sec-header">
+      <div class="sec-tag">Contribuições</div>
+      <div class="sec-title">Dízimos e Ofertas</div>
+      <div class="sec-divider"></div>
+    </div>
+    <div class="diz-total" id="diz-total"></div>
+    <div class="diz-lista" id="diz-lista"></div>
+  </div>
+
+  <!-- ===== GALERIA ===== -->
+  <div class="section" id="galeria-section" style="display:none">
+    <div class="sec-header">
+      <div class="sec-tag">Memórias</div>
+      <div class="sec-title">Galeria de Fotos</div>
+      <div class="sec-divider"></div>
+    </div>
+    <div class="galeria-grid" id="galeria-grid"></div>
+  </div>
+
+  <!-- ===== VÍDEOS ===== -->
+  <div class="section" id="videos-section" style="display:none">
+    <div class="sec-header">
+      <div class="sec-tag">Mídia</div>
+      <div class="sec-title">Vídeos</div>
+      <div class="sec-divider"></div>
+    </div>
+    <div class="vid-grid" id="vid-grid"></div>
+  </div>
+
+  <!-- ===== SOBRE / INFO ===== -->
+  <div class="section" id="sobre">
+    <div class="sec-header">
+      <div class="sec-tag">Igreja</div>
+      <div class="sec-title">Sobre Nós</div>
+      <div class="sec-divider"></div>
+    </div>
+    <div class="info-geral" id="info-geral">
+      <div class="ig-box" id="ig-contato"><h3>📍 Contato & Localização</h3></div>
+      <div class="sobre-box" id="ig-sobre"><p>Informações não configuradas. <a href="painel_adm.html" style="color:var(--ouro)">Configure no Painel ADM</a></p></div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<footer>
+  <div class="footer-logo" id="footer-nome">OBPC São Fernando</div>
+  <p class="footer-sub" id="footer-end"></p>
+  <div class="footer-links">
+    <a href="#agenda">Agenda</a>
+    <a href="#eventos">Eventos</a>
+    <a href="#horarios">Horários</a>
+    <a href="#sobre">Contato</a>
+    <a href="painel_adm.html">ADM</a>
+  </div>
+  <p class="footer-copy">© <span id="ano"></span> OBPC São Fernando — Todos os direitos reservados</p>
+</footer>
+
+<script>
+const DB = { get: k => JSON.parse(localStorage.getItem('obpc_'+k)||'null') };
+const DIAS=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+const DS=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+const MESES=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const MESES3=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+document.getElementById('ano').textContent=new Date().getFullYear();
+
+function fmtD(s){ if(!s)return''; const[y,m,d]=s.split('-'); return`${d}/${m}/${y}`; }
+function ytId(u){ const m=u.match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([a-zA-Z0-9_-]{11})/); return m?m[1]:''; }
+function fmtVal(v){ return parseFloat(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
+function show(id){ document.getElementById(id).style.display=''; }
+
+// ===== INFO GERAL =====
+function carregarInfo(){
+  const ig=DB.get('iginfo')||{};
+  if(ig.nome){
+    document.title=ig.nome;
+    document.getElementById('pg-title').textContent=ig.nome;
+    document.getElementById('nav-nome').textContent=ig.nome;
+    document.getElementById('hero-nome').textContent=ig.nome;
+    document.getElementById('footer-nome').textContent=ig.nome;
+  }
+  if(ig['bv']||ig.bv) document.getElementById('hero-sub').textContent=ig.bv||ig['bv'];
+  if(ig.pastor) document.getElementById('nav-sub').textContent='Pb. '+ig.pastor;
+  if(ig.end) document.getElementById('footer-end').textContent='📍 '+ig.end;
+  if(ig.whats){
+    const b=document.getElementById('btn-whats');
+    b.style.display='inline-block';
+    b.href='https://wa.me/'+ig.whats;
+    b.target='_blank';
+  }
+  // Agenda sub
+  const d=new Date();
+  document.getElementById('agenda-sub').textContent=
+    'Semana de '+d.getDate()+' de '+MESES[d.getMonth()]+' de '+d.getFullYear();
+
+  // Contato
+  const itens=[];
+  if(ig.pastor) itens.push({i:'🙏',l:'Pastor',v:ig.pastor});
+  if(ig.end) itens.push({i:'📍',l:'Endereço',v:ig.end});
+  if(ig.tel) itens.push({i:'📞',l:'Telefone',v:ig.tel});
+  if(ig.email) itens.push({i:'✉️',l:'E-mail',v:ig.email});
+  if(ig.insta) itens.push({i:'📸',l:'Instagram',v:ig.insta});
+  if(ig.face) itens.push({i:'👍',l:'Facebook',v:ig.face});
+  const ct=document.getElementById('ig-contato');
+  ct.innerHTML='<h3>📍 Contato & Localização</h3>'+
+    (itens.length?itens.map(x=>`<div class="ig-item"><div class="ig-ic">${x.i}</div><div><div class="ig-lbl">${x.l}</div><div class="ig-val">${x.v}</div></div></div>`).join('')
+    :'<p style="font-size:.85rem;color:var(--muted)">Configure no Painel ADM.</p>');
+
+  const sb=document.getElementById('ig-sobre');
+  if(ig.sobre){
+    sb.innerHTML=`<p style="font-family:\'Playfair Display\',serif;font-size:1.1rem;margin-bottom:.75rem;opacity:.9">Sobre Nós</p><p>${ig.sobre}</p>`;
+  } else {
+    sb.innerHTML='<p>Configure informações no <a href="painel_adm.html" style="color:var(--ouro)">Painel ADM</a></p>';
+  }
+}
+
+// ===== AVISOS =====
+function carregarAvisos(){
+  const lista=DB.get('avisos')||[];
+  if(!lista.length) return;
+  show('avisos-section');
+  // Banner
+  const bn=document.getElementById('banner-avisos');
+  const tk=document.getElementById('ticker-items');
+  const urgentes=lista.filter(a=>a.prioridade==='urgente');
+  if(urgentes.length){ bn.style.display='block'; const html=urgentes.map(a=>`<span>🔴 <b>${a.titulo}</b>: ${a.msg}</span>`).join(''); tk.innerHTML=html+html; }
+  // Grid
+  const grid=document.getElementById('avisos-grid');
+  grid.innerHTML=lista.map(a=>`
+    <div class="aviso-card ${a.prioridade}">
+      <div class="av-titulo">${a.titulo}</div>
+      <div class="av-msg">${a.msg}</div>
+      <span class="av-badge" style="background:${a.prioridade==='urgente'?'#fee2e2;color:#991b1b':a.prioridade==='importante'?'#fef3c7;color:#92400e':'#dbeafe;color:#1e40af'}">${a.prioridade}</span>
+    </div>`).join('');
+}
+
+// ===== OBREIRO DO DIA =====
+function carregarObreiro(){
+  const obreiros=DB.get('obreiros')||[];
+  const escala=DB.get('escala')||{};
+  const ds=new Date().getDay();
+  const hoje=obreiros.filter(o=>(escala[o.id]||[]).includes(ds));
+  if(!hoje.length) return;
+  show('obreiro-section');
+  document.getElementById('obreiro-hoje').innerHTML=hoje.map(o=>`
+    <div class="obreiro-card">
+      <div class="ob-avatar">${o.foto?`<img src="${o.foto}">`:`${o.nome[0]}`}</div>
+      <div class="ob-info">
+        <div class="tag">Obreiro de Hoje — ${DIAS[ds]}</div>
+        <h2>${o.nome}</h2>
+        <p>${o.funcao||'Obreiro'}</p>
+        ${o.tel?`<span class="ob-badge">📞 ${o.tel}</span>`:''}
+      </div>
+    </div>`).join('');
+}
+
+// ===== AGENDA DA SEMANA =====
+function carregarSemana(){
+  const flex=document.getElementById('semana-flex');
+  const hoje=new Date(); const ds=hoje.getDay();
+  const eventos=DB.get('eventos')||[];
+  const obreiros=DB.get('obreiros')||[];
+  const escala=DB.get('escala')||{};
+  flex.innerHTML='';
+  for(let d=0;d<7;d++){
+    const dt=new Date(hoje); dt.setDate(hoje.getDate()-ds+d);
+    const dStr=dt.toISOString().split('T')[0];
+    const evs=eventos.filter(e=>e.data===dStr);
+    const obs=obreiros.filter(o=>(escala[o.id]||[]).includes(d));
+    const isHoje=d===ds;
+    const card=document.createElement('div');
+    card.className='dia-card'+(isHoje?' hoje':'');
+    card.innerHTML=`
+      <div class="dc-nome">${DS[d]}</div>
+      <div class="dc-num">${dt.getDate()}</div>
+      ${isHoje?'<div class="dc-hoje-badge">Hoje</div>':''}
+      ${obs.map(o=>`<div class="dc-ob">👤 ${o.nome.split(' ')[0]}</div>`).join('')}
+      ${evs.map(e=>`<div class="dc-ev">⛪ ${e.nome}${e.hora?' '+e.hora:''}</div>`).join('')}
+      ${!obs.length&&!evs.length?`<div class="dc-vazio">—</div>`:''}`;
+    flex.appendChild(card);
+  }
+}
+
+// ===== EVENTOS =====
+function carregarEventos(){
+  const hoje=new Date().toISOString().split('T')[0];
+  const lista=(DB.get('eventos')||[]).filter(e=>e.data>=hoje).sort((a,b)=>a.data>b.data?1:-1);
+  const grid=document.getElementById('eventos-grid');
+  if(!lista.length){ grid.innerHTML='<div class="empty">Nenhum evento próximo. <a href="painel_adm.html">Adicionar no ADM</a></div>'; return; }
+  grid.innerHTML=lista.slice(0,9).map(e=>{
+    const[y,m,d]=e.data.split('-');
+    return `<div class="ev-card">
+      <div class="ev-data"><div class="mes">${MESES3[parseInt(m)-1]} ${y}</div><div class="dia">${d}</div></div>
+      <div class="ev-body">
+        <div class="ev-nome">${e.nome}</div>
+        <div class="ev-meta">${e.hora?'⏰ '+e.hora+'<br>':''} ${e.local?'📍 '+e.local:''}${e.desc?'<br>'+e.desc.slice(0,70)+(e.desc.length>70?'...':''):''}</div>
+        <span class="ev-tipo">${e.tipo}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ===== INFORMATIVOS =====
+function carregarInformativos(){
+  const lista=DB.get('informativos')||[];
+  if(!lista.length) return;
+  show('informativos');
+  document.getElementById('inf-lista').innerHTML=lista.slice(-5).reverse().map(a=>`
+    <div class="inf-card">
+      <div class="inf-cat">${a.cat}</div>
+      <div class="inf-title">${a.titulo}</div>
+      <div class="inf-text">${a.conteudo}</div>
+      <p style="font-size:.73rem;color:var(--muted);margin-top:.5rem">${a.data||''}</p>
+    </div>`).join('');
+}
+
+// ===== SERMÕES =====
+function carregarSermoes(){
+  const lista=DB.get('sermons')||[];
+  if(!lista.length) return;
+  show('sermoes');
+  document.getElementById('sr-grid').innerHTML=lista.slice(-6).reverse().map(s=>{
+    const vid=s.video?ytId(s.video):'';
+    return `<div class="sr-card">
+      <div class="sr-cross">✝</div>
+      <div class="sr-data">${fmtD(s.data)}</div>
+      <div class="sr-titulo">${s.titulo}</div>
+      ${s.texto?`<div class="sr-texto">📖 ${s.texto}</div>`:''}
+      ${s.pregador?`<div class="sr-pregador">👤 ${s.pregador}</div>`:''}
+      ${s.resumo?`<div class="sr-resumo">${s.resumo.slice(0,120)}${s.resumo.length>120?'...':''}</div>`:''}
+      ${vid?`<a class="sr-video" href="${s.video}" target="_blank">▶ Assistir vídeo</a>`:''}
+    </div>`;
+  }).join('');
+}
+
+// ===== LIDERANÇA =====
+function carregarLideranca(){
+  const lista=DB.get('lideranca')||[];
+  if(!lista.length) return;
+  show('lideranca-section');
+  document.getElementById('lideranca-grid').innerHTML=lista.map(l=>`
+    <div class="lid-card">
+      <div class="lid-foto">${l.foto?`<img src="${l.foto}">`:`${l.nome[0]}`}</div>
+      <div class="lid-nome">${l.nome}</div>
+      <div class="lid-cargo">${l.cargo}</div>
+      ${l.obs?`<div class="lid-obs">${l.obs}</div>`:''}
+      ${l.tel?`<div class="lid-tel">📞 ${l.tel}</div>`:''}
+    </div>`).join('');
+}
+
+// ===== HORÁRIOS =====
+function carregarHorarios(){
+  const lista=DB.get('horarios')||[];
+  const grid=document.getElementById('hor-grid');
+  if(!lista.length){ grid.innerHTML='<div class="empty">Nenhum horário cadastrado. <a href="painel_adm.html">Adicionar no ADM</a></div>'; return; }
+  const ord=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+  const sorted=[...lista].sort((a,b)=>ord.indexOf(a.dia)-ord.indexOf(b.dia));
+  grid.innerHTML=sorted.map(h=>`
+    <div class="hor-card">
+      <div class="hor-ic">⛪</div>
+      <div>
+        <div class="hor-dia">${h.dia}</div>
+        <div class="hor-nome">${h.nome}</div>
+        <div class="hor-hora">⏰ ${h.hora}</div>
+        ${h.local?`<div class="hor-local">📍 ${h.local}</div>`:''}
+      </div>
+    </div>`).join('');
+}
+
+// ===== PIX =====
+function carregarPix(){
+  const cfg=DB.get('pixcfg')||{};
+  const fin=DB.get('financeiro')||{};
+  if(!cfg.sede&&!cfg.ferraz) return;
+  show('pix-section');
+  const grid=document.getElementById('pix-grid');
+  const itens=[];
+  if(cfg.sede) itens.push({l:'PIX — Igreja Sede',v:cfg.sede,s:cfg.banco||''});
+  if(cfg.ferraz) itens.push({l:'PIX — Regional Ferraz',v:cfg.ferraz,s:cfg.titular||''});
+  grid.innerHTML=itens.map(x=>`
+    <div class="pix-item">
+      <div class="pix-lbl">${x.l}</div>
+      <div class="pix-val">${x.v}</div>
+      ${x.s?`<div class="pix-sub">${x.s}</div>`:''}
+    </div>`).join('');
+
+  // Financeiro do mês atual
+  const mes=new Date().toISOString().slice(0,7);
+  const f=fin[mes];
+  if(f){
+    const saldo=(parseFloat(f.ant||0)+parseFloat(f.total||0)-parseFloat(f.desp||0));
+    document.getElementById('fin-grid').innerHTML=`
+      <div class="fin-box"><div class="fin-val">${fmtVal(f.ant)}</div><div class="fin-lbl">Saldo Anterior</div></div>
+      <div class="fin-box"><div class="fin-val">${fmtVal(f.total)}</div><div class="fin-lbl">Total Arrecadado</div></div>
+      <div class="fin-box"><div class="fin-val">${fmtVal(f.desp)}</div><div class="fin-lbl">Despesas</div></div>
+      <div class="fin-box"><div class="fin-val">${fmtVal(saldo)}</div><div class="fin-lbl">Saldo Atual</div></div>`;
+  }
+}
+
+// ===== DÍZIMOS =====
+function carregarDizimos(){
+  const lista=DB.get('dizimos')||[];
+  if(!lista.length) return;
+  show('diz-section');
+  const total=lista.reduce((s,d)=>s+parseFloat(d.valor||0),0);
+  document.getElementById('diz-total').innerHTML=`
+    <div style="font-size:1.8rem">🙏</div>
+    <div><div style="font-size:.78rem;opacity:.75">Total de Contribuições</div><div class="val">${fmtVal(total)}</div></div>`;
+  document.getElementById('diz-lista').innerHTML=lista.slice(-12).reverse().map(d=>`
+    <div class="diz-item">
+      <div><div class="diz-nome">${d.nome||'Anônimo'}</div><div class="diz-tipo">${d.tipo} • ${fmtD(d.data)} • ${d.forma}</div></div>
+      <div class="diz-valor">${fmtVal(d.valor)}</div>
+    </div>`).join('');
+}
+
+// ===== GALERIA =====
+function carregarGaleria(){
+  const lista=DB.get('fotos')||[];
+  if(!lista.length) return;
+  show('galeria-section');
+  document.getElementById('galeria-grid').innerHTML=lista.map(f=>`
+    <div class="gal-item">
+      <img src="${f.url}" alt="${f.leg||''}" loading="lazy" onerror="this.parentElement.style.display='none'">
+      <div class="gal-overlay">${f.leg||''} <span style="opacity:.6">• ${f.cat}</span></div>
+    </div>`).join('');
+}
+
+// ===== VÍDEOS =====
+function carregarVideos(){
+  const lista=DB.get('videos')||[];
+  if(!lista.length) return;
+  show('videos-section');
+  document.getElementById('vid-grid').innerHTML=lista.map(v=>{
+    const vid=ytId(v.url);
+    return `<div class="vid-card">
+      <a href="${v.url}" target="_blank" style="text-decoration:none">
+        <div class="vid-thumb">
+          ${vid?`<img src="https://img.youtube.com/vi/${vid}/mqdefault.jpg" loading="lazy">`:'<div style="width:100%;height:100%;background:#1a2535"></div>'}
+          <div class="vid-play">▶️</div>
+        </div>
+      </a>
+      <div class="vid-body">
+        <div class="vid-titulo">${v.titulo}</div>
+        ${v.desc?`<div class="vid-desc">${v.desc}</div>`:''}
+        <span class="vid-cat">${v.cat}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ===== INIT =====
+function init(){
+  carregarInfo();
+  carregarAvisos();
+  carregarObreiro();
+  carregarSemana();
+  carregarEventos();
+  carregarInformativos();
+  carregarSermoes();
+  carregarLideranca();
+  carregarHorarios();
+  carregarPix();
+  carregarDizimos();
+  carregarGaleria();
+  carregarVideos();
+}
+init();
+setInterval(init, 30000);
+</script>
+</body>
+</html>
