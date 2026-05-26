@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Migrar Mídias — OBPC</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',sans-serif;background:#f0f4f8;color:#1a2535;padding:1.5rem;}
+h1{color:#1E3A5F;font-size:1.2rem;margin-bottom:1rem;}
+.card{background:#fff;border-radius:12px;padding:1.2rem;margin-bottom:1rem;box-shadow:0 2px 8px rgba(0,0,0,.08);}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:.6rem 1.2rem;border:none;border-radius:8px;font-size:.9rem;font-weight:700;cursor:pointer;}
+.btn-primary{background:#1E3A5F;color:#fff;}
+.btn-success{background:#27ae60;color:#fff;}
+.btn-danger{background:#e74c3c;color:#fff;}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
+#log{background:#0f172a;color:#e2e8f0;border-radius:10px;padding:1rem;font-family:monospace;font-size:.8rem;min-height:200px;max-height:400px;overflow-y:auto;white-space:pre-wrap;line-height:1.7;}
+.ok{color:#4ade80;} .err{color:#f87171;} .info{color:#60a5fa;} .warn{color:#fbbf24;}
+.barra{height:14px;background:#e2e8f0;border-radius:10px;overflow:hidden;margin:.5rem 0;}
+.barra-fill{height:100%;background:#27ae60;border-radius:10px;transition:width .3s;}
+input{width:100%;padding:.5rem .75rem;border:1.5px solid #dde2ea;border-radius:8px;font-size:.9rem;}
+label{font-size:.78rem;font-weight:600;color:#6b7a90;display:block;margin:.4rem 0 .2rem;}
+.resumo{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.6rem;margin-bottom:1rem;}
+.resumo-card{background:#f8fafd;border:1px solid #dde2ea;border-radius:8px;padding:.7rem;text-align:center;}
+.resumo-card .num{font-size:1.6rem;font-weight:700;color:#1E3A5F;}
+.resumo-card .lbl{font-size:.7rem;color:#6b7a90;}
+</style>
+</head>
+<body>
+
+<h1>🔄 Migrador de Mídias — OBPC São Fernando</h1>
+<p style="font-size:.82rem;color:#6b7a90;margin-bottom:1rem">
+  Esta ferramenta lê as fotos/vídeos salvos localmente (IDB) no seu PC e envia para o ImgBB (nuvem), para que apareçam no celular também.
+</p>
+
+<div class="card">
+  <label>🔑 API Key do ImgBB</label>
+  <div style="display:flex;gap:.5rem">
+    <input id="key-inp" placeholder="Cole sua key do ImgBB..." value="">
+    <button class="btn btn-primary" onclick="salvarKey()">💾</button>
+  </div>
+</div>
+
+<div class="card">
+  <div class="resumo" id="resumo-wrap" style="display:none"></div>
+  <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+    <button class="btn btn-primary" id="btn-scan" onclick="escanear()">🔍 Escanear dados locais</button>
+    <button class="btn btn-success" id="btn-migrar" onclick="migrar()" disabled>☁️ Migrar tudo para nuvem</button>
+  </div>
+</div>
+
+<div class="card">
+  <div class="barra"><div class="barra-fill" id="barra" style="width:0%"></div></div>
+  <div id="log">Aguardando...</div>
+</div>
+
+<script>
+const FB_URL='https://fcosta-31125-default-rtdb.firebaseio.com/obpc';
+const IMGBB_KEY_STORE='obpc_imgbb_key';
+
+// Carregar key salva
+window.addEventListener('load',()=>{
+  const k=localStorage.getItem(IMGBB_KEY_STORE)||'';
+  if(k)document.getElementById('key-inp').value=k;
+});
+
+function salvarKey(){
+  const k=document.getElementById('key-inp').value.trim();
+  if(!k){alert('Cole a key!');return;}
+  localStorage.setItem(IMGBB_KEY_STORE,k);
+  log('✅ Key salva!','ok');
+}
+
+function log(msg,tipo='info'){
+  const el=document.getElementById('log');
+  const cls={'ok':'ok','err':'err','warn':'warn','info':'info'}[tipo]||'info';
+  el.innerHTML+=`<span class="${cls}">${msg}</span>\n`;
+  el.scrollTop=el.scrollHeight;
+}
+
+function setBarra(p){document.getElementById('barra').style.width=p+'%';}
+
+// ═══ IDB ═══
+const IDB_NM='obpc_midia', IDB_ST='files';
+function idbOpen(){
+  return new Promise((res,rej)=>{
+    const r=indexedDB.open(IDB_NM,1);
+    r.onsuccess=e=>res(e.target.result);
+    r.onerror=rej;
+    r.onupgradeneeded=e=>e.target.result.createObjectStore(IDB_ST,{keyPath:'id',autoIncrement:true});
+  });
+}
+async function idbGetAll(){
+  const db=await idbOpen();
+  return new Promise((res,rej)=>{
+    const rq=db.transaction(IDB_ST,'readonly').objectStore(IDB_ST).getAll();
+    rq.onsuccess=()=>res(rq.result||[]);
+    rq.onerror=rej;
+  });
+}
+async function idbGet(id){
+  const db=await idbOpen();
+  return new Promise((res,rej)=>{
+    const rq=db.transaction(IDB_ST,'readonly').objectStore(IDB_ST).get(Number(id));
+    rq.onsuccess=()=>res(rq.result);
+    rq.onerror=rej;
+  });
+}
+
+// ═══ Upload ImgBB ═══
+async function uploadImgBB(blob, nome){
+  const key=document.getElementById('key-inp').value.trim();
+  if(!key){throw new Error('Key ImgBB não configurada');}
+  const b64=await new Promise((res,rej)=>{
+    const r=new FileReader();
+    r.onload=e=>res(e.target.result.split(',')[1]);
+    r.onerror=rej;
+    r.readAsDataURL(blob);
+  });
+  const fd=new FormData();
+  fd.append('image',b64);
+  fd.append('name',nome||'obpc_'+Date.now());
+  const resp=await fetch(`https://api.imgbb.com/1/upload?key=${key}`,{method:'POST',body:fd});
+  const data=await resp.json();
+  if(data.success&&data.data&&data.data.url)return data.data.url;
+  throw new Error(data.error?.message||'ImgBB falhou: '+JSON.stringify(data));
+}
+
+// ═══ Upload Cloudinary (vídeos) ═══
+async function uploadCloudVideo(blob, nome){
+  const fd=new FormData();
+  fd.append('file',blob);
+  fd.append('upload_preset','obpc_upload');
+  fd.append('folder','obpc_sao_fernando');
+  const resp=await fetch('https://api.cloudinary.com/v1_1/dpquob8gh/video/upload',{method:'POST',body:fd});
+  const data=await resp.json();
+  if(data.secure_url)return data.secure_url;
+  throw new Error(data.error?.message||'Cloudinary falhou');
+}
+
+// ═══ Escanear ═══
+let _mapa={}; // idb_id → {blob, nome, tipo}
+let _cultos=[], _palavras=[], _galeria=[], _avisos=[], _eventos=[], _informativos=[];
+
+async function escanear(){
+  document.getElementById('log').innerHTML='';
+  log('🔍 Escaneando dados locais...','info');
+  setBarra(5);
+
+  // Ler IDB
+  let idbItens=[];
+  try{
+    idbItens=await idbGetAll();
+    log(`📦 IDB: ${idbItens.length} arquivo(s) encontrado(s)`,'ok');
+  }catch(e){
+    log('⚠️ IDB vazio ou inacessível: '+e.message,'warn');
+  }
+  idbItens.forEach(it=>{ _mapa['idb:'+it.id]={blob:it.blob,nome:it.nome||'arquivo',tipo:it.tipo||''}; });
+
+  // Ler localStorage
+  const LS=k=>{try{return JSON.parse(localStorage.getItem('obpc_'+k));}catch{return null;}};
+  _cultos=LS('cultos')||[];
+  _palavras=LS('palavras')||[];
+  _galeria=LS('galeria')||[];
+  _avisos=LS('avisos')||[];
+  _eventos=LS('eventos')||[];
+  _informativos=LS('informativos')||[];
+
+  // Contar mídias locais
+  let totalLocal=0, totalCloud=0;
+  const contarMidia=(lista,campo)=>{
+    (lista||[]).forEach(it=>{
+      const m=it[campo]||it.midia||[];
+      (Array.isArray(m)?m:[m]).forEach(x=>{
+        const src=x.src||x.url||x||'';
+        if(src.startsWith('idb:'))totalLocal++;
+        else if(src.startsWith('http'))totalCloud++;
+      });
+    });
+  };
+  contarMidia(_cultos,'midia');
+  contarMidia(_palavras,'midia');
+  _galeria.forEach(g=>{if((g.url||'').startsWith('idb:'))totalLocal++;else if((g.url||'').startsWith('http'))totalCloud++;});
+
+  log(`📸 Mídias locais (IDB) a migrar: ${totalLocal}`,'warn');
+  log(`☁️ Mídias já na nuvem: ${totalCloud}`,'ok');
+  log(`📋 Cultos: ${_cultos.length} | Palavras: ${_palavras.length} | Galeria: ${_galeria.length}`,'info');
+
+  // Resumo
+  const rw=document.getElementById('resumo-wrap');
+  rw.style.display='grid';
+  rw.innerHTML=`
+    <div class="resumo-card"><div class="num">${idbItens.length}</div><div class="lbl">Arquivos IDB</div></div>
+    <div class="resumo-card"><div class="num" style="color:#e74c3c">${totalLocal}</div><div class="lbl">Mídias locais</div></div>
+    <div class="resumo-card"><div class="num" style="color:#27ae60">${totalCloud}</div><div class="lbl">Já na nuvem</div></div>
+    <div class="resumo-card"><div class="num">${_cultos.length}</div><div class="lbl">Cultos</div></div>
+  `;
+
+  setBarra(100);
+  if(totalLocal>0){
+    document.getElementById('btn-migrar').disabled=false;
+    log('▶️ Clique em "Migrar tudo para nuvem" para começar.','info');
+  } else {
+    log('✅ Nenhuma mídia local encontrada — tudo já está na nuvem!','ok');
+  }
+}
+
+// ═══ Migrar ═══
+async function migrar(){
+  const key=document.getElementById('key-inp').value.trim();
+  if(!key){alert('Configure a key do ImgBB primeiro!');return;}
+
+  document.getElementById('btn-migrar').disabled=true;
+  document.getElementById('btn-scan').disabled=true;
+  log('\n🚀 Iniciando migração...','info');
+
+  // Mapa idb_id → nova URL pública
+  const cache={};
+  let total=0, feito=0, erros=0;
+
+  // Contar total
+  const contarSrc=(src)=>src&&src.startsWith('idb:')?total++:null;
+  _cultos.forEach(c=>(c.midia||[]).forEach(m=>contarSrc(m.src)));
+  _palavras.forEach(p=>(p.midia||[]).forEach(m=>contarSrc(m.src)));
+  _galeria.forEach(g=>contarSrc(g.url));
+
+  log(`📊 Total a migrar: ${total} arquivo(s)`,'info');
+  if(!total){log('✅ Nada para migrar!','ok');return;}
+
+  async function resolverSrc(src){
+    if(!src||!src.startsWith('idb:'))return src;
+    if(cache[src])return cache[src];
+    const id=src.replace('idb:','');
+    const rec=_mapa[src];
+    if(!rec||!rec.blob){
+      // Tentar buscar direto do IDB
+      try{
+        const item=await idbGet(id);
+        if(!item||!item.blob)throw new Error('não encontrado');
+        const isVid=item.tipo&&item.tipo.startsWith('video/');
+        let novaUrl;
+        if(isVid){
+          log(`  🎬 Vídeo: ${item.nome||id} → Cloudinary...`,'info');
+          try{novaUrl=await uploadCloudVideo(item.blob,item.nome);}
+          catch(e){log(`  ⚠️ Cloudinary falhou (${e.message}) — pulando vídeo`,'warn');erros++;return src;}
+        } else {
+          log(`  📸 Foto: ${item.nome||id} → ImgBB...`,'info');
+          novaUrl=await uploadImgBB(item.blob,item.nome);
+        }
+        cache[src]=novaUrl;
+        feito++;
+        setBarra(Math.round(feito/total*90));
+        log(`  ✅ ${item.nome||id} → ${novaUrl}`,'ok');
+        return novaUrl;
+      }catch(e){
+        log(`  ❌ Erro em idb:${id}: ${e.message}`,'err');
+        erros++;
+        return src; // manter original se falhar
+      }
+    }
+    const isVid=(rec.tipo||'').startsWith('video/');
+    let novaUrl;
+    try{
+      if(isVid){
+        log(`  🎬 Vídeo: ${rec.nome||id} → Cloudinary...`,'info');
+        novaUrl=await uploadCloudVideo(rec.blob,rec.nome);
+      } else {
+        log(`  📸 Foto: ${rec.nome||id} → ImgBB...`,'info');
+        novaUrl=await uploadImgBB(rec.blob,rec.nome);
+      }
+      cache[src]=novaUrl;
+      feito++;
+      setBarra(Math.round(feito/total*90));
+      log(`  ✅ ${rec.nome||id} → ${novaUrl}`,'ok');
+    }catch(e){
+      log(`  ❌ Erro: ${e.message}`,'err');
+      erros++;
+      novaUrl=src;
+    }
+    return novaUrl;
+  }
+
+  // Migrar cultos
+  log('\n📸 Migrando Cultos...','info');
+  for(const c of _cultos){
+    if(!c.midia)continue;
+    for(const m of c.midia){
+      m.src=await resolverSrc(m.src);
+      if(!m.src.startsWith('idb:'))m.cloud=true;
+    }
+  }
+
+  // Migrar palavras
+  log('\n🎤 Migrando Palavras...','info');
+  for(const p of _palavras){
+    if(!p.midia)continue;
+    for(const m of p.midia){
+      m.src=await resolverSrc(m.src);
+      if(!m.src.startsWith('idb:'))m.cloud=true;
+    }
+  }
+
+  // Migrar galeria
+  log('\n🖼️ Migrando Galeria...','info');
+  for(const g of _galeria){
+    if(g.url&&g.url.startsWith('idb:')){
+      g.url=await resolverSrc(g.url);
+    }
+  }
+
+  // Salvar tudo no localStorage + Firebase
+  log('\n💾 Salvando no Firebase...','info');
+  const salvar=async(k,v)=>{
+    localStorage.setItem('obpc_'+k,JSON.stringify(v));
+    try{
+      await fetch(`${FB_URL}/${k}.json`,{method:'PUT',body:JSON.stringify(v),headers:{'Content-Type':'application/json'}});
+    }catch(e){log('⚠️ Firebase erro: '+e.message,'warn');}
+  };
+
+  await salvar('cultos',_cultos);
+  await salvar('palavras',_palavras);
+  await salvar('galeria',_galeria);
+
+  setBarra(100);
+  log(`\n✅ CONCLUÍDO! ${feito} arquivo(s) migrado(s), ${erros} erro(s).`,'ok');
+  if(erros>0)log('⚠️ Arquivos com erro foram mantidos locais — tente novamente ou faça upload manual.','warn');
+  log('\n📱 Abra o site no celular agora — as mídias devem aparecer!','ok');
+
+  document.getElementById('btn-scan').disabled=false;
+}
+</script>
+</body>
+</html>
