@@ -1,0 +1,302 @@
+('videos')||[];
+  var url=(document.getElementById('vid-url').value||'').trim();
+  var yid=(url.match(/(?:youtu\.be\/|v=|shorts\/)([a-zA-Z0-9_-]+)/)||[])[1]||'';
+  l.push({url:url,yid:yid,tit:document.getElementById('vid-tit').value,dsc:document.getElementById('vid-dsc').value,cat:document.getElementById('vid-cat').value});
+  DB.s('videos',l);rndVid();
+}
+function rndVid(){
+  var l=DB.g('videos')||[];var c=document.getElementById('lista-vid');if(!c)return;
+  c.innerHTML=l.map(function(v,i){
+    return '<div style="background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 5px rgba(0,0,0,.07)">'+(v.yid?'<img src="https://img.youtube.com/vi/'+v.yid+'/mqdefault.jpg" style="width:100%;height:auto">':'')+'<div style="padding:.7rem"><div style="font-weight:700;font-size:.83rem">'+v.tit+'</div><div style="font-size:.7rem;color:var(--muted)">'+v.cat+'</div><button class="btn bd bsm" style="margin-top:.4rem" onclick="del(\'videos\','+i+',rndVid)">✕</button></div></div>';
+  }).join('');
+}
+
+/* DIVULGAR */
+var divLink='https://obpcsaofernando199-sudo.github.io/Obpc/';
+var divSel=0;
+var DIV_MODS=[
+  {e:'🔥',lb:'Convite de Culto',sb:'Para chamar ao culto hoje',tg:'ALTO IMPACTO',c:'#e74c3c',fn:function(l,d){return '🔥 *HOJE TEM CULTO!*\n\n⛪ *'+(d.nome||'OBPC São Fernando')+'*\n📍 '+(d.end||'Rua Sen. José Ermírio de Moraes, 199')+'\n\nVocê foi convidado(a) por Deus para estar lá. 🙏\n\n👇 *Confira tudo no nosso site:*\n🌐 '+l+'\n\n_"Não deixemos de reunirmos." — Hb 10.25_\n\nCompartilhe com alguém que precisa! 💙';}},
+  {e:'📸',lb:'Culto Foi Assim',sb:'Enviar logo após o culto',tg:'PÓS-CULTO',c:'#27ae60',fn:function(l,d){return '📸 *NOSSO CULTO FOI ASSIM!*\n\nO Espírito de Deus se moveu hoje! 🔥\n\n👇 *Veja as fotos e o relato completo:*\n🌐 '+l+'\n\n⛪ *'+(d.nome||'OBPC São Fernando')+'*';}},
+  {e:'✨',lb:'Elegante & Inspirador',sb:'Para grupos de oração e família',tg:'DEVOCIONAL',c:'#1E3A5F',fn:function(l,d){return '✨ *'+((d.nome||'OBPC São Fernando').toUpperCase())+'*\n\n_"Este é o dia que o SENHOR fez;\nalegremo-nos e nos regozijemos nele."\n                    — Salmos 118:24_\n\n━━━━━━━━━━━━━━━━━━\n🌐 *'+l+'*\n━━━━━━━━━━━━━━━━━━\n\n_Que Deus abençoe cada lar!_ 🙏';}},
+  {e:'🙏',lb:'Corrente de Oração',sb:'Viral — mural de pedidos',tg:'VIRAL',c:'#e67e22',fn:function(l,d){return '🙏 *CORRENTE DE ORAÇÃO*\n\nNosso site tem um mural de pedidos de oração.\n\n👇 *Acesse agora:*\n🌐 '+l+'\n\n⛪ *'+(d.nome||'OBPC São Fernando')+'*';}},
+  {e:'🎉',lb:'Animado — Jovens',sb:'Para grupos jovens e redes sociais',tg:'JOVENS',c:'#7c3aed',fn:function(l,d){return '🎉 *EI, FAMÍLIA!*\n\nTemos um site incrível! 👇\n\n🌐 '+l+'\n\n_'+(d.nome||'OBPC São Fernando')+'_ 💙';}},
+  {e:'🗓️',lb:'Agenda Semanal',sb:'Informativo semanal de cultos',tg:'INFORMATIVO',c:'#0891b2',fn:function(l,d){return '🗓️ *AGENDA DA SEMANA*\n⛪ *'+(d.nome||'OBPC São Fernando')+'*\n\n🌐 *'+l+'*\n\n📍 '+(d.end||'')+(d.tel?'\n📞 '+d.tel:'');}},
+  {e:'👷',lb:'Para Obreiros',sb:'Aviso da escala para a equipe',tg:'OBREIROS',c:'#475569',fn:function(l,d){return '📋 *ESCALA DE OBREIROS*\n⛪ *'+(d.nome||'OBPC São Fernando')+'*\n\n🌐 *'+l+'*\n\n_"Cada um segundo o dom que recebeu..." — 1Pe 4.10_';}},
+  {e:'📣',lb:'Comunicado Oficial',sb:'Estilo formal para anúncios',tg:'FORMAL',c:'#b45309',fn:function(l,d){return '📣 *COMUNICADO OFICIAL*\n━━━━━━━━━━━━━━━━━━\n*'+((d.nome||'OBPC SÃO FERNANDO').toUpperCase())+'*\n━━━━━━━━━━━━━━━━━━\n\n🌐 *'+l+'*\n\n📍 '+(d.end||'')+(d.tel?'\n📞 '+d.tel:'')+(d.email?'\n📧 '+d.email:'')+'\n\n_Deus abençoe a cada um!_ 🙏';}}
+];
+function divUpdLink(v){divLink=v.trim()||'https://obpcsaofernando199-sudo.github.io/Obpc/';var el=document.getElementById('div-link-show');if(el)el.textContent=divLink;divClk(divSel);}
+function divCpLink(){navigator.clipboard.writeText(divLink).then(function(){showToast('🔗 Link copiado!');}).catch(function(){});}
+function rndDiv(){
+  var d=DB.g('info')||{};
+  var nm=document.getElementById('div-wpp-nm');if(nm)nm.textContent=d.nome||'OBPC São Fernando';
+  var grid=document.getElementById('div-grid');if(!grid)return;
+  grid.innerHTML=DIV_MODS.map(function(m,i){return '<button class="dmb'+(divSel===i?' sel':'')+'" style="--c:'+m.c+'" onclick="divClk('+i+')"><div class="dmi">'+m.e+'</div><div><div class="dmn">'+m.lb+'</div><div class="dms">'+m.sb+'</div><span class="dmt" style="background:'+m.c+'">'+m.tg+'</span></div></button>';}).join('');
+  divClk(divSel);
+}
+function divClk(i){
+  divSel=i;var d=DB.g('info')||{};var m=DIV_MODS[i];var txt=m.fn(divLink,d);
+  var pv=document.getElementById('div-prev-txt');if(pv)pv.innerHTML=fmtWpp(txt);
+  var hr=document.getElementById('div-hora');if(hr){var n=new Date();hr.textContent=n.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});}
+  var area=document.getElementById('div-prev-area');if(area)area.style.display='block';
+  document.querySelectorAll('.dmb').forEach(function(btn,j){btn.classList.toggle('sel',j===i);});
+}
+function fmtWpp(txt){
+  var s=txt.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  s=s.replace(/\*([^*\n]+)\*/g,'<strong>$1</strong>');
+  s=s.replace(/(?<![a-zA-Z0-9])_([^_\n]+)_(?![a-zA-Z0-9])/g,'<em style="color:#555">$1</em>');
+  s=s.replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" style="color:#0d6efd">$1</a>');
+  s=s.replace(/\n/g,'<br>');
+  return s;
+}
+function divCopiar(){
+  var txt=DIV_MODS[divSel].fn(divLink,DB.g('info')||{});
+  navigator.clipboard.writeText(txt).then(function(){showToast('✔ Mensagem copiada!');}).catch(function(){var ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast('✔ Mensagem copiada!');});
+}
+function divEnviar(){var txt=DIV_MODS[divSel].fn(divLink,DB.g('info')||{});window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank');}
+
+/* DASHBOARD */
+function rndDash(){
+  rndAv();rndEv();rndOb();rndLid();
+  var agenda=DB.g('escala_agenda');
+  var hj=new Date().toISOString().split('T')[0];
+  var DPT=['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+  var dH=DPT[new Date().getDay()];var cHj=null;
+  if(agenda&&agenda.rows)cHj=agenda.rows.filter(function(r){return r.dt===hj;})[0]||null;
+  var dh=document.getElementById('dh-hj');
+  if(cHj&&dh){var t=cHj.clt||'';var p=(cHj.p1||'').split('\n').filter(function(n){return n.trim();});if(p.length)t+=' | 🚪 '+p.join(', ');dh.textContent=t||'Culto programado';}
+  else if(dh){dh.textContent='Sem culto programado';}
+  var sd=document.getElementById('dh-sem');if(!sd)return;sd.innerHTML='';
+  var ABREV=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];var n=new Date();var dS=n.getDay();
+  for(var i=0;i<7;i++){
+    var d=new Date(n);d.setDate(n.getDate()-dS+i);
+    var dtS=d.toISOString().split('T')[0];
+    var linhas=agenda&&agenda.rows?agenda.rows.filter(function(r){return r.dt===dtS;}):[];
+    var isH=d.toDateString()===n.toDateString();
+    var div=document.createElement('div');
+    div.style.cssText='background:'+(isH?'#e3f2fd':'#fff')+';border-radius:8px;padding:5px 4px;box-shadow:0 1px 3px rgba(0,0,0,.06);'+(isH?'border:2px solid var(--azul2)':'');
+    div.innerHTML='<div style="font-size:.65rem;font-weight:700;text-transform:uppercase;color:'+(isH?'var(--azul2)':'var(--muted)')+';text-align:center;margin-bottom:3px">'+ABREV[i]+'<br><span style="font-weight:400">'+d.getDate().toString().padStart(2,'0')+'/'+(d.getMonth()+1).toString().padStart(2,'0')+'</span></div>'+linhas.map(function(r){return (r.clt?'<div style="background:#1E3A5F;color:#fff;border-radius:4px;padding:1px 4px;font-size:.62rem;margin-bottom:2px">⛪ '+r.clt+'</div>':'')+(r.p1||'').split('\n').filter(function(nm){return nm.trim();}).map(function(nm){return '<div style="background:#e3f2fd;color:#1565c0;border-radius:4px;padding:1px 4px;font-size:.6rem;margin-bottom:1px">👷 '+nm.trim()+'</div>';}).join('');}).join('');
+    sd.appendChild(div);
+  }
+}
+
+/* MIGRAR */
+function rndMig(){var k=localStorage.getItem('obpc_imgbb_key')||'';var el=document.getElementById('mig-key');if(el&&k)el.value=k;}
+function migSalvKey(){var k=(document.getElementById('mig-key').value||'').trim();if(!k||k.length<10){alert('Cole uma key válida.');return;}localStorage.setItem('obpc_imgbb_key',k);showToast('✅ Key salva!');}
+function expDados(){
+  var cs=['info','horarios','avisos','eventos','informativos','sermoes','cultos','palavras','obreiros','lideranca','escala','escala_agenda','esc_listas','galeria','videos','diz-msg','aniversariantes','oracoes','banner_culto'];
+  var d={};cs.forEach(function(k){var v=DB.g(k);if(v!==null)d[k]=v;});
+  var json=JSON.stringify({obpc:d,ts:Date.now(),v:3});
+  var blob=new Blob([json],{type:'application/json'});
+  var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='OBPC_dados_'+new Date().toISOString().split('T')[0]+'.json';a.click();URL.revokeObjectURL(url);
+  var ok=document.getElementById('exp-ok');if(ok){ok.style.display='block';setTimeout(function(){ok.style.display='none';},4000);}
+}
+function impDados(inp){
+  var f=inp.files[0];if(!f)return;
+  var ok=document.getElementById('imp-ok');
+  var r=new FileReader();
+  r.onload=function(e){
+    try{var json=JSON.parse(e.target.result);var dados=json.obpc||json;var cnt=0;Object.keys(dados).forEach(function(k){try{localStorage.setItem('obpc_'+k,JSON.stringify(dados[k]));cnt++;}catch(e){}});if(ok){ok.style.display='block';ok.style.color='var(--verde)';ok.textContent='✅ '+cnt+' itens importados! Recarregando...';setTimeout(function(){location.reload();},1500);}}
+    catch(e){if(ok){ok.style.display='block';ok.style.color='var(--verm)';ok.textContent='❌ Arquivo inválido.';}}
+  };
+  r.readAsText(f);
+}
+
+/* UTILITÁRIOS */
+function del(key,i,fn){var l=DB.g(key)||[];l.splice(i,1);DB.s(key,l);if(typeof fn==='function')fn();}
+
+/* RELÓGIO */
+(function tick(){var h=document.getElementById('hhor');if(h)h.textContent=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});setTimeout(tick,30000);})();
+
+/* ═══ BANNER PRÓXIMO CULTO — salva como 'banner_culto' ═══ */
+var _bnrMidia=null;
+var _bnrBgUrl='';
+var _bnrCor='#D4A843';
+var BNR_TPLS=[
+  {id:'escuro',nm:'Escuro Clássico',ov1:'#0a1e35',ov2:'#1E3A5F',opac:80},
+  {id:'roxo',nm:'Roxo Profético',ov1:'#1a0533',ov2:'#4c1d95',opac:82},
+  {id:'vinho',nm:'Vinho Majestoso',ov1:'#1a0a0a',ov2:'#7f1d1d',opac:80},
+  {id:'verde',nm:'Verde Esperança',ov1:'#052e16',ov2:'#14532d',opac:78},
+  {id:'azul',nm:'Azul Céu',ov1:'#0c1445',ov2:'#1e40af',opac:78},
+  {id:'preto',nm:'Preto Total',ov1:'#000000',ov2:'#111827',opac:88},
+];
+var BNR_CORES=['#D4A843','#3B9BD6','#e74c3c','#27ae60','#7c3aed','#e67e22','#fff','#f0c040'];
+var _bnrTplSel='escuro';
+
+function rndBnr(){
+  var tpCont=document.getElementById('bnr-tpls');
+  if(tpCont)tpCont.innerHTML=BNR_TPLS.map(function(t){return '<button class="tpl-btn'+(t.id===_bnrTplSel?' sel':'')+'" onclick="bnrSetTpl(\''+t.id+'\')" data-tpl="'+t.id+'">'+t.nm+'</button>';}).join('');
+  var corCont=document.getElementById('bnr-cores');
+  if(corCont)corCont.innerHTML=BNR_CORES.map(function(c){return '<div onclick="bnrSetCor(\''+c+'\')" style="width:28px;height:28px;border-radius:50%;background:'+c+';cursor:pointer;border:3px solid '+(c===_bnrCor?'#1E3A5F':'transparent')+';box-shadow:0 1px 4px rgba(0,0,0,.2);transition:.15s"></div>';}).join('');
+  // Carrega dados salvos — chave 'banner_culto'
+  var d=DB.g('banner_culto')||{};
+  if(d.badge)document.getElementById('bnr-badge').value=d.badge;
+  if(d.titulo)document.getElementById('bnr-tit').value=d.titulo;
+  if(d.subtit)document.getElementById('bnr-sub').value=d.subtit;
+  if(d.dt)document.getElementById('bnr-dt').value=d.dt;
+  if(d.hora)document.getElementById('bnr-hora').value=d.hora;
+  if(d.local)document.getElementById('bnr-loc').value=d.local;
+  if(d.cta)document.getElementById('bnr-cta').value=d.cta;
+  if(d.cor){_bnrCor=d.cor;}
+  if(d.tpl){_bnrTplSel=d.tpl;}
+  if(d.bgUrl){_bnrBgUrl=d.bgUrl;document.getElementById('bnr-bg-url').value=d.bgUrl;bnrAplBg(d.bgUrl,d.bgTp||'img');}
+  if(d.ov1)document.getElementById('bnr-ov1').value=d.ov1;
+  if(d.ov2)document.getElementById('bnr-ov2').value=d.ov2;
+  if(d.opac){document.getElementById('bnr-opac').value=d.opac;document.getElementById('bnr-ov-val').textContent=d.opac;}
+  var info=DB.g('info')||{};
+  var el=document.getElementById('bnr-prev-church');if(el)el.textContent=info.nome||'OBPC São Fernando';
+  var logo=document.getElementById('bnr-prev-logo');
+  if(logo&&info.logoB64){logo.innerHTML='';var img=document.createElement('img');img.src=info.logoB64;img.style.cssText='width:36px;height:36px;border-radius:50%;object-fit:cover';logo.appendChild(img);}
+  bnrBindInputs();bnrAtualiza();
+}
+
+function bnrBindInputs(){
+  var ids=['bnr-badge','bnr-tit','bnr-sub','bnr-dt','bnr-hora','bnr-loc','bnr-cta','bnr-ov1','bnr-ov2'];
+  ids.forEach(function(id){var el=document.getElementById(id);if(el)el.oninput=bnrAtualiza;});
+}
+
+function bnrAtualiza(){
+  var badge=(document.getElementById('bnr-badge')||{}).value||'PRÓXIMO CULTO';
+  var el=document.getElementById('bnr-prev-badge');
+  if(el){el.textContent=badge;el.style.background=_bnrCor;el.style.color=bnrContraste(_bnrCor);}
+  var tit=(document.getElementById('bnr-tit')||{}).value||'Culto de Domingo';
+  var et=document.getElementById('bnr-prev-tit');if(et)et.textContent=tit;
+  var sub=(document.getElementById('bnr-sub')||{}).value||'';
+  var es=document.getElementById('bnr-prev-sub');if(es)es.textContent=sub;
+  var dt=(document.getElementById('bnr-dt')||{}).value||'';
+  var dtTxt='';
+  if(dt){var p=dt.split('-');var d=new Date(dt+'T12:00');var dias=['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];dtTxt=dias[d.getDay()]+', '+p[2]+'/'+p[1]+'/'+p[0];}
+  var eDt=document.getElementById('bnr-prev-dt-txt');if(eDt)eDt.textContent=dtTxt||'—';
+  var hora=(document.getElementById('bnr-hora')||{}).value||'—';
+  var eH=document.getElementById('bnr-prev-hora-txt');if(eH)eH.textContent=hora;
+  var loc=(document.getElementById('bnr-loc')||{}).value||'—';
+  var eL=document.getElementById('bnr-prev-loc-txt');if(eL)eL.textContent=loc;
+  var cta=(document.getElementById('bnr-cta')||{}).value||'Esperamos por você! 🙏';
+  var eCta=document.getElementById('bnr-prev-cta');
+  if(eCta){eCta.textContent=cta;eCta.style.background=_bnrCor;eCta.style.color=bnrContraste(_bnrCor);}
+  var ov1=(document.getElementById('bnr-ov1')||{}).value||'#0a1e35';
+  var ov2=(document.getElementById('bnr-ov2')||{}).value||'#1E3A5F';
+  var opac=(document.getElementById('bnr-opac')||{}).value||75;
+  var pct=Math.round(opac*255/100).toString(16).padStart(2,'0');
+  var eOv=document.getElementById('bnr-prev-overlay');
+  if(eOv)eOv.style.background='linear-gradient(180deg,'+ov1+pct+' 0%,'+ov2+pct+' 100%)';
+}
+
+function bnrContraste(hex){
+  var r=parseInt((hex||'#ffffff').slice(1,3),16);
+  var g=parseInt((hex||'#ffffff').slice(3,5),16);
+  var b=parseInt((hex||'#ffffff').slice(5,7),16);
+  var lum=(r*299+g*587+b*114)/1000;
+  return lum>140?'#1E3A5F':'#ffffff';
+}
+
+function bnrSetTpl(id){
+  _bnrTplSel=id;
+  var tpl=BNR_TPLS.filter(function(t){return t.id===id;})[0];
+  if(!tpl)return;
+  document.getElementById('bnr-ov1').value=tpl.ov1;
+  document.getElementById('bnr-ov2').value=tpl.ov2;
+  document.getElementById('bnr-opac').value=tpl.opac;
+  document.getElementById('bnr-ov-val').textContent=tpl.opac;
+  document.querySelectorAll('[data-tpl]').forEach(function(b){b.classList.toggle('sel',b.getAttribute('data-tpl')===id);});
+  bnrAtualiza();
+}
+
+function bnrSetCor(c){
+  _bnrCor=c;
+  var corCont=document.getElementById('bnr-cores');
+  if(corCont)corCont.innerHTML=BNR_CORES.map(function(cor){return '<div onclick="bnrSetCor(\''+cor+'\')" style="width:28px;height:28px;border-radius:50%;background:'+cor+';cursor:pointer;border:3px solid '+(cor===_bnrCor?'#1E3A5F':'transparent')+';box-shadow:0 1px 4px rgba(0,0,0,.2);transition:.15s"></div>';}).join('');
+  bnrAtualiza();
+}
+
+function bnrSetBg(url){
+  if(!url)return;
+  _bnrBgUrl=url;
+  bnrAplBg(url,url.match(/\.(mp4|webm|mov)/i)?'video':'img');
+}
+
+function bnrAplBg(src,tp){
+  var bg=document.getElementById('bnr-prev-bg');if(!bg)return;
+  bg.innerHTML='';bg.style.backgroundImage='';
+  if(tp==='video'){
+    var v=document.createElement('video');v.src=src;v.autoplay=true;v.muted=true;v.loop=true;v.playsInline=true;
+    v.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover';
+    bg.appendChild(v);
+    var vb=document.createElement('div');vb.className='bnr-video-badge';vb.textContent='▶';bg.appendChild(vb);
+  }else{
+    bg.style.backgroundImage='url('+src+')';
+  }
+}
+
+async function bnrUpMidia(inp){
+  var f=inp.files[0];if(!f)return;
+  var isV=f.type.startsWith('video/');
+  var sts=document.getElementById('bnr-up-sts');var pv=document.getElementById('bnr-up-pv');
+  if(sts){sts.style.display='block';sts.textContent='⬆️ Enviando '+(isV?'vídeo':'imagem')+'...';}
+  var locUrl=URL.createObjectURL(f);
+  bnrAplBg(locUrl,isV?'video':'img');
+  if(pv){
+    if(isV){pv.innerHTML='<video src="'+locUrl+'" muted playsinline style="width:100%;max-height:100px;border-radius:8px;background:#000" controls></video>';}
+    else{pv.innerHTML='<img src="'+locUrl+'" style="width:100%;max-height:100px;border-radius:8px;object-fit:cover">';}
+  }
+  try{
+    var m=await upArq(f,function(pct){if(sts)sts.textContent='⬆️ Enviando... '+pct+'%';});
+    _bnrMidia=m;_bnrBgUrl=m.src;
+    var u=m.src;if(u&&u.startsWith('idb:'))u=await IDB.url(u);
+    if(u)bnrAplBg(u,m.tp);
+    if(sts){sts.textContent='✅ '+(isV?'Vídeo':'Imagem')+' pronto!';setTimeout(function(){sts.style.display='none';},3000);}
+  }catch(e){
+    console.error(e);_bnrBgUrl=locUrl;
+    if(sts){sts.textContent='⚠️ Salvo localmente';setTimeout(function(){sts.style.display='none';},3000);}
+  }
+  try{inp.value='';}catch(e){}
+  bnrAtualiza();
+}
+
+function bnrLimparMidia(){
+  _bnrMidia=null;_bnrBgUrl='';
+  var bg=document.getElementById('bnr-prev-bg');if(bg){bg.innerHTML='';bg.style.backgroundImage='';}
+  var pv=document.getElementById('bnr-up-pv');if(pv)pv.innerHTML='';
+  var inp=document.getElementById('bnr-bg-url');if(inp)inp.value='';
+}
+
+function bnrLimpar(){
+  ['bnr-badge','bnr-tit','bnr-sub','bnr-dt','bnr-hora','bnr-loc','bnr-cta'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  bnrLimparMidia();bnrAtualiza();
+}
+
+/* Salva como 'banner_culto' — chave que o index lê */
+function bnrSalvar(){
+  var dados={
+    badge:document.getElementById('bnr-badge').value,
+    titulo:document.getElementById('bnr-tit').value,
+    subtit:document.getElementById('bnr-sub').value,
+    dt:document.getElementById('bnr-dt').value,
+    hora:document.getElementById('bnr-hora').value,
+    local:document.getElementById('bnr-loc').value,
+    cta:document.getElementById('bnr-cta').value,
+    cor:_bnrCor,
+    tpl:_bnrTplSel,
+    bgUrl:_bnrBgUrl,
+    bgTp:_bnrMidia?_bnrMidia.tp:(_bnrBgUrl.match(/\.(mp4|webm|mov)/i)?'video':'img'),
+    ov1:document.getElementById('bnr-ov1').value,
+    ov2:document.getElementById('bnr-ov2').value,
+    opac:document.getElementById('bnr-opac').value,
+    ts:Date.now()
+  };
+  DB.s('banner_culto',dados);
+  var ok=document.getElementById('bnr-ok');
+  if(ok){ok.style.display='block';setTimeout(function(){ok.style.display='none';},3000);}
+  showToast('✅ Banner publicado!');
+}
+
+/* INIT */
+(async function init(){
+  var d=DB.g('info')||{};
+  if(d.logoB64){var hl=document.getElementById('hlogo');if(hl){hl.src=d.logoB64;hl.style.display='block';}}
+  rndDash();
+  DB.sync().catch(function(){});
+  DB.listen();
+})();
+</script>
+</body>
+</html>
