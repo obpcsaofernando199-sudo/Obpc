@@ -1,0 +1,1637 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Painel</title>
+<style>
+:root{--azul:#1E3A5F;--azul2:#3B9BD6;--cinza:#f4f6f9;--borda:#dde2ea;--txt:#1a2535;--muted:#6b7a90;--verde:#27ae60;--verm:#e74c3c;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',sans-serif;background:var(--cinza);color:var(--txt);}
+header{background:var(--azul);color:#fff;padding:0 .8rem;height:54px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.3);}
+#ntoggle{background:none;border:none;color:#fff;font-size:1.8rem;cursor:pointer;padding:4px 8px;line-height:1;display:none;}
+.layout{display:flex;min-height:calc(100vh - 54px);}
+nav{width:205px;background:var(--azul);flex-shrink:0;padding:.8rem 0;overflow-y:auto;transition:transform .25s;}
+nav .grp{padding:.5rem 1rem .2rem;font-size:.62rem;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:1px;}
+nav a{display:flex;align-items:center;gap:7px;padding:.6rem 1rem;color:rgba(255,255,255,.7);font-size:.85rem;cursor:pointer;border-left:3px solid transparent;transition:.15s;-webkit-tap-highlight-color:transparent;text-decoration:none;}
+nav a:hover,nav a.on{background:rgba(59,155,214,.2);color:#fff;border-left-color:var(--azul2);}
+main{flex:1;padding:1rem;overflow-y:auto;min-width:0;}
+.aba{display:none;}.aba.on{display:block;}
+h2{font-size:1rem;font-weight:700;color:var(--azul);margin-bottom:.8rem;padding-bottom:.4rem;border-bottom:2px solid var(--azul2);}
+.card{background:#fff;border-radius:10px;padding:1rem;margin-bottom:.7rem;box-shadow:0 1px 5px rgba(0,0,0,.07);}
+label{font-size:.78rem;font-weight:600;color:var(--muted);display:block;margin:.5rem 0 .2rem;}
+input,textarea,select{width:100%;padding:.5rem .75rem;border:1.5px solid var(--borda);border-radius:8px;font-size:.9rem;font-family:inherit;background:#fff;color:var(--txt);}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--azul2);}
+textarea{resize:vertical;min-height:65px;}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.6rem;}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:.5rem 1rem;border:none;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;}
+.bp{background:var(--azul);color:#fff;}
+.bs{background:var(--verde);color:#fff;}
+.bd{background:var(--verm);color:#fff;}
+.bsm{padding:.32rem .7rem;font-size:.75rem;}
+.li{display:flex;align-items:center;justify-content:space-between;padding:.55rem .75rem;background:#f8fafd;border:1px solid var(--borda);border-radius:7px;margin-bottom:.35rem;}
+.bdn{background:#e3f2fd;color:#1565c0;display:inline-block;padding:2px 8px;border-radius:20px;font-size:.7rem;font-weight:600;}
+.bdi{background:#fff3e0;color:#e65100;display:inline-block;padding:2px 8px;border-radius:20px;font-size:.7rem;font-weight:600;}
+.bdu{background:#fce4ec;color:#c62828;display:inline-block;padding:2px 8px;border-radius:20px;font-size:.7rem;font-weight:600;}
+.upbox{border:2px dashed var(--borda);border-radius:10px;padding:.9rem .6rem;text-align:center;cursor:pointer;background:#fafbfd;transition:.2s;position:relative;overflow:hidden;}
+.upbox:hover{border-color:var(--azul2);background:#f0f7ff;}
+.upbox input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0;}
+.upbox p{font-size:.78rem;color:var(--muted);pointer-events:none;margin:0;}
+.upbox span{font-size:1.4rem;display:block;margin-bottom:.2rem;pointer-events:none;}
+.prevw{display:flex;flex-wrap:wrap;gap:6px;margin-top:.5rem;}
+.prevw img,.prevw video{width:88px;height:70px;object-fit:contain;border-radius:6px;background:#f0f4f8;border:1px solid var(--borda);}
+.dg{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:1rem;}
+.dc{background:#fff;border-radius:10px;padding:.8rem 1rem;box-shadow:0 1px 5px rgba(0,0,0,.07);border-left:4px solid var(--azul2);}
+.dc .num{font-size:1.6rem;font-weight:700;color:var(--azul);}
+.dc .lbl{font-size:.72rem;color:var(--muted);margin-top:2px;}
+#nov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:400;}
+.et{width:100%;border-collapse:collapse;font-size:.82rem;min-width:820px;}
+.et th{background:var(--azul);color:#fff;padding:8px 10px;border:1px solid #0d2f4a;font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;text-align:center;}
+.et td{border:1px solid #d0d7e2;padding:0;vertical-align:middle;background:#fff;}
+.et tr.rdom td{background:#fef9f9;}.et tr.rqua td{background:#f7fbff;}.et tr.rsab td{background:#f7fdf9;}.et tr.rcei td{border-top:2px solid #7c3aed!important;}
+.edtw{position:relative;display:flex;align-items:center;justify-content:center;min-height:38px;padding:4px;}
+.edtd{font-weight:700;font-size:.8rem;color:var(--azul);text-align:center;cursor:pointer;padding:4px 8px;border-radius:6px;user-select:none;}
+.edtd:hover{background:#e8f4fd;}
+.edtd.vz{color:#aaa;font-size:.75rem;font-weight:400;}
+.edti{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none;}
+.ec{min-height:38px;padding:6px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;transition:.1s;}
+.ec:hover{background:rgba(59,155,214,.07);}
+.ec.dov{background:#e0f0ff;border:2px dashed var(--azul2)!important;border-radius:4px;}
+.ecv{color:#c0c8d4;font-size:.72rem;font-style:italic;}
+.en{font-size:.8rem;color:var(--txt);line-height:1.4;display:flex;align-items:center;gap:4px;cursor:grab;padding:2px 0;}
+.en:active{cursor:grabbing;}
+.erm{color:#e74c3c;cursor:pointer;font-size:.65rem;opacity:0;transition:.15s;flex-shrink:0;padding:0 2px;}
+.en:hover .erm{opacity:1;}
+.etb{display:none;background:#1E3A5F;border-radius:8px;padding:8px 12px;margin-bottom:.5rem;flex-wrap:wrap;gap:6px;align-items:center;}
+.etb.show{display:flex;}
+.etbn{padding:5px 12px;border-radius:20px;border:1.5px solid rgba(255,255,255,.4);cursor:pointer;font-size:.76rem;font-weight:600;background:transparent;color:#fff;transition:.15s;white-space:nowrap;}
+.etbn:hover,.etbn.sel{background:#fff;color:var(--azul);}
+.ceiaw{display:flex;height:100%;}
+.ceias{flex:1;text-align:center;}
+.ceias:first-child{border-right:1px solid var(--borda);}
+.ceial{font-size:.6rem;font-weight:900;text-transform:uppercase;background:#ede9fe;color:#7c3aed;padding:2px 0;display:block;}
+.edel{background:none;border:none;color:#e74c3c;cursor:pointer;font-weight:900;font-size:1.1rem;padding:4px 8px;opacity:.6;transition:.15s;}
+.edel:hover{opacity:1;}
+.mbg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:600;align-items:center;justify-content:center;}
+.mbg.on{display:flex;}
+.mbox{background:#1e293b;border-radius:14px;padding:1.4rem;border:2px solid #D4A843;max-width:94vw;}
+.mok{color:var(--verde);font-size:.78rem;display:none;margin-left:.5rem;}
+.dh{background:linear-gradient(135deg,#0a1e35,#1E3A5F,#2563a8);border-radius:16px;padding:1.4rem;margin-bottom:1rem;position:relative;overflow:hidden;}
+.dh::before{content:'';position:absolute;top:-50px;right:-50px;width:180px;height:180px;border-radius:50%;background:rgba(59,155,214,.12);}
+.dh::after{content:'';position:absolute;bottom:-40px;left:20px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.04);}
+.dhl{font-size:.63rem;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,.45);margin-bottom:.35rem;}
+.dhv{font-size:.88rem;font-weight:800;color:#fff;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:.45rem .75rem;margin:.4rem 0 .65rem;word-break:break-all;line-height:1.4;position:relative;z-index:1;}
+.dlr{display:flex;gap:.45rem;align-items:center;position:relative;z-index:1;}
+.dlr input{flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:#fff;border-radius:8px;padding:6px 10px;font-size:.78rem;}
+.dlr input::placeholder{color:rgba(255,255,255,.35);}
+.dlr input:focus{outline:none;border-color:var(--azul2);}
+.dlb{background:var(--azul2);color:#fff;border:none;border-radius:8px;padding:7px 14px;cursor:pointer;font-size:.77rem;font-weight:700;white-space:nowrap;flex-shrink:0;}
+.dst{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:.6rem;display:flex;align-items:center;gap:.4rem;}
+.dst::after{content:'';flex:1;height:1px;background:var(--borda);}
+.dmg{display:grid;grid-template-columns:repeat(2,1fr);gap:.55rem;margin-bottom:.9rem;}
+@media(max-width:480px){.dmg{grid-template-columns:1fr;}}
+.dmb{background:#fff;border:2px solid var(--borda);border-radius:12px;padding:.7rem;cursor:pointer;font-family:inherit;text-align:left;transition:all .2s;display:flex;align-items:flex-start;gap:.5rem;position:relative;overflow:hidden;}
+.dmb::after{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--c,var(--azul2));transform:scaleY(0);transform-origin:top;transition:.2s;border-radius:0 2px 2px 0;}
+.dmb:hover{border-color:var(--c,var(--azul2));transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,.09);}
+.dmb.sel{border-color:var(--c,var(--azul2));background:linear-gradient(135deg,#fafeff,#f0f8ff);}
+.dmb.sel::after{transform:scaleY(1);}
+.dmi{font-size:1.5rem;line-height:1;flex-shrink:0;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:9px;background:var(--c,var(--azul2));opacity:.9;}
+.dmn{font-size:.8rem;font-weight:700;color:var(--txt);line-height:1.2;margin-bottom:.15rem;}
+.dms{font-size:.67rem;color:var(--muted);line-height:1.3;}
+.dmt{display:inline-block;font-size:.58rem;font-weight:800;padding:2px 7px;border-radius:20px;margin-top:.3rem;background:var(--c,var(--azul2));color:#fff;letter-spacing:.5px;}
+.dww{border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.18);margin-bottom:.7rem;border:1px solid rgba(0,0,0,.08);}
+.dwb{background:#075E54;padding:.45rem .8rem;display:flex;align-items:center;gap:.5rem;}
+.dwa{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:1.1rem;}
+.dwi{flex:1;}
+.dwn{font-size:.78rem;font-weight:700;color:#fff;}
+.dws{font-size:.62rem;color:rgba(255,255,255,.65);}
+.dwic{color:rgba(255,255,255,.65);display:flex;gap:.8rem;font-size:1rem;}
+.dwbd{min-height:110px;padding:.8rem;background:#ece5dd;}
+.dbb{background:#fff;border-radius:0 12px 12px 12px;padding:.7rem .85rem;max-width:88%;box-shadow:0 1px 2px rgba(0,0,0,.13);font-size:.79rem;line-height:1.65;color:#111;position:relative;}
+.dbb::before{content:'';position:absolute;top:0;right:100%;border:7px solid transparent;border-right-color:#fff;border-top:0;}
+.dbf{font-size:.62rem;color:#999;text-align:right;margin-top:.3rem;display:flex;align-items:center;justify-content:flex-end;gap:3px;}
+.dbt{color:#53bdeb;font-size:.9rem;}
+.dar{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.5rem;}
+.da{display:flex;align-items:center;justify-content:center;gap:.4rem;padding:.65rem .5rem;border:none;border-radius:11px;cursor:pointer;font-family:inherit;font-size:.82rem;font-weight:700;transition:all .15s;}
+.da:hover{transform:translateY(-1px);filter:brightness(1.08);}
+.daw{background:#25D366;color:#fff;}
+.dac{background:var(--azul);color:#fff;}
+/* ═══ BANNER PRÓXIMO CULTO ═══ */
+.phone-frame{width:280px;min-height:520px;background:#000;border-radius:38px;padding:10px;box-shadow:0 0 0 2px #333,0 0 0 5px #1a1a1a,0 20px 50px rgba(0,0,0,.5);position:relative;flex-shrink:0;}
+.phone-screen{background:#fff;border-radius:30px;overflow:hidden;height:100%;min-height:500px;position:relative;}
+.phone-notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:90px;height:22px;background:#000;border-radius:0 0 14px 14px;z-index:10;}
+.bnr-prev{width:100%;min-height:500px;display:flex;flex-direction:column;position:relative;overflow:hidden;}
+.bnr-bg{position:absolute;inset:0;background-size:cover;background-position:center;z-index:0;}
+.bnr-overlay{position:absolute;inset:0;z-index:1;}
+.bnr-content{position:relative;z-index:2;display:flex;flex-direction:column;height:100%;min-height:500px;padding:28px 18px 18px;}
+.bnr-top{display:flex;align-items:center;gap:8px;margin-bottom:auto;}
+.bnr-logo{width:36px;height:36px;border-radius:50%;border:2px solid rgba(255,255,255,.6);object-fit:cover;background:rgba(255,255,255,.2);}
+.bnr-church{font-size:.68rem;font-weight:700;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.4);}
+.bnr-badge{display:inline-block;font-size:.58rem;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;padding:3px 10px;border-radius:20px;margin-bottom:.4rem;}
+.bnr-titulo{font-size:1.1rem;font-weight:900;color:#fff;line-height:1.25;text-shadow:0 2px 8px rgba(0,0,0,.5);margin-bottom:.3rem;}
+.bnr-subtit{font-size:.72rem;color:rgba(255,255,255,.85);text-shadow:0 1px 4px rgba(0,0,0,.4);margin-bottom:.7rem;}
+.bnr-infos{display:flex;flex-direction:column;gap:.25rem;margin-bottom:.7rem;}
+.bnr-info{display:flex;align-items:center;gap:.4rem;font-size:.72rem;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.4);}
+.bnr-info span{font-size:.9rem;}
+.bnr-cta{display:inline-block;padding:8px 18px;border-radius:25px;font-size:.75rem;font-weight:800;text-align:center;letter-spacing:.5px;margin-top:.3rem;}
+.bnr-video-badge{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:50px;height:50px;background:rgba(255,255,255,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;backdrop-filter:blur(4px);border:2px solid rgba(255,255,255,.4);}
+.tpl-btn{border:2px solid var(--borda);border-radius:10px;padding:.5rem .7rem;cursor:pointer;background:#fff;font-family:inherit;font-size:.78rem;font-weight:600;transition:all .15s;display:flex;align-items:center;gap:.4rem;}
+.tpl-btn:hover,.tpl-btn.sel{border-color:var(--azul2);background:#f0f8ff;color:var(--azul);}
+position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(12px);background:#1E3A5F;color:#fff;padding:.45rem 1.3rem;border-radius:30px;font-size:.8rem;font-weight:600;opacity:0;transition:all .28s;z-index:9999;pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,.25);white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+@media(max-width:768px){
+  #ntoggle{display:block!important;}
+  nav{position:fixed;top:0;left:0;bottom:0;z-index:500;transform:translateX(-100%);width:260px;padding-top:60px;}
+  nav.open{transform:translateX(0);box-shadow:4px 0 24px rgba(0,0,0,.5);}
+  #nov.open{display:block!important;}
+  main{padding:.7rem;}
+  .row,.row3{grid-template-columns:1fr;}
+  input,textarea,select{font-size:16px;}
+}
+</style>
+</head>
+<body>
+<div id="nov" onclick="tnav()"></div>
+<header>
+  <div style="display:flex;align-items:center;gap:.7rem">
+    <button id="ntoggle" onclick="tnav()">☰</button>
+    <img id="hlogo" src="" alt="" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.4);display:none">
+    <strong style="font-size:.92rem">Painel ADM — OBPC São Fernando</strong>
+  </div>
+  <div style="display:flex;align-items:center;gap:.7rem">
+    <span id="hhor" style="font-size:.72rem;background:var(--azul2);padding:3px 9px;border-radius:20px"></span>
+    <a href="index.html" style="color:#fff;font-size:.75rem;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);padding:4px 12px;border-radius:20px;text-decoration:none">🏠 Site</a>
+  </div>
+</header>
+<div class="layout">
+<nav id="snav">
+  <div class="grp">Geral</div>
+  <a onclick="ir('dash',this)" class="on">📊 Dashboard</a>
+  <a onclick="ir('info',this)">🏛️ Info da Igreja</a>
+  <a onclick="ir('hor',this)">🕐 Horários</a>
+  <div class="grp">Comunicação</div>
+  <a onclick="ir('bnr',this)">📱 Banner Próximo Culto</a>
+  <a onclick="ir('av',this)">📢 Avisos</a>
+  <a onclick="ir('or',this)">🙏 Oração</a>
+  <a onclick="ir('ev',this)">📅 Eventos</a>
+  <a onclick="ir('inf',this)">📰 Informativos</a>
+  <a onclick="ir('ser',this)">📖 Sermões</a>
+  <a onclick="ir('clt',this)">📸 Culto Foi Assim</a>
+  <a onclick="ir('pas',this)">🎤 Palavra do Pastor</a>
+  <div class="grp">Ministério</div>
+  <a onclick="ir('aniv',this)">🎂 Aniversariantes</a>
+  <a onclick="ir('ob',this)">👷 Obreiros</a>
+  <a onclick="ir('esc',this)">📋 Escala</a>
+  <a onclick="ir('lid',this)">🎖️ Liderança</a>
+  <div class="grp">Financeiro</div>
+  <a onclick="ir('diz',this)">💠 PIX / Dízimos</a>
+  <div class="grp">Mídia</div>
+  <a onclick="ir('gal',this)">🖼️ Galeria</a>
+  <a onclick="ir('vid',this)">▶️ Vídeos</a>
+  <div class="grp">Divulgação</div>
+  <a onclick="ir('div',this)">📣 Compartilhar Site</a>
+  <div class="grp">Ferramentas</div>
+  <a href="https://obpcsaofernando199-sudo.github.io/Obpc/igreja26.html" target="_blank">📊 Controle Financeiro</a>
+  <a href="escala.html">📅 Escala Pro</a>
+  <a href="pix.html">💳 PIX / Financeiro</a>
+  <a onclick="ir('mig',this)">🔄 Migrar Mídias</a>
+</nav>
+<main>
+
+<!-- DASHBOARD -->
+<div id="aba-dash" class="aba on">
+  <h2>📊 Dashboard</h2>
+  <div class="dg">
+    <div class="dc"><div class="num" id="cnt-av">0</div><div class="lbl">Avisos</div></div>
+    <div class="dc"><div class="num" id="cnt-ev">0</div><div class="lbl">Eventos</div></div>
+    <div class="dc"><div class="num" id="cnt-ob">0</div><div class="lbl">Obreiros</div></div>
+    <div class="dc"><div class="num" id="cnt-lid">0</div><div class="lbl">Líderes</div></div>
+  </div>
+  <div class="card"><strong>Culto de Hoje:</strong><div id="dh-hj" style="margin-top:.4rem;font-size:.85rem;color:var(--azul2)">—</div></div>
+  <div class="card"><strong>Semana</strong><div id="dh-sem" style="display:grid;grid-template-columns:repeat(7,1fr);gap:.4rem;margin-top:.7rem"></div></div>
+</div>
+
+<!-- BANNER PRÓXIMO CULTO -->
+<div id="aba-bnr" class="aba">
+  <h2>📱 Banner — Próximo Culto</h2>
+  <div style="display:flex;gap:1rem;align-items:flex-start;flex-wrap:wrap">
+
+    <!-- Formulário de edição -->
+    <div style="flex:1;min-width:280px">
+      <div class="card">
+        <label>🏷️ Tipo de Culto / Badge</label>
+        <input id="bnr-badge" placeholder="PRÓXIMO CULTO, CULTO DE CELEBRAÇÃO...">
+        <label>📌 Título Principal</label>
+        <input id="bnr-tit" placeholder="Culto de Domingo">
+        <label>📝 Subtítulo</label>
+        <input id="bnr-sub" placeholder="Venha e experiencie a presença de Deus">
+        <div class="row" style="margin-top:.4rem">
+          <div><label>📅 Data</label><input type="date" id="bnr-dt"></div>
+          <div><label>🕐 Horário</label><input id="bnr-hora" placeholder="19:00"></div>
+        </div>
+        <label>📍 Local</label>
+        <input id="bnr-loc" placeholder="Rua Sen. José Ermírio de Moraes, 199">
+        <label>🎯 Texto do Botão CTA</label>
+        <input id="bnr-cta" placeholder="Esperamos por você! 🙏" maxlength="50">
+      </div>
+
+      <div class="card">
+        <strong style="font-size:.82rem;color:var(--azul);display:block;margin-bottom:.6rem">🎨 Estilo Visual</strong>
+        <label>🖌️ Template</label>
+        <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.7rem" id="bnr-tpls"></div>
+        <label>🌈 Cor do Badge & CTA</label>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.5rem" id="bnr-cores"></div>
+        <div class="row" style="margin-top:.3rem">
+          <div><label>Cor Overlay (início)</label><input type="color" id="bnr-ov1" value="#0a1e35"></div>
+          <div><label>Cor Overlay (fim)</label><input type="color" id="bnr-ov2" value="#1E3A5F"></div>
+        </div>
+        <div style="margin-top:.4rem"><label>Opacidade Overlay: <span id="bnr-ov-val">75</span>%</label><input type="range" id="bnr-opac" min="30" max="95" value="75" oninput="document.getElementById('bnr-ov-val').textContent=this.value;bnrAtualiza()"></div>
+      </div>
+
+      <div class="card">
+        <strong style="font-size:.82rem;color:var(--azul);display:block;margin-bottom:.6rem">🖼️ Fundo do Banner</strong>
+        <p style="font-size:.75rem;color:var(--muted);margin-bottom:.6rem">Escolha imagem ou vídeo curto (reels, stories). Aparece atrás do conteúdo.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.5rem">
+          <button type="button" onclick="document.getElementById('bnr-f1').click()" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:.6rem 1rem;background:#f0f7ff;border:2px dashed var(--azul2);border-radius:10px;cursor:pointer;font-family:inherit;flex:1;min-width:90px"><span style="font-size:1.3rem">📁</span><span style="font-size:.73rem;font-weight:600;color:var(--azul)">Arquivo</span></button>
+          <button type="button" onclick="document.getElementById('bnr-f2').click()" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:.6rem 1rem;background:#f0fff4;border:2px dashed #27ae60;border-radius:10px;cursor:pointer;font-family:inherit;flex:1;min-width:90px"><span style="font-size:1.3rem">📷</span><span style="font-size:.73rem;font-weight:600;color:#27ae60">Câmera</span></button>
+          <button type="button" onclick="document.getElementById('bnr-f3').click()" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:.6rem 1rem;background:#fff8f0;border:2px dashed #e67e22;border-radius:10px;cursor:pointer;font-family:inherit;flex:1;min-width:90px"><span style="font-size:1.3rem">🎬</span><span style="font-size:.73rem;font-weight:600;color:#e67e22">Vídeo</span></button>
+        </div>
+        <input type="file" id="bnr-f1" accept="image/*,video/*" style="display:none" onchange="bnrUpMidia(this)">
+        <input type="file" id="bnr-f2" accept="image/*" capture="environment" style="display:none" onchange="bnrUpMidia(this)">
+        <input type="file" id="bnr-f3" accept="video/*" capture="environment" style="display:none" onchange="bnrUpMidia(this)">
+        <div id="bnr-up-sts" style="font-size:.75rem;color:var(--azul2);display:none;margin:.3rem 0"></div>
+        <div id="bnr-up-pv" style="margin-top:.3rem"></div>
+        <label style="margin-top:.5rem">Ou cole URL de imagem/vídeo</label>
+        <input id="bnr-bg-url" placeholder="https://..." oninput="bnrSetBg(this.value)">
+        <button type="button" class="btn bsm" style="background:#64748b;color:#fff;margin-top:.4rem" onclick="bnrLimparMidia()">🗑 Remover fundo</button>
+      </div>
+
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.3rem">
+        <button class="btn bs" onclick="bnrSalvar()" style="flex:1">💾 Salvar & Publicar no Site</button>
+        <button class="btn bsm" style="background:#64748b;color:#fff" onclick="bnrLimpar()">🗑 Limpar</button>
+      </div>
+      <div id="bnr-ok" style="display:none;color:var(--verde);font-size:.78rem;margin-top:.4rem;font-weight:700">✅ Banner publicado no site!</div>
+    </div>
+
+    <!-- Preview de celular -->
+    <div style="display:flex;flex-direction:column;align-items:center;gap:.5rem;position:sticky;top:70px">
+      <div style="font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px">📱 Preview — Tela do Celular</div>
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="phone-screen" id="bnr-phone-screen">
+          <div class="bnr-prev" id="bnr-prev">
+            <div class="bnr-bg" id="bnr-prev-bg"></div>
+            <div class="bnr-overlay" id="bnr-prev-overlay" style="background:linear-gradient(180deg,rgba(10,30,53,.75) 0%,rgba(30,58,95,.75) 100%)"></div>
+            <div class="bnr-content">
+              <div class="bnr-top">
+                <div class="bnr-logo" id="bnr-prev-logo">⛪</div>
+                <div class="bnr-church" id="bnr-prev-church">OBPC São Fernando</div>
+              </div>
+              <div style="margin-top:auto">
+                <span class="bnr-badge" id="bnr-prev-badge" style="background:#D4A843;color:#1E3A5F">PRÓXIMO CULTO</span>
+                <div class="bnr-titulo" id="bnr-prev-tit">Culto de Domingo</div>
+                <div class="bnr-subtit" id="bnr-prev-sub">Venha e experiencie a presença de Deus</div>
+                <div class="bnr-infos" id="bnr-prev-infos">
+                  <div class="bnr-info"><span>📅</span><span id="bnr-prev-dt-txt">Domingo, 01/06/2025</span></div>
+                  <div class="bnr-info"><span>🕐</span><span id="bnr-prev-hora-txt">19:00</span></div>
+                  <div class="bnr-info"><span>📍</span><span id="bnr-prev-loc-txt">Rua Sen. José Ermírio de Moraes, 199</span></div>
+                </div>
+                <div class="bnr-cta" id="bnr-prev-cta" style="background:#D4A843;color:#1E3A5F">Esperamos por você! 🙏</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p style="font-size:.68rem;color:var(--muted);text-align:center;max-width:200px">Esta é a 1ª seção do seu Index. Atualiza em tempo real.</p>
+    </div>
+  </div>
+</div>
+
+<!-- INFO -->
+<div id="aba-info" class="aba">
+  <h2>🏛️ Informações da Igreja</h2>
+  <div class="card">
+    <div class="row"><div><label>Nome</label><input id="ig-nome" placeholder="OBPC São Fernando"></div><div><label>Pastor(es)</label><input id="ig-pastor"></div></div>
+    <div class="row" style="margin-top:.5rem"><div><label>Endereço</label><input id="ig-end" value="Rua Senador José Ermírio de Moraes, 199"></div><div><label>Cidade/UF</label><input id="ig-cidade"></div></div>
+    <div class="row" style="margin-top:.5rem"><div><label>Telefone</label><input id="ig-tel"></div><div><label>E-mail</label><input id="ig-email"></div></div>
+    <label>CNPJ</label><input id="ig-cnpj" value="03.360.287/0002-59">
+    <label>Logo</label>
+    <div class="row"><div class="upbox" style="height:80px"><span>📷</span><p>Upload logo</p><input type="file" accept="image/*" onchange="upLogo(this)"></div><div><label>Ou URL</label><input id="ig-logo"><img id="lgpv" style="width:60px;height:60px;border-radius:50%;object-fit:cover;margin-top:.4rem;display:none"></div></div>
+    <label>Boas-vindas</label><textarea id="ig-bv" rows="2"></textarea>
+    <label>Sobre</label><textarea id="ig-sobre" rows="3"></textarea>
+    <div style="margin-top:.7rem"><button class="btn bp" onclick="salvarInfo()">💾 Salvar</button><span class="mok" id="ok-info">✔ Salvo!</span></div>
+  </div>
+</div>
+
+<!-- HORÁRIOS -->
+<div id="aba-hor" class="aba">
+  <h2>🕐 Horários</h2>
+  <div class="card" id="lista-hor"></div>
+  <div class="card">
+    <div class="row3"><div><label>Dia</label><select id="hor-dia"><option>Domingo</option><option>Segunda</option><option>Terça</option><option>Quarta</option><option>Quinta</option><option>Sexta</option><option>Sábado</option></select></div><div><label>Horário</label><input id="hor-h" placeholder="19:30"></div><div><label>Tipo</label><input id="hor-t" placeholder="Culto de Ensino"></div></div>
+    <div style="margin-top:.6rem"><button class="btn bs" onclick="addHor()">+ Adicionar</button></div>
+  </div>
+</div>
+
+<!-- AVISOS -->
+<div id="aba-av" class="aba">
+  <h2>📢 Avisos</h2>
+  <div class="card">
+    <label>Título</label><input id="av-tit">
+    <label>Texto</label><textarea id="av-txt" rows="3"></textarea>
+    <div class="row" style="margin-top:.4rem"><div><label>Prioridade</label><select id="av-pri"><option value="normal">Normal</option><option value="importante">Importante</option><option value="urgente">Urgente</option></select></div><div><label>Data</label><input type="date" id="av-dt"></div></div>
+    <label>Imagem</label><div class="upbox" style="height:70px"><span>📷</span><p>Upload</p><input type="file" accept="image/*" onchange="upImg(this,'av-img')"></div>
+    <div class="prevw" id="av-img-pv"></div>
+    <div style="margin-top:.6rem"><button class="btn bs" onclick="addAv()">+ Publicar</button></div>
+  </div>
+  <div id="lista-av"></div>
+</div>
+
+<!-- ORAÇÃO -->
+<div id="aba-or" class="aba">
+  <h2>🙏 Pedidos de Oração</h2>
+  <div class="card">
+    <div class="row"><div><label>Nome</label><input id="or-nome" placeholder="Família Silva..."></div><div><label>Situação</label><select id="or-sit"><option value="saude">🏥 Saúde</option><option value="familia">👪 Família</option><option value="financeiro">💼 Financeiro</option><option value="espiritual">✝ Espiritual</option><option value="emprego">🔨 Emprego</option><option value="outro">🙏 Outro</option></select></div></div>
+    <label>Pedido</label><textarea id="or-txt" rows="3"></textarea>
+    <div style="display:flex;gap:.8rem;margin-top:.5rem"><label style="display:flex;align-items:center;gap:.4rem;font-size:.82rem;cursor:pointer"><input type="checkbox" id="or-anon"> Anônimo</label><label style="display:flex;align-items:center;gap:.4rem;font-size:.82rem;cursor:pointer"><input type="checkbox" id="or-resp"> Respondido ✅</label></div>
+    <div style="margin-top:.6rem"><button class="btn bs" onclick="addOr()">🙏 Publicar</button></div>
+  </div>
+  <div id="lista-or"></div>
+</div>
+
+<!-- EVENTOS -->
+<div id="aba-ev" class="aba">
+  <h2>📅 Eventos</h2>
+  <div class="card">
+    <div class="row"><div><label>Nome</label><input id="ev-nom"></div><div><label>Data</label><input type="date" id="ev-dt"></div></div>
+    <div class="row" style="margin-top:.4rem"><div><label>Horário</label><input id="ev-h" placeholder="19:30"></div><div><label>Local</label><input id="ev-loc"></div></div>
+    <div class="row" style="margin-top:.4rem"><div><label>Tipo</label><select id="ev-tp"><option>Culto</option><option>Retiro</option><option>Conferência</option><option>Encontro</option><option>Evangelismo</option><option>Outro</option></select></div><div><label>Descrição</label><input id="ev-dsc"></div></div>
+    <label>Imagem</label><div class="upbox" style="height:70px"><span>📷</span><p>Upload</p><input type="file" accept="image/*" onchange="upImg(this,'ev-img')"></div>
+    <div class="prevw" id="ev-img-pv"></div>
+    <div style="margin-top:.6rem"><button class="btn bs" onclick="addEv()">+ Adicionar</button></div>
+  </div>
+  <div id="lista-ev"></div>
+</div>
+
+<!-- INFORMATIVOS -->
+<div id="aba-inf" class="aba">
+  <h2>📰 Informativos</h2>
+  <div class="card">
+    <div class="row"><div><label>Título</label><input id="inf-tit"></div><div><label>Categoria</label><input id="inf-cat"></div></div>
+    <label>Conteúdo</label><textarea id="inf-txt" rows="5"></textarea>
+    <label>Imagem</label><div class="upbox" style="height:70px"><span>📷</span><p>Upload</p><input type="file" accept="image/*" onchange="upImg(this,'inf-img')"></div>
+    <div class="prevw" id="inf-img-pv"></div>
+    <div style="margin-top:.6rem"><button class="btn bs" onclick="addInf()">+ Publicar</button></div>
+  </div>
+  <div id="lista-inf"></div>
+</div>
+
+<!-- SERMÕES -->
+<div id="aba-ser" class="aba">
+  <h2>📖 Sermões</h2>
+  <div class="card">
+    <div class="row"><div><label>Título</label><input id="ser-tit"></div><div><label>Pregador</label><input id="ser-preg"></div></div>
+    <div class="row" style="margin-top:.4rem"><div><label>Data</label><input type="date" id="ser-dt"></div><div><label>Link YouTube</label><input id="ser-url" placeholder="https://youtu.be/..."></div></div>
+    <label>Passagem</label><input id="ser-pas">
+    <label>Resumo</label><textarea id="ser-res" rows="3"></textarea>
+    <div style="margin-top:.6rem"><button class="btn bs" onclick="addSer()">+ Publicar</button></div>
+  </div>
+  <div id="lista-ser"></div>
+</div>
+
+<!-- CULTO FOI ASSIM -->
+<div id="aba-clt" class="aba">
+  <h2>📸 Nosso Culto Foi Assim</h2>
+  <div class="card">
+    <div class="row"><div><label>Título</label><input id="clt-tit" placeholder="Culto de Domingo — 25/05/2026"></div><div><label>Data</label><input type="date" id="clt-dt"></div></div>
+    <label>Relato</label><textarea id="clt-rel" rows="3"></textarea>
+    <input type="file" id="clt-f1" accept="image/*,video/*" multiple style="display:none" onchange="cltUp(this)">
+    <input type="file" id="clt-f2" accept="image/*" capture="environment" style="display:none" onchange="cltUp(this)">
+    <input type="file" id="clt-f3" accept="video/*" capture="environment" style="display:none" onchange="cltUp(this)">
+    <label>📎 Adicionar Fotos/Vídeos</label>
+    <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.6rem">
+      <button type="button" onclick="document.getElementById('clt-f1').click()" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:.6rem 1.2rem;background:#f0f7ff;border:2px dashed var(--azul2);border-radius:10px;cursor:pointer;font-family:inherit;min-width:110px"><span style="font-size:1.4rem">📁</span><span style="font-size:.78rem;font-weight:600;color:var(--azul)">Do celular/PC</span></button>
+      <button type="button" onclick="document.getElementById('clt-f2').click()" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:.6rem 1.2rem;background:#f0fff4;border:2px dashed #27ae60;border-radius:10px;cursor:pointer;font-family:inherit;min-width:110px"><span style="font-size:1.4rem">📷</span><span style="font-size:.78rem;font-weight:600;color:#27ae60">Tirar Foto</span></button>
+      <button type="button" onclick="document.getElementById('clt-f3').click()" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:.6rem 1.2rem;background:#fff8f0;border:2px dashed #e67e22;border-radius:10px;cursor:pointer;font-family:inherit;min-width:110px"><span style="font-size:1.4rem">🎬</span><span style="font-size:.78rem;font-weight:600;color:#e67e22">Gravar Vídeo</span></button>
+    </div>
+    <div id="clt-sts" style="font-size:.78rem;color:var(--azul2);margin-bottom:.4rem;display:none"></div>
+    <div id="clt-pv" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:.6rem"></div>
+    <label>🔗 Links YouTube (um por linha)</label><textarea id="clt-urls" rows="2" placeholder="https://youtu.be/..."></textarea>
+    <div style="display:flex;align-items:center;gap:.6rem;margin-top:.8rem;flex-wrap:wrap">
+      <button type="button" class="btn bs" onclick="addClt()">📤 Publicar</button>
+      <button type="button" class="btn bsm" style="background:#64748b;color:#fff" onclick="limClt()">🗑 Limpar</button>
+      <span id="clt-cnt" style="font-size:.78rem;color:var(--muted)"></span>
+    </div>
+  </div>
+  <div id="lista-clt" style="margin-top:.8rem"></div>
+</div>
+
+<!-- PALAVRA DO PASTOR -->
+<div id="aba-pas" class="aba">
+  <h2>🎤 Palavra do Pastor</h2>
+  <div class="card">
+    <div class="row"><div><label>Título</label><input id="pas-tit" placeholder="Palavra de Fé"></div><div><label>Data</label><input type="date" id="pas-dt"></div></div>
+    <label>Pastor</label><input id="pas-aut" placeholder="Pr. Sergio">
+    <label>Texto</label><textarea id="pas-txt" rows="6"></textarea>
+    <label>📎 Foto ou Vídeo</label>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;margin-bottom:.5rem">
+      <div class="upbox" onclick="document.getElementById('pas-f1').click()"><span>📁</span><p>Arquivos</p><input type="file" id="pas-f1" accept="image/*,video/*" multiple style="display:none" onchange="upMd(this,'pas')"></div>
+      <div class="upbox" onclick="document.getElementById('pas-f2').click()"><span>📷</span><p>Câmera — Foto</p><input type="file" id="pas-f2" accept="image/*" capture="environment" style="display:none" onchange="upMd(this,'pas')"></div>
+      <div class="upbox" onclick="document.getElementById('pas-f3').click()"><span>🎬</span><p>Câmera — Vídeo</p><input type="file" id="pas-f3" accept="video/*" capture="environment" style="display:none" onchange="upMd(this,'pas')"></div>
+    </div>
+    <div class="prevw" id="pas-pv"></div>
+    <label>🔗 Link YouTube</label><input id="pas-url" placeholder="https://youtu.be/...">
+    <div style="margin-top:.7rem"><button class="btn bs" onclick="addPas()">📤 Publicar</button></div>
+  </div>
+  <div id="lista-pas"></div>
+</div>
+
+<!-- ANIVERSARIANTES -->
+<div id="aba-aniv" class="aba">
+  <h2>🎂 Aniversariantes</h2>
+  <div class="card">
+    <div class="row"><div><label>Nome</label><input id="anv-nm"></div><div><label>Data</label><input type="date" id="anv-dt"></div></div>
+    <div class="row" style="margin-top:.4rem"><div><label>Função</label><input id="anv-fn" placeholder="Membro, Diácono..."></div><div><label>Telefone</label><input id="anv-tel"></div></div>
+    <label>Foto</label><div class="upbox" style="height:70px"><span>📷</span><p>Upload foto</p><input type="file" accept="image/*" onchange="upImg(this,'anv-foto')"></div>
+    <div class="prevw" id="anv-foto-pv"></div>
+    <div style="margin-top:.6rem"><button class="btn bs" onclick="addAnv()">🎂 Cadastrar</button></div>
+  </div>
+  <div id="lista-anv" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.7rem;margin-top:.7rem"></div>
+</div>
+
+<!-- OBREIROS -->
+<div id="aba-ob" class="aba">
+  <h2>👷 Obreiros</h2>
+  <div class="card">
+    <div class="row"><div><label>Nome</label><input id="ob-nm"></div><div><label>Função</label><input id="ob-fn" placeholder="Diácono, Acólito..."></div></div>
+    <label>Telefone</label><input id="ob-tel">
+    <label>Foto</label><div class="upbox" style="height:70px"><span>📷</span><p>Upload foto</p><input type="file" accept="image/*" onchange="upImg(this,'ob-foto')"></div>
+    <div class="prevw" id="ob-foto-pv"></div>
+    <div style="margin-top:.6rem"><button class="btn bs" onclick="addOb()">+ Cadastrar</button></div>
+  </div>
+  <div id="lista-ob" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.7rem;margin-top:.7rem"></div>
+</div>
+
+<!-- ESCALA -->
+<div id="aba-esc" class="aba">
+  <h2>📋 Escala de Obreiros</h2>
+  <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-bottom:.8rem">
+    <button class="btn bs" onclick="escAdd()">➕ Novo Culto</button>
+    <button class="btn bp" style="background:#6366f1" onclick="escAbrLst()">⚙️ Listas</button>
+    <div style="display:flex;align-items:center;gap:5px;background:#fff;border-radius:8px;padding:3px 9px;box-shadow:0 1px 4px rgba(0,0,0,.08)">
+      <button onclick="escMes(-1)" style="background:var(--azul);color:#fff;border:none;border-radius:50%;width:28px;height:28px;font-size:1rem;cursor:pointer;line-height:1">‹</button>
+      <span id="esc-mes" style="font-weight:700;color:var(--azul);min-width:140px;text-align:center;font-size:.92rem">—</span>
+      <button onclick="escMes(1)" style="background:var(--azul);color:#fff;border:none;border-radius:50%;width:28px;height:28px;font-size:1rem;cursor:pointer;line-height:1">›</button>
+    </div>
+  </div>
+  <div class="etb" id="esc-tb"></div>
+  <div style="overflow-x:auto;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.08)">
+    <table class="et"><thead><tr>
+      <th style="width:100px">DATA</th><th style="width:90px">DIA</th><th style="width:110px">ENSAIO</th>
+      <th style="width:160px">CULTO / EVENTO</th><th style="width:130px">PORTA / RECEPÇÃO</th>
+      <th style="width:130px">DIRIGENTE</th><th style="width:110px">OPORTUNIDADE</th>
+      <th style="width:110px">MINISTRANTE</th><th style="width:32px"></th>
+    </tr></thead><tbody id="esc-body"></tbody></table>
+  </div>
+  <p style="margin-top:.5rem;font-size:.72rem;color:var(--muted)">💡 Clique nas células para selecionar</p>
+  <div class="mbg" id="esc-modal">
+    <div class="mbox" style="width:580px">
+      <h3 style="color:var(--azul2);margin-bottom:1rem">⚙️ Editar Listas</h3>
+      <div class="row">
+        <div><label style="font-size:.73rem;font-weight:700">CULTOS (um por linha)</label><textarea id="elst-clt" style="height:230px"></textarea></div>
+        <div><label style="font-size:.73rem;font-weight:700">OBREIROS (um por linha)</label><textarea id="elst-obr" style="height:230px"></textarea></div>
+      </div>
+      <div style="display:flex;gap:.6rem;justify-content:flex-end;margin-top:.8rem">
+        <button onclick="escSalvLst()" style="background:#27ae60;color:#fff;border:none;border-radius:8px;padding:7px 18px;font-weight:700;cursor:pointer">✅ Salvar</button>
+        <button onclick="document.getElementById('esc-modal').classList.remove('on')" style="background:#64748b;color:#fff;border:none;border-radius:8px;padding:7px 14px;cursor:pointer">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LIDERANÇA -->
+<div id="aba-lid" class="aba">
+  <h2>🎖️ Liderança</h2>
+  <div class="card">
+    <div class="row"><div><label>Nome</label><input id="lid-nm"></div><div><label>Cargo</label><input id="lid-cg"></div></div>
+    <label>Descrição</label><input id="lid-dsc">
+    <label>Foto</label><div class="upbox" style="height:70px"><span>📷</span><p>Upload foto</p><input type="file" accept="image/*" onchange="upImg(this,'lid-foto')"></div>
+    <div class="prevw" id="lid-foto-pv"></div>
+    <div style="margin-top:.6rem"><button class="btn bs" onclick="addLid()">+ Adicionar</button></div>
+  </div>
+  <div id="lista-lid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:.7rem;margin-top:.7rem"></div>
+</div>
+
+<!-- DÍZIMOS -->
+<div id="aba-diz" class="aba">
+  <h2>💠 PIX / Dízimos</h2>
+  <div style="background:linear-gradient(135deg,#1E3A5F,#3B9BD6);color:#fff;border-radius:12px;padding:1.3rem;margin-bottom:1rem">
+    <div style="font-size:.72rem;opacity:.75;margin-bottom:.3rem">🏦 Chave PIX — Conta Sede</div>
+    <div style="font-size:1rem;font-weight:700">CNPJ: 03.360.287/0001-59</div>
+    <a href="https://wa.me/5511993509109?text=Segue+meu+comprovante+de+dízimo" target="_blank" style="display:inline-flex;align-items:center;gap:5px;margin-top:.6rem;background:#25D366;color:#fff;padding:6px 14px;border-radius:20px;font-size:.8rem;font-weight:700;text-decoration:none">📲 (11) 99350-9109</a>
+  </div>
+  <div class="card"><label>Mensagem adicional</label><textarea id="diz-msg" rows="3"></textarea><div style="margin-top:.6rem"><button class="btn bp" onclick="salvDiz()">💾 Salvar</button><span class="mok" id="ok-diz">✔ Salvo!</span></div></div>
+</div>
+
+<!-- GALERIA -->
+<div id="aba-gal" class="aba">
+  <h2>🖼️ Galeria</h2>
+  <input type="file" id="gal-f1" accept="image/*,video/*" multiple style="display:none" onchange="upGal(this)">
+  <input type="file" id="gal-f2" accept="image/*" capture="environment" style="display:none" onchange="upGal(this)">
+  <input type="file" id="gal-f3" accept="video/*" capture="environment" style="display:none" onchange="upGal(this)">
+  <div class="card">
+    <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.6rem">
+      <button type="button" onclick="document.getElementById('gal-f1').click()" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:.7rem 1.1rem;background:#f0f7ff;border:2px dashed var(--azul2);border-radius:10px;cursor:pointer;font-family:inherit;flex:1;min-width:100px"><span style="font-size:1.4rem">📁</span><span style="font-size:.8rem;font-weight:600;color:var(--azul)">Do celular/PC</span></button>
+      <button type="button" onclick="document.getElementById('gal-f2').click()" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:.7rem 1.1rem;background:#f0fff4;border:2px dashed #27ae60;border-radius:10px;cursor:pointer;font-family:inherit;flex:1;min-width:100px"><span style="font-size:1.4rem">📷</span><span style="font-size:.8rem;font-weight:600;color:#27ae60">Tirar Foto</span></button>
+      <button type="button" onclick="document.getElementById('gal-f3').click()" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:.7rem 1.1rem;background:#fff8f0;border:2px dashed #e67e22;border-radius:10px;cursor:pointer;font-family:inherit;flex:1;min-width:100px"><span style="font-size:1.4rem">🎬</span><span style="font-size:.8rem;font-weight:600;color:#e67e22">Gravar Vídeo</span></button>
+    </div>
+    <div id="gal-sts" style="font-size:.78rem;color:var(--azul2);margin-bottom:.4rem;display:none"></div>
+    <div class="prevw" id="gal-pv"></div>
+  </div>
+  <div id="lista-gal" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.7rem;margin-top:.7rem"></div>
+</div>
+
+<!-- VÍDEOS -->
+<div id="aba-vid" class="aba">
+  <h2>▶️ Vídeos YouTube</h2>
+  <div class="card">
+    <div class="row"><div><label>Link YouTube</label><input id="vid-url" placeholder="https://youtu.be/..."></div><div><label>Título</label><input id="vid-tit"></div></div>
+    <div class="row" style="margin-top:.4rem"><div><label>Descrição</label><input id="vid-dsc"></div><div><label>Categoria</label><input id="vid-cat" placeholder="Pregação, Louvor..."></div></div>
+    <div style="margin-top:.6rem"><button class="btn bs" onclick="addVid()">+ Adicionar</button></div>
+  </div>
+  <div id="lista-vid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.7rem;margin-top:.7rem"></div>
+</div>
+
+<!-- DIVULGAR -->
+<div id="aba-div" class="aba">
+  <h2>📣 Compartilhar Site da Igreja</h2>
+  <div class="dh">
+    <div class="dhl">🌐 Link oficial do site</div>
+    <div class="dhv" id="div-link-show">https://obpcsaofernando199-sudo.github.io/Obpc/</div>
+    <div class="dlr">
+      <input id="div-link-inp" placeholder="Cole outro link aqui se necessário..." oninput="divUpdLink(this.value)">
+      <button class="dlb" onclick="divCpLink()">📋 Copiar</button>
+    </div>
+  </div>
+  <div class="dst">✦ Escolha o estilo da mensagem</div>
+  <div class="dmg" id="div-grid"></div>
+  <div id="div-prev-area" style="display:none">
+    <div class="dst">👁 Prévia — como aparece no WhatsApp</div>
+    <div class="dww">
+      <div class="dwb">
+        <div class="dwa">⛪</div>
+        <div class="dwi"><div class="dwn" id="div-wpp-nm">OBPC São Fernando</div><div class="dws">online</div></div>
+        <div class="dwic"><span>📹</span><span>📞</span><span>⋮</span></div>
+      </div>
+      <div class="dwbd"><div class="dbb"><div id="div-prev-txt"></div><div class="dbf"><span id="div-hora">agora</span><span class="dbt">✓✓</span></div></div></div>
+    </div>
+    <div class="dar">
+      <button class="da daw" onclick="divEnviar()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.555 4.118 1.528 5.845L0 24l6.335-1.524A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.885 0-3.65-.502-5.18-1.381l-.371-.221-3.762.905.946-3.671-.242-.386A9.937 9.937 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+        Enviar no WhatsApp
+      </button>
+      <button class="da dac" onclick="divCopiar()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        Copiar Mensagem
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MIGRAR -->
+<div id="aba-mig" class="aba">
+  <h2>🔄 Migrar Mídias</h2>
+  <div class="card" style="background:#e8f5e9;border-left:4px solid #27ae60">
+    <h3 style="color:#1b5e20;font-size:.9rem;margin-bottom:.5rem">📤 Exportar dados</h3>
+    <button class="btn bs" onclick="expDados()">⬇️ Baixar arquivo</button>
+    <div id="exp-ok" style="display:none;margin-top:.5rem;color:var(--verde);font-size:.82rem">✅ Baixado!</div>
+  </div>
+  <div class="card" style="background:#e3f2fd;border-left:4px solid var(--azul2)">
+    <h3 style="color:var(--azul);font-size:.9rem;margin-bottom:.5rem">📥 Importar dados</h3>
+    <label style="display:inline-flex;align-items:center;gap:.5rem;background:var(--azul);color:#fff;border-radius:8px;padding:.5rem 1.2rem;cursor:pointer;font-size:.85rem;font-weight:700">⬆️ Carregar<input type="file" accept=".json" style="display:none" onchange="impDados(this)"></label>
+    <div id="imp-ok" style="display:none;margin-top:.5rem;font-size:.82rem;font-weight:700"></div>
+  </div>
+  <div class="card">
+    <label>🔑 API Key ImgBB</label>
+    <div style="display:flex;gap:.5rem"><input id="mig-key" placeholder="Cole sua key do ImgBB..."><button class="btn bp" onclick="migSalvKey()">💾</button></div>
+  </div>
+</div>
+
+</main>
+</div>
+<div class="toast" id="toast-gbl"></div>
+<script>
+/* ═══ NAVEGAÇÃO ═══ */
+function ir(id, el) {
+  document.querySelectorAll('.aba').forEach(function(a){a.classList.remove('on');});
+  var aba = document.getElementById('aba-'+id);
+  if(aba) aba.classList.add('on');
+  document.querySelectorAll('nav a').forEach(function(a){a.classList.remove('on');});
+  if(el) el.classList.add('on');
+  // Fecha menu mobile
+  var nav = document.getElementById('snav');
+  var nov = document.getElementById('nov');
+  if(nav) nav.classList.remove('open');
+  if(nov) nov.classList.remove('open');
+  // Renderiza seção
+  if(id==='dash') rndDash();
+  else if(id==='info') carregaInfo();
+  else if(id==='hor') rndHor();
+  else if(id==='av') rndAv();
+  else if(id==='or') rndOr();
+  else if(id==='ev') rndEv();
+  else if(id==='inf') rndInf();
+  else if(id==='ser') rndSer();
+  else if(id==='clt') rndClt();
+  else if(id==='pas') rndPas();
+  else if(id==='aniv') rndAnv();
+  else if(id==='ob') rndOb();
+  else if(id==='esc') rndEsc();
+  else if(id==='lid') rndLid();
+  else if(id==='diz') rndDiz();
+  else if(id==='gal') rndGal();
+  else if(id==='vid') rndVid();
+  else if(id==='div') rndDiv();
+  else if(id==='bnr'){rndBnr();}
+  else if(id==='mig') rndMig();
+}
+
+function tnav() {
+  var nav = document.getElementById('snav');
+  var nov = document.getElementById('nov');
+  if(nav) nav.classList.toggle('open');
+  if(nov) nov.classList.toggle('open');
+}
+
+/* ═══ TOAST ═══ */
+function showToast(msg) {
+  var t = document.getElementById('toast-gbl');
+  if(!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');}, 2800);
+}
+
+/* ═══ DB ═══ */
+var FB='https://fcosta-31125-default-rtdb.firebaseio.com/obpc';
+var DB={
+  g:function(k){try{return JSON.parse(localStorage.getItem('obpc_'+k));}catch(e){return null;}},
+  s:function(k,v){localStorage.setItem('obpc_'+k,JSON.stringify(v));fetch(FB+'/'+k+'.json',{method:'PUT',body:JSON.stringify(v),headers:{'Content-Type':'application/json'}}).catch(function(){});},
+  sync:async function(){try{var r=await fetch(FB+'.json');if(!r.ok)return;var d=await r.json();if(!d)return;Object.keys(d).forEach(function(k){try{localStorage.setItem('obpc_'+k,JSON.stringify(d[k]));}catch(e){}});}catch(e){}},
+  listen:function(){try{var es=new EventSource(FB+'.json?accept=text/event-stream');es.addEventListener('put',function(e){try{var d=JSON.parse(e.data);if(!d||!d.data)return;if(d.path==='/'&&typeof d.data==='object')Object.keys(d.data).forEach(function(k){try{localStorage.setItem('obpc_'+k,JSON.stringify(d.data[k]));}catch(e){}});else if(d.path&&d.path.length>1){var k=d.path.replace(/^\//,'');try{localStorage.setItem('obpc_'+k,JSON.stringify(d.data));}catch(e){}}}catch(e){}});}catch(e){}}
+};
+
+/* ═══ IDB ═══ */
+var IDB=(function(){
+  var db=null;var NM='obpc_m';var VR=1;var ST='f';
+  function op(){return new Promise(function(res,rej){if(db){res(db);return;}var r=indexedDB.open(NM,VR);r.onupgradeneeded=function(e){e.target.result.createObjectStore(ST,{keyPath:'id',autoIncrement:true});};r.onsuccess=function(e){db=e.target.result;res(db);};r.onerror=rej;});}
+  async function salv(file){var d=await op();return new Promise(function(res,rej){var tx=d.transaction(ST,'readwrite');var rq=tx.objectStore(ST).add({n:file.name||'',t:file.type||'',b:file,ts:Date.now()});rq.onsuccess=function(){res('idb:'+rq.result);};rq.onerror=rej;});}
+  async function obt(id){var d=await op();return new Promise(function(res,rej){var rq=d.transaction(ST,'readonly').objectStore(ST).get(Number(id));rq.onsuccess=function(){res(rq.result);};rq.onerror=rej;});}
+  async function url(src){if(!src||!src.startsWith('idb:'))return src||'';var rec=await obt(src.replace('idb:',''));return rec?URL.createObjectURL(rec.b):'';}
+  return{salv:salv,url:url};
+})();
+
+/* ═══ Uploads ═══ */
+var _i={};
+var _md={clt:[],pas:[]};
+
+async function upImgBB(file){
+  var key=localStorage.getItem('obpc_imgbb_key')||'';
+  if(!key||key.length<10)return null;
+  var b64=await new Promise(function(res,rej){var r=new FileReader();r.onload=function(e){res(e.target.result.split(',')[1]);};r.onerror=rej;r.readAsDataURL(file);});
+  var fd=new FormData();fd.append('image',b64);fd.append('name',file.name||'obpc_'+Date.now());
+  try{var resp=await fetch('https://api.imgbb.com/1/upload?key='+key,{method:'POST',body:fd});var data=await resp.json();if(data.success)return data.data.url;return null;}catch(e){return null;}
+}
+
+async function reduzirFoto(file){
+  if(file.size < 800*1024) return file;
+  return new Promise(function(res){
+    var img=new Image();var url=URL.createObjectURL(file);
+    img.onload=function(){
+      URL.revokeObjectURL(url);
+      var max=1600;var w=img.width;var h=img.height;
+      if(w>max||h>max){if(w>h){h=Math.round(h*max/w);w=max;}else{w=Math.round(w*max/h);h=max;}}
+      var c=document.createElement('canvas');c.width=w;c.height=h;
+      c.getContext('2d').drawImage(img,0,0,w,h);
+      c.toBlob(function(b){res(b?new File([b],file.name,{type:'image/jpeg'}):file);},'image/jpeg',0.82);
+    };
+    img.onerror=function(){URL.revokeObjectURL(url);res(file);};
+    img.src=url;
+  });
+}
+
+async function upCloud(file, onProgress){
+  return new Promise(function(res){
+    var xhr=new XMLHttpRequest();var fd=new FormData();
+    fd.append('file',file);fd.append('upload_preset','fcosta_imoveis');
+    fd.append('folder','obpc_sao_fernando');fd.append('resource_type','video');
+    xhr.open('POST','https://api.cloudinary.com/v1_1/dpquob8gh/video/upload');
+    xhr.timeout=600000;
+    xhr.upload.onprogress=function(e){if(e.lengthComputable&&onProgress)onProgress(Math.round(e.loaded/e.total*100));};
+    xhr.onload=function(){try{var d=JSON.parse(xhr.responseText);d.secure_url?res(d.secure_url):res(null);}catch(e){res(null);}};
+    xhr.onerror=function(){res(null);};xhr.ontimeout=function(){res(null);};
+    xhr.send(fd);
+  });
+}
+
+async function upArq(file, onProgress){
+  var isV=file.type.startsWith('video/');
+  if(isV){
+    if(onProgress)onProgress(0);
+    var u=await upCloud(file,function(pct){if(onProgress)onProgress(pct);});
+    if(u)return{tp:'video',src:u,nm:file.name||''};
+  } else {
+    var fOtim=await reduzirFoto(file);
+    var u2=await upImgBB(fOtim);
+    if(u2)return{tp:'img',src:u2,nm:file.name||''};
+  }
+  var id=await IDB.salv(file);
+  return{tp:isV?'video':'img',src:id,nm:file.name||'',local:true};
+}
+
+async function upImg(inp,campo){
+  var f=inp.files[0];if(!f)return;
+  var pv=document.getElementById(campo+'-pv');if(!pv)return;
+  var loc=URL.createObjectURL(f);
+  pv.innerHTML='<div style="position:relative;display:inline-block"><img src="'+loc+'" style="width:88px;height:70px;object-fit:contain;border-radius:6px;background:#f0f4f8"><span style="position:absolute;inset:0;background:rgba(255,255,255,.7);display:flex;align-items:center;justify-content:center;font-size:.7rem;border-radius:6px" id="'+campo+'-sts">⬆️</span></div>';
+  var url=await upImgBB(f);
+  var sts=document.getElementById(campo+'-sts');
+  if(url){_i[campo]=url;if(sts)sts.textContent='☁️';}
+  else{var r=new FileReader();r.onload=function(e){_i[campo]=e.target.result;if(sts)sts.textContent='⚠️';};r.readAsDataURL(f);}
+  try{inp.value='';}catch(e){}
+}
+
+function upLogo(inp){
+  var f=inp.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(e){_i.logo=e.target.result;var lp=document.getElementById('lgpv');if(lp){lp.src=e.target.result;lp.style.display='block';}};
+  r.readAsDataURL(f);
+}
+
+async function cltUp(inp){
+  var files=Array.from(inp.files||[]);if(!files.length)return;
+  var sts=document.getElementById('clt-sts');
+  var pv=document.getElementById('clt-pv');
+  var cnt=document.getElementById('clt-cnt');
+  var barWrap=document.createElement('div');
+  barWrap.style.cssText='width:100%;background:#e2e8f0;border-radius:8px;overflow:hidden;margin:.4rem 0;height:8px;display:none';
+  var bar=document.createElement('div');
+  bar.style.cssText='height:100%;background:var(--azul2);border-radius:8px;width:0%;transition:width .3s';
+  barWrap.appendChild(bar);
+  if(sts){sts.parentNode.insertBefore(barWrap,sts.nextSibling);}
+  var ok=0;
+  for(var i=0;i<files.length;i++){
+    var f=files[i];var isV=f.type.startsWith('video/');
+    var nom=(f.name||'arquivo').replace(/.*[\\/]/,'');
+    var mbSize=(f.size/1024/1024).toFixed(1);
+    barWrap.style.display='block';bar.style.width='0%';
+    if(sts){sts.style.display='block';sts.textContent='['+(i+1)+'/'+files.length+'] '+(isV?'📹':'📷')+' '+nom+' ('+mbSize+'MB)...';}
+    try{
+      var m=await upArq(f,function(pct){bar.style.width=pct+'%';});
+      _md.clt.push(m);
+      bar.style.width='100%';bar.style.background='var(--verde)';
+      var u=m.src;
+      if(m.src&&m.src.startsWith('idb:'))u=await IDB.url(m.src);
+      if(u&&pv){
+        if(m.tp==='video'){var v=document.createElement('video');v.src=u;v.muted=true;v.preload='metadata';v.controls=true;v.style.cssText='max-width:120px;height:auto;max-height:160px;border-radius:6px;background:#000;border:1px solid var(--borda);display:block;margin:.2rem';pv.appendChild(v);}
+        else{var img=document.createElement('img');img.src=u;img.style.cssText='max-width:120px;height:auto;max-height:160px;border-radius:6px;background:#f0f4f8;border:1px solid var(--borda);display:block;margin:.2rem;object-fit:contain';pv.appendChild(img);}
+      }
+      ok++;
+    }catch(e){console.error(e);bar.style.background='var(--verm)';}
+    await new Promise(function(r){setTimeout(r,300);});
+    bar.style.background='var(--azul2)';
+  }
+  if(cnt)cnt.textContent=_md.clt.length+' mídia(s)';
+  try{inp.value='';}catch(e){}
+  barWrap.style.display='none';
+  if(sts){sts.textContent=ok===files.length?'✅ '+ok+' arquivo(s) enviado(s)!':'⚠️ '+ok+'/'+files.length+' OK';setTimeout(function(){sts.style.display='none';},5000);}
+}
+
+async function upMd(inp,ctx){
+  var files=Array.from(inp.files||[]);if(!files.length)return;
+  var pv=document.getElementById(ctx+'-pv');
+  for(var i=0;i<files.length;i++){
+    var f=files[i];
+    try{
+      var m=await upArq(f);_md[ctx]=_md[ctx]||[];_md[ctx].push(m);
+      if(pv){var u=m.src;if(m.src&&m.src.startsWith('idb:'))u=await IDB.url(m.src);
+        if(m.tp==='video'){var v=document.createElement('video');v.src=u;v.controls=true;v.preload='metadata';v.style.cssText='width:88px;height:70px;object-fit:contain;border-radius:6px;background:#000';pv.appendChild(v);}
+        else{var img=document.createElement('img');img.src=u;img.style.cssText='width:88px;height:70px;object-fit:contain;border-radius:6px;background:#f0f4f8';pv.appendChild(img);}
+      }
+    }catch(e){console.error(e);}
+  }
+  try{inp.value='';}catch(e){}
+}
+
+async function upGal(inp){
+  var files=Array.from(inp.files||[]);if(!files.length)return;
+  var sts=document.getElementById('gal-sts');
+  var pv=document.getElementById('gal-pv');
+  var ok=0;
+  for(var i=0;i<files.length;i++){
+    var f=files[i];var isV=f.type.startsWith('video/');
+    var nom=(f.name||'arquivo').replace(/.*[\\/]/,'');
+    if(sts){sts.style.display='block';sts.textContent='['+(i+1)+'/'+files.length+'] '+(isV?'📹':'📷')+' '+nom+'...';}
+    try{
+      var m=await upArq(f);
+      var pu=m.src;if(m.src&&m.src.startsWith('idb:'))pu=await IDB.url(m.src);
+      if(pu&&pv){
+        if(m.tp==='video'){var v=document.createElement('video');v.src=pu;v.controls=true;v.preload='metadata';v.style.cssText='max-width:120px;height:auto;max-height:160px;border-radius:6px;background:#000;border:1px solid var(--borda);display:block;margin:.2rem';pv.appendChild(v);}
+        else{var img=document.createElement('img');img.src=pu;img.style.cssText='max-width:120px;height:auto;max-height:160px;border-radius:6px;background:#f0f4f8;border:1px solid var(--borda);display:block;margin:.2rem;object-fit:contain';pv.appendChild(img);}
+      }
+      var l=DB.g('galeria')||[];l.push({url:m.src,tp:m.tp,leg:f.name.replace(/\.[^.]+$/,''),ts:Date.now()});DB.s('galeria',l);ok++;rndGal();
+    }catch(e){console.error(e);}
+    await new Promise(function(r){setTimeout(r,300);});
+  }
+  try{inp.value='';}catch(e){}
+  if(sts){sts.textContent=ok===files.length?'✅ '+ok+' arquivo(s)!':'⚠️ '+ok+'/'+files.length+' OK';setTimeout(function(){sts.style.display='none';},5000);}
+}
+
+/* ═══ INFO ═══ */
+function carregaInfo(){
+  var d=DB.g('info')||{};
+  var campos=['ig-nome','ig-pastor','ig-end','ig-cidade','ig-tel','ig-email','ig-cnpj','ig-logo','ig-bv','ig-sobre'];
+  var keys=['nome','pastor','end','cidade','tel','email','cnpj','logo','bv','sobre'];
+  for(var i=0;i<campos.length;i++){var el=document.getElementById(campos[i]);if(el&&d[keys[i]])el.value=d[keys[i]];}
+  if(d.logoB64){var lp=document.getElementById('lgpv');if(lp){lp.src=d.logoB64;lp.style.display='block';}}
+}
+function salvarInfo(){
+  var d={
+    nome:document.getElementById('ig-nome').value,
+    pastor:document.getElementById('ig-pastor').value,
+    end:document.getElementById('ig-end').value,
+    cidade:document.getElementById('ig-cidade').value,
+    tel:document.getElementById('ig-tel').value,
+    email:document.getElementById('ig-email').value,
+    cnpj:document.getElementById('ig-cnpj').value,
+    logo:document.getElementById('ig-logo').value,
+    bv:document.getElementById('ig-bv').value,
+    sobre:document.getElementById('ig-sobre').value
+  };
+  if(_i.logo)d.logoB64=_i.logo;
+  DB.s('info',d);
+  var ok=document.getElementById('ok-info');if(ok){ok.style.display='inline';setTimeout(function(){ok.style.display='none';},2000);}
+  // Atualiza logo no header
+  if(d.logoB64){var hl=document.getElementById('hlogo');if(hl){hl.src=d.logoB64;hl.style.display='block';}}
+}
+
+/* ═══ HORÁRIOS ═══ */
+function addHor(){
+  var l=DB.g('horarios')||[];
+  l.push({dia:document.getElementById('hor-dia').value,h:document.getElementById('hor-h').value,tipo:document.getElementById('hor-t').value});
+  DB.s('horarios',l);rndHor();
+  document.getElementById('hor-h').value='';document.getElementById('hor-t').value='';
+}
+function rndHor(){
+  var l=DB.g('horarios')||[];
+  var el=document.getElementById('lista-hor');if(!el)return;
+  if(!l.length){el.innerHTML='<p style="color:var(--muted);font-size:.82rem">Nenhum horário cadastrado.</p>';return;}
+  el.innerHTML=l.map(function(h,i){return '<div class="li"><span>'+h.dia+' — '+h.h+' — '+h.tipo+'</span><button class="btn bd bsm" onclick="del(\'horarios\','+i+',rndHor)">✕</button></div>';}).join('');
+}
+
+/* ═══ AVISOS ═══ */
+function addAv(){
+  var l=DB.g('avisos')||[];
+  l.unshift({tit:document.getElementById('av-tit').value,txt:document.getElementById('av-txt').value,pri:document.getElementById('av-pri').value,dt:document.getElementById('av-dt').value,img:_i['av-img']||'',ts:Date.now()});
+  DB.s('avisos',l);_i['av-img']='';
+  document.getElementById('av-tit').value='';document.getElementById('av-txt').value='';document.getElementById('av-img-pv').innerHTML='';
+  rndAv();
+}
+function rndAv(){
+  var l=DB.g('avisos')||[];
+  var c=document.getElementById('lista-av');if(!c)return;
+  c.innerHTML=l.map(function(a,i){
+    var badge=a.pri==='urgente'?'<span class="bdu">URGENTE</span>':a.pri==='importante'?'<span class="bdi">IMPORTANTE</span>':'<span class="bdn">Normal</span>';
+    return '<div class="card" style="margin-bottom:.5rem">'+(a.img?'<img src="'+a.img+'" style="width:100%;max-height:160px;object-fit:cover;border-radius:8px;margin-bottom:.5rem">':'')+'<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem">'+badge+'<strong style="font-size:.88rem">'+a.tit+'</strong></div><p style="font-size:.82rem;color:var(--muted)">'+a.txt+'</p><div style="display:flex;justify-content:space-between;align-items:center;margin-top:.5rem"><span style="font-size:.72rem;color:var(--muted)">'+a.dt+'</span><button class="btn bd bsm" onclick="del(\'avisos\','+i+',rndAv)">✕ Excluir</button></div></div>';
+  }).join('');
+  var cnt=document.getElementById('cnt-av');if(cnt)cnt.textContent=l.length;
+}
+
+/* ═══ ORAÇÃO ═══ */
+function addOr(){
+  var l=DB.g('oracoes')||[];
+  l.unshift({nome:document.getElementById('or-nome').value,sit:document.getElementById('or-sit').value,txt:document.getElementById('or-txt').value,anon:document.getElementById('or-anon').checked,resp:document.getElementById('or-resp').checked,ts:Date.now()});
+  DB.s('oracoes',l);
+  document.getElementById('or-nome').value='';document.getElementById('or-txt').value='';document.getElementById('or-anon').checked=false;document.getElementById('or-resp').checked=false;
+  rndOr();
+}
+function rndOr(){
+  var l=DB.g('oracoes')||[];
+  var c=document.getElementById('lista-or');if(!c)return;
+  c.innerHTML=l.map(function(o,i){
+    return '<div class="card" style="margin-bottom:.5rem">'+(o.resp?'<span style="background:#e8f5e9;color:#2e7d32;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:20px;display:inline-block;margin-bottom:.3rem">✅ Respondido</span>':'')+'<div style="font-weight:700;font-size:.85rem">'+(o.anon?'Anônimo':o.nome)+'<span style="font-size:.72rem;font-weight:400;color:var(--muted);margin-left:.5rem">'+o.sit+'</span></div><p style="font-size:.82rem;color:var(--muted);margin-top:.3rem">'+o.txt+'</p><div style="text-align:right;margin-top:.4rem"><button class="btn bd bsm" onclick="del(\'oracoes\','+i+',rndOr)">✕</button></div></div>';
+  }).join('');
+}
+
+/* ═══ EVENTOS ═══ */
+function addEv(){
+  var l=DB.g('eventos')||[];
+  l.unshift({nom:document.getElementById('ev-nom').value,dt:document.getElementById('ev-dt').value,h:document.getElementById('ev-h').value,loc:document.getElementById('ev-loc').value,tp:document.getElementById('ev-tp').value,dsc:document.getElementById('ev-dsc').value,img:_i['ev-img']||'',ts:Date.now()});
+  DB.s('eventos',l);_i['ev-img']='';
+  document.getElementById('ev-nom').value='';document.getElementById('ev-dsc').value='';document.getElementById('ev-img-pv').innerHTML='';
+  rndEv();
+}
+function rndEv(){
+  var l=DB.g('eventos')||[];
+  var c=document.getElementById('lista-ev');if(!c)return;
+  c.innerHTML=l.map(function(e,i){
+    return '<div class="card" style="margin-bottom:.5rem">'+(e.img?'<img src="'+e.img+'" style="width:100%;max-height:140px;object-fit:cover;border-radius:8px;margin-bottom:.5rem">':'')+'<div style="font-weight:700;font-size:.88rem">'+e.nom+'</div><div style="font-size:.78rem;color:var(--azul2);margin:.2rem 0">📅 '+e.dt+' — '+e.h+' | 📍 '+e.loc+'</div><p style="font-size:.8rem;color:var(--muted)">'+e.dsc+'</p><div style="text-align:right;margin-top:.4rem"><button class="btn bd bsm" onclick="del(\'eventos\','+i+',rndEv)">✕ Excluir</button></div></div>';
+  }).join('');
+  var cnt=document.getElementById('cnt-ev');if(cnt)cnt.textContent=l.length;
+}
+
+/* ═══ INFORMATIVOS ═══ */
+function addInf(){
+  var l=DB.g('informativos')||[];
+  l.unshift({tit:document.getElementById('inf-tit').value,cat:document.getElementById('inf-cat').value,txt:document.getElementById('inf-txt').value,img:_i['inf-img']||'',ts:Date.now()});
+  DB.s('informativos',l);_i['inf-img']='';
+  document.getElementById('inf-tit').value='';document.getElementById('inf-txt').value='';document.getElementById('inf-img-pv').innerHTML='';
+  rndInf();
+}
+function rndInf(){
+  var l=DB.g('informativos')||[];
+  var c=document.getElementById('lista-inf');if(!c)return;
+  c.innerHTML=l.map(function(it,i){
+    return '<div class="card" style="margin-bottom:.5rem">'+(it.img?'<img src="'+it.img+'" style="width:100%;max-height:140px;object-fit:cover;border-radius:8px;margin-bottom:.5rem">':'')+'<div style="font-weight:700;font-size:.88rem">'+it.tit+'<span style="font-size:.72rem;font-weight:400;color:var(--azul2);margin-left:.5rem">'+it.cat+'</span></div><p style="font-size:.82rem;color:var(--muted);margin-top:.3rem">'+it.txt+'</p><div style="text-align:right;margin-top:.4rem"><button class="btn bd bsm" onclick="del(\'informativos\','+i+',rndInf)">✕</button></div></div>';
+  }).join('');
+}
+
+/* ═══ SERMÕES ═══ */
+function addSer(){
+  var l=DB.g('sermoes')||[];
+  var url=document.getElementById('ser-url').value||'';
+  var yid=(url.match(/(?:youtu\.be\/|v=|shorts\/)([a-zA-Z0-9_-]+)/)||[])[1]||'';
+  l.unshift({tit:document.getElementById('ser-tit').value,preg:document.getElementById('ser-preg').value,dt:document.getElementById('ser-dt').value,url:url,yid:yid,pas:document.getElementById('ser-pas').value,res:document.getElementById('ser-res').value,ts:Date.now()});
+  DB.s('sermoes',l);
+  document.getElementById('ser-tit').value='';document.getElementById('ser-preg').value='';document.getElementById('ser-res').value='';document.getElementById('ser-url').value='';document.getElementById('ser-pas').value='';
+  rndSer();
+}
+function rndSer(){
+  var l=DB.g('sermoes')||[];
+  var c=document.getElementById('lista-ser');if(!c)return;
+  c.innerHTML=l.map(function(s,i){
+    return '<div class="card" style="margin-bottom:.5rem">'+(s.yid?'<img src="https://img.youtube.com/vi/'+s.yid+'/mqdefault.jpg" style="width:100%;max-height:140px;object-fit:cover;border-radius:8px;margin-bottom:.5rem">':'')+'<div style="font-weight:700;font-size:.88rem">'+s.tit+'</div><div style="font-size:.78rem;color:var(--muted);margin:.2rem 0">'+s.preg+' | '+s.dt+(s.pas?' | '+s.pas:'')+'</div>'+(s.res?'<p style="font-size:.8rem;color:var(--muted)">'+s.res+'</p>':'')+'<div style="text-align:right;margin-top:.4rem"><button class="btn bd bsm" onclick="del(\'sermoes\','+i+',rndSer)">✕</button></div></div>';
+  }).join('');
+}
+
+/* ═══ CULTO FOI ASSIM ═══ */
+function addClt(){
+  var l=DB.g('cultos')||[];
+  var urls=document.getElementById('clt-urls').value.split('\n').filter(function(u){return u.trim();});
+  l.unshift({tit:document.getElementById('clt-tit').value,dt:document.getElementById('clt-dt').value,rel:document.getElementById('clt-rel').value,midias:_md.clt.slice(),urls:urls,ts:Date.now()});
+  DB.s('cultos',l);_md.clt=[];
+  document.getElementById('clt-tit').value='';document.getElementById('clt-rel').value='';document.getElementById('clt-urls').value='';document.getElementById('clt-pv').innerHTML='';
+  var cnt=document.getElementById('clt-cnt');if(cnt)cnt.textContent='';
+  rndClt();showToast('✅ Publicado!');
+}
+function limClt(){
+  _md.clt=[];
+  document.getElementById('clt-tit').value='';document.getElementById('clt-rel').value='';document.getElementById('clt-urls').value='';document.getElementById('clt-pv').innerHTML='';
+  var cnt=document.getElementById('clt-cnt');if(cnt)cnt.textContent='';
+}
+async function rndClt(){
+  var l=DB.g('cultos')||[];
+  var c=document.getElementById('lista-clt');if(!c)return;
+  c.innerHTML='';
+  for(var i=0;i<l.length;i++){
+    var ct=l[i];
+    var div=document.createElement('div');div.className='card';div.style.marginBottom='.5rem';
+    var html='<div style="font-weight:700;font-size:.88rem">'+ct.tit+'</div>';
+    html+='<div style="font-size:.78rem;color:var(--muted);margin:.2rem 0">'+ct.dt+'</div>';
+    if(ct.rel)html+='<p style="font-size:.82rem;margin:.3rem 0">'+ct.rel+'</p>';
+    div.innerHTML=html;
+    // Mídias
+    if(ct.midias&&ct.midias.length){
+      var pw=document.createElement('div');pw.style.cssText='display:flex;flex-wrap:wrap;gap:5px;margin:.4rem 0';
+      for(var j=0;j<ct.midias.length;j++){
+        var m=ct.midias[j];var u=m.src;
+        if(u&&u.startsWith('idb:'))u=await IDB.url(u);
+        if(!u)continue;
+        if(m.tp==='video'){var v=document.createElement('video');v.src=u;v.controls=true;v.style.cssText='width:100px;height:80px;border-radius:6px;background:#000';pw.appendChild(v);}
+        else{var img=document.createElement('img');img.src=u;img.style.cssText='width:100px;height:80px;object-fit:cover;border-radius:6px;background:#f0f4f8';pw.appendChild(img);}
+      }
+      div.appendChild(pw);
+    }
+    var foot=document.createElement('div');foot.style.cssText='text-align:right;margin-top:.4rem';
+    foot.innerHTML='<button class="btn bd bsm" onclick="del(\'cultos\','+i+',rndClt)">✕ Excluir</button>';
+    div.appendChild(foot);c.appendChild(div);
+  }
+}
+
+/* ═══ PALAVRA DO PASTOR ═══ */
+function addPas(){
+  var l=DB.g('palavras')||[];
+  var url=document.getElementById('pas-url').value||'';
+  l.unshift({tit:document.getElementById('pas-tit').value,dt:document.getElementById('pas-dt').value,aut:document.getElementById('pas-aut').value,txt:document.getElementById('pas-txt').value,url:url,midias:(_md.pas||[]).slice(),ts:Date.now()});
+  DB.s('palavras',l);_md.pas=[];
+  document.getElementById('pas-tit').value='';document.getElementById('pas-txt').value='';document.getElementById('pas-url').value='';document.getElementById('pas-pv').innerHTML='';
+  rndPas();showToast('✅ Publicado!');
+}
+function rndPas(){
+  var l=DB.g('palavras')||[];
+  var c=document.getElementById('lista-pas');if(!c)return;
+  c.innerHTML=l.map(function(p,i){
+    return '<div class="card" style="margin-bottom:.5rem"><div style="font-weight:700;font-size:.88rem">'+p.tit+'</div><div style="font-size:.78rem;color:var(--muted);margin:.2rem 0">'+p.aut+' | '+p.dt+'</div><p style="font-size:.82rem;margin:.3rem 0">'+p.txt+'</p><div style="text-align:right;margin-top:.4rem"><button class="btn bd bsm" onclick="del(\'palavras\','+i+',rndPas)">✕</button></div></div>';
+  }).join('');
+}
+
+/* ═══ ANIVERSARIANTES ═══ */
+function addAnv(){
+  var l=DB.g('aniversariantes')||[];
+  l.push({nm:document.getElementById('anv-nm').value,dt:document.getElementById('anv-dt').value,fn:document.getElementById('anv-fn').value,tel:document.getElementById('anv-tel').value,foto:_i['anv-foto']||''});
+  DB.s('aniversariantes',l);_i['anv-foto']='';
+  document.getElementById('anv-nm').value='';document.getElementById('anv-tel').value='';document.getElementById('anv-foto-pv').innerHTML='';
+  rndAnv();
+}
+function rndAnv(){
+  var l=DB.g('aniversariantes')||[];
+  var c=document.getElementById('lista-anv');if(!c)return;
+  // Ordena por mês/dia
+  var hoje=new Date();var hM=hoje.getMonth();var hD=hoje.getDate();
+  c.innerHTML=l.map(function(a,i){
+    var niver='';
+    if(a.dt){var p=a.dt.split('-');var dM=parseInt(p[1])-1;var dD=parseInt(p[2]);if(dM===hM&&dD===hD)niver='🎉 HOJE!';}
+    return '<div style="background:#fff;border-radius:10px;padding:.9rem;box-shadow:0 1px 5px rgba(0,0,0,.07);text-align:center">'+(niver?'<div style="background:#fff9c4;color:#e65100;font-size:.7rem;font-weight:700;border-radius:20px;padding:2px 8px;margin-bottom:.3rem">'+niver+'</div>':'')+'<img src="'+(a.foto||'https://ui-avatars.com/api/?name='+encodeURIComponent(a.nm)+'&background=1E3A5F&color=fff')+'" style="width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid var(--azul2);margin-bottom:.4rem"><div style="font-weight:700;font-size:.83rem">'+a.nm+'</div><div style="font-size:.72rem;color:var(--azul2)">'+a.fn+'</div>'+(a.dt?'<div style="font-size:.7rem;color:var(--muted);margin-top:.2rem">'+a.dt.split('-').reverse().join('/')+'</div>':'')+'<button class="btn bd bsm" style="margin-top:.4rem" onclick="del(\'aniversariantes\','+i+',rndAnv)">✕</button></div>';
+  }).join('');
+}
+
+/* ═══ OBREIROS ═══ */
+function addOb(){
+  var l=DB.g('obreiros')||[];
+  l.push({nm:document.getElementById('ob-nm').value,fn:document.getElementById('ob-fn').value,tel:document.getElementById('ob-tel').value,foto:_i['ob-foto']||''});
+  DB.s('obreiros',l);_i['ob-foto']='';
+  document.getElementById('ob-nm').value='';document.getElementById('ob-tel').value='';document.getElementById('ob-foto-pv').innerHTML='';
+  rndOb();
+}
+function rndOb(){
+  var l=DB.g('obreiros')||[];
+  var c=document.getElementById('lista-ob');if(!c)return;
+  c.innerHTML=l.map(function(o,i){
+    return '<div style="background:#fff;border-radius:10px;padding:.9rem;box-shadow:0 1px 5px rgba(0,0,0,.07);text-align:center"><img src="'+(o.foto||'https://ui-avatars.com/api/?name='+encodeURIComponent(o.nm)+'&background=1E3A5F&color=fff')+'" style="width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid var(--azul2);margin-bottom:.4rem"><div style="font-weight:700;font-size:.83rem">'+o.nm+'</div><div style="font-size:.72rem;color:var(--azul2)">'+o.fn+'</div>'+(o.tel?'<div style="font-size:.7rem;color:var(--muted);margin-top:.2rem">'+o.tel+'</div>':'')+'<button class="btn bd bsm" style="margin-top:.4rem" onclick="del(\'obreiros\','+i+',rndOb)">✕</button></div>';
+  }).join('');
+  var cnt=document.getElementById('cnt-ob');if(cnt)cnt.textContent=l.length;
+}
+
+/* ═══ ESCALA ═══ */
+var escP=new Date();var escCel=null;var escTp='';
+var DIAS=['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+var MESES=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+function escLsts(){
+  var d=DB.g('esc_listas')||{};
+  return {clt:(d.clt||'').split('\n').filter(function(n){return n.trim();}),obr:(d.obr||'').split('\n').filter(function(n){return n.trim();})};
+}
+function escAbrLst(){
+  var d=DB.g('esc_listas')||{};
+  var ec=document.getElementById('elst-clt');var eo=document.getElementById('elst-obr');
+  if(ec)ec.value=d.clt||'';if(eo)eo.value=d.obr||'';
+  document.getElementById('esc-modal').classList.add('on');
+}
+function escSalvLst(){
+  DB.s('esc_listas',{clt:document.getElementById('elst-clt').value,obr:document.getElementById('elst-obr').value});
+  document.getElementById('esc-modal').classList.remove('on');
+  showToast('✅ Listas salvas!');
+}
+function escRndMes(){
+  var el=document.getElementById('esc-mes');
+  if(el)el.textContent=MESES[escP.getMonth()]+' '+escP.getFullYear();
+}
+function escMes(d){
+  escP=new Date(escP.getFullYear(),escP.getMonth()+d,1);
+  escRndMes();
+}
+function escFmt(dt){
+  if(!dt)return '';
+  var p=dt.split('-');return p[2]+'/'+p[1];
+}
+function escCor(tr,dia){
+  tr.className='';
+  if(dia==='Domingo')tr.classList.add('rdom');
+  else if(dia==='Quarta-feira')tr.classList.add('rqua');
+  else if(dia==='Sábado')tr.classList.add('rsab');
+}
+function escEhCeia(v){
+  return v.toLowerCase().indexOf('ceia')>-1;
+}
+function escOnDt(inp,silent){
+  var tr=inp.closest('tr');
+  var disp=tr.querySelector('.edtd');
+  if(inp.value){
+    var d=new Date(inp.value+'T12:00');
+    var dia=DIAS[d.getDay()]||'';
+    disp.textContent=escFmt(inp.value);
+    disp.classList.remove('vz');
+    tr.querySelector('.etdia').textContent=dia;
+    escCor(tr,dia);
+  }else{
+    disp.textContent='📅 Selecionar';
+    disp.classList.add('vz');
+    tr.querySelector('.etdia').textContent='';
+  }
+  if(!silent)escSalv();
+}
+function escSetV(cel,v){if(!cel)return;cel.setAttribute('data-v',v||'');escRndCel(cel);}
+function escRndCel(cel){
+  var v=(cel.getAttribute('data-v')||'').trim();
+  if(!v){cel.innerHTML='<span class="ecv">— clique</span>';return;}
+  cel.innerHTML=v.split('\n').map(function(n){n=n.trim();if(!n)return '';return '<span class="en" draggable="true" ondragstart="escDrS(event,\''+n.replace(/'/g,"\\'")+'\'  ,this)" ondragend="escDrE()">'+n+'<span class="erm" onclick="escRem(this,\''+n.replace(/'/g,"\\'")+'\');event.stopPropagation()">✕</span></span>';}).filter(Boolean).join('');
+}
+var _dn='';var _ds=null;
+function escDrS(e,nm,el){_dn=nm;_ds=el.closest('.ec');e.dataTransfer.effectAllowed='move';setTimeout(function(){el.style.opacity='.35';},0);}
+function escDrE(){document.querySelectorAll('.en').forEach(function(el){el.style.opacity='';});document.querySelectorAll('.ec.dov').forEach(function(c){c.classList.remove('dov');});}
+function escRem(el,nm){
+  var cel=el.closest('.ec');
+  var ns=(cel.getAttribute('data-v')||'').split('\n').filter(function(n){return n.trim()&&n.trim()!==nm;});
+  escSetV(cel,ns.join('\n'));
+  if(escCel===cel)escAbrTb();
+  escSalv();
+}
+function escCeiaMount(tdDir,dir,cel){
+  tdDir.innerHTML='<div class="ceiaw"><div class="ceias"><span class="ceial">Dirigente</span><div class="ec ec-dir" data-v="'+(dir||'').replace(/"/g,'&quot;')+'" onclick="escAtv(this,\'obr\')"></div></div><div class="ceias"><span class="ceial">Celebração</span><div class="ec ec-cel" data-v="'+(cel||'').replace(/"/g,'&quot;')+'" onclick="escAtv(this,\'obr\')"></div></div></div>';
+  tdDir.querySelectorAll('.ec').forEach(function(c){escRndCel(c);});
+  if(tdDir.closest('tr'))tdDir.closest('tr').classList.add('rcei');
+}
+function escAtv(cel,tp){escCel=cel;escTp=tp;escAbrTb();}
+function escAbrTb(){
+  var tb=document.getElementById('esc-tb');
+  var lst=escTp==='clt'?escLsts().clt:escLsts().obr;
+  var atual=(escCel?escCel.getAttribute('data-v')||'':'').split('\n').map(function(n){return n.trim();}).filter(Boolean);
+  tb.innerHTML=lst.map(function(n){
+    var sel=atual.indexOf(n)>-1;
+    return '<button class="etbn'+(sel?' sel':'')+'" onclick="escPush(\''+n.replace(/'/g,"\\'")+'\');event.stopPropagation()">'+n+(sel?' ✓':'')+'</button>';
+  }).join('')+'<button class="etbn" style="background:#e74c3c;border-color:#e74c3c;margin-left:auto" onclick="escFTb()">✕ Fechar</button>';
+  tb.classList.add('show');
+  tb.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function escFTb(){document.getElementById('esc-tb').classList.remove('show');escCel=null;}
+function escPush(nm){
+  if(!escCel)return;
+  var v=escCel.getAttribute('data-v')||'';
+  var ns=v.split('\n').map(function(n){return n.trim();}).filter(Boolean);
+  var idx=ns.indexOf(nm);
+  if(idx>-1)ns.splice(idx,1);else ns.push(nm);
+  escSetV(escCel,ns.join('\n'));
+  if(escCel.classList.contains('ec-clt')){
+    var tr=escCel.closest('tr');
+    var tdDir=tr.querySelector('.etdir');
+    if(escEhCeia(ns.join('\n'))&&!tdDir.querySelector('.ec-cel')){
+      var da=tr.querySelector('.ec-dir')?tr.querySelector('.ec-dir').getAttribute('data-v')||'':'';
+      escCeiaMount(tdDir,da,'');
+    }
+  }
+  escAbrTb();escSalv();
+}
+function escAdd(dados){
+  var tb=document.getElementById('esc-body');if(!tb)return;
+  var tr=document.createElement('tr');
+  var d=dados||{};
+  var dtVal=d.dt||'';
+  var dia=d.day||'';
+  if(dtVal&&!dia){var dd=new Date(dtVal+'T12:00');dia=DIAS[dd.getDay()]||'';}
+  var rc='';
+  if(dia==='Domingo')rc='rdom';
+  else if(dia==='Quarta-feira')rc='rqua';
+  else if(dia==='Sábado')rc='rsab';
+  if(rc)tr.classList.add(rc);
+  tr.innerHTML=
+    '<td><div class="edtw"><span class="edtd'+(dtVal?'':' vz')+'" onclick="this.nextElementSibling.showPicker&&this.nextElementSibling.showPicker();this.nextElementSibling.click()">'+(dtVal?escFmt(dtVal):'📅 Selecionar')+'</span><input type="date" class="edti" value="'+dtVal+'" onchange="escOnDt(this)"></div></td>'+
+    '<td style="padding:4px 8px;font-size:.78rem;font-weight:600;color:var(--azul);text-align:center" class="etdia">'+dia+'</td>'+
+    '<td><div class="ec ec-ens" data-v="'+(d.ensaio||'')+'" onclick="escAtv(this,\'obr\')"></div></td>'+
+    '<td><div class="ec ec-clt" data-v="'+(d.clt||'')+'" onclick="escAtv(this,\'clt\')"></div></td>'+
+    '<td><div class="ec ec-p1" data-v="'+(d.p1||'')+'" onclick="escAtv(this,\'obr\')"></div></td>'+
+    '<td class="etdir"></td>'+
+    '<td><div class="ec ec-opt" data-v="'+(d.opt||'')+'" onclick="escAtv(this,\'obr\')"></div></td>'+
+    '<td><div class="ec ec-min" data-v="'+(d.min||'')+'" onclick="escAtv(this,\'obr\')"></div></td>'+
+    '<td><button class="edel" onclick="this.closest(\'tr\').remove();escSalv()">✕</button></td>';
+  tb.appendChild(tr);
+  tr.querySelectorAll('.ec').forEach(function(c){escRndCel(c);});
+  // Célula dirigente
+  var tdDir=tr.querySelector('.etdir');
+  if(d.clt&&escEhCeia(d.clt)){escCeiaMount(tdDir,d.dir||'',d.cel||'');}
+  else{tdDir.innerHTML='<div class="ec ec-dir" data-v="'+(d.dir||'')+'" onclick="escAtv(this,\'obr\')"></div>';escRndCel(tdDir.querySelector('.ec'));}
+  if(!dados)escSalv();
+}
+function escSalv(){
+  var rows=[];
+  document.querySelectorAll('#esc-body tr').forEach(function(tr){
+    var dt=tr.querySelector('.edti');var dia=tr.querySelector('.etdia');var tdDir=tr.querySelector('.etdir');
+    var dir='';var cel='';
+    var dc=tdDir?tdDir.querySelectorAll('.ec'):[];
+    if(dc.length>=2){dir=dc[0].getAttribute('data-v')||'';cel=dc[1].getAttribute('data-v')||'';}
+    else if(tr.querySelector('.ec-dir'))dir=tr.querySelector('.ec-dir').getAttribute('data-v')||'';
+    rows.push({dt:dt?dt.value:'',day:dia?dia.textContent:'',ensaio:tr.querySelector('.ec-ens')?tr.querySelector('.ec-ens').getAttribute('data-v')||'':'',clt:tr.querySelector('.ec-clt')?tr.querySelector('.ec-clt').getAttribute('data-v')||'':'',p1:tr.querySelector('.ec-p1')?tr.querySelector('.ec-p1').getAttribute('data-v')||'':'',dir:dir,cel:cel,opt:tr.querySelector('.ec-opt')?tr.querySelector('.ec-opt').getAttribute('data-v')||'':'',min:tr.querySelector('.ec-min')?tr.querySelector('.ec-min').getAttribute('data-v')||'':''});
+  });
+  var dados={mes:escP.getMonth(),ano:escP.getFullYear(),rows:rows};
+  DB.s('escala_agenda',dados);
+  var leg={};
+  rows.forEach(function(r){if(!r.day)return;if(!leg[r.day])leg[r.day]=[];(r.p1||'').split('\n').filter(function(n){return n.trim();}).forEach(function(n){if(leg[r.day].indexOf(n.trim())<0)leg[r.day].push(n.trim());});});
+  DB.s('escala',leg);
+}
+function rndEsc(){
+  var dados=DB.g('escala_agenda');
+  if(dados&&dados.mes!==undefined)escP=new Date(dados.ano,dados.mes,1);else escP=new Date();
+  escRndMes();
+  document.getElementById('esc-body').innerHTML='';
+  if(dados&&dados.rows&&dados.rows.length)dados.rows.forEach(function(r){escAdd(r);});
+  document.getElementById('esc-tb').classList.remove('show');
+}
+
+/* ═══ LIDERANÇA ═══ */
+function addLid(){
+  var l=DB.g('lideranca')||[];
+  l.push({nm:document.getElementById('lid-nm').value,cg:document.getElementById('lid-cg').value,dsc:document.getElementById('lid-dsc').value,foto:_i['lid-foto']||''});
+  DB.s('lideranca',l);_i['lid-foto']='';
+  document.getElementById('lid-foto-pv').innerHTML='';
+  rndLid();
+}
+function rndLid(){
+  var l=DB.g('lideranca')||[];
+  var c=document.getElementById('lista-lid');if(!c)return;
+  c.innerHTML=l.map(function(lid,i){
+    return '<div style="background:#fff;border-radius:10px;padding:.9rem;box-shadow:0 1px 5px rgba(0,0,0,.07);text-align:center"><img src="'+(lid.foto||'https://ui-avatars.com/api/?name='+encodeURIComponent(lid.nm)+'&background=1E3A5F&color=fff')+'" style="width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid var(--azul2);margin-bottom:.4rem"><div style="font-weight:700;font-size:.83rem">'+lid.nm+'</div><div style="font-size:.72rem;color:var(--azul2)">'+lid.cg+'</div>'+(lid.dsc?'<div style="font-size:.7rem;color:var(--muted);margin-top:.2rem">'+lid.dsc+'</div>':'')+'<button class="btn bd bsm" style="margin-top:.4rem" onclick="del(\'lideranca\','+i+',rndLid)">✕</button></div>';
+  }).join('');
+  var cnt=document.getElementById('cnt-lid');if(cnt)cnt.textContent=l.length;
+}
+
+/* ═══ DÍZIMOS ═══ */
+function rndDiz(){var msg=DB.g('diz-msg')||'';var el=document.getElementById('diz-msg');if(el)el.value=msg;}
+function salvDiz(){DB.s('diz-msg',document.getElementById('diz-msg').value);var ok=document.getElementById('ok-diz');if(ok){ok.style.display='inline';setTimeout(function(){ok.style.display='none';},2000);}}
+
+/* ═══ GALERIA ═══ */
+async function rndGal(){
+  var l=DB.g('galeria')||[];
+  var c=document.getElementById('lista-gal');if(!c)return;
+  c.innerHTML='';
+  for(var i=0;i<l.length;i++){
+    var it=l[i];var u=it.url||'';
+    if(u.startsWith('idb:'))u=await IDB.url(u);
+    if(!u)continue;
+    var wrap=document.createElement('div');wrap.style.cssText='background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 5px rgba(0,0,0,.07);position:relative';
+    if(it.tp==='video'){var v=document.createElement('video');v.src=u;v.controls=true;v.preload='metadata';v.style.cssText='width:100%;height:auto;max-height:180px;display:block;background:#000';wrap.appendChild(v);}
+    else{var img=document.createElement('img');img.src=u;img.style.cssText='width:100%;height:auto;max-height:180px;object-fit:contain;display:block;background:#f0f4f8';img.onerror=function(){this.style.display='none';};wrap.appendChild(img);}
+    var leg=document.createElement('div');leg.style.cssText='font-size:.7rem;padding:3px 6px;color:var(--muted)';leg.textContent=it.leg||'';wrap.appendChild(leg);
+    var btn=document.createElement('button');btn.className='btn bd bsm';btn.style.cssText='position:absolute;top:4px;right:4px;padding:2px 6px';btn.textContent='✕';
+    (function(idx){btn.onclick=function(){del('galeria',idx,rndGal);};})(i);
+    wrap.appendChild(btn);c.appendChild(wrap);
+  }
+}
+
+/* ═══ VÍDEOS ═══ */
+function addVid(){
+  var l=DB.g('videos')||[];
+  var url=(document.getElementById('vid-url').value||'').trim();
+  var yid=(url.match(/(?:youtu\.be\/|v=|shorts\/)([a-zA-Z0-9_-]+)/)||[])[1]||'';
+  l.push({url:url,yid:yid,tit:document.getElementById('vid-tit').value,dsc:document.getElementById('vid-dsc').value,cat:document.getElementById('vid-cat').value});
+  DB.s('videos',l);rndVid();
+}
+function rndVid(){
+  var l=DB.g('videos')||[];
+  var c=document.getElementById('lista-vid');if(!c)return;
+  c.innerHTML=l.map(function(v,i){
+    return '<div style="background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 5px rgba(0,0,0,.07)">'+(v.yid?'<img src="https://img.youtube.com/vi/'+v.yid+'/mqdefault.jpg" style="width:100%;height:auto">':'')+'<div style="padding:.7rem"><div style="font-weight:700;font-size:.83rem">'+v.tit+'</div><div style="font-size:.7rem;color:var(--muted)">'+v.cat+'</div><button class="btn bd bsm" style="margin-top:.4rem" onclick="del(\'videos\','+i+',rndVid)">✕</button></div></div>';
+  }).join('');
+}
+
+/* ═══ DIVULGAR ═══ */
+var divLink='https://obpcsaofernando199-sudo.github.io/Obpc/';
+var divSel=0;
+var DIV_MODS=[
+  {e:'🔥',lb:'Convite de Culto',sb:'Para chamar ao culto hoje',tg:'ALTO IMPACTO',c:'#e74c3c',fn:function(l,d){return '🔥 *HOJE TEM CULTO!*\n\n⛪ *'+(d.nome||'OBPC São Fernando')+'*\n📍 '+(d.end||'Rua Sen. José Ermírio de Moraes, 199')+'\n\nVocê foi convidado(a) por Deus para estar lá. 🙏\n\n👇 *Confira tudo no nosso site:*\n🌐 '+l+'\n\n📅 Agenda de cultos\n📢 Avisos importantes\n📸 Fotos e momentos\n🎤 Palavra do pastor\n\n_"Não deixemos de reunirmos." — Hb 10.25_\n\nCompartilhe com alguém que precisa! 💙';}},
+  {e:'📸',lb:'Culto Foi Assim',sb:'Enviar logo após o culto',tg:'PÓS-CULTO',c:'#27ae60',fn:function(l,d){return '📸 *NOSSO CULTO FOI ASSIM!*\n\nO Espírito de Deus se moveu hoje! 🔥\nFoi lindo demais para guardar só pra gente.\n\n👇 *Veja as fotos e o relato completo:*\n🌐 '+l+'\n\nJá publicado em *"Culto Foi Assim"* ⬆️\n\nVocê estava lá? Compartilha com quem ficou em casa! 💙\n\n⛪ *'+(d.nome||'OBPC São Fernando')+'*';}},
+  {e:'✨',lb:'Elegante & Inspirador',sb:'Para grupos de oração e família',tg:'DEVOCIONAL',c:'#1E3A5F',fn:function(l,d){return '✨ *'+((d.nome||'OBPC São Fernando').toUpperCase())+'*\n\n_"Este é o dia que o SENHOR fez;\nalegremo-nos e nos regozijemos nele."\n                    — Salmos 118:24_\n\n━━━━━━━━━━━━━━━━━━\n🏛️ Nossa comunidade está online!\n\n🌐 *'+l+'*\n\n▸ 📋 Escala de obreiros\n▸ 📅 Próximos cultos e eventos\n▸ 🎤 Palavra do pastor\n▸ 📸 Nosso culto foi assim\n▸ 🙏 Pedidos de oração\n━━━━━━━━━━━━━━━━━━\n\n_Que Deus abençoe cada lar!_ 🙏';}},
+  {e:'🙏',lb:'Corrente de Oração',sb:'Viral — mural de pedidos',tg:'VIRAL',c:'#e67e22',fn:function(l,d){return '🙏 *CORRENTE DE ORAÇÃO*\n\nNosso site tem um mural de pedidos de oração.\nSe você precisa de uma oração hoje, envie o seu! 💛\n\n👇 *Acesse agora e publique:*\n🌐 '+l+'\n\nAba: *"Pedidos de Oração"* 🕊️\n\nMande para alguém que precisa de uma palavra de fé! 💙\n\n⛪ *'+(d.nome||'OBPC São Fernando')+'*';}},
+  {e:'🎉',lb:'Animado — Jovens',sb:'Para grupos jovens e redes sociais',tg:'JOVENS',c:'#7c3aed',fn:function(l,d){return '🎉 *EI, FAMÍLIA!*\n\nTemos um site incrível e você precisa conhecer agora mesmo! 👇\n\n🌐 '+l+'\n\nTá tudo lá dentro:\n🙏 Mural de oração\n📅 Agenda dos cultos\n📸 Fotos dos momentos\n📢 Avisos da semana\n🎤 Palavra do pastor\n📋 Escala dos obreiros\n\nSalva o link e manda pra galera! 🚀\n_'+(d.nome||'OBPC São Fernando')+'_ 💙';}},
+  {e:'🗓️',lb:'Agenda Semanal',sb:'Informativo semanal de cultos',tg:'INFORMATIVO',c:'#0891b2',fn:function(l,d){return '🗓️ *AGENDA DA SEMANA*\n⛪ *'+(d.nome||'OBPC São Fernando')+'*\n\nConfira os cultos e eventos desta semana:\n\n🌐 *'+l+'*\n\nAcesse *"Horários"* e *"Eventos"* 📅\n\n_Não perca nenhum momento com a família!_\n\n📍 '+(d.end||'')+(d.tel?'\n📞 '+d.tel:'')+'\n\nEncaminhe para os irmãos! 🙌';}},
+  {e:'👷',lb:'Para Obreiros',sb:'Aviso da escala para a equipe',tg:'OBREIROS',c:'#475569',fn:function(l,d){return '📋 *ESCALA DE OBREIROS*\n⛪ *'+(d.nome||'OBPC São Fernando')+'*\n\nObreiros, confiram a escala da semana:\n\n🌐 *'+l+'*\n\nAba: *"Escala"* 👆\n\n_"Cada um segundo o dom que recebeu,\nadministre-o aos outros..." — 1Pe 4.10_\n\nCompartilhe com os obreiros do seu grupo! 🙏';}},
+  {e:'📣',lb:'Comunicado Oficial',sb:'Estilo formal para anúncios',tg:'FORMAL',c:'#b45309',fn:function(l,d){return '📣 *COMUNICADO OFICIAL*\n━━━━━━━━━━━━━━━━━━\n*'+((d.nome||'OBPC SÃO FERNANDO').toUpperCase())+'*\n━━━━━━━━━━━━━━━━━━\n\nAcesse nosso site oficial:\n\n🌐 *'+l+'*\n\n📍 '+(d.end||'')+(d.tel?'\n📞 '+d.tel:'')+(d.email?'\n📧 '+d.email:'')+'\n\n_Deus abençoe a cada um!_ 🙏';}}
+];
+function divUpdLink(v){divLink=v.trim()||'https://obpcsaofernando199-sudo.github.io/Obpc/';var el=document.getElementById('div-link-show');if(el)el.textContent=divLink;divClk(divSel);}
+function divCpLink(){navigator.clipboard.writeText(divLink).then(function(){showToast('🔗 Link copiado!');}).catch(function(){});}
+function rndDiv(){
+  var d=DB.g('info')||{};
+  var nm=document.getElementById('div-wpp-nm');if(nm)nm.textContent=d.nome||'OBPC São Fernando';
+  var grid=document.getElementById('div-grid');if(!grid)return;
+  grid.innerHTML=DIV_MODS.map(function(m,i){return '<button class="dmb'+(divSel===i?' sel':'')+'" style="--c:'+m.c+'" onclick="divClk('+i+')"><div class="dmi">'+m.e+'</div><div><div class="dmn">'+m.lb+'</div><div class="dms">'+m.sb+'</div><span class="dmt" style="background:'+m.c+'">'+m.tg+'</span></div></button>';}).join('');
+  divClk(divSel);
+}
+function divClk(i){
+  divSel=i;var d=DB.g('info')||{};var m=DIV_MODS[i];var txt=m.fn(divLink,d);
+  var pv=document.getElementById('div-prev-txt');if(pv)pv.innerHTML=fmtWpp(txt);
+  var hr=document.getElementById('div-hora');if(hr){var n=new Date();hr.textContent=n.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});}
+  var area=document.getElementById('div-prev-area');if(area)area.style.display='block';
+  document.querySelectorAll('.dmb').forEach(function(btn,j){btn.classList.toggle('sel',j===i);});
+}
+function fmtWpp(txt){
+  var s=txt.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  s=s.replace(/\*([^*\n]+)\*/g,'<strong>$1</strong>');
+  s=s.replace(/(?<![a-zA-Z0-9])_([^_\n]+)_(?![a-zA-Z0-9])/g,'<em style="color:#555">$1</em>');
+  s=s.replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" style="color:#0d6efd">$1</a>');
+  s=s.replace(/\n/g,'<br>');
+  return s;
+}
+function divCopiar(){
+  var txt=DIV_MODS[divSel].fn(divLink,DB.g('info')||{});
+  navigator.clipboard.writeText(txt).then(function(){showToast('✔ Mensagem copiada!');}).catch(function(){var ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast('✔ Mensagem copiada!');});
+}
+function divEnviar(){var txt=DIV_MODS[divSel].fn(divLink,DB.g('info')||{});window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank');}
+
+/* ═══ DASHBOARD ═══ */
+function rndDash(){
+  rndAv();rndEv();rndOb();rndLid();
+  var esc=DB.g('escala')||{};var agenda=DB.g('escala_agenda');
+  var hj=new Date().toISOString().split('T')[0];
+  var DPT=['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+  var dH=DPT[new Date().getDay()];var cHj=null;
+  if(agenda&&agenda.rows)cHj=agenda.rows.filter(function(r){return r.dt===hj;})[0]||null;
+  var dh=document.getElementById('dh-hj');
+  if(cHj&&dh){var t=cHj.clt||'';var p=(cHj.p1||'').split('\n').filter(function(n){return n.trim();});if(p.length)t+=' | 🚪 '+p.join(', ');dh.textContent=t||'Culto programado';}
+  else if(dh){var o=esc[dH]||[];dh.textContent=o.length?o.join(', '):'Sem culto programado';}
+  var sd=document.getElementById('dh-sem');if(!sd)return;sd.innerHTML='';
+  var ABREV=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];var n=new Date();var dS=n.getDay();
+  for(var i=0;i<7;i++){
+    var d=new Date(n);d.setDate(n.getDate()-dS+i);
+    var dtS=d.toISOString().split('T')[0];
+    var linhas=agenda&&agenda.rows?agenda.rows.filter(function(r){return r.dt===dtS;}):[];
+    var isH=d.toDateString()===n.toDateString();
+    var div=document.createElement('div');
+    div.style.cssText='background:'+(isH?'#e3f2fd':'#fff')+';border-radius:8px;padding:5px 4px;box-shadow:0 1px 3px rgba(0,0,0,.06);'+(isH?'border:2px solid var(--azul2)':'');
+    div.innerHTML='<div style="font-size:.65rem;font-weight:700;text-transform:uppercase;color:'+(isH?'var(--azul2)':'var(--muted)')+';text-align:center;margin-bottom:3px">'+ABREV[i]+'<br><span style="font-weight:400">'+d.getDate().toString().padStart(2,'0')+'/'+(d.getMonth()+1).toString().padStart(2,'0')+'</span></div>'+linhas.map(function(r){return (r.clt?'<div style="background:#1E3A5F;color:#fff;border-radius:4px;padding:1px 4px;font-size:.62rem;margin-bottom:2px">⛪ '+r.clt+'</div>':'')+(r.p1||'').split('\n').filter(function(nm){return nm.trim();}).map(function(nm){return '<div style="background:#e3f2fd;color:#1565c0;border-radius:4px;padding:1px 4px;font-size:.6rem;margin-bottom:1px">👷 '+nm.trim()+'</div>';}).join('');}).join('');
+    sd.appendChild(div);
+  }
+}
+
+/* ═══ MIGRAR ═══ */
+function rndMig(){var k=localStorage.getItem('obpc_imgbb_key')||'';var el=document.getElementById('mig-key');if(el&&k)el.value=k;}
+function migSalvKey(){var k=(document.getElementById('mig-key').value||'').trim();if(!k||k.length<10){alert('Cole uma key válida.');return;}localStorage.setItem('obpc_imgbb_key',k);showToast('✅ Key salva!');}
+function expDados(){
+  var cs=['info','horarios','avisos','eventos','informativos','sermoes','cultos','palavras','obreiros','lideranca','escala','escala_agenda','esc_listas','galeria','videos','diz-msg','aniversariantes'];
+  var d={};cs.forEach(function(k){var v=DB.g(k);if(v!==null)d[k]=v;});
+  var json=JSON.stringify({obpc:d,ts:Date.now(),v:2});
+  var blob=new Blob([json],{type:'application/json'});
+  var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='OBPC_dados_'+new Date().toISOString().split('T')[0]+'.json';a.click();URL.revokeObjectURL(url);
+  var ok=document.getElementById('exp-ok');if(ok){ok.style.display='block';setTimeout(function(){ok.style.display='none';},4000);}
+}
+function impDados(inp){
+  var f=inp.files[0];if(!f)return;
+  var ok=document.getElementById('imp-ok');
+  var r=new FileReader();
+  r.onload=function(e){
+    try{var json=JSON.parse(e.target.result);var dados=json.obpc||json;var cnt=0;Object.keys(dados).forEach(function(k){try{localStorage.setItem('obpc_'+k,JSON.stringify(dados[k]));cnt++;}catch(e){}});if(ok){ok.style.display='block';ok.style.color='var(--verde)';ok.textContent='✅ '+cnt+' itens importados! Recarregando...';setTimeout(function(){location.reload();},1500);}}
+    catch(e){if(ok){ok.style.display='block';ok.style.color='var(--verm)';ok.textContent='❌ Arquivo inválido.';}}
+  };
+  r.readAsText(f);
+}
+
+/* ═══ UTILITÁRIOS ═══ */
+function del(key,i,fn){var l=DB.g(key)||[];l.splice(i,1);DB.s(key,l);if(typeof fn==='function')fn();}
+
+/* ═══ RELÓGIO ═══ */
+(function tick(){
+  var h=document.getElementById('hhor');
+  if(h)h.textContent=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  setTimeout(tick,30000);
+})();
+
+/* ═══ BANNER PRÓXIMO CULTO ═══ */
+var _bnrMidia = null; // {tp, src, local}
+var _bnrBgUrl = '';
+var _bnrCor = '#D4A843';
+
+var BNR_TPLS = [
+  {id:'escuro',nm:'Escuro Clássico',ov1:'#0a1e35',ov2:'#1E3A5F',opac:80},
+  {id:'roxo',nm:'Roxo Profético',ov1:'#1a0533',ov2:'#4c1d95',opac:82},
+  {id:'vinho',nm:'Vinho Majestoso',ov1:'#1a0a0a',ov2:'#7f1d1d',opac:80},
+  {id:'verde',nm:'Verde Esperança',ov1:'#052e16',ov2:'#14532d',opac:78},
+  {id:'azul',nm:'Azul Céu',ov1:'#0c1445',ov2:'#1e40af',opac:78},
+  {id:'preto',nm:'Preto Total',ov1:'#000000',ov2:'#111827',opac:88},
+];
+var BNR_CORES = ['#D4A843','#3B9BD6','#e74c3c','#27ae60','#7c3aed','#e67e22','#fff','#f0c040'];
+var _bnrTplSel = 'escuro';
+
+function rndBnr() {
+  // Renderiza templates
+  var tpCont = document.getElementById('bnr-tpls');
+  if(tpCont) {
+    tpCont.innerHTML = BNR_TPLS.map(function(t){
+      return '<button class="tpl-btn'+(t.id===_bnrTplSel?' sel':'')+'" onclick="bnrSetTpl(\''+t.id+'\')" data-tpl="'+t.id+'">'+t.nm+'</button>';
+    }).join('');
+  }
+  // Renderiza cores
+  var corCont = document.getElementById('bnr-cores');
+  if(corCont) {
+    corCont.innerHTML = BNR_CORES.map(function(c){
+      return '<div onclick="bnrSetCor(\''+c+'\')" style="width:28px;height:28px;border-radius:50%;background:'+c+';cursor:pointer;border:3px solid '+(c===_bnrCor?'#1E3A5F':'transparent')+';box-shadow:0 1px 4px rgba(0,0,0,.2);transition:.15s"></div>';
+    }).join('');
+  }
+  // Carrega dados salvos
+  var d = DB.g('banner_culto') || {};
+  if(d.badge) document.getElementById('bnr-badge').value = d.badge;
+  if(d.titulo) document.getElementById('bnr-tit').value = d.titulo;
+  if(d.subtit) document.getElementById('bnr-sub').value = d.subtit;
+  if(d.dt) document.getElementById('bnr-dt').value = d.dt;
+  if(d.hora) document.getElementById('bnr-hora').value = d.hora;
+  if(d.local) document.getElementById('bnr-loc').value = d.local;
+  if(d.cta) document.getElementById('bnr-cta').value = d.cta;
+  if(d.cor) _bnrCor = d.cor;
+  if(d.tpl) _bnrTplSel = d.tpl;
+  if(d.bgUrl) { _bnrBgUrl = d.bgUrl; document.getElementById('bnr-bg-url').value = d.bgUrl; bnrAplBg(d.bgUrl, d.bgTp||'img'); }
+  if(d.ov1) document.getElementById('bnr-ov1').value = d.ov1;
+  if(d.ov2) document.getElementById('bnr-ov2').value = d.ov2;
+  if(d.opac) { document.getElementById('bnr-opac').value = d.opac; document.getElementById('bnr-ov-val').textContent = d.opac; }
+  // Nome da igreja no preview
+  var info = DB.g('info') || {};
+  var el = document.getElementById('bnr-prev-church');
+  if(el) el.textContent = info.nome || 'OBPC São Fernando';
+  var logo = document.getElementById('bnr-prev-logo');
+  if(logo && info.logoB64) { logo.innerHTML = ''; var img = document.createElement('img'); img.src = info.logoB64; img.style.cssText='width:36px;height:36px;border-radius:50%;object-fit:cover'; logo.appendChild(img); }
+  // Conecta inputs ao preview
+  bnrBindInputs();
+  bnrAtualiza();
+}
+
+function bnrBindInputs() {
+  var ids = ['bnr-badge','bnr-tit','bnr-sub','bnr-dt','bnr-hora','bnr-loc','bnr-cta','bnr-ov1','bnr-ov2'];
+  ids.forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.oninput = bnrAtualiza;
+  });
+}
+
+function bnrAtualiza() {
+  // Badge
+  var badge = (document.getElementById('bnr-badge')||{}).value || 'PRÓXIMO CULTO';
+  var el = document.getElementById('bnr-prev-badge');
+  if(el){ el.textContent = badge; el.style.background = _bnrCor; el.style.color = bnrContraste(_bnrCor); }
+  // Título
+  var tit = (document.getElementById('bnr-tit')||{}).value || 'Culto de Domingo';
+  var et = document.getElementById('bnr-prev-tit'); if(et) et.textContent = tit;
+  // Subtítulo
+  var sub = (document.getElementById('bnr-sub')||{}).value || '';
+  var es = document.getElementById('bnr-prev-sub'); if(es) es.textContent = sub;
+  // Data formatada
+  var dt = (document.getElementById('bnr-dt')||{}).value || '';
+  var dtTxt = '';
+  if(dt) { var p=dt.split('-'); var d=new Date(dt+'T12:00'); var dias=['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado']; dtTxt=dias[d.getDay()]+', '+p[2]+'/'+p[1]+'/'+p[0]; }
+  var eDt = document.getElementById('bnr-prev-dt-txt'); if(eDt) eDt.textContent = dtTxt || '—';
+  // Hora
+  var hora = (document.getElementById('bnr-hora')||{}).value || '—';
+  var eH = document.getElementById('bnr-prev-hora-txt'); if(eH) eH.textContent = hora;
+  // Local
+  var loc = (document.getElementById('bnr-loc')||{}).value || '—';
+  var eL = document.getElementById('bnr-prev-loc-txt'); if(eL) eL.textContent = loc;
+  // CTA
+  var cta = (document.getElementById('bnr-cta')||{}).value || 'Esperamos por você! 🙏';
+  var eCta = document.getElementById('bnr-prev-cta');
+  if(eCta){ eCta.textContent = cta; eCta.style.background = _bnrCor; eCta.style.color = bnrContraste(_bnrCor); }
+  // Overlay
+  var ov1 = (document.getElementById('bnr-ov1')||{}).value || '#0a1e35';
+  var ov2 = (document.getElementById('bnr-ov2')||{}).value || '#1E3A5F';
+  var opac = (document.getElementById('bnr-opac')||{}).value || 75;
+  var pct = Math.round(opac * 255 / 100).toString(16).padStart(2,'0');
+  var eOv = document.getElementById('bnr-prev-overlay');
+  if(eOv) eOv.style.background = 'linear-gradient(180deg,'+ov1+pct+' 0%,'+ov2+pct+' 100%)';
+}
+
+function bnrContraste(hex) {
+  // Retorna cor de texto com bom contraste
+  var r=parseInt(hex.slice(1,3)||'ff',16);
+  var g=parseInt(hex.slice(3,5)||'ff',16);
+  var b=parseInt(hex.slice(5,7)||'ff',16);
+  var lum=(r*299+g*587+b*114)/1000;
+  return lum>140?'#1E3A5F':'#ffffff';
+}
+
+function bnrSetTpl(id) {
+  _bnrTplSel = id;
+  var tpl = BNR_TPLS.filter(function(t){return t.id===id;})[0];
+  if(!tpl) return;
+  document.getElementById('bnr-ov1').value = tpl.ov1;
+  document.getElementById('bnr-ov2').value = tpl.ov2;
+  document.getElementById('bnr-opac').value = tpl.opac;
+  document.getElementById('bnr-ov-val').textContent = tpl.opac;
+  // Atualiza UI botões
+  document.querySelectorAll('[data-tpl]').forEach(function(b){
+    b.classList.toggle('sel', b.getAttribute('data-tpl')===id);
+  });
+  bnrAtualiza();
+}
+
+function bnrSetCor(c) {
+  _bnrCor = c;
+  var corCont = document.getElementById('bnr-cores');
+  if(corCont) {
+    corCont.innerHTML = BNR_CORES.map(function(cor){
+      return '<div onclick="bnrSetCor(\''+cor+'\')" style="width:28px;height:28px;border-radius:50%;background:'+cor+';cursor:pointer;border:3px solid '+(cor===_bnrCor?'#1E3A5F':'transparent')+';box-shadow:0 1px 4px rgba(0,0,0,.2);transition:.15s"></div>';
+    }).join('');
+  }
+  bnrAtualiza();
+}
+
+function bnrSetBg(url) {
+  if(!url) return;
+  _bnrBgUrl = url;
+  bnrAplBg(url, url.match(/\.(mp4|webm|mov)/i) ? 'video' : 'img');
+}
+
+function bnrAplBg(src, tp) {
+  var bg = document.getElementById('bnr-prev-bg');
+  if(!bg) return;
+  bg.innerHTML = '';
+  if(tp === 'video') {
+    var v = document.createElement('video');
+    v.src = src; v.autoplay = true; v.muted = true; v.loop = true; v.playsInline = true;
+    v.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover';
+    bg.appendChild(v);
+    // Badge de vídeo
+    var vb = document.createElement('div'); vb.className = 'bnr-video-badge'; vb.textContent = '▶';
+    bg.appendChild(vb);
+  } else {
+    bg.style.backgroundImage = 'url('+src+')';
+  }
+}
+
+async function bnrUpMidia(inp) {
+  var f = inp.files[0]; if(!f) return;
+  var isV = f.type.startsWith('video/');
+  var sts = document.getElementById('bnr-up-sts');
+  var pv = document.getElementById('bnr-up-pv');
+  if(sts) { sts.style.display='block'; sts.textContent = '⬆️ Enviando '+(isV?'vídeo':'imagem')+'...'; }
+  // Preview local imediato
+  var locUrl = URL.createObjectURL(f);
+  bnrAplBg(locUrl, isV ? 'video' : 'img');
+  if(pv) {
+    if(isV) {
+      pv.innerHTML = '<video src="'+locUrl+'" muted playsinline style="width:100%;max-height:100px;border-radius:8px;background:#000" controls></video>';
+    } else {
+      pv.innerHTML = '<img src="'+locUrl+'" style="width:100%;max-height:100px;border-radius:8px;object-fit:cover">';
+    }
+  }
+  try {
+    var m = await upArq(f, function(pct){ if(sts) sts.textContent = '⬆️ Enviando... '+pct+'%'; });
+    _bnrMidia = m;
+    _bnrBgUrl = m.src;
+    var u = m.src;
+    if(u && u.startsWith('idb:')) u = await IDB.url(u);
+    if(u) bnrAplBg(u, m.tp);
+    if(sts) { sts.textContent = '✅ '+(isV?'Vídeo':'Imagem')+' pronto!'; setTimeout(function(){sts.style.display='none';}, 3000); }
+  } catch(e) {
+    console.error(e);
+    _bnrBgUrl = locUrl;
+    if(sts) { sts.textContent = '⚠️ Salvo localmente'; setTimeout(function(){sts.style.display='none';}, 3000); }
+  }
+  try{inp.value='';}catch(e){}
+  bnrAtualiza();
+}
+
+function bnrLimparMidia() {
+  _bnrMidia = null; _bnrBgUrl = '';
+  var bg = document.getElementById('bnr-prev-bg');
+  if(bg) { bg.innerHTML=''; bg.style.backgroundImage=''; }
+  var pv = document.getElementById('bnr-up-pv'); if(pv) pv.innerHTML='';
+  var inp = document.getElementById('bnr-bg-url'); if(inp) inp.value='';
+}
+
+function bnrLimpar() {
+  ['bnr-badge','bnr-tit','bnr-sub','bnr-dt','bnr-hora','bnr-loc','bnr-cta'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.value='';
+  });
+  bnrLimparMidia();
+  bnrAtualiza();
+}
+
+function bnrSalvar() {
+  var dados = {
+    badge: document.getElementById('bnr-badge').value,
+    titulo: document.getElementById('bnr-tit').value,
+    subtit: document.getElementById('bnr-sub').value,
+    dt: document.getElementById('bnr-dt').value,
+    hora: document.getElementById('bnr-hora').value,
+    local: document.getElementById('bnr-loc').value,
+    cta: document.getElementById('bnr-cta').value,
+    cor: _bnrCor,
+    tpl: _bnrTplSel,
+    bgUrl: _bnrBgUrl,
+    bgTp: _bnrMidia ? _bnrMidia.tp : (_bnrBgUrl.match(/\.(mp4|webm|mov)/i)?'video':'img'),
+    ov1: document.getElementById('bnr-ov1').value,
+    ov2: document.getElementById('bnr-ov2').value,
+    opac: document.getElementById('bnr-opac').value,
+    ts: Date.now()
+  };
+  DB.s('banner_culto', dados);
+  var ok = document.getElementById('bnr-ok');
+  if(ok){ ok.style.display='block'; setTimeout(function(){ok.style.display='none';}, 3000); }
+  showToast('✅ Banner publicado!');
+}
+
+/* ═══ INIT ═══ */
+(async function init(){
+  var d=DB.g('info')||{};
+  if(d.logoB64){var hl=document.getElementById('hlogo');if(hl){hl.src=d.logoB64;hl.style.display='block';}}
+  rndDash();
+  DB.sync().catch(function(){});
+  DB.listen();
+})();
+</script>
+</body>
+</html>
