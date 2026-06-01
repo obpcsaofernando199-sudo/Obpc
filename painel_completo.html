@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Painel ADM — OBPC São Fernando</title>
+<style>
+:root{--azul:#1E3A5F;--azul2:#3B9BD6;--cinza:#f4f6f9;--borda:#dde2ea;--txt:#1a2535;--muted:#6b7a90;--verde:#27ae60;--laranja:#e67e22;--verm:#e74c3c;--roxo:#6b21a8}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:var(--cinza);color:var(--txt);min-height:100vh}
+header{background:var(--azul);color:#fff;padding:14px 24px;display:flex;align-items:center;gap:12px}
+header img{height:40px;border-radius:50%}
+header h1{font-size:1.1rem;font-weight:700}
+header small{opacity:.7;font-size:.8rem}
+nav{background:#fff;border-bottom:2px solid var(--borda);display:flex;gap:0;overflow-x:auto;position:sticky;top:0;z-index:100}
+nav button{border:none;background:none;padding:13px 16px;font-size:.82rem;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;transition:.2s}
+nav button.ativo{color:var(--azul);border-bottom-color:var(--azul2)}
+.pg{display:none;padding:24px;max-width:1100px;margin:0 auto}
+.pg.ativo{display:block}
+.card{background:#fff;border-radius:12px;border:1px solid var(--borda);padding:20px;margin-bottom:20px}
+.card h2{font-size:1rem;font-weight:700;margin-bottom:16px;color:var(--azul);display:flex;align-items:center;gap:8px}
+label{display:block;font-size:.78rem;font-weight:600;color:var(--muted);margin:12px 0 4px;text-transform:uppercase;letter-spacing:.5px}
+input[type=text],input[type=url],input[type=date],input[type=time],input[type=color],select,textarea{width:100%;padding:9px 12px;border:1.5px solid var(--borda);border-radius:8px;font-size:.9rem;color:var(--txt);outline:none;transition:.2s;background:#fff;font-family:inherit}
+input[type=text]:focus,input[type=url]:focus,input[type=date]:focus,select:focus,textarea:focus{border-color:var(--azul2)}
+input[type=color]{height:40px;padding:4px 8px;cursor:pointer}
+textarea{resize:vertical;min-height:80px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.upbox{border:2px dashed var(--borda);border-radius:10px;text-align:center;padding:20px;cursor:pointer;position:relative;transition:.2s;background:var(--cinza)}
+.upbox:hover{border-color:var(--azul2);background:#eaf4fd}
+.upbox span{font-size:2rem}
+.upbox p{font-size:.8rem;color:var(--muted);margin-top:4px}
+.upbox input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer}
+.prevw{margin-top:8px;text-align:center}
+.prevw img{max-height:80px;border-radius:8px;border:1px solid var(--borda)}
+.toggle-row{display:flex;align-items:center;gap:10px;margin:8px 0}
+.toggle{position:relative;width:46px;height:24px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.slider{position:absolute;inset:0;background:#ccc;border-radius:24px;cursor:pointer;transition:.3s}
+.slider:before{content:'';position:absolute;width:18px;height:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s}
+input:checked+.slider{background:var(--azul2)}
+input:checked+.slider:before{transform:translateX(22px)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 22px;border-radius:8px;border:none;font-size:.9rem;font-weight:600;cursor:pointer;transition:.2s;font-family:inherit}
+.btn-prim{background:var(--azul);color:#fff}
+.btn-prim:hover{background:#16304f}
+.btn-sec{background:#fff;color:var(--azul);border:1.5px solid var(--borda)}
+.btn-sec:hover{border-color:var(--azul2)}
+.btn-verm{background:var(--verm);color:#fff}
+.btn-verd{background:var(--verde);color:#fff}
+.ac-bar{display:flex;gap:10px;justify-content:flex-end;margin-top:16px;padding-top:16px;border-top:1px solid var(--borda);flex-wrap:wrap}
+.badge-sel{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.badge-opt{padding:6px 14px;border-radius:20px;border:2px solid var(--borda);font-size:.8rem;font-weight:600;cursor:pointer;transition:.2s;background:#fff}
+.badge-opt.sel{background:var(--azul);color:#fff;border-color:var(--azul)}
+.tpl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-top:8px}
+.tpl-card{border:2px solid var(--borda);border-radius:10px;overflow:hidden;cursor:pointer;transition:.2s}
+.tpl-card:hover,.tpl-card.sel{border-color:var(--azul2);box-shadow:0 0 0 3px rgba(59,155,214,.2)}
+.tpl-card p{font-size:.75rem;font-weight:600;padding:6px 8px;text-align:center;color:var(--txt)}
+.color-row{display:flex;align-items:center;gap:10px}
+.color-row input[type=color]{width:50px;flex-shrink:0}
+.color-row input[type=text]{flex:1}
+.lista-item{background:#fff;border:1px solid var(--borda);border-radius:10px;padding:14px 16px;display:flex;align-items:flex-start;gap:14px;margin-bottom:10px}
+.lista-item .li-info{flex:1}
+.lista-item .li-titulo{font-weight:700;font-size:.95rem}
+.lista-item .li-sub{font-size:.8rem;color:var(--muted);margin-top:3px}
+.lista-item .li-acoes{display:flex;gap:6px;align-items:center;flex-shrink:0}
+.tag{display:inline-block;padding:2px 10px;border-radius:12px;font-size:.72rem;font-weight:700;text-transform:uppercase}
+.tag-culto{background:#dbeafe;color:#1d4ed8}
+.tag-ev{background:#dcfce7;color:#166534}
+.tag-esp{background:#fef9c3;color:#854d0e}
+.tag-dep{background:#f3e8ff;color:#6b21a8}
+.tag-urg{background:#fee2e2;color:#991b1b}
+.tag-imp{background:#fef3c7;color:#92400e}
+.tag-inf{background:#dbeafe;color:#1e40af}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:20px}
+.stat-card{background:#fff;border:1px solid var(--borda);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:4px}
+.stat-card .s-label{font-size:.75rem;color:var(--muted);font-weight:600;text-transform:uppercase}
+.stat-card .s-val{font-size:1.6rem;font-weight:800;color:var(--azul)}
+.stat-card .s-sub{font-size:.75rem;color:var(--muted)}
+#toast{position:fixed;bottom:24px;right:24px;background:var(--azul);color:#fff;padding:12px 22px;border-radius:10px;font-weight:600;font-size:.9rem;opacity:0;transition:.4s;pointer-events:none;z-index:9999}
+#toast.show{opacity:1}
+.help{font-size:.75rem;color:var(--muted);margin-top:3px}
+.secao-box{background:var(--cinza);border-radius:10px;padding:16px;margin-top:16px}
+.secao-box h3{font-size:.9rem;font-weight:700;color:var(--azul);margin-bottom:12px}
+.escala-row-edit{display:grid;grid-template-columns:130px 1fr 1fr 1fr 1fr 1fr 40px;gap:8px;align-items:start;margin-bottom:8px;background:#fff;padding:10px;border-radius:8px;border:1px solid var(--borda)}
+.escala-row-edit textarea{min-height:56px;font-size:.8rem;padding:6px 8px}
+.escala-row-edit label{font-size:.68rem;margin:0 0 2px}
+@media(max-width:600px){
+  .row2,.row3{grid-template-columns:1fr}
+  .escala-row-edit{grid-template-columns:1fr 1fr;gap:6px}
+  .escala-row-edit .del-col{grid-column:span 2;text-align:right}
+}
+</style>
+</head>
+<body>
+<header>
+  <img src="https://i.imgur.com/YWwWMJg.png" alt="logo">
+  <div>
+    <h1>Painel ADM — OBPC São Fernando</h1>
+    <small id="hd-sync">Gerenciamento completo da igreja</small>
+  </div>
+</header>
+
+<nav>
+  <button class="ativo" onclick="aba('banner',this)">🖼️ Banner</button>
+  <button onclick="aba('info',this)">⛪ Igreja</button>
+  <button onclick="aba('escala',this)">📋 Escala</button>
+  <button onclick="aba('proxcult',this)">📅 Próx. Cultos</button>
+  <button onclick="aba('eventos',this)">🎉 Eventos</button>
+  <button onclick="aba('avisos',this)">📢 Avisos</button>
+  <button onclick="aba('informativos',this)">📰 Informativos</button>
+  <button onclick="aba('palavras',this)">✝️ Palavra</button>
+  <button onclick="aba('cultos',this)">🕊️ Cultos</button>
+  <button onclick="aba('aniv',this)">🎂 Aniversariantes</button>
+  <button onclick="aba('lideranca',this)">👥 Liderança</button>
+  <button onclick="aba('sermoes',this)">🎙️ Sermões</button>
+  <button onclick="aba('galeria',this)">📸 Galeria</button>
+  <button onclick="aba('videos',this)">▶️ Vídeos</button>
+  <button onclick="aba('horarios',this)">🕐 Horários</button>
+  <button onclick="aba('oracao',this)">🙏 Oração</button>
+  <button onclick="aba('stats',this)">📊 Stats</button>
+</nav>
+
+<!-- ===== BANNER ===== -->
+<div id="pg-banner" class="pg ativo">
+  <div class="card">
+    <h2>🖼️ Configurar Banner Principal</h2>
+    <label>🏷️ Badge / Tipo</label>
+    <div class="badge-sel" id="badge-sel">
+      <div class="badge-opt sel" data-v="CULTO">CULTO</div>
+      <div class="badge-opt" data-v="EVENTO">EVENTO</div>
+      <div class="badge-opt" data-v="CONFERÊNCIA">CONFERÊNCIA</div>
+      <div class="badge-opt" data-v="RETIRO">RETIRO</div>
+      <div class="badge-opt" data-v="ENCONTRO">ENCONTRO</div>
+      <div class="badge-opt" data-v="">SEM BADGE</div>
+    </div>
+    <input type="text" id="bnr-badge" placeholder="Ou badge personalizado..." style="margin-top:8px">
+
+    <label>📝 Título Principal</label>
+    <input type="text" id="bnr-titulo" placeholder="Ex: Culto de Celebração">
+
+    <label>💬 Subtítulo</label>
+    <input type="text" id="bnr-sub" placeholder="Ex: Venha e experimente a presença de Deus">
+
+    <label>🎯 CTA (botão)</label>
+    <input type="text" id="bnr-cta" placeholder="Ex: Saiba Mais, Inscreva-se">
+
+    <label>📖 Versículo / Texto de Apoio</label>
+    <input type="text" id="bnr-tx" placeholder='"E quando despertaram viram a Sua glória" — Lucas 9:32b'>
+
+    <div class="secao-box">
+      <h3>🎤 Ministrante</h3>
+      <div class="row2">
+        <div>
+          <label>Nome</label>
+          <input type="text" id="bnr-min-nome" placeholder="Ex: Pr. Fulano de Tal">
+        </div>
+        <div>
+          <label>Cargo / Título</label>
+          <input type="text" id="bnr-min-cargo" placeholder="Ex: Pastor, Evangelista...">
+        </div>
+      </div>
+      <div class="row2" style="margin-top:4px">
+        <div>
+          <label>📷 Foto (URL)</label>
+          <input type="url" id="bnr-min-foto" placeholder="https://...">
+        </div>
+        <div>
+          <label>📤 Upload Foto</label>
+          <div class="upbox" style="height:72px"><span>📷</span><p>Clique ou arraste</p>
+            <input type="file" accept="image/*" onchange="upImg(this,'bnr-min-foto')">
+          </div>
+        </div>
+      </div>
+      <div class="prevw" id="bnr-min-foto-pv"></div>
+    </div>
+
+    <div class="row3" style="margin-top:16px">
+      <div><label>📅 Data</label><input type="date" id="bnr-dt"></div>
+      <div><label>⏰ Horário</label><input type="text" id="bnr-hora" placeholder="Ex: 19h00"></div>
+      <div><label>📍 Local</label><input type="text" id="bnr-local" placeholder="Ex: Sede Principal"></div>
+    </div>
+
+    <div class="row2" style="margin-top:16px">
+      <div>
+        <label>🎨 Cor do Destaque</label>
+        <div class="color-row"><input type="color" id="bnr-cor" value="#3B9BD6"><input type="text" id="bnr-cor-txt" value="#3B9BD6"></div>
+      </div>
+      <div>
+        <label>🌈 Overlay Gradiente 1</label>
+        <div class="color-row"><input type="color" id="bnr-ov1" value="#0d1b2a"><input type="text" id="bnr-ov1-txt" value="#0d1b2a"></div>
+      </div>
+    </div>
+    <div class="row2">
+      <div>
+        <label>🌈 Overlay Gradiente 2</label>
+        <div class="color-row"><input type="color" id="bnr-ov2" value="#1E3A5F"><input type="text" id="bnr-ov2-txt" value="#1E3A5F"></div>
+      </div>
+      <div>
+        <label>🌫️ Opacidade Overlay (0–1)</label>
+        <input type="text" id="bnr-opac" value="0.82">
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🖼️ Imagem de Fundo</h2>
+    <div class="row2">
+      <div>
+        <label>📎 URL da Imagem</label>
+        <input type="url" id="bnr-bg-url" placeholder="https://...">
+        <p class="help">Cole uma URL ou faça upload</p>
+      </div>
+      <div>
+        <label>📤 Upload</label>
+        <div class="upbox"><span>🖼️</span><p>Clique ou arraste</p>
+          <input type="file" accept="image/*" onchange="upImg(this,'bnr-bg-url')">
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:12px">
+      <label>📌 Tipo de Fundo</label>
+      <select id="bnr-bg-tp">
+        <option value="imagem">Imagem</option>
+        <option value="video">Vídeo (YouTube / MP4)</option>
+        <option value="cor">Cor Sólida</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📐 Template Visual</h2>
+    <div class="tpl-grid" id="tpl-grid">
+      <div class="tpl-card sel" data-v="classico" onclick="selTpl(this)">
+        <div style="height:90px;background:linear-gradient(135deg,#1E3A5F,#3B9BD6);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.7rem;font-weight:700">CLÁSSICO</div><p>Clássico</p>
+      </div>
+      <div class="tpl-card" data-v="moderno" onclick="selTpl(this)">
+        <div style="height:90px;background:linear-gradient(135deg,#0d1b2a,#e67e22);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.7rem;font-weight:700">MODERNO</div><p>Moderno</p>
+      </div>
+      <div class="tpl-card" data-v="minimalista" onclick="selTpl(this)">
+        <div style="height:90px;background:#fff;border:2px solid #1E3A5F;display:flex;align-items:center;justify-content:center;color:#1E3A5F;font-size:.7rem;font-weight:700">MINIMALISTA</div><p>Minimalista</p>
+      </div>
+      <div class="tpl-card" data-v="vibrante" onclick="selTpl(this)">
+        <div style="height:90px;background:linear-gradient(135deg,#6b21a8,#ec4899);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.7rem;font-weight:700">VIBRANTE</div><p>Vibrante</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📅 Opções do Banner</h2>
+    <div class="toggle-row">
+      <label class="toggle"><input type="checkbox" id="bnr-agenda" checked><span class="slider"></span></label>
+      <span style="font-size:.9rem">Exibir prévia da agenda no banner</span>
+    </div>
+  </div>
+
+  <div class="ac-bar">
+    <button class="btn btn-sec" onclick="bnrCarregar()">↺ Recarregar</button>
+    <button class="btn btn-prim" onclick="bnrSalvar()">💾 Salvar Banner</button>
+  </div>
+</div>
+
+<!-- ===== IGREJA (INFO) ===== -->
+<div id="pg-info" class="pg">
+  <div class="card">
+    <h2>⛪ Dados da Igreja</h2>
+    <div class="row2">
+      <div><label>Nome da Igreja</label><input type="text" id="inf-nome" placeholder="OBPC Jardim São Fernando"></div>
+      <div><label>Pastor Responsável</label><input type="text" id="inf-pastor" placeholder="Pr. Sérgio..."></div>
+    </div>
+    <div class="row2">
+      <div><label>Telefone / WhatsApp</label><input type="text" id="inf-tel" placeholder="(11) 9xxxx-xxxx"></div>
+      <div><label>E-mail</label><input type="text" id="inf-email" placeholder="contato@obpc.com"></div>
+    </div>
+    <div class="row2">
+      <div><label>Endereço</label><input type="text" id="inf-end" placeholder="Rua Senador José Ermírio de Moraes, 199"></div>
+      <div><label>Cidade / Bairro</label><input type="text" id="inf-cidade" placeholder="Jardim São Fernando, SP"></div>
+    </div>
+    <label>Mensagem de Boas-vindas</label>
+    <input type="text" id="inf-bv" placeholder="Bem-vindo! A paz do Senhor esteja com você.">
+    <label>Sobre a Igreja</label>
+    <textarea id="inf-sobre" rows="3" placeholder="Descrição da igreja..."></textarea>
+    <label>Chave PIX</label>
+    <input type="text" id="inf-pix" placeholder="CNPJ, CPF, e-mail ou telefone">
+    <label>Mensagem do Dízimo</label>
+    <input type="text" id="inf-diz" placeholder="Trazei todos os dízimos à casa do tesouro...">
+  </div>
+  <div class="card">
+    <h2>🖼️ Logo da Igreja</h2>
+    <div class="row2">
+      <div>
+        <label>URL do Logo</label>
+        <input type="url" id="inf-logo" placeholder="https://...">
+      </div>
+      <div>
+        <label>📤 Upload Logo</label>
+        <div class="upbox"><span>🖼️</span><p>Clique ou arraste</p>
+          <input type="file" accept="image/*" onchange="upImg(this,'inf-logo')">
+        </div>
+      </div>
+    </div>
+    <div class="prevw" id="inf-logo-pv"></div>
+  </div>
+  <div class="ac-bar">
+    <button class="btn btn-sec" onclick="infCarregar()">↺ Recarregar</button>
+    <button class="btn btn-prim" onclick="infSalvar()">💾 Salvar Dados</button>
+  </div>
+</div>
+
+<!-- ===== ESCALA ===== -->
+<div id="pg-escala" class="pg">
+  <div class="card">
+    <h2>📋 Escala de Cultos / Agenda</h2>
+    <p class="help" style="margin-bottom:16px">Adicione as datas e responsáveis. Aparece na seção "Escala de Hoje" e no modal de Agenda do Mês.</p>
+    <div class="row2" style="margin-bottom:16px">
+      <div>
+        <label>Mês de Referência</label>
+        <select id="esc-mes">
+          <option value="0">Janeiro</option><option value="1">Fevereiro</option><option value="2">Março</option>
+          <option value="3">Abril</option><option value="4">Maio</option><option value="5">Junho</option>
+          <option value="6">Julho</option><option value="7">Agosto</option><option value="8">Setembro</option>
+          <option value="9">Outubro</option><option value="10">Novembro</option><option value="11">Dezembro</option>
+        </select>
+      </div>
+      <div>
+        <label>Ano</label>
+        <input type="text" id="esc-ano" placeholder="2025">
+      </div>
+    </div>
+    <div id="escala-linhas"></div>
+    <div style="margin-top:12px">
+      <button class="btn btn-sec" onclick="escAddLinha()">➕ Adicionar Data</button>
+    </div>
+    <div class="ac-bar">
+      <button class="btn btn-sec" onclick="escCarregar()">↺ Recarregar</button>
+      <button class="btn btn-prim" onclick="escSalvar()">💾 Salvar Escala</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PRÓXIMOS CULTOS ===== -->
+<div id="pg-proxcult" class="pg">
+  <div class="card">
+    <h2>📅 Próximos Cultos / Destaques</h2>
+    <p class="help" style="margin-bottom:12px">Cards em formato banner retrato exibidos na página.</p>
+    <div class="toggle-row">
+      <label class="toggle"><input type="checkbox" id="pc-visivel" checked><span class="slider"></span></label>
+      <span style="font-size:.9rem">Exibir seção "Próximos Cultos"</span>
+    </div>
+  </div>
+  <div class="card">
+    <h2>➕ Adicionar Culto/Destaque</h2>
+    <div class="row2">
+      <div><label>Título</label><input type="text" id="pc-titulo" placeholder="Ex: Culto de Celebração"></div>
+      <div><label>Data</label><input type="date" id="pc-dt"></div>
+    </div>
+    <div class="row2">
+      <div><label>Horário</label><input type="text" id="pc-hora" placeholder="Ex: 19h00"></div>
+      <div><label>Local</label><input type="text" id="pc-local" placeholder="Ex: Sede Principal"></div>
+    </div>
+    <label>Descrição (opcional)</label>
+    <textarea id="pc-desc" rows="2" placeholder="Breve descrição..."></textarea>
+    <div class="row2" style="margin-top:8px">
+      <div><label>Imagem (URL)</label><input type="url" id="pc-img" placeholder="https://..."></div>
+      <div><label>📤 Upload Imagem</label>
+        <div class="upbox" style="height:72px"><span>🖼️</span><p>Clique ou arraste</p>
+          <input type="file" accept="image/*" onchange="upImg(this,'pc-img')">
+        </div>
+      </div>
+    </div>
+    <div class="ac-bar" style="margin-top:10px">
+      <button class="btn btn-prim" onclick="pcAdd()">➕ Adicionar</button>
+    </div>
+  </div>
+  <div class="card">
+    <h2>📋 Cultos Cadastrados</h2>
+    <div id="pc-lista"></div>
+    <div class="ac-bar">
+      <button class="btn btn-sec" onclick="pcCarregar()">↺ Recarregar</button>
+      <button class="btn btn-prim" onclick="pcSalvar()">💾 Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== EVENTOS ===== -->
+<div id="pg-eventos" class="pg">
+  <div class="card">
+    <h2>➕ Adicionar Evento</h2>
+    <div class="row2">
+      <div><label>Nome do Evento</label><input type="text" id="ev-nome" placeholder="Ex: Conferência de Louvor"></div>
+      <div><label>Tipo</label><input type="text" id="ev-tipo" placeholder="Ex: Conferência, Retiro..."></div>
+    </div>
+    <div class="row3">
+      <div><label>Data</label><input type="date" id="ev-data"></div>
+      <div><label>Horário</label><input type="text" id="ev-hora" placeholder="Ex: 19h00"></div>
+      <div><label>Local</label><input type="text" id="ev-local" placeholder="Ex: Sede"></div>
+    </div>
+    <div class="row2" style="margin-top:8px">
+      <div><label>Imagem (URL)</label><input type="url" id="ev-img" placeholder="https://..."></div>
+      <div><label>📤 Upload</label>
+        <div class="upbox" style="height:72px"><span>🖼️</span><p>Clique ou arraste</p>
+          <input type="file" accept="image/*" onchange="upImg(this,'ev-img')">
+        </div>
+      </div>
+    </div>
+    <div class="ac-bar" style="margin-top:10px">
+      <button class="btn btn-prim" onclick="evAdd()">➕ Adicionar</button>
+    </div>
+  </div>
+  <div class="card">
+    <h2>📋 Eventos Cadastrados</h2>
+    <div id="ev-lista"></div>
+  </div>
+</div>
+
+<!-- ===== AVISOS ===== -->
+<div id="pg-avisos" class="pg">
+  <div class="card">
+    <h2>➕ Novo Aviso</h2>
+    <div class="row2">
+      <div><label>Título</label><input type="text" id="av-titulo" placeholder="Ex: Culto especial amanhã!"></div>
+      <div><label>Prioridade</label>
+        <select id="av-pri">
+          <option value="normal">ℹ️ Normal</option>
+          <option value="importante">⚠️ Importante</option>
+          <option value="urgente">🚨 Urgente</option>
+        </select>
+      </div>
+    </div>
+    <label>Texto</label>
+    <textarea id="av-texto" rows="3" placeholder="Texto do aviso..."></textarea>
+    <div class="row2" style="margin-top:8px">
+      <div><label>Imagem (URL)</label><input type="url" id="av-img" placeholder="https://..."></div>
+      <div><label>📤 Upload</label>
+        <div class="upbox" style="height:72px"><span>🖼️</span><p>Clique ou arraste</p>
+          <input type="file" accept="image/*" onchange="upImg(this,'av-img')">
+        </div>
+      </div>
+    </div>
+    <div class="ac-bar"><button class="btn btn-prim" onclick="avAdd()">📤 Publicar</button></div>
+  </div>
+  <div class="card">
+    <h2>📋 Avisos Publicados</h2>
+    <div id="av-lista"></div>
+  </div>
+</div>
+
+<!-- ===== INFORMATIVOS ===== -->
+<div id="pg-informativos" class="pg">
+  <div class="card">
+    <h2>➕ Novo Informativo</h2>
+    <div class="row2">
+      <div><label>Título</label><input type="text" id="info2-titulo" placeholder="Ex: Reunião de Diretoria"></div>
+      <div><label>Categoria</label><input type="text" id="info2-cat" placeholder="Ex: Administração, Departamento..."></div>
+    </div>
+    <label>Texto</label>
+    <textarea id="info2-texto" rows="3" placeholder="Texto do informativo..."></textarea>
+    <div class="row2" style="margin-top:8px">
+      <div><label>Imagem (URL)</label><input type="url" id="info2-img" placeholder="https://..."></div>
+      <div><label>📤 Upload</label>
+        <div class="upbox" style="height:72px"><span>🖼️</span><p>Clique ou arraste</p>
+          <input type="file" accept="image/*" onchange="upImg(this,'info2-img')">
+        </div>
+      </div>
+    </div>
+    <div class="ac-bar"><button class="btn btn-prim" onclick="info2Add()">📤 Publicar</button></div>
+  </div>
+  <div class="card">
+    <h2>📋 Informativos</h2>
+    <div id="info2-lista"></div>
+  </div>
+</div>
+
+<!-- ===== PALAVRA DO PASTOR ===== -->
+<div id="pg-palavras" class="pg">
+  <div class="card">
+    <h2>➕ Nova Palavra / Reflexão</h2>
+    <div class="row2">
+      <div><label>Título</label><input type="text" id="pal-titulo" placeholder="Ex: Palavra do Pastor"></div>
+      <div><label>Autor</label><input type="text" id="pal-autor" placeholder="Ex: Pr. Sérgio"></div>
+    </div>
+    <div><label>Data</label><input type="date" id="pal-data"></div>
+    <label>Texto</label>
+    <textarea id="pal-texto" rows="5" placeholder="Texto da palavra..."></textarea>
+    <div class="row2" style="margin-top:8px">
+      <div><label>Imagem (URL)</label><input type="url" id="pal-img" placeholder="https://..."></div>
+      <div><label>📤 Upload</label>
+        <div class="upbox" style="height:72px"><span>🖼️</span><p>Clique ou arraste</p>
+          <input type="file" accept="image/*" onchange="upImg(this,'pal-img')">
+        </div>
+      </div>
+    </div>
+    <div class="ac-bar"><button class="btn btn-prim" onclick="palAdd()">📤 Publicar</button></div>
+  </div>
+  <div class="card">
+    <h2>📋 Palavras Cadastradas</h2>
+    <div id="pal-lista"></div>
+  </div>
+</div>
+
+<!-- ===== CULTOS FOI ASSIM ===== -->
+<div id="pg-cultos" class="pg">
+  <div class="card">
+    <h2>➕ Registrar Culto (Foi Assim)</h2>
+    <div class="row2">
+      <div><label>Título / Tema</label><input type="text" id="clt-titulo" placeholder="Ex: Culto de Celebração"></div>
+      <div><label>Data</label><input type="date" id="clt-data"></div>
+    </div>
+    <label>Relato / Descrição</label>
+    <textarea id="clt-relato" rows="4" placeholder="Como foi o culto..."></textarea>
+    <label>Fotos (URLs, uma por linha)</label>
+    <textarea id="clt-fotos" rows="3" placeholder="https://foto1.jpg&#10;https://foto2.jpg"></textarea>
+    <label>Vídeos YouTube (URLs, uma por linha)</label>
+    <textarea id="clt-urls" rows="2" placeholder="https://youtu.be/..."></textarea>
+    <div class="ac-bar"><button class="btn btn-prim" onclick="cltAdd()">➕ Registrar</button></div>
+  </div>
+  <div class="card">
+    <h2>📋 Cultos Registrados</h2>
+    <div id="clt-lista"></div>
+  </div>
+</div>
+
+<!-- ===== ANIVERSARIANTES ===== -->
+<div id="pg-aniv" class="pg">
+  <div class="card">
+    <h2>➕ Adicionar Aniversariante</h2>
+    <div class="row3">
+      <div><label>Nome</label><input type="text" id="anv-nome" placeholder="Ex: João da Silva"></div>
+      <div><label>Data (MM-DD)</label><input type="text" id="anv-data" placeholder="Ex: 06-15"></div>
+      <div><label>Função / Cargo</label><input type="text" id="anv-fn" placeholder="Ex: Diácono, Membro..."></div>
+    </div>
+    <div class="row2" style="margin-top:8px">
+      <div><label>Foto (URL)</label><input type="url" id="anv-foto" placeholder="https://..."></div>
+      <div><label>📤 Upload</label>
+        <div class="upbox" style="height:72px"><span>📷</span><p>Clique ou arraste</p>
+          <input type="file" accept="image/*" onchange="upImg(this,'anv-foto')">
+        </div>
+      </div>
+    </div>
+    <div class="ac-bar"><button class="btn btn-prim" onclick="anvAdd()">➕ Adicionar</button></div>
+  </div>
+  <div class="card">
+    <h2>📋 Aniversariantes Cadastrados</h2>
+    <div id="anv-lista"></div>
+  </div>
+</div>
+
+<!-- ===== LIDERANÇA ===== -->
+<div id="pg-lideranca" class="pg">
+  <div class="card">
+    <h2>➕ Adicionar Líder</h2>
+    <div class="row3">
+      <div><label>Nome</label><input type="text" id="lid-nome" placeholder="Ex: Pr. Sérgio"></div>
+      <div><label>Cargo</label><input type="text" id="lid-cargo" placeholder="Ex: Pastor, Diácono..."></div>
+      <div><label>Descrição</label><input type="text" id="lid-desc" placeholder="Ex: Responsável pela..."></div>
+    </div>
+    <div class="row2" style="margin-top:8px">
+      <div><label>Foto (URL)</label><input type="url" id="lid-foto" placeholder="https://..."></div>
+      <div><label>📤 Upload</label>
+        <div class="upbox" style="height:72px"><span>📷</span><p>Clique ou arraste</p>
+          <input type="file" accept="image/*" onchange="upImg(this,'lid-foto')">
+        </div>
+      </div>
+    </div>
+    <div class="ac-bar"><button class="btn btn-prim" onclick="lidAdd()">➕ Adicionar</button></div>
+  </div>
+  <div class="card">
+    <h2>📋 Liderança Cadastrada</h2>
+    <div id="lid-lista"></div>
+  </div>
+</div>
+
+<!-- ===== SERMÕES ===== -->
+<div id="pg-sermoes" class="pg">
+  <div class="card">
+    <h2>➕ Adicionar Sermão</h2>
+    <div class="row2">
+      <div><label>Título</label><input type="text" id="ser-titulo" placeholder="Ex: A Graça de Deus"></div>
+      <div><label>Pregador</label><input type="text" id="ser-preg" placeholder="Ex: Pr. Sérgio"></div>
+    </div>
+    <div class="row2">
+      <div><label>Data</label><input type="date" id="ser-data"></div>
+      <div><label>URL do Vídeo (YouTube)</label><input type="url" id="ser-url" placeholder="https://youtu.be/..."></div>
+    </div>
+    <div class="ac-bar"><button class="btn btn-prim" onclick="serAdd()">➕ Adicionar</button></div>
+  </div>
+  <div class="card">
+    <h2>📋 Sermões Cadastrados</h2>
+    <div id="ser-lista"></div>
+  </div>
+</div>
+
+<!-- ===== GALERIA ===== -->
+<div id="pg-galeria" class="pg">
+  <div class="card">
+    <h2>➕ Adicionar Foto à Galeria</h2>
+    <div class="row2">
+      <div><label>URL da Foto</label><input type="url" id="gal-url" placeholder="https://..."></div>
+      <div><label>📤 Upload</label>
+        <div class="upbox" style="height:72px"><span>📷</span><p>Clique ou arraste</p>
+          <input type="file" accept="image/*" onchange="upImg(this,'gal-url')">
+        </div>
+      </div>
+    </div>
+    <label>Legenda (opcional)</label>
+    <input type="text" id="gal-leg" placeholder="Ex: Culto de Celebração — Jun/2025">
+    <div class="ac-bar"><button class="btn btn-prim" onclick="galAdd()">➕ Adicionar</button></div>
+  </div>
+  <div class="card">
+    <h2>📋 Fotos da Galeria</h2>
+    <div id="gal-lista"></div>
+  </div>
+</div>
+
+<!-- ===== VÍDEOS ===== -->
+<div id="pg-videos" class="pg">
+  <div class="card">
+    <h2>➕ Adicionar Vídeo</h2>
+    <div class="row2">
+      <div><label>Título</label><input type="text" id="vid-titulo" placeholder="Ex: Louvor ao Vivo"></div>
+      <div><label>Categoria</label><input type="text" id="vid-cat" placeholder="Ex: Louvor, Mensagem..."></div>
+    </div>
+    <label>URL do Vídeo (YouTube)</label>
+    <input type="url" id="vid-url" placeholder="https://youtu.be/...">
+    <div class="ac-bar"><button class="btn btn-prim" onclick="vidAdd()">➕ Adicionar</button></div>
+  </div>
+  <div class="card">
+    <h2>📋 Vídeos Cadastrados</h2>
+    <div id="vid-lista"></div>
+  </div>
+</div>
+
+<!-- ===== HORÁRIOS ===== -->
+<div id="pg-horarios" class="pg">
+  <div class="card">
+    <h2>➕ Adicionar Horário de Culto</h2>
+    <div class="row3">
+      <div><label>Dia da Semana</label><input type="text" id="hor-dia" placeholder="Ex: Domingo, Quarta..."></div>
+      <div><label>Horário</label><input type="text" id="hor-hora" placeholder="Ex: 19h00"></div>
+      <div><label>Tipo de Culto</label><input type="text" id="hor-tipo" placeholder="Ex: Culto de Celebração"></div>
+    </div>
+    <div class="ac-bar"><button class="btn btn-prim" onclick="horAdd()">➕ Adicionar</button></div>
+  </div>
+  <div class="card">
+    <h2>📋 Horários Cadastrados</h2>
+    <div id="hor-lista"></div>
+  </div>
+</div>
+
+<!-- ===== ORAÇÃO ===== -->
+<div id="pg-oracao" class="pg">
+  <div class="card">
+    <h2>➕ Adicionar Pedido de Oração</h2>
+    <div class="row2">
+      <div><label>Nome</label><input type="text" id="orc-nome" placeholder="Nome da pessoa"></div>
+      <div><label>Situação</label>
+        <select id="orc-sit">
+          <option value="doença">Doença</option>
+          <option value="família">Família</option>
+          <option value="trabalho">Trabalho / Finanças</option>
+          <option value="libertação">Libertação</option>
+          <option value="geral">Geral</option>
+        </select>
+      </div>
+    </div>
+    <label>Pedido</label>
+    <textarea id="orc-txt" rows="3" placeholder="Descreva o pedido..."></textarea>
+    <div class="ac-bar"><button class="btn btn-prim" onclick="orcAdd()">🙏 Adicionar</button></div>
+  </div>
+  <div class="card">
+    <h2>📋 Pedidos de Oração</h2>
+    <div id="orc-lista"></div>
+  </div>
+</div>
+
+<!-- ===== STATS ===== -->
+<div id="pg-stats" class="pg">
+  <div class="stat-grid" id="stat-grid"></div>
+  <div class="card">
+    <h2>📊 Resumo Geral</h2>
+    <div id="st-resumo" style="font-size:.9rem;color:var(--muted);line-height:1.9"></div>
+  </div>
+  <div class="card">
+    <h2>⚙️ Firebase</h2>
+    <p class="help" style="margin-bottom:12px">URL do banco de dados em tempo real</p>
+    <input type="text" id="fb-url" value="https://fcosta-31125-default-rtdb.firebaseio.com/obpc" readonly style="background:var(--cinza)">
+    <div class="ac-bar" style="margin-top:8px">
+      <button class="btn btn-prim" onclick="fbSync()">🔄 Sincronizar Firebase</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const FB_URL='https://fcosta-31125-default-rtdb.firebaseio.com/obpc';
+const DB={
+  get:k=>{try{return JSON.parse(localStorage.getItem('obpc_'+k));}catch{return null;}},
+  set:(k,v)=>{
+    localStorage.setItem('obpc_'+k,JSON.stringify(v));
+    fetch(FB_URL+'/'+k+'.json',{method:'PUT',body:JSON.stringify(v),headers:{'Content-Type':'application/json'}})
+    .then(()=>toast('✅ Salvo e sincronizado!'))
+    .catch(()=>toast('✅ Salvo localmente'));
+  },
+  sync:async()=>{
+    try{
+      const r=await fetch(FB_URL+'.json');if(!r.ok)return;
+      const d=await r.json();if(!d)return;
+      Object.keys(d).forEach(k=>{if(d[k]!==null)try{localStorage.setItem('obpc_'+k,JSON.stringify(d[k]));}catch{}});
+      toast('🔄 Sincronizado com Firebase!');
+    }catch{toast('⚠️ Firebase offline — dados locais');}
+  }
+};
+
+function aba(id,btn){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('ativo'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('ativo'));
+  document.getElementById('pg-'+id).classList.add('ativo');
+  if(btn)btn.classList.add('ativo');
+  if(id==='stats')statsLoad();
+}
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+function upImg(input,targetId){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const url=e.target.result;
+    const el=document.getElementById(targetId);
+    if(el)el.value=url;
+    if(targetId==='bnr-min-foto'){const pv=document.getElementById('bnr-min-foto-pv');if(pv){pv.innerHTML='';const img=document.createElement('img');img.src=url;pv.appendChild(img);}}
+    if(targetId==='inf-logo'){const pv=document.getElementById('inf-logo-pv');if(pv){pv.innerHTML='';const img=document.createElement('img');img.src=url;pv.appendChild(img);}}
+  };
+  reader.readAsDataURL(file);
+}
+function selTpl(el){
+  document.querySelectorAll('.tpl-card').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+}
+function mkDelBtn(onclick){
+  return '<button class="btn btn-verm" style="padding:6px 12px;font-size:.8rem" onclick="'+onclick+'">🗑️</button>';
+}
+function renderLista(containerId,items,renderFn){
+  const el=document.getElementById(containerId);
+  if(!items||!items.length){el.innerHTML='<p style="color:var(--muted);font-size:.85rem;padding:8px 0">Nenhum item cadastrado.</p>';return;}
+  el.innerHTML=items.map((it,i)=>renderFn(it,i)).join('');
+}
+
+['bnr-cor','bnr-ov1','bnr-ov2'].forEach(id=>{
+  const cp=document.getElementById(id);const tx=document.getElementById(id+'-txt');
+  if(!cp||!tx)return;
+  cp.addEventListener('input',()=>tx.value=cp.value);
+  tx.addEventListener('input',()=>{if(/^#[0-9a-fA-F]{6}$/.test(tx.value))cp.value=tx.value;});
+});
+
+document.querySelectorAll('.badge-opt').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('.badge-opt').forEach(x=>x.classList.remove('sel'));
+    b.classList.add('sel');
+    document.getElementById('bnr-badge').value=b.dataset.v;
+  });
+});
+document.getElementById('bnr-badge').addEventListener('input',()=>{
+  document.querySelectorAll('.badge-opt').forEach(x=>x.classList.remove('sel'));
+});
+
+function bnrSalvar(){
+  const dados={
+    badge:document.getElementById('bnr-badge').value,
+    titulo:document.getElementById('bnr-titulo').value,
+    subtit:document.getElementById('bnr-sub').value,
+    dt:document.getElementById('bnr-dt').value,
+    hora:document.getElementById('bnr-hora').value,
+    local:document.getElementById('bnr-local').value,
+    cta:document.getElementById('bnr-cta').value,
+    cor:document.getElementById('bnr-cor').value,
+    tpl:document.querySelector('.tpl-card.sel')?.dataset.v||'classico',
+    bgUrl:document.getElementById('bnr-bg-url').value,
+    bgTp:document.getElementById('bnr-bg-tp').value,
+    ov1:document.getElementById('bnr-ov1').value,
+    ov2:document.getElementById('bnr-ov2').value,
+    opac:document.getElementById('bnr-opac').value,
+    exibir_agenda:document.getElementById('bnr-agenda').checked,
+    tx:document.getElementById('bnr-tx').value,
+    min_nome:document.getElementById('bnr-min-nome').value,
+    min_cargo:document.getElementById('bnr-min-cargo').value,
+    min_foto:document.getElementById('bnr-min-foto').value,
+    ts:new Date().toISOString()
+  };
+  DB.set('banner_culto',dados);
+}
+function bnrCarregar(){
+  const d=DB.get('banner_culto')||{};
+  document.getElementById('bnr-badge').value=d.badge||'';
+  document.getElementById('bnr-titulo').value=d.titulo||'';
+  document.getElementById('bnr-sub').value=d.subtit||'';
+  document.getElementById('bnr-dt').value=d.dt||'';
+  document.getElementById('bnr-hora').value=d.hora||'';
+  document.getElementById('bnr-local').value=d.local||'';
+  document.getElementById('bnr-cta').value=d.cta||'';
+  document.getElementById('bnr-cor').value=d.cor||'#3B9BD6';
+  document.getElementById('bnr-cor-txt').value=d.cor||'#3B9BD6';
+  document.getElementById('bnr-ov1').value=d.ov1||'#0d1b2a';
+  document.getElementById('bnr-ov1-txt').value=d.ov1||'#0d1b2a';
+  document.getElementById('bnr-ov2').value=d.ov2||'#1E3A5F';
+  document.getElementById('bnr-ov2-txt').value=d.ov2||'#1E3A5F';
+  document.getElementById('bnr-opac').value=d.opac||'0.82';
+  document.getElementById('bnr-bg-url').value=d.bgUrl||'';
+  document.getElementById('bnr-bg-tp').value=d.bgTp||'imagem';
+  document.getElementById('bnr-agenda').checked=!!d.exibir_agenda;
+  document.getElementById('bnr-tx').value=d.tx||'';
+  document.getElementById('bnr-min-nome').value=d.min_nome||'';
+  document.getElementById('bnr-min-cargo').value=d.min_cargo||'';
+  document.getElementById('bnr-min-foto').value=d.min_foto||'';
+  if(d.min_foto){const pv=document.getElementById('bnr-min-foto-pv');if(pv){pv.innerHTML='';const img=document.createElement('img');img.src=d.min_foto;pv.appendChild(img);}}
+  document.querySelectorAll('.badge-opt').forEach(b=>b.classList.toggle('sel',b.dataset.v===(d.badge||'')));
+  document.querySelectorAll('.tpl-card').forEach(c=>c.classList.toggle('sel',c.dataset.v===(d.tpl||'classico')));
+}
+
+function infSalvar(){
+  const logo=document.getElementById('inf-logo').value;
+  DB.set('info',{
+    nome:document.getElementById('inf-nome').value,
+    pastor:document.getElementById('inf-pastor').value,
+    tel:document.getElementById('inf-tel').value,
+    email:document.getElementById('inf-email').value,
+    end:document.getElementById('inf-end').value,
+    cidade:document.getElementById('inf-cidade').value,
+    bv:document.getElementById('inf-bv').value,
+    sobre:document.getElementById('inf-sobre').value,
+    pix:document.getElementById('inf-pix').value,
+    logo:logo,logoB64:logo
+  });
+  DB.set('diz-msg',document.getElementById('inf-diz').value);
+}
+function infCarregar(){
+  const d=DB.get('info')||{};
+  document.getElementById('inf-nome').value=d.nome||'';
+  document.getElementById('inf-pastor').value=d.pastor||'';
+  document.getElementById('inf-tel').value=d.tel||'';
+  document.getElementById('inf-email').value=d.email||'';
+  document.getElementById('inf-end').value=d.end||'';
+  document.getElementById('inf-cidade').value=d.cidade||'';
+  document.getElementById('inf-bv').value=d.bv||'';
+  document.getElementById('inf-sobre').value=d.sobre||'';
+  document.getElementById('inf-pix').value=d.pix||'';
+  const logo=d.logoB64||d.logo||'';
+  document.getElementById('inf-logo').value=logo;
+  if(logo){const pv=document.getElementById('inf-logo-pv');if(pv){pv.innerHTML='';const img=document.createElement('img');img.src=logo;pv.appendChild(img);}}
+  document.getElementById('inf-diz').value=DB.get('diz-msg')||'';
+}
+
+let escLinhas=[];
+function escAddLinha(row){
+  const r=row||{dt:'',clt:'',p1:'',dir:'',min:'',opt:''};
+  escLinhas.push(r);escRender();
+}
+function escRender(){
+  const cont=document.getElementById('escala-linhas');
+  cont.innerHTML='';
+  escLinhas.forEach((r,i)=>{
+    const div=document.createElement('div');
+    div.className='escala-row-edit';
+    div.innerHTML=`
+      <div><label>Data</label><input type="date" value="${r.dt||''}" onchange="escLinhas[${i}].dt=this.value"></div>
+      <div><label>Culto/Evento</label><textarea onchange="escLinhas[${i}].clt=this.value">${r.clt||''}</textarea></div>
+      <div><label>Porta/Recepção</label><textarea onchange="escLinhas[${i}].p1=this.value">${r.p1||''}</textarea></div>
+      <div><label>Dirigente</label><textarea onchange="escLinhas[${i}].dir=this.value">${r.dir||''}</textarea></div>
+      <div><label>Ministrante</label><textarea onchange="escLinhas[${i}].min=this.value">${r.min||''}</textarea></div>
+      <div><label>Oportunidade</label><textarea onchange="escLinhas[${i}].opt=this.value">${r.opt||''}</textarea></div>
+      <div class="del-col" style="display:flex;align-items:flex-end;padding-bottom:4px">
+        <button class="btn btn-verm" style="padding:6px 10px;font-size:.8rem" onclick="escDelLinha(${i})">🗑️</button>
+      </div>`;
+    cont.appendChild(div);
+  });
+}
+function escDelLinha(i){escLinhas.splice(i,1);escRender();}
+function escSalvar(){
+  const mes=parseInt(document.getElementById('esc-mes').value)||new Date().getMonth();
+  const ano=parseInt(document.getElementById('esc-ano').value)||new Date().getFullYear();
+  DB.set('escala_agenda',{mes,ano,rows:escLinhas.filter(r=>r.dt||r.clt)});
+}
+function escCarregar(){
+  const d=DB.get('escala_agenda')||{};
+  const hoje=new Date();
+  document.getElementById('esc-mes').value=d.mes!==undefined?d.mes:hoje.getMonth();
+  document.getElementById('esc-ano').value=d.ano||hoje.getFullYear();
+  escLinhas=(d.rows||[]).map(r=>({...r}));
+  if(!escLinhas.length)escAddLinha();
+  else escRender();
+}
+
+let pcItens=[];
+function pcAdd(){
+  const titulo=document.getElementById('pc-titulo').value.trim();
+  if(!titulo){toast('Informe o título');return;}
+  pcItens.push({titulo,dt:document.getElementById('pc-dt').value,hora:document.getElementById('pc-hora').value,local:document.getElementById('pc-local').value,desc:document.getElementById('pc-desc').value,img:document.getElementById('pc-img').value});
+  ['pc-titulo','pc-dt','pc-hora','pc-local','pc-desc','pc-img'].forEach(id=>document.getElementById(id).value='');
+  pcRender();
+}
+function pcDel(i){pcItens.splice(i,1);pcRender();}
+function pcRender(){
+  renderLista('pc-lista',pcItens,(it,i)=>`
+    <div class="lista-item">
+      <div class="li-info"><div class="li-titulo">${it.titulo}</div><div class="li-sub">${it.dt||'—'} • ${it.hora||'—'} • ${it.local||'—'}</div></div>
+      <div class="li-acoes">${mkDelBtn('pcDel('+i+')')}</div>
+    </div>`);
+}
+function pcSalvar(){DB.set('proximos_cultos',{visivel:document.getElementById('pc-visivel').checked,itens:pcItens});}
+function pcCarregar(){
+  const d=DB.get('proximos_cultos')||{};
+  pcItens=(d.itens||[]).map(it=>({...it}));
+  document.getElementById('pc-visivel').checked=d.visivel!==false;
+  pcRender();
+}
+
+function evAdd(){
+  const nome=document.getElementById('ev-nome').value.trim();
+  if(!nome){toast('Informe o nome do evento');return;}
+  const lista=DB.get('eventos')||[];
+  lista.unshift({nome,data:document.getElementById('ev-data').value,hora:document.getElementById('ev-hora').value,local:document.getElementById('ev-local').value,tipo:document.getElementById('ev-tipo').value,img:document.getElementById('ev-img').value});
+  DB.set('eventos',lista);
+  ['ev-nome','ev-data','ev-hora','ev-local','ev-tipo','ev-img'].forEach(id=>document.getElementById(id).value='');
+  evLoad();
+}
+function evDel(i){const l=DB.get('eventos')||[];l.splice(i,1);DB.set('eventos',l);evLoad();}
+function evLoad(){
+  renderLista('ev-lista',DB.get('eventos')||[],(ev,i)=>`
+    <div class="lista-item">
+      ${ev.img?`<img src="${ev.img}" style="width:56px;height:56px;object-fit:cover;border-radius:8px;flex-shrink:0">`:''}
+      <div class="li-info"><div class="li-titulo">${ev.nome||'—'}</div><div class="li-sub">${ev.data||'—'} • ${ev.hora||'—'} • ${ev.local||'—'}</div>${ev.tipo?`<span class="tag tag-ev">${ev.tipo}</span>`:''}</div>
+      <div class="li-acoes">${mkDelBtn('evDel('+i+')')}</div>
+    </div>`);
+}
+
+function avAdd(){
+  const titulo=document.getElementById('av-titulo').value.trim();
+  if(!titulo){toast('Informe o título');return;}
+  const lista=DB.get('avisos')||[];
+  lista.unshift({titulo,texto:document.getElementById('av-texto').value,prioridade:document.getElementById('av-pri').value,img:document.getElementById('av-img').value});
+  DB.set('avisos',lista);
+  ['av-titulo','av-texto','av-img'].forEach(id=>document.getElementById(id).value='');
+  avLoad();
+}
+function avDel(i){const l=DB.get('avisos')||[];l.splice(i,1);DB.set('avisos',l);avLoad();}
+function avLoad(){
+  const tagMap={urgente:'tag-urg',importante:'tag-imp',normal:'tag-inf'};
+  renderLista('av-lista',DB.get('avisos')||[],(av,i)=>`
+    <div class="lista-item">
+      <div class="li-info"><div class="li-titulo">${av.prioridade==='urgente'?'🚨':av.prioridade==='importante'?'⚠️':'ℹ️'} ${av.titulo||'—'}</div><div class="li-sub">${(av.texto||'').substring(0,80)}</div><span class="tag ${tagMap[av.prioridade]||'tag-inf'}">${av.prioridade||'normal'}</span></div>
+      <div class="li-acoes">${mkDelBtn('avDel('+i+')')}</div>
+    </div>`);
+}
+
+function info2Add(){
+  const titulo=document.getElementById('info2-titulo').value.trim();
+  if(!titulo){toast('Informe o título');return;}
+  const lista=DB.get('informativos')||[];
+  lista.unshift({titulo,texto:document.getElementById('info2-texto').value,cat:document.getElementById('info2-cat').value,img:document.getElementById('info2-img').value});
+  DB.set('informativos',lista);
+  ['info2-titulo','info2-texto','info2-cat','info2-img'].forEach(id=>document.getElementById(id).value='');
+  info2Load();
+}
+function info2Del(i){const l=DB.get('informativos')||[];l.splice(i,1);DB.set('informativos',l);info2Load();}
+function info2Load(){
+  renderLista('info2-lista',DB.get('informativos')||[],(it,i)=>`
+    <div class="lista-item">
+      <div class="li-info"><div class="li-titulo">${it.titulo||'—'}</div><div class="li-sub">${it.cat||''} — ${(it.texto||'').substring(0,60)}...</div></div>
+      <div class="li-acoes">${mkDelBtn('info2Del('+i+')')}</div>
+    </div>`);
+}
+
+function palAdd(){
+  const tit=document.getElementById('pal-titulo').value.trim();
+  if(!tit){toast('Informe o título');return;}
+  const lista=DB.get('palavras')||[];
+  const img=document.getElementById('pal-img').value;
+  lista.unshift({tit,titulo:tit,aut:document.getElementById('pal-autor').value,autor:document.getElementById('pal-autor').value,dt:document.getElementById('pal-data').value,txt:document.getElementById('pal-texto').value,midias:img?[{tp:'img',src:img}]:[]});
+  DB.set('palavras',lista);
+  ['pal-titulo','pal-autor','pal-data','pal-texto','pal-img'].forEach(id=>document.getElementById(id).value='');
+  palLoad();
+}
+function palDel(i){const l=DB.get('palavras')||[];l.splice(i,1);DB.set('palavras',l);palLoad();}
+function palLoad(){
+  renderLista('pal-lista',DB.get('palavras')||[],(p,i)=>`
+    <div class="lista-item">
+      <div class="li-info"><div class="li-titulo">${p.tit||p.titulo||'—'}</div><div class="li-sub">${p.aut||p.autor||''} ${p.dt?' — '+p.dt:''}</div></div>
+      <div class="li-acoes">${mkDelBtn('palDel('+i+')')}</div>
+    </div>`);
+}
+
+function cltAdd(){
+  const titulo=document.getElementById('clt-titulo').value.trim();
+  if(!titulo){toast('Informe o título');return;}
+  const fotos=(document.getElementById('clt-fotos').value||'').split('\n').map(s=>s.trim()).filter(Boolean);
+  const urls=(document.getElementById('clt-urls').value||'').split('\n').map(s=>s.trim()).filter(Boolean);
+  const lista=DB.get('cultos')||[];
+  lista.unshift({tit:titulo,titulo,dt:document.getElementById('clt-data').value,rel:document.getElementById('clt-relato').value,fotos,urls,midias:fotos.map(f=>({tp:'img',src:f}))});
+  DB.set('cultos',lista);
+  ['clt-titulo','clt-data','clt-relato','clt-fotos','clt-urls'].forEach(id=>document.getElementById(id).value='');
+  cltLoad();
+}
+function cltDel(i){const l=DB.get('cultos')||[];l.splice(i,1);DB.set('cultos',l);cltLoad();}
+function cltLoad(){
+  renderLista('clt-lista',DB.get('cultos')||[],(c,i)=>`
+    <div class="lista-item">
+      <div class="li-info"><div class="li-titulo">${c.tit||c.titulo||'—'}</div><div class="li-sub">${c.dt||'—'} — ${(c.rel||'').substring(0,60)}...</div></div>
+      <div class="li-acoes">${mkDelBtn('cltDel('+i+')')}</div>
+    </div>`);
+}
+
+function anvAdd(){
+  const nome=document.getElementById('anv-nome').value.trim();
+  if(!nome){toast('Informe o nome');return;}
+  const lista=DB.get('aniversariantes')||[];
+  lista.push({nome,data:document.getElementById('anv-data').value,fn:document.getElementById('anv-fn').value,foto:document.getElementById('anv-foto').value});
+  lista.sort((a,b)=>(a.data||'')>(b.data||'')?1:-1);
+  DB.set('aniversariantes',lista);
+  ['anv-nome','anv-data','anv-fn','anv-foto'].forEach(id=>document.getElementById(id).value='');
+  anvLoad();
+}
+function anvDel(i){const l=DB.get('aniversariantes')||[];l.splice(i,1);DB.set('aniversariantes',l);anvLoad();}
+function anvLoad(){
+  renderLista('anv-lista',DB.get('aniversariantes')||[],(a,i)=>`
+    <div class="lista-item">
+      ${a.foto?`<img src="${a.foto}" style="width:44px;height:44px;object-fit:cover;border-radius:50%;flex-shrink:0">`:'<div style="width:44px;height:44px;border-radius:50%;background:#e8e2f8;display:flex;align-items:center;justify-content:center;flex-shrink:0">🎂</div>'}
+      <div class="li-info"><div class="li-titulo">${a.nome||'—'}</div><div class="li-sub">📅 ${a.data||'—'} ${a.fn?'· '+a.fn:''}</div></div>
+      <div class="li-acoes">${mkDelBtn('anvDel('+i+')')}</div>
+    </div>`);
+}
+
+function lidAdd(){
+  const nome=document.getElementById('lid-nome').value.trim();
+  if(!nome){toast('Informe o nome');return;}
+  const lista=DB.get('lideranca')||[];
+  lista.push({nome,cargo:document.getElementById('lid-cargo').value,desc:document.getElementById('lid-desc').value,foto:document.getElementById('lid-foto').value});
+  DB.set('lideranca',lista);
+  ['lid-nome','lid-cargo','lid-desc','lid-foto'].forEach(id=>document.getElementById(id).value='');
+  lidLoad();
+}
+function lidDel(i){const l=DB.get('lideranca')||[];l.splice(i,1);DB.set('lideranca',l);lidLoad();}
+function lidLoad(){
+  renderLista('lid-lista',DB.get('lideranca')||[],(l,i)=>`
+    <div class="lista-item">
+      ${l.foto?`<img src="${l.foto}" style="width:44px;height:44px;object-fit:cover;border-radius:50%;flex-shrink:0">`:'<div style="width:44px;height:44px;border-radius:50%;background:#e8e2f8;display:flex;align-items:center;justify-content:center;flex-shrink:0">👤</div>'}
+      <div class="li-info"><div class="li-titulo">${l.nome||'—'}</div><div class="li-sub">${l.cargo||''} ${l.desc?'· '+l.desc:''}</div></div>
+      <div class="li-acoes">${mkDelBtn('lidDel('+i+')')}</div>
+    </div>`);
+}
+
+function ytThumb(url){const m=(url||'').match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/|v\/))([a-zA-Z0-9_-]{11})/);return m?'https://img.youtube.com/vi/'+m[1]+'/mqdefault.jpg':'';}
+function serAdd(){
+  const titulo=document.getElementById('ser-titulo').value.trim();
+  if(!titulo){toast('Informe o título');return;}
+  const lista=DB.get('sermoes')||[];
+  lista.unshift({titulo,pregador:document.getElementById('ser-preg').value,data:document.getElementById('ser-data').value,url:document.getElementById('ser-url').value});
+  DB.set('sermoes',lista);
+  ['ser-titulo','ser-preg','ser-data','ser-url'].forEach(id=>document.getElementById(id).value='');
+  serLoad();
+}
+function serDel(i){const l=DB.get('sermoes')||[];l.splice(i,1);DB.set('sermoes',l);serLoad();}
+function serLoad(){
+  renderLista('ser-lista',DB.get('sermoes')||[],(s,i)=>{
+    const thumb=ytThumb(s.url);
+    return `<div class="lista-item">
+      ${thumb?`<img src="${thumb}" style="width:64px;height:44px;object-fit:cover;border-radius:6px;flex-shrink:0">`:''}
+      <div class="li-info"><div class="li-titulo">${s.titulo||'—'}</div><div class="li-sub">${s.pregador||''} ${s.data?'· '+s.data:''}</div>${s.url?`<a href="${s.url}" target="_blank" style="font-size:.75rem;color:var(--azul2)">▶ Assistir</a>`:''}</div>
+      <div class="li-acoes">${mkDelBtn('serDel('+i+')')}</div>
+    </div>`;
+  });
+}
+
+function galAdd(){
+  const url=document.getElementById('gal-url').value.trim();
+  if(!url){toast('Informe a URL ou faça upload');return;}
+  const lista=DB.get('galeria')||[];
+  lista.unshift({src:url,leg:document.getElementById('gal-leg').value});
+  DB.set('galeria',lista);
+  ['gal-url','gal-leg'].forEach(id=>document.getElementById(id).value='');
+  galLoad();
+}
+function galDel(i){const l=DB.get('galeria')||[];l.splice(i,1);DB.set('galeria',l);galLoad();}
+function galLoad(){
+  renderLista('gal-lista',DB.get('galeria')||[],(g,i)=>`
+    <div class="lista-item">
+      <img src="${g.src}" style="width:64px;height:56px;object-fit:cover;border-radius:8px;flex-shrink:0">
+      <div class="li-info"><div class="li-titulo">${g.leg||'(sem legenda)'}</div><div class="li-sub" style="word-break:break-all;font-size:.7rem">${(g.src||'').substring(0,60)}...</div></div>
+      <div class="li-acoes">${mkDelBtn('galDel('+i+')')}</div>
+    </div>`);
+}
+
+function vidAdd(){
+  const titulo=document.getElementById('vid-titulo').value.trim();
+  const url=document.getElementById('vid-url').value.trim();
+  if(!titulo||!url){toast('Informe título e URL');return;}
+  const lista=DB.get('videos')||[];
+  lista.unshift({titulo,cat:document.getElementById('vid-cat').value,url});
+  DB.set('videos',lista);
+  ['vid-titulo','vid-cat','vid-url'].forEach(id=>document.getElementById(id).value='');
+  vidLoad();
+}
+function vidDel(i){const l=DB.get('videos')||[];l.splice(i,1);DB.set('videos',l);vidLoad();}
+function vidLoad(){
+  renderLista('vid-lista',DB.get('videos')||[],(v,i)=>{
+    const thumb=ytThumb(v.url);
+    return `<div class="lista-item">
+      ${thumb?`<img src="${thumb}" style="width:64px;height:44px;object-fit:cover;border-radius:6px;flex-shrink:0">`:''}
+      <div class="li-info"><div class="li-titulo">${v.titulo||'—'}</div><div class="li-sub">${v.cat||''}</div></div>
+      <div class="li-acoes">${mkDelBtn('vidDel('+i+')')}</div>
+    </div>`;
+  });
+}
+
+function horAdd(){
+  const dia=document.getElementById('hor-dia').value.trim();
+  if(!dia){toast('Informe o dia');return;}
+  const lista=DB.get('horarios')||[];
+  lista.push({dia,hora:document.getElementById('hor-hora').value,tipo:document.getElementById('hor-tipo').value});
+  DB.set('horarios',lista);
+  ['hor-dia','hor-hora','hor-tipo'].forEach(id=>document.getElementById(id).value='');
+  horLoad();
+}
+function horDel(i){const l=DB.get('horarios')||[];l.splice(i,1);DB.set('horarios',l);horLoad();}
+function horLoad(){
+  renderLista('hor-lista',DB.get('horarios')||[],(h,i)=>`
+    <div class="lista-item">
+      <div class="li-info"><div class="li-titulo">${h.dia||'—'} — ${h.hora||'—'}</div><div class="li-sub">${h.tipo||'—'}</div></div>
+      <div class="li-acoes">${mkDelBtn('horDel('+i+')')}</div>
+    </div>`);
+}
+
+function orcAdd(){
+  const nome=document.getElementById('orc-nome').value.trim();
+  if(!nome){toast('Informe o nome');return;}
+  const lista=DB.get('oracoes')||[];
+  lista.unshift({nome,situacao:document.getElementById('orc-sit').value,txt:document.getElementById('orc-txt').value,dt:new Date().toISOString().slice(0,10)});
+  DB.set('oracoes',lista);
+  ['orc-nome','orc-txt'].forEach(id=>document.getElementById(id).value='');
+  orcLoad();
+}
+function orcDel(i){const l=DB.get('oracoes')||[];l.splice(i,1);DB.set('oracoes',l);orcLoad();}
+function orcLoad(){
+  renderLista('orc-lista',DB.get('oracoes')||[],(o,i)=>`
+    <div class="lista-item">
+      <div class="li-info"><div class="li-titulo">🙏 ${o.nome||'—'}</div><div class="li-sub">${o.situacao||''} ${o.dt?'· '+o.dt:''}</div>${o.txt?`<div class="li-sub" style="margin-top:4px">${o.txt.substring(0,80)}...</div>`:''}</div>
+      <div class="li-acoes">${mkDelBtn('orcDel('+i+')')}</div>
+    </div>`);
+}
+
+function statsLoad(){
+  const bnr=DB.get('banner_culto')||{};
+  const info=DB.get('info')||{};
+  const counts={'Próx. Cultos':(DB.get('proximos_cultos')||{}).itens?.length||0,'Eventos':(DB.get('eventos')||[]).length,'Avisos':(DB.get('avisos')||[]).length,'Informativos':(DB.get('informativos')||[]).length,'Palavras':(DB.get('palavras')||[]).length,'Cultos (Hist.)':(DB.get('cultos')||[]).length,'Aniversariantes':(DB.get('aniversariantes')||[]).length,'Liderança':(DB.get('lideranca')||[]).length,'Sermões':(DB.get('sermoes')||[]).length,'Galeria':(DB.get('galeria')||[]).length,'Vídeos':(DB.get('videos')||[]).length,'Horários':(DB.get('horarios')||[]).length,'Oração':(DB.get('oracoes')||[]).length};
+  document.getElementById('stat-grid').innerHTML=Object.entries(counts).map(([k,v])=>`<div class="stat-card"><div class="s-label">${k}</div><div class="s-val">${v}</div></div>`).join('');
+  document.getElementById('st-resumo').innerHTML=`<b>Igreja:</b> ${info.nome||'(não configurada)'}<br><b>Pastor:</b> ${info.pastor||'—'}<br><b>Banner atual:</b> ${bnr.titulo||'(não configurado)'}<br><b>Último save banner:</b> ${bnr.ts?new Date(bnr.ts).toLocaleString('pt-BR'):'—'}<br><b>Firebase URL:</b> ${FB_URL}`;
+}
+function fbSync(){DB.sync();}
+
+bnrCarregar();infCarregar();escCarregar();pcCarregar();evLoad();avLoad();info2Load();palLoad();cltLoad();anvLoad();lidLoad();serLoad();galLoad();vidLoad();horLoad();orcLoad();
+document.getElementById('esc-mes').value=new Date().getMonth();
+document.getElementById('esc-ano').value=new Date().getFullYear();
+</script>
+</body>
+</html>
