@@ -798,7 +798,7 @@ function impDados(inp){var f=inp.files[0];if(!f)return;var ok=document.getElemen
 function del(key,i,fn){var l=DB.g(key)||[];l.splice(i,1);DB.s(key,l);if(typeof fn==='function')fn();}
 (function tick(){var h=document.getElementById('hhor');if(h)h.textContent=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});setTimeout(tick,30000);})();
 /* ═══ BANNER PRÓXIMO CULTO ═══ */
-var _bnrMidia=null;var _bnrBgUrl='';var _bnrCor='#D4A843';
+var _bnrMidia=null;var _bnrBgUrl='';var _bnrCor='#D4A843';var _bnrElemPos={};
 var BNR_TPLS=[{id:'escuro',nm:'Escuro Clássico',ov1:'#0a1e35',ov2:'#1E3A5F',opac:80},{id:'roxo',nm:'Roxo Profético',ov1:'#1a0533',ov2:'#4c1d95',opac:82},{id:'vinho',nm:'Vinho Majestoso',ov1:'#1a0a0a',ov2:'#7f1d1d',opac:80},{id:'verde',nm:'Verde Esperança',ov1:'#052e16',ov2:'#14532d',opac:78},{id:'azul',nm:'Azul Céu',ov1:'#0c1445',ov2:'#1e40af',opac:78},{id:'preto',nm:'Preto Total',ov1:'#000000',ov2:'#111827',opac:88}];
 var BNR_CORES=['#D4A843','#3B9BD6','#e74c3c','#27ae60','#7c3aed','#e67e22','#fff','#f0c040'];
 var _bnrTplSel='escuro';
@@ -807,6 +807,22 @@ function rndBnr(){
   if(tpCont)tpCont.innerHTML=BNR_TPLS.map(function(t){return '<button class="tpl-btn'+(t.id===_bnrTplSel?' sel':'')+'" onclick="bnrSetTpl(\''+t.id+'\')" data-tpl="'+t.id+'">'+t.nm+'</button>';}).join('');
   var corCont=document.getElementById('bnr-cores');
   if(corCont)corCont.innerHTML=BNR_CORES.map(function(c){return '<div onclick="bnrSetCor(\''+c+'\')" style="width:28px;height:28px;border-radius:50%;background:'+c+';cursor:pointer;border:3px solid '+(c===_bnrCor?'#1E3A5F':'transparent')+';box-shadow:0 1px 4px rgba(0,0,0,.2);transition:.15s"></div>';}).join('');
+  /* Busca dados frescos do Firebase antes de renderizar */
+  fetch('https://fcosta-31125-default-rtdb.firebaseio.com/obpc/banner_culto.json')
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(fb){
+      if(fb&&fb.ts){
+        /* Firebase tem dados mais recentes — atualiza localStorage */
+        var local=DB.g('banner_culto');
+        if(!local||!local.ts||fb.ts>local.ts){
+          localStorage.setItem('obpc_banner_culto',JSON.stringify(fb));
+        }
+      }
+    })
+    .catch(function(){})
+    .finally(function(){_bnrPreencherCampos();});
+}
+function _bnrPreencherCampos(){
   var d=DB.g('banner_culto')||{};
   if(d.badge)document.getElementById('bnr-badge').value=d.badge;
   if(d.titulo)document.getElementById('bnr-tit').value=d.titulo;
@@ -815,19 +831,24 @@ function rndBnr(){
   if(d.hora)document.getElementById('bnr-hora').value=d.hora;
   if(d.local)document.getElementById('bnr-loc').value=d.local;
   if(d.cta)document.getElementById('bnr-cta').value=d.cta;
-  if(d.cor)_bnrCor=d.cor;
-  if(d.tpl)_bnrTplSel=d.tpl;
-  if(d.bgUrl){_bnrBgUrl=d.bgUrl;document.getElementById('bnr-bg-url').value=d.bgUrl;bnrAplBg(d.bgUrl,d.bgTp||'img');}
-  if(d.ov1)document.getElementById('bnr-ov1').value=d.ov1;
-  if(d.ov2)document.getElementById('bnr-ov2').value=d.ov2;
-  if(d.opac){document.getElementById('bnr-opac').value=d.opac;document.getElementById('bnr-ov-val').textContent=d.opac;}
+  if(d.cor){_bnrCor=d.cor;}
+  if(d.tpl){_bnrTplSel=d.tpl;}
+  if(d.bgUrl){_bnrBgUrl=d.bgUrl;var bgUrlEl=document.getElementById('bnr-bg-url');if(bgUrlEl)bgUrlEl.value=d.bgUrl;bnrAplBg(d.bgUrl,d.bgTp||'img');}
+  if(d.ov1){var e1=document.getElementById('bnr-ov1');if(e1)e1.value=d.ov1;}
+  if(d.ov2){var e2=document.getElementById('bnr-ov2');if(e2)e2.value=d.ov2;}
+  if(d.opac){var ep=document.getElementById('bnr-opac');if(ep)ep.value=d.opac;var ev=document.getElementById('bnr-ov-val');if(ev)ev.textContent=d.opac;}
   var info=DB.g('info')||{};
   var el=document.getElementById('bnr-prev-church');if(el)el.textContent=info.nome||'OBPC São Fernando';
   var logo=document.getElementById('bnr-prev-logo');
   if(logo&&info.logoB64){logo.innerHTML='';var img=document.createElement('img');img.src=info.logoB64;img.style.cssText='width:36px;height:36px;border-radius:50%;object-fit:cover';logo.appendChild(img);}
   bnrBindInputs();
   if(d.elemPos && typeof d.elemPos === 'object'){_bnrElemPos = d.elemPos;}else{_bnrElemPos = {};}
+  /* Re-aplica seleção visual de template e cor após carregar dados salvos */
   bnrAtualiza();
+  if(d.tpl){
+    document.querySelectorAll('[data-tpl]').forEach(function(b){b.classList.toggle('sel',b.getAttribute('data-tpl')===_bnrTplSel);});
+  }
+  if(d.cor)bnrSetCor(d.cor);
 }
 function bnrBindInputs(){var ids=['bnr-badge','bnr-tit','bnr-sub','bnr-dt','bnr-hora','bnr-loc','bnr-cta','bnr-ov1','bnr-ov2'];ids.forEach(function(id){var el=document.getElementById(id);if(el)el.oninput=bnrAtualiza;});}
 function bnrAtualiza(){
@@ -849,13 +870,14 @@ function bnrAtualiza(){
   var ov1=(document.getElementById('bnr-ov1')||{}).value||'#0a1e35';
   var ov2=(document.getElementById('bnr-ov2')||{}).value||'#1E3A5F';
   var opac=(document.getElementById('bnr-opac')||{}).value||75;
-  var pct=Math.round(opac*255/100).toString(16).padStart(2,'0');
-  var eOv=document.getElementById('bnr-prev-overlay');if(eOv)eOv.style.background='linear-gradient(180deg,'+ov1+pct+' 0%,'+ov2+pct+' 100%)';
+  var op=(Math.round(opac)/100).toFixed(2);
+  function hex2rgb(h){h=(h||'#000000').replace('#','');if(h.length===3)h=h[0]+h[0]+h[1]+h[1]+h[2]+h[2];var n=parseInt(h,16);return [(n>>16)&255,(n>>8)&255,n&255];}
+  var r1=hex2rgb(ov1),r2=hex2rgb(ov2);
+  var eOv=document.getElementById('bnr-prev-overlay');if(eOv)eOv.style.background='linear-gradient(180deg,rgba('+r1[0]+','+r1[1]+','+r1[2]+','+op+') 0%,rgba('+r2[0]+','+r2[1]+','+r2[2]+','+op+') 100%)';
   bnrAplicarPosicoesSalvas();
 }
-/* ═══ PRÓXIMOS CULTOS — painel embutido na aba BNR ═══ */
 /* ═══ DRAG-AND-DROP ═══ */
-var _bnrElemPos={};var _bnrDragEl=null;var _bnrDragKey=null;var _bnrDragStartX=0;var _bnrDragStartY=0;var _bnrDragOrigX=0;var _bnrDragOrigY=0;var _bnrDragMode=false;
+var _bnrDragEl=null;var _bnrDragKey=null;var _bnrDragStartX=0;var _bnrDragStartY=0;var _bnrDragOrigX=0;var _bnrDragOrigY=0;var _bnrDragMode=false;
 function bnrToggleDragMode(){_bnrDragMode=!_bnrDragMode;var btn=document.getElementById('bnr-drag-toggle');var hint=document.getElementById('bnr-drag-hint');if(_bnrDragMode){if(btn){btn.style.background='#e74c3c';btn.textContent='🔒 Travar Posições';}if(hint)hint.style.display='block';bnrHabilitarDrag();}else{if(btn){btn.style.background='var(--azul2)';btn.textContent='✋ Arrastar Elementos';}if(hint)hint.style.display='none';}}
 function bnrHabilitarDrag(){var prev=document.getElementById('bnr-prev');if(!prev)return;var mapa={'bnr-prev-badge-wrap':'badge','bnr-prev-tit-wrap':'titulo','bnr-prev-sub-wrap':'subtit','bnr-prev-infos-wrap':'infos','bnr-prev-cta-wrap':'cta'};Object.keys(mapa).forEach(function(wid){var wrap=document.getElementById(wid);if(!wrap)return;var key=mapa[wid];wrap.style.cursor='grab';wrap.onmousedown=function(e){bnrStartDrag(e,wrap,key);};wrap.ontouchstart=function(e){bnrStartDrag(e.touches[0],wrap,key);};});}
 function bnrStartDrag(e,el,key){if(!_bnrDragMode)return;_bnrDragEl=el;_bnrDragKey=key;var prev=document.getElementById('bnr-prev');var rect=prev.getBoundingClientRect();var curX=parseFloat(el.style.left)||0;var curY=parseFloat(el.style.top)||0;_bnrDragOrigX=curX*rect.width/100;_bnrDragOrigY=curY*rect.height/100;_bnrDragStartX=e.clientX;_bnrDragStartY=e.clientY;el.style.cursor='grabbing';el.style.userSelect='none';document.onmousemove=bnrDragMove;document.ontouchmove=function(ev){bnrDragMove(ev.touches[0]);};document.onmouseup=bnrEndDrag;document.ontouchend=bnrEndDrag;e.preventDefault();}
@@ -873,14 +895,33 @@ async function bnrUpMidia(inp){var f=inp.files[0];if(!f)return;var isV=f.type.st
 function bnrLimparMidia(){_bnrMidia=null;_bnrBgUrl='';var bg=document.getElementById('bnr-prev-bg');if(bg){bg.innerHTML='';bg.style.backgroundImage='';}var pv=document.getElementById('bnr-up-pv');if(pv)pv.innerHTML='';var inp=document.getElementById('bnr-bg-url');if(inp)inp.value='';}
 function bnrLimpar(){['bnr-badge','bnr-tit','bnr-sub','bnr-dt','bnr-hora','bnr-loc','bnr-cta'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});bnrLimparMidia();bnrAtualiza();}
 function bnrSalvar(){
-  var dados={badge:document.getElementById('bnr-badge').value,titulo:document.getElementById('bnr-tit').value,subtit:document.getElementById('bnr-sub').value,dt:document.getElementById('bnr-dt').value,hora:document.getElementById('bnr-hora').value,local:document.getElementById('bnr-loc').value,cta:document.getElementById('bnr-cta').value,cor:_bnrCor,tpl:_bnrTplSel,bgUrl:_bnrBgUrl,bgTp:_bnrMidia?_bnrMidia.tp:(_bnrBgUrl.match(/\.(mp4|webm|mov)/i)?'video':'img'),ov1:document.getElementById('bnr-ov1').value,ov2:document.getElementById('bnr-ov2').value,opac:document.getElementById('bnr-opac').value,ts:Date.now()};
-  if(Object.keys(_bnrElemPos).length)dados.elemPos=_bnrElemPos;else delete dados.elemPos;
-  DB.s('banner_culto',dados);
-  var ok=document.getElementById('bnr-ok');if(ok){ok.style.display='block';setTimeout(function(){ok.style.display='none';},3000);}
-  showToast('✅ Destaque publicado no site!');
+  var dados={
+    badge:(document.getElementById('bnr-badge')||{}).value||'',
+    titulo:(document.getElementById('bnr-tit')||{}).value||'',
+    subtit:(document.getElementById('bnr-sub')||{}).value||'',
+    dt:(document.getElementById('bnr-dt')||{}).value||'',
+    hora:(document.getElementById('bnr-hora')||{}).value||'',
+    local:(document.getElementById('bnr-loc')||{}).value||'',
+    cta:(document.getElementById('bnr-cta')||{}).value||'',
+    cor:_bnrCor,
+    tpl:_bnrTplSel,
+    bgUrl:_bnrBgUrl||'',
+    bgTp:_bnrMidia?_bnrMidia.tp:(_bnrBgUrl&&_bnrBgUrl.match(/\.(mp4|webm|mov)/i)?'video':'img'),
+    ov1:(document.getElementById('bnr-ov1')||{}).value||'#0a1e35',
+    ov2:(document.getElementById('bnr-ov2')||{}).value||'#1E3A5F',
+    opac:(document.getElementById('bnr-opac')||{}).value||75,
+    ts:Date.now()
+  };
+  if(_bnrElemPos&&Object.keys(_bnrElemPos).length)dados.elemPos=_bnrElemPos;
+  /* localStorage + Firebase (PUT direto para garantir sync imediato) */
+  localStorage.setItem('obpc_banner_culto',JSON.stringify(dados));
+  fetch('https://fcosta-31125-default-rtdb.firebaseio.com/obpc/banner_culto.json',{
+    method:'PUT',body:JSON.stringify(dados),headers:{'Content-Type':'application/json'}
+  }).then(function(){showToast('✅ Destaque publicado no site!');}).catch(function(){showToast('⚠️ Salvo local (sem conexão)');});
+  var ok=document.getElementById('bnr-ok');
+  if(ok){ok.style.display='block';setTimeout(function(){ok.style.display='none';},3500);}
 }
-/* ═══ PRÓXIMOS CULTOS — aba própria do menu ═══ */
-/* ═══ GRUPOS / PRÓXIMOS CULTOS ═══ */
+/* ═══ DRAG-AND-DROP ═══ */
 var _bnrPcltImg='', _bnrPcltAudio='', _pclt2Audio='';
 function bnrPcltUpImg(inp){
   var f=inp.files[0];if(!f)return;
