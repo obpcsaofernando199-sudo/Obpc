@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Painel ADM — OBPC São Fernando</title>
+<style>
+:root{--azul:#1E3A5F;--azul2:#3B9BD6;--cinza:#f4f6f9;--borda:#dde2ea;--txt:#1a2535;--muted:#6b7a90;--verde:#27ae60;--verm:#e74c3c;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',sans-serif;background:var(--cinza);color:var(--txt);}
+header{background:var(--azul);color:#fff;padding:0 .8rem;height:54px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.3);}
+#ntoggle{background:none;border:none;color:#fff;font-size:1.8rem;cursor:pointer;padding:4px 8px;line-height:1;display:none;}
+.layout{display:flex;min-height:calc(100vh - 54px);}
+nav{width:205px;background:var(--azul);flex-shrink:0;padding:.8rem 0;overflow-y:auto;transition:transform .25s;}
+nav .grp{padding:.5rem 1rem .2rem;font-size:.62rem;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:1px;}
+nav a{display:flex;align-items:center;gap:7px;padding:.6rem 1rem;color:rgba(255,255,255,.7);font-size:.85rem;cursor:pointer;border-left:3px solid transparent;transition:.15s;-webkit-tap-highlight-color:transparent;text-decoration:none;}
+nav a:hover,nav a.on{background:rgba(59,155,214,.2);color:#fff;border-left-color:var(--azul2);}
+main{flex:1;padding:1rem;overflow-y:auto;min-width:0;}
+.aba{display:none;}.aba.on{display:block;}
+h2{font-size:1.05rem;font-weight:700;color:var(--azul);margin-bottom:.9rem;padding-bottom:.45rem;border-bottom:2px solid var(--azul2);}
+.card{background:#fff;border-radius:10px;padding:1rem;margin-bottom:.7rem;box-shadow:0 1px 5px rgba(0,0,0,.07);}
+label{font-size:.84rem;font-weight:600;color:var(--muted);display:block;margin:.6rem 0 .25rem;}
+input,textarea,select{width:100%;padding:.55rem .8rem;border:1.5px solid var(--borda);border-radius:8px;font-size:1rem;font-family:inherit;background:#fff;color:var(--txt);}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--azul2);}
+textarea{resize:vertical;min-height:80px;line-height:1.6;}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.6rem;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:.6rem 1.1rem;border:none;border-radius:10px;font-size:.9rem;font-weight:700;cursor:pointer;}
+.bp{background:var(--azul);color:#fff;}.bs{background:var(--verde);color:#fff;}.bd{background:var(--verm);color:#fff;}.bsm{padding:.38rem .8rem;font-size:.8rem;}
+.li{display:flex;align-items:center;justify-content:space-between;padding:.55rem .75rem;background:#f8fafd;border:1px solid var(--borda);border-radius:7px;margin-bottom:.35rem;}
+.bdn{background:#e3f2fd;color:#1565c0;display:inline-block;padding:2px 8px;border-radius:20px;font-size:.7rem;font-weight:600;}
+.bdi{background:#fff3e0;color:#e65100;display:inline-block;padding:2px 8px;border-radius:20px;font-size:.7rem;font-weight:600;}
+.bdu{background:#fce4ec;color:#c62828;display:inline-block;padding:2px 8px;border-radius:20px;font-size:.7rem;font-weight:600;}
+.upbox{border:2px dashed var(--borda);border-radius:10px;padding:.9rem .6rem;text-align:center;cursor:pointer;background:#fafbfd;transition:.2s;position:relative;overflow:hidden;}
+.upbox:hover{border-color:var(--azul2);background:#f0f7ff;}
+.upbox input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0;}
+.upbox p{font-size:.78rem;color:var(--muted);pointer-events:none;margin:0;}
+.upbox span{font-size:1.4rem;display:block;margin-bottom:.2rem;pointer-events:none;}
+.prevw{display:flex;flex-wrap:wrap;gap:6px;margin-top:.5rem;}
+.prevw img,.prevw video{width:88px;height:70px;object-fit:contain;border-radius:6px;background:#f0f4f8;border:1px solid var(--borda);}
+.dg{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:1rem;}
+.dc{background:#fff;border-radius:10px;padding:.8rem 1rem;box-shadow:0 1px 5px rgba(0,0,0,.07);border-left:4px solid var(--azul2);}
+.dc .num{font-size:1.6rem;font-weight:700;color:var(--azul);}.dc .lbl{font-size:.72rem;color:var(--muted);margin-top:2px;}
+#nov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:400;}
+.et{width:100%;border-collapse:collapse;font-size:.82rem;min-width:820px;}
+.et th{background:var(--azul);color:#fff;padding:8px 10px;border:1px solid #0d2f4a;font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;text-align:center;}
+.et td{border:1px solid #d0d7e2;padding:0;vertical-align:middle;background:#fff;}
+.et tr.rdom td{background:#fef9f9;}.et tr.rqua td{background:#f7fbff;}.et tr.rsab td{background:#f7fdf9;}.et tr.rcei td{border-top:2px solid #7c3aed!important;}
+.edtw{position:relative;display:flex;align-items:center;justify-content:center;min-height:38px;padding:4px;}
+.edtd{font-weight:700;font-size:.8rem;color:var(--azul);text-align:center;cursor:pointer;padding:4px 8px;border-radius:6px;user-select:none;}
+.edtd:hover{background:#e8f4fd;}.edtd.vz{color:#aaa;font-size:.75rem;font-weight:400;}
+.edti{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none;}
+.ec{min-height:38px;padding:6px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;transition:.1s;}
+.ec:hover{background:rgba(59,155,214,.07);}
+.ec.dov{background:#e0f0ff;border:2px dashed var(--azul2)!important;border-radius:4px;}
+.ecv{color:#c0c8d4;font-size:.72rem;font-style:italic;}
+.en{font-size:.8rem;color:var(--txt);line-height:1.4;display:flex;align-items:center;gap:4px;cursor:grab;padding:2px 0;}
+.en:active{cursor:grabbing;}
+.erm{color:#e74c3c;cursor:pointer;font-size:.65rem;opacity:0;transition:.15s;flex-shrink:0;padding:0 2px;}
+.en:hover .erm{opacity:1;}
+.etb{display:none;background:#1E3A5F;border-radius:8px;padding:8px 12px;margin-bottom:.5rem;flex-wrap:wrap;gap:6px;align-items:center;}
+.etb.show{display:flex;}
+.etbn{padding:5px 12px;border-radius:20px;border:1.5px solid rgba(255,255,255,.4);cursor:pointer;font-size:.76rem;font-weight:600;background:transparent;color:#fff;transition:.15s;white-space:nowrap;}
+.etbn:hover,.etbn.sel{background:#fff;color:var(--azul);}
+.ceiaw{display:flex;height:100%;}.ceias{flex:1;text-align:center;}.ceias:first-child{border-right:1px solid var(--borda);}
+.ceial{font-size:.6rem;font-weight:900;text-transform:uppercase;background:#ede9fe;color:#7c3aed;padding:2px 0;display:block;}
+.edel{background:none;border:none;color:#e74c3c;cursor:pointer;font-weight:900;font-size:1.1rem;padding:4px 8px;opacity:.6;transition:.15s;}
+.edel:hover{opacity:1;}
+.mbg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:600;align-items:center;justify-content:center;}
+.mbg.on{display:flex;}
+.mbox{background:#1e293b;border-radius:14px;padding:1.4rem;border:2px solid #D4A843;max-width:94vw;}
+.mok{color:var(--verde);font-size:.78rem;display:none;margin-left:.5rem;}
+.dh{background:linear-gradient(135deg,#0a1e35,#1E3A5F,#2563a8);border-radius:16px;padding:1.4rem;margin-bottom:1rem;position:relative;overflow:hidden;}
+.dhl{font-size:.63rem;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,.45);margin-bottom:.35rem;}
+.dhv{font-size:.88rem;font-weight:800;color:#fff;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:.45rem .75rem;margin:.4rem 0 .65rem;word-break:break-all;line-height:1.4;position:relative;z-index:1;}
+.dlr{display:flex;gap:.45rem;align-items:center;position:relative;z-index:1;}
+.dlr input{flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:#fff;border-radius:8px;padding:6px 10px;font-size:.78rem;}
+.dlr input::placeholder{color:rgba(255,255,255,.35);}
+.dlr input:focus{outline:none;border-color:var(--azul2);}
+.dlb{background:var(--azul2);color:#fff;border:none;border-radius:8px;padding:7px 14px;cursor:pointer;font-size:.77rem;font-weight:700;white-space:nowrap;flex-shrink:0;}
+.dst{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:.6rem;display:flex;align-items:center;gap:.4rem;}
+.dst::after{content:'';flex:1;height:1px;background:var(--borda);}
+.dmg{display:grid;grid-template-columns:repeat(2,1fr);gap:.55rem;margin-bottom:.9rem;}
+.dmb{background:#fff;border:2px solid var(--borda);border-radius:12px;padding:.7rem;cursor:pointer;font-family:inherit;text-align:left;transition:all .2s;display:flex;align-items:flex-start;gap:.5rem;position:relative;overflow:hidden;}
+.dmb::after{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--c,var(--azul2));transform:scaleY(0);transform-origin:top;transition:.2s;border-radius:0 2px 2px 0;}
+.dmb:hover{border-color:var(--c,var(--azul2));transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,.09);}
+.dmb.sel{border-color:var(--c,var(--azul2));background:linear-gradient(135deg,#fafeff,#f0f8ff);}
+.dmb.sel::after{transform:scaleY(1);}
+.dmi{font-size:1.5rem;line-height:1;flex-shrink:0;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:9px;background:var(--c,var(--azul2));opacity:.9;}
+.dmn{font-size:.8rem;font-weight:700;color:var(--txt);line-height:1.2;margin-bottom:.15rem;}
+.dms{font-size:.67rem;color:var(--muted);line-height:1.3;}
+.dmt{display:inline-block;font-size:.58rem;font-weight:800;padding:2px 7px;border-radius:20px;margin-top:.3rem;background:var(--c,var(--azul2));color:#fff;letter-spacing:.5px;}
+.dww{border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.18);margin-bottom:.7rem;border:1px solid rgba(0,0,0,.08);}
+.dwb{background:#075E54;padding:.45rem .8rem;display:flex;align-items:center;gap:.5rem;}
+.dwa{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:1.1rem;}
+.dwi{flex:1;}.dwn{font-size:.78rem;font-weight:700;color:#fff;}.dws{font-size:.62rem;color:rgba(255,255,255,.65);}
+.dwic{color:rgba(255,255,255,.65);display:flex;gap:.8rem;font-size:1rem;}
+.dwbd{min-height:110px;padding:.8rem;background:#ece5dd;}
+.dbb{background:#fff;border-radius:0 12px 12px 12px;padding:.7rem .85rem;max-width:88%;box-shadow:0 1px 2px rgba(0,0,0,.13);font-size:.79rem;line-height:1.65;color:#111;position:relative;}
+.dbb::before{content:'';position:absolute;top:0;right:100%;border:7px solid transparent;border-right-color:#fff;border-top:0;}
+.dbf{font-size:.62rem;color:#999;text-align:right;margin-top:.3rem;display:flex;align-items:center;justify-content:flex-end;gap:3px;}
+.dbt{color:#53bdeb;font-size:.9rem;}
+.dar{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.5rem;}
+.da{display:flex;align-items:center;justify-content:center;gap:.4rem;padding:.65rem .5rem;border:none;border-radius:11px;cursor:pointer;font-family:inherit;font-size:.82rem;font-weight:700;transition:all .15s;}
+.da:hover{transform:translateY(-1px);filter:brightness(1.08);}
+.daw{background:#25D366;color:#fff;}.dac{background:var(--azul);color:#fff;}
+.phone-frame{width:280px;min-height:520px;background:#000;border-radius:38px;padding:10px;box-shadow:0 0 0 2px #333,0 0 0 5px #1a1a1a,0 20px 50px rgba(0,0,0,.5);position:relative;flex-shrink:0;}
+.phone-screen{background:#fff;border-radius:30px;overflow:hidden;height:100%;min-height:500px;position:relative;}
+.phone-notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:90px;height:22px;background:#000;border-radius:0 0 14px 14px;z-index:10;}
+.bnr-prev{width:100%;min-height:500px;display:flex;flex-direction:column;position:relative;overflow:hidden;}
+.bnr-bg{position:absolute;inset:0;background-size:cover;background-position:center;z-index:0;}
+.bnr-overlay{position:absolute;inset:0;z-index:1;}
+.bnr-content{position:relative;z-index:2;display:flex;flex-direction:column;height:100%;min-height:500px;padding:28px 18px 18px;}
+.bnr-top{display:flex;align-items:center;gap:8px;margin-bottom:auto;}
+.bnr-logo{width:36px;height:36px;border-radius:50%;border:2px solid rgba(255,255,255,.6);object-fit:cover;background:rgba(255,255,255,.2);}
+.bnr-church{font-size:.68rem;font-weight:700;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.4);}
+.bnr-badge{display:inline-block;font-size:.58rem;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;padding:3px 10px;border-radius:20px;margin-bottom:.4rem;}
+.bnr-titulo{font-size:1.1rem;font-weight:900;color:#fff;line-height:1.25;text-shadow:0 2px 8px rgba(0,0,0,.5);margin-bottom:.3rem;}
+.bnr-subtit{font-size:.72rem;color:rgba(255,255,255,.85);text-shadow:0 1px 4px rgba(0,0,0,.4);margin-bottom:.7rem;}
+.bnr-infos{display:flex;flex-direction:column;gap:.25rem;margin-bottom:.7rem;}
+.bnr-info{display:flex;align-items:center;gap:.4rem;font-size:.72rem;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.4);}
+.bnr-info span{font-size:.9rem;}
+.bnr-cta{display:inline-block;padding:8px 18px;border-radius:25px;font-size:.75rem;font-weight:800;text-align:center;letter-spacing:.5px;margin-top:.3rem;}
+.bnr-video-badge{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:50px;height:50px;background:rgba(255,255,255,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;backdrop-filter:blur(4px);border:2px solid rgba(255,255,255,.4);}
+.tpl-btn{border:2px solid var(--borda);border-radius:10px;padding:.5rem .7rem;cursor:pointer;background:#fff;font-family:inherit;font-size:.78rem;font-weight:600;transition:all .15s;display:flex;align-items:center;gap:.4rem;}
+.tpl-btn:hover,.tpl-btn.sel{border-color:var(--azul2);background:#f0f8ff;color:var(--azul);}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(12px);background:#1E3A5F;color:#fff;padding:.45rem 1.3rem;border-radius:30px;font-size:.8rem;font-weight:600;opacity:0;transition:all .28s;z-index:9999;pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,.25);white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:#f0f7ff;border:1.5px solid #bdd9f0;border-radius:10px;margin-top:.6rem;}
+.toggle-row .tgl-lbl{font-size:.85rem;font-weight:600;color:var(--azul);}
+.toggle-row .tgl-sub{font-size:.72rem;color:var(--muted);margin-top:2px;}
+.tgl-sw{position:relative;width:48px;height:26px;flex-shrink:0;}
+.tgl-sw input{opacity:0;width:0;height:0;position:absolute;}
+.tgl-sw .slider{position:absolute;inset:0;background:#ccc;border-radius:26px;cursor:pointer;transition:.3s;}
+.tgl-sw .slider:before{content:'';position:absolute;width:20px;height:20px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 1px 4px rgba(0,0,0,.2);}
+.tgl-sw input:checked + .slider{background:var(--verde);}
+.tgl-sw input:checked + .slider:before{transform:translateX(22px);}
+
+@media(max-width:768px){
+  #ntoggle{display:block!important;}
+  nav{position:fixed;top:0;left:0;bottom:0;z-index:500;transform:translateX(-100%);width:270px;padding-top:60px;}
+  nav.open{transform:translateX(0);box-shadow:4px 0 24px rgba(0,0,0,.5);}
+  nav a{font-size:.92rem;padding:.75rem 1rem;}
+  #nov.open{display:block!important;}
+  main{padding:.75rem;}
+  .row,.row3{grid-template-columns:1fr;}
+  input,textarea,select{font-size:16px;padding:.65rem .85rem;}
+  label{font-size:.9rem;}
+  .btn{padding:.65rem 1.1rem;font-size:.92rem;min-height:44px;}
+  .bsm{min-height:38px;font-size:.82rem;}
+  .card{padding:1rem;}
+  h2{font-size:1.05rem;}
+  .upbox{padding:1.1rem .8rem;}
+  .upbox p{font-size:.85rem;}
+  .li{padding:.7rem .85rem;font-size:.88rem;}
+}
+@media(max-width:480px){.dmg{grid-template-columns:1fr;}}
+.anv-tab-btn{flex:1;padding:.55rem .8rem;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;border:2px solid transparent;background:transparent;color:var(--muted);transition:all .18s;}
+.anv-tab-btn.ativo{background:var(--azul);color:#fff;}
+.anv-gen-btn{flex:1;padding:.45rem .5rem;border-radius:9px;border:2.5px solid var(--borda);cursor:pointer;font-family:inherit;font-size:.8rem;font-weight:700;color:var(--txt);background:#fff;transition:all .18s;}
+.anv-gen-btn.sel{border-color:var(--gc,var(--azul2));background:color-mix(in srgb,var(--gc,var(--azul2)) 12%,#fff);color:var(--gc,var(--azul));}
+.anv-tema-btn{flex:1;padding:.55rem .5rem;border-radius:10px;border:2.5px solid transparent;cursor:pointer;font-family:inherit;font-size:.8rem;font-weight:700;transition:all .18s;opacity:.75;}
+.anv-tema-btn.sel{opacity:1;border-color:rgba(0,0,0,.25);transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,.18);}
+</style>
+</head>
+<body>
+<div id="nov" onclick="tnav()"></div>
+<header>
+  <div style="display:flex;align-items:center;gap:.7rem">
+    <button id="ntoggle" onclick="tnav()">&#9776;</button>
+    <img id="hlogo" src="" alt="" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.4);display:none">
+    <strong style="font-size:.92rem">Painel ADM &#8212; OBPC S&#227;o Fernando</strong>
+  </div>
+  <div style="display:flex;align-items:center;gap:.7rem">
+    <span id="hhor" style="font-size:.72rem;background:var(--azul2);padding:3px 9px;border-radius:20px"></span>
+    <a href="index.html" style="color:#fff;font-size:.75rem;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);padding:4px 12px;border-radius:20px;text-decoration:none">&#127968; Site</a>
+  </div>
+</header>
+<div class="layout">
+<nav id="snav">
+  <div class="grp">Geral</div>
+  <a onclick="ir('dash',this)" class="on">&#128202; Dashboard</a>
+  <a onclick="ir('info',this)">&#127963;&#65039; Info da Igreja</a>
+  <a onclick="ir('hor',this)">&#128336; Hor&#225;rios</a>
+  <div class="grp">Comunica&#231;&#227;o</div>
+  <a onclick="ir('bnr',this)">&#9999;&#65039; Destaque / Agenda</a>
+  <a onclick="ir('av',this)">&#128226; Avisos</a>
+  <a onclick="ir('ens',this)">&#127925; Ensaio de Louvor</a>
+  <a onclick="ir('or',this)">&#128591; Ora&#231;&#227;o</a>
+  <a onclick="ir('ev',this)">&#128197; Eventos</a>
+  <a onclick="ir('inf',this)">&#128240; Informativos</a>
+  <a onclick="ir('ser',this)">&#128214; Serm&#245;es</a>
+  <a onclick="ir('clt',this)">&#128248; Culto Foi Assim</a>
+  <a onclick="ir('pas',this)">&#127908; Palavra do Pastor</a>
+  <div class="grp">Minist&#233;rio</div>
+  <a onclick="ir('aniv',this)">&#127874; Aniversariantes</a>
+  <a onclick="ir('ob',this)">&#128119; Obreiros</a>
+  <a onclick="ir('esc',this)">&#128203; Escala</a>
+  <a onclick="ir('lid',this)">&#127894;&#65039; Lideran&#231;a</a>
+  <div class="grp">Financeiro</div>
+  <a onclick="ir('diz',this)">&#128160; PIX / D&#237;zimos</a>
+  <div class="grp">M&#237;dia</div>
+  <a onclick="ir('gal',this)">&#128444;&#65039; Galeria</a>
+  <a onclick="ir('vid',this)">&#9654;&#65039; V&#237;deos</a>
+  <div class="grp">Divulga&#231;&#227;o</div>
+  <a onclick="ir('div',this)">&#128227; Compartilhar Site</a>
+  <div class="grp">Ferramentas</div>
+
+  <a href="https://obpcsaofernando199-sudo.github.io/Obpc/igreja26.html" target="_blank">&#128202; Controle Financeiro</a>
+  <a href="escala.html">&#128197; Escala Pro</a>
+  <a href="pix.html">&#128179; PIX / Financeiro</a>
+  <a onclick="ir('mig',this)">&#128260; Migrar M&#237;dias</a>
+</nav>
+<main>
+
+<!-- DASHBOARD -->
+<div id="aba-dash" class="aba on">
+  <h2>&#128202; Dashboard</h2>
+  <div class="dg">
+    <div class="dc"><div class="num" id="cnt-av">0</div><div class="lbl">Avisos</div></div>
+    <div class="dc"><div class="num" id="cnt-ev">0</div><div class="lbl">Eventos</div></div>
+    <div class="dc"><div class="num" id="cnt-ob">0</div><div class="lbl">Obreiros</div></div>
+    <div class="dc"><div class="num" id="cnt-lid">0</div><div class="lbl">L&#237;deres</div></div>
+  </div>
+  <div class="card"><strong>Culto de Hoje:</strong><div id="dh-hj" style="margin-top:.4rem;font-size:.85rem;color:var(--azul2)">&#8212;</div></div>
+  <div class="card"><strong>Semana</strong><div id="dh-sem" style="display:grid;grid-template-columns:repeat(7,1fr);gap:.4rem;margin-top:.7rem"></div></div>
+</div>
+
+<!-- ═══ BANNER — aba unificada ═══ -->
+<div id="aba-bnr" class="aba">
+
+  <!-- ══ BLOCO 1: DESTAQUE VISUAL ══ -->
+  <h2>&#9999;&#65039; Destaque Visual do M&#234;s</h2>
+  <p style="font-size:.78rem;color:var(--muted);margin-bottom:.8rem;background:#f0f7ff;border-left:3px solid var(--azul2);padding:.5rem .8rem;border-radius:0 8px 8px 0">&#128161; Edite o <strong>banner principal</strong> do site — imagem de fundo, cores e texto em destaque.</p>
+
+  <div style="display:flex;gap:1rem;align-items:flex-start;flex-wrap:wrap">
+    <div style="flex:1;min-width:280px">
+      <div class="card">
+        <label>&#127991;&#65039; Badge</label><input id="bnr-badge" placeholder="PR&#211;XIMO CULTO...">
+        <label>&#128204; T&#237;tulo</label><input id="bnr-tit" placeholder="Culto de Domingo">
+        <label>&#128221; Subt&#237;tulo</label><input id="bnr-sub" placeholder="Venha e experiencie a presen&#231;a de Deus">
+        <div class="row" style="margin-top:.4rem">
+          <div><label>&#128197; Data</label><input type="date" id="bnr-dt"></div>
+          <div><label>&#128336; Hor&#225;rio</label><input id="bnr-hora" placeholder="19:00"></div>
+        </div>
+        <label>&#128205; Local</label><input id="bnr-loc" placeholder="Rua Sen. Jos&#233; Erm&#237;rio de Moraes, 199">
+        <label>&#127919; CTA</label><input id="bnr-cta" placeholder="Esperamos por voc&#234;! &#128591;" maxlength="50">
+      </div>
+      <div class="card">
+        <strong style="font-size:.82rem;color:var(--azul);display:block;margin-bottom:.6rem">&#127912; Estilo Visual</strong>
+        <label>&#128396;&#65039; Template</label>
+        <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.7rem" id="bnr-tpls"></div>
+        <label>&#127752; Cor do Badge &amp; CTA</label>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.5rem" id="bnr-cores"></div>
+        <div class="row" style="margin-top:.3rem">
+          <div><label>Overlay in&#237;cio</label><input type="color" id="bnr-ov1" value="#0a1e35"></div>
+          <div><label>Overlay fim</label><input type="color" id="bnr-ov2" value="#1E3A5F"></div>
+        </div>
+        <div style="margin-top:.4rem"><label>Opacidade: <span id="bnr-ov-val">75</span>%</label>
+        <input type="range" id="bnr-opac" min="30" max="95" value="75" oninput="document.getElementById('bnr-ov-val').textContent=this.value;bnrAtualiza()"></div>
+      </div>
+      <div class="card">
+        <strong style="font-size:.82rem;color:var(--azul);display:block;margin-bottom:.6rem">&#128444;&#65039; Fundo do Banner</strong>
+        <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.5rem">
+          <button type="button" onclick="document.getElementById('bnr-f1').click()" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:.6rem 1rem;background:#f0f7ff;border:2px dashed var(--azul2);border-radius:10px;cursor:pointer;font-family:inherit;flex:1;min-width:90px"><span style="font-size:1.3rem">&#128193;</span><span style="font-size:.73rem;font-weight:600;color:var(--azul)">Arquivo</span></button>
+          <button type="button" onclick="document.getElementById('bnr-f2').click()" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:.6rem 1rem;background:#f0fff4;border:2px dashed #27ae60;border-radius:10px;cursor:pointer;font-family:inherit;flex:1;min-width:90px"><span style="font-size:1.3rem">&#128247;</span><span style="font-size:.73rem;font-weight:600;color:#27ae60">C&#226;mera</span></button>
+          <button type="button" onclick="document.getElementById('bnr-f3').click()" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:.6rem 1rem;background:#fff8f0;border:2px dashed #e67e22;border-radius:10px;cursor:pointer;font-family:inherit;flex:1;min-width:90px"><span style="font-size:1.3rem">&#127916;</span><span style="font-size:.73rem;font-weight:600;color:#e67e22">V&#237;deo</span></button>
+        </div>
+        <input type="file" id="bnr-f1" accept="image/*,video/*" style="display:none" onchange="bnrUpMidia(this)">
+        <input type="file" id="bnr-f2" accept="image/*" capture="environment" style="display:none" onchange="bnrUpMidia(this)">
+        <input type="file" id="bnr-f3" accept="video/*" capture="environment" style="display:none" onchange="bnrUpMidia(this)">
+        <div id="bnr-up-sts" style="font-size:.75rem;color:var(--azul2);display:none;margin:.3rem 0"></div>
+        <div id="bnr-up-pv" style="margin-top:.3rem"></div>
+        <label style="margin-top:.5rem">Ou cole URL</label>
+        <input id="bnr-bg-url" placeholder="https://..." oninput="bnrSetBg(this.value)">
+        <button type="button" class="btn bsm" style="background:#64748b;color:#fff;margin-top:.4rem" onclick="bnrLimparMidia()">&#128465; Remover fundo</button>
+      </div>
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.3rem">
+        <button class="btn bs" onclick="bnrSalvar()" style="flex:1">&#128190; Salvar &amp; Publicar no Site</button>
+        <button class="btn bsm" style="background:#64748b;color:#fff" onclick="bnrLimpar()">&#128465; Limpar</button>
+      </div>
+      <div id="bnr-ok" style="display:none;color:var(--verde);font-size:.78rem;margin-top:.4rem;font-weight:700">&#9989; Banner publicado!</div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:.5rem;position:sticky;top:70px">
+      <div style="font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px">&#128241; Preview</div>
+      <div style="background:#1e293b;border-radius:12px;padding:.6rem;box-shadow:0 4px 20px rgba(0,0,0,.4)">
+        <div style="aspect-ratio:9/16;width:220px;border-radius:10px;overflow:hidden;position:relative;box-shadow:0 8px 32px rgba(0,0,0,.6)">
+          <div class="bnr-prev" id="bnr-prev" style="width:100%;height:100%;position:relative;overflow:hidden">
+            <div class="bnr-bg" id="bnr-prev-bg"></div>
+            <div class="bnr-overlay" id="bnr-prev-overlay" style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,30,53,.75) 0%,rgba(30,58,95,.75) 100%);z-index:1"></div>
+            <div style="position:absolute;inset:0;z-index:2;padding:14px 12px 14px">
+              <div class="bnr-top">
+                <div class="bnr-logo" id="bnr-prev-logo">&#9962;</div>
+                <div class="bnr-church" id="bnr-prev-church">OBPC S&#227;o Fernando</div>
+              </div>
+              <div id="bnr-prev-badge-wrap" style="display:inline-block;position:relative;z-index:10;margin-top:auto;margin-bottom:.3rem">
+                <span class="bnr-badge" id="bnr-prev-badge" style="background:#D4A843;color:#1E3A5F">PR&#211;XIMO CULTO</span>
+              </div>
+              <div id="bnr-prev-tit-wrap" style="position:relative;z-index:10">
+                <div class="bnr-titulo" id="bnr-prev-tit">Culto de Domingo</div>
+              </div>
+              <div id="bnr-prev-sub-wrap" style="position:relative;z-index:10">
+                <div class="bnr-subtit" id="bnr-prev-sub">Venha e experiencie a presen&#231;a de Deus</div>
+              </div>
+              <div id="bnr-prev-infos-wrap" style="position:relative;z-index:10">
+                <div class="bnr-infos">
+                  <div class="bnr-info"><span>&#128197;</span><span id="bnr-prev-dt-txt">&#8212;</span></div>
+                  <div class="bnr-info"><span>&#128336;</span><span id="bnr-prev-hora-txt">19:00</span></div>
+                  <div class="bnr-info"><span>&#128205;</span><span id="bnr-prev-loc-txt">Rua Sen. Jos&#233; Erm&#237;rio de Moraes, 199</span></div>
+                </div>
+              </div>
+              <div id="bnr-prev-cta-wrap" style="position:relative;z-index:10">
+                <div class="bnr-cta" id="bnr-prev-cta" style="background:#D4A843;color:#1E3A5F">Esperamos por voc&#234;! &#128591;</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:.6rem;display:flex;flex-direction:column;gap:.4rem">
+          <button id="bnr-drag-toggle" onclick="bnrToggleDragMode()" style="background:var(--azul2);color:#fff;border:none;border-radius:8px;padding:6px 10px;font-size:.73rem;font-weight:700;cursor:pointer;width:100%">&#9995; Arrastar Elementos</button>
+          <div id="bnr-drag-hint" style="display:none;font-size:.63rem;color:#fac860;text-align:center;background:rgba(250,200,96,.1);border:1px solid rgba(250,200,96,.3);border-radius:6px;padding:4px 6px">&#128161; Arraste os elementos no preview acima.</div>
+          <div style="display:flex;gap:.4rem">
+            <button id="bnr-dl-btn" onclick="bnrDownloadPNG()" style="flex:1;background:#1E3A5F;color:#fff;border:none;border-radius:8px;padding:6px 8px;font-size:.73rem;font-weight:700;cursor:pointer">&#11015;&#65039; Baixar PNG</button>
+            <button onclick="bnrResetarPosicoes()" style="background:#64748b;color:#fff;border:none;border-radius:8px;padding:6px 8px;font-size:.7rem;cursor:pointer" title="Resetar posi&#231;&#245;es">&#8617;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ BLOCO 2: AGENDA DE CULTOS ══ -->
+  <h2 style="margin-top:1.5rem">📅 Agenda de Próximos Cultos</h2>
+  <p style="font-size:.78rem;color:var(--muted);margin-bottom:.8rem;background:#f0fff4;border-left:3px solid var(--verde);padding:.5rem .8rem;border-radius:0 8px 8px 0">💡 Cadastre os <strong>próximos cultos</strong> com logo do grupo, imagem, áudio e cores — aparecem no carrossel do site.</p>
+
+  <div style="display:flex;gap:1rem;align-items:flex-start;flex-wrap:wrap">
+    <div style="flex:1;min-width:280px">
+
+      <!-- SELETOR DE GRUPO COM LOGOS -->
+      <div class="card">
+        <strong style="font-size:.82rem;color:var(--azul);display:block;margin-bottom:.6rem">🏷️ Tipo / Grupo do Culto</strong>
+        <div id="pclt-grupo-btns" style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.5rem"></div>
+        <input type="hidden" id="pclt-grupo-sel" value="geral">
+        <input type="hidden" id="pclt-grupo-cor" value="#3B9BD6">
+      </div>
+
+      <!-- DADOS DO CULTO -->
+      <div class="card">
+        <label>📌 Título do Culto</label>
+        <input id="pclt-tit" placeholder="Ex: Santa Ceia · Culto de Missões">
+        <label>📝 Subtítulo / Descrição</label>
+        <input id="pclt-sub" placeholder="Venha e experiencie a presença de Deus">
+        <div class="row" style="margin-top:.4rem">
+          <div><label>📅 Data</label><input type="date" id="pclt-dt"></div>
+          <div><label>🕐 Horário</label><input id="pclt-hora" placeholder="19:00"></div>
+        </div>
+        <label>📍 Local</label>
+        <input id="pclt-loc" placeholder="Rua Sen. José Ermírio de Moraes, 199">
+      </div>
+
+      <!-- MÍDIA: IMAGEM / VÍDEO / ÁUDIO -->
+      <div class="card">
+        <strong style="font-size:.82rem;color:var(--azul);display:block;margin-bottom:.6rem">🖼️ Mídia do Culto (opcional)</strong>
+
+        <!-- Imagem/Vídeo de fundo -->
+        <label style="font-size:.76rem;font-weight:600;color:var(--muted)">📷 Imagem ou Vídeo de fundo</label>
+        <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.5rem">
+          <button type="button" onclick="document.getElementById('pclt-img-f1').click()" style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:.5rem .9rem;background:#f0f7ff;border:2px dashed var(--azul2);border-radius:9px;cursor:pointer;font-family:inherit;flex:1;min-width:80px"><span style="font-size:1.2rem">📁</span><span style="font-size:.72rem;font-weight:600;color:var(--azul)">Arquivo</span></button>
+          <button type="button" onclick="document.getElementById('pclt-img-f2').click()" style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:.5rem .9rem;background:#f0fff4;border:2px dashed #27ae60;border-radius:9px;cursor:pointer;font-family:inherit;flex:1;min-width:80px"><span style="font-size:1.2rem">📸</span><span style="font-size:.72rem;font-weight:600;color:#27ae60">Câmera</span></button>
+          <button type="button" onclick="document.getElementById('pclt-img-f3').click()" style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:.5rem .9rem;background:#fff8f0;border:2px dashed #e67e22;border-radius:9px;cursor:pointer;font-family:inherit;flex:1;min-width:80px"><span style="font-size:1.2rem">🎬</span><span style="font-size:.72rem;font-weight:600;color:#e67e22">Vídeo</span></button>
+        </div>
+        <input type="file" id="pclt-img-f1" accept="image/*,video/*" style="display:none" onchange="pcltUpImg(this)">
+        <input type="file" id="pclt-img-f2" accept="image/*" capture="environment" style="display:none" onchange="pcltUpImg(this)">
+        <input type="file" id="pclt-img-f3" accept="video/*" capture="environment" style="display:none" onchange="pcltUpImg(this)">
+        <div id="pclt-img-sts" style="font-size:.74rem;color:var(--azul2);display:none;margin-bottom:.3rem"></div>
+        <div id="pclt-img-pv" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:.4rem"></div>
+
+        <!-- Áudio -->
+        <label style="font-size:.76rem;font-weight:600;color:var(--muted);margin-top:.4rem">🎵 Áudio (MP3, WAV)</label>
+        <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.5rem">
+          <button type="button" onclick="document.getElementById('pclt-aud-f1').click()" style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:.5rem .9rem;background:#f5f0ff;border:2px dashed #8e44ad;border-radius:9px;cursor:pointer;font-family:inherit;flex:1;min-width:80px"><span style="font-size:1.2rem">📁</span><span style="font-size:.72rem;font-weight:600;color:#8e44ad">Arquivo</span></button>
+          <button type="button" onclick="document.getElementById('pclt-aud-f2').click()" style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:.5rem .9rem;background:#f5f0ff;border:2px dashed #8e44ad;border-radius:9px;cursor:pointer;font-family:inherit;flex:1;min-width:80px"><span style="font-size:1.2rem">🎤</span><span style="font-size:.72rem;font-weight:600;color:#8e44ad">Gravar</span></button>
+        </div>
+        <input type="file" id="pclt-aud-f1" accept="audio/*" style="display:none" onchange="pcltUpAud(this)">
+        <input type="file" id="pclt-aud-f2" accept="audio/*" capture="microphone" style="display:none" onchange="pcltUpAud(this)">
+        <div id="pclt-aud-sts" style="font-size:.74rem;color:#8e44ad;display:none;margin-bottom:.3rem"></div>
+        <div id="pclt-aud-pv" style="margin-bottom:.4rem"></div>
+
+        <!-- Cor de fundo manual -->
+        <label style="font-size:.76rem;font-weight:600;color:var(--muted);margin-top:.3rem">🎨 Cor de fundo (opcional)</label>
+        <div style="display:flex;gap:.4rem;align-items:center;flex-wrap:wrap;margin-bottom:.2rem">
+          <input type="color" id="pclt-bg-cor1" value="#1a237e" title="Cor principal" style="width:36px;height:32px;border:none;border-radius:6px;cursor:pointer;padding:0">
+          <input type="color" id="pclt-bg-cor2" value="#283593" title="Cor secundária" style="width:36px;height:32px;border:none;border-radius:6px;cursor:pointer;padding:0">
+          <span style="font-size:.72rem;color:var(--muted)">gradiente do card</span>
+          <button type="button" onclick="pcltResetCores()" style="padding:3px 9px;border-radius:6px;border:1px solid var(--borda);background:#fff;font-size:.72rem;cursor:pointer;color:var(--muted)">↩ Reset</button>
+        </div>
+      </div>
+
+      <!-- BOTÕES DE AÇÃO -->
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+        <button class="btn bs" onclick="pcltSalvar()" style="flex:1">💾 Publicar no Site</button>
+        <button class="btn bsm" style="background:#64748b;color:#fff" onclick="pcltLimpar()">🗑️ Limpar</button>
+      </div>
+      <div id="pclt-ok" style="display:none;color:var(--verde);font-size:.78rem;margin-top:.4rem;font-weight:700">✅ Culto publicado na agenda!</div>
+    </div>
+
+    <!-- LISTA CADASTRADOS -->
+    <div style="flex:1;min-width:260px">
+      <div class="card">
+        <strong style="font-size:.82rem;color:var(--azul);display:block;margin-bottom:.5rem">📋 Cultos Cadastrados</strong>
+        <div id="pclt-lista"><p style="color:var(--muted);font-size:.82rem">Nenhum culto cadastrado.</p></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /aba-bnr -->
+
+<!-- INFO -->
+<div id="aba-info" class="aba">
+  <h2>&#127963;&#65039; Informa&#231;&#245;es da Igreja</h2>
+  <div class="card">
+    <div class="row"><div><label>Nome</label><input id="ig-nome" placeholder="OBPC S&#227;o Fernando"></div><div><label>Pastor(es)</label><input id="ig-pastor"></div></div>
+    <div class="row" style="margin-top:.5rem"><div><label>Endere&#231;o</label><input id="ig-end" value="Rua Senador Jos&#233; Erm&#237;rio de Moraes, 199"></div><div><label>Cidade/UF</label><input id="ig-cidade"></div></div>
+    <div class="row" style="margin-top:.5rem"><div><label>Telefone</label><input id="ig-tel"></div><div><label>E-mail</label><input id="ig-email"></div></div>
+    <label>CNPJ</label><input id="ig-cnpj" value="03.360.287/0002-59">
+    <label>Logo</label>
+    <div class="row"><div class="upbox" style="height:80px"><span>&#128247;</span><p>Upload logo</p><input type="file" accept="image/*" onchange="upLogo(this)"></div><div><label>Ou URL</label><input id="ig-logo"><img id="lgpv" style="width:60px;height:60px;border-radius:50%;object-fit:cover;margin-top:.4rem;display:none"></div></div>
+    <label>Boas-vindas</label><textarea id="ig-bv" rows="2"></textarea>
+    <label>Sobre</label><textarea id="ig-sobre" rows="3"></textarea>
+    <div style="margin-top:.7rem"><button class="btn bp" onclick="salvarInfo()">&#128190; Salvar</button><span class="mok" id="ok-info">&#10004; Salvo!</span></div>
+  </div>
+</div>
+<!-- HORARIOS -->
+<div id="aba-hor" class="aba">
+  <h2>&#128336; Hor&#225;rios</h2>
+  <div class="card" id="lista-hor"></div>
+  <div class="card">
+    <div class="row3"><div><label>Dia</label><select id="hor-dia"><option>Domingo</option><option>Segunda</option><option>Ter&#231;a</option><option>Quarta</option><option>Quinta</option><option>Sexta</option><option>S&#225;bado</option></select></div><div><label>Hor&#225;rio</label><input id="hor-h" placeholder="19:30"></div><div><label>Tipo</label><input id="hor-t" placeholder="Culto de Ensino"></div></div>
+    <div style="margin-top:.6rem"><button class="btn bs" onclick="addHor()">+ Adicionar</button></div>
+  </div>
+</div>
+<!-- AVISOS -->
+<div id="aba-av" class="aba">
+  <h2>&#128226; Avisos</h2>
+  <div class="card">
+    <label>T&#237;tulo</label><input id="av-tit">
+    <label>Texto</label><textarea id="av-txt" rows="3"></textarea>
+    <div class="row" style="margin-top:.4rem"><div><label>Prioridade</label><select id="av-pri"><option value="normal">Normal</option><option value="importante">Importante</option><option value="urgente">Urgente</option></select></div><div><label>Data</label><input type="date" id="av-dt"></div></div>
+    <label>Imagem</label><div class="upbox" style="height:70px"><span>&#128247;</span><p>Upload</p><input type="file" accept="image/*" onchange="upImg(this,'av-img')"></div>
+    <div class="prevw" id="av-img-pv"></div>
+    <div style="margin-top:.6rem"><button class="btn bs" onclick="addAv()">+ Publicar</button></div>
+  </div>
+  <div id="lista-av"></div>
+</div>
+<!-- ENSAIO DE LOUVOR -->
+<div id="aba-ens" class="aba">
+  <h2>&#127925; Ensaio de Louvor</h2>
+
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem">
+      <span style="font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)">&#128197; Dados</span>
+      <label style="display:flex;align-items:center;gap:.4rem;font-size:.82rem;cursor:pointer;margin:0"><input type="checkbox" id="ens-visivel" checked> Exibir no site</label>
+    </div>
+    <div class="row">
+      <div><label>Grupo / Minist&#233;rio</label><input id="ens-grupo" placeholder="Ex: Umasbrac"></div>
+      <div><label>Data e Hora</label><input type="datetime-local" id="ens-data"></div>
+    </div>
+    <label>Local</label><input id="ens-local" placeholder="Ex: Sal&#227;o principal">
+  </div>
+
+  <div class="card">
+    <span style="font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)">&#127926; Louvor</span>
+    <label>T&#237;tulo</label>
+    <input id="ens-titulo" placeholder="Ex: Desperta &#8212; Fernandinho">
+    <label style="margin-top:.9rem">&#9654; V&#237;deo Cantado (YouTube)</label>
+    <div style="display:flex;gap:.5rem;margin-bottom:.4rem">
+      <input type="url" id="ens-link" placeholder="https://youtu.be/..." style="flex:1">
+      <button class="btn bsm" onclick="ensPrevVideo('orig')">&#128065; Ver</button>
+    </div>
+    <div id="ens-prev-orig" style="display:none;position:relative;width:100%;padding-top:56.25%;border-radius:10px;overflow:hidden;background:#000;margin-bottom:.4rem">
+      <iframe id="ens-iframe-orig" src="" style="position:absolute;inset:0;width:100%;height:100%;border:none" allowfullscreen></iframe>
+    </div>
+    <label>&#127908; Playback (YouTube &#8212; sem voz)</label>
+    <div style="display:flex;gap:.5rem;margin-bottom:.4rem">
+      <input type="url" id="ens-playback" placeholder="https://youtu.be/... (playback)" style="flex:1">
+      <button class="btn bsm" onclick="ensPrevVideo('play')">&#128065; Ver</button>
+    </div>
+    <div id="ens-prev-play" style="display:none;position:relative;width:100%;padding-top:56.25%;border-radius:10px;overflow:hidden;background:#000">
+      <iframe id="ens-iframe-play" src="" style="position:absolute;inset:0;width:100%;height:100%;border:none" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem">
+      <span style="font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)">&#128218; Letra</span>
+      <button class="btn bsm" onclick="ensAjudaTs()" style="font-size:.7rem;padding:.25rem .6rem">? Ajuda</button>
+    </div>
+    <div id="ens-ts-ajuda" style="display:none;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.3);border-radius:8px;padding:.75rem;margin-bottom:.75rem;font-size:.78rem;line-height:1.7;color:#c7d2fe">
+      Cole a letra linha a linha. Use <code>[mm:ss]</code> para karaok&#234; sincronizado.<br>Clique nos bot&#245;es para inserir marcadores na posi&#231;&#227;o do cursor.
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.6rem">
+      <button class="btn bsm" onclick="ensInserirMarcador('[ Bis ]')" style="font-size:.75rem;background:rgba(99,102,241,.3)">&#128257; Bis</button>
+      <button class="btn bsm" onclick="ensInserirMarcador('[ Todos ]')" style="font-size:.75rem;background:rgba(16,185,129,.2);border-color:rgba(16,185,129,.5)">&#128101; Todos</button>
+      <button class="btn bsm" onclick="ensInserirMarcador('[ Coro ]')" style="font-size:.75rem;background:rgba(245,158,11,.2);border-color:rgba(245,158,11,.5)">&#127908; Coro</button>
+      <button class="btn bsm" onclick="ensInserirMarcador('[ 2x ]')" style="font-size:.75rem;background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.4)">2x</button>
+      <button class="btn bsm" onclick="ensInserirMarcador('[ 3x ]')" style="font-size:.75rem;background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.4)">3x</button>
+      <button class="btn bsm" onclick="ensInserirMarcador('[ 4x ]')" style="font-size:.75rem;background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.4)">4x</button>
+      <button class="btn bsm" onclick="ensInserirMarcador('[ Homens ]')">&#128104; Homens</button>
+      <button class="btn bsm" onclick="ensInserirMarcador('[ Mulheres ]')">&#128105; Mulheres</button>
+    </div>
+    <textarea id="ens-letra" rows="14" placeholder="Cole a letra aqui...&#10;Exemplo:&#10;[00:05] Desperta, desperta a minha alma&#10;[00:12] Ressuscita os ossos oh Deus&#10;[ Bis ]&#10;[00:19] Da morte pra vida somente" style="font-family:monospace;font-size:.82rem;line-height:1.8"></textarea>
+    <div style="margin-top:.5rem"><button class="btn bsm" onclick="ensTestarKaraoke()" style="font-size:.75rem">&#9654; Testar no painel</button></div>
+    <div id="ens-preview-kar" style="display:none;margin-top:.75rem;background:#0f0a1e;border-radius:10px;padding:.75rem;max-height:220px;overflow-y:auto;font-size:.82rem;line-height:1.9"></div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;flex-direction:column;gap:.5rem">
+      <button class="btn bs" onclick="salvarEnsaio()">&#128190; Salvar e Publicar no Site</button>
+      <button class="btn" onclick="compartilharEnsaioWpp()" style="background:#25d366;color:#fff">&#128172; Compartilhar no WhatsApp</button>
+      <button class="btn" onclick="limparEnsaio()" style="background:transparent;border:1px solid rgba(255,255,255,.2);color:var(--muted)">&#128465; Encerrar Ensaio</button>
+    </div>
+  </div>
+</div>
+<!-- ORACAO -->
+<div id="aba-or" class="aba">
+  <h2>&#128591; Pedidos de Ora&#231;&#227;o</h2>
+  <div class="card">
+    <div class="row"><div><label>Nome</label><input id="or-nome" placeholder="Fam&#237;lia Silva..."></div><div><label>Situa&#231;&#227;o</label><select id="or-sit"><option value="saude">&#127973; Sa&#250;de</option><option value="familia">&#128106; Fam&#237;lia</option><option value="financeiro">&#128188; Financeiro</option><option value="espiritual">&#10011; Espiritual</option><option value="emprego">&#128296; Emprego</option><option value="outro">&#128591; Outro</option></select></div></div>
+    <label>Pedido</label><textarea id="or-txt" rows="3"></textarea>
+    <div style="display:flex;gap:.8rem;margin-top:.5rem"><label style="display:flex;align-items:center;gap:.4rem;font-size:.82rem;cursor:pointer"><input type="checkbox" id="or-anon"> An&#244;nimo</label><label style="display:flex;align-items:center;gap:.4rem;font-size:.82rem;cursor:pointer"><input type="checkbox" id="or-resp"> Respondido &#9989;</label></div>
+    <div style="margin-top:.6rem"><button class="btn bs" onclick="addOr()">&#128591; Publicar</button></div>
+  </div>
+  <div id="lista-or"></div>
+</div>
+<!-- EVENTOS -->
+<div id="aba-ev" class="aba">
+  <h2>&#128197; Eventos</h2>
+  <div class="card">
+    <div class="row"><div><label>Nome</label><input id="ev-nom"></div><div><label>Data</label><input type="date" id="ev-dt"></div></div>
+    <div class="row" style="margin-top:.4rem"><div><label>Hor&#225;rio</label><input id="ev-h" placeholder="19:30"></div><div><label>Local</label><input id="ev-loc"></div></div>
+    <div class="row" style="margin-top:.4rem"><div><label>Tipo</label><select id="ev-tp"><option>Culto</option><option>Retiro</option><option>Confer&#234;ncia</option><option>Encontro</option><option>Evangelismo</option><option>Outro</option></select></div><div><label>Descri&#231;&#227;o</label><input id="ev-dsc"></div></div>
+    <label>Imagem</label><div class="upbox" style="height:70px"><span>&#128247;</span><p>Upload</p><input type="file" accept="image/*" onchange="upImg(this,'ev-img')"></div>
+    <div class="prevw" id="ev-img-pv"></div>
+    <div style="margin-top:.6rem"><button class="btn bs" onclick="addEv()">+ Adicionar</button></div>
+  </div>
+  <div id="lista-ev"></div>
+</div>
+<!-- INFORMATIVOS -->
+<div id="aba-inf" class="aba">
+  <h2>&#128240; Informativos</h2>
+  <div class="card">
+    <div class="row"><div><label>T&#237;tulo</label><input id="inf-tit"></div><div><label>Categoria</label><input id="inf-cat"></div></div>
+    <label>Conte&#250;do</label><textarea id="inf-txt" rows="5"></textarea>
+    <label>Imagem</label><div class="upbox" style="height:70px"><span>&#128247;</span><p>Upload</p><input type="file" accept="image/*" onchange="upImg(this,'inf-img')"></div>
+    <div class="prevw" id="inf-img-pv"></div>
+    <div style="margin-top:.6rem"><button class="btn bs" onclick="addInf()">+ Publicar</button></div>
+  </div>
+  <div id="lista-inf"></div>
+</div>
+<!-- SERMOES -->
+<div id="aba-ser" class="aba">
+  <h2>&#128214; Serm&#245;es</h2>
+  <div class="card">
+    <div class="row"><div><label>T&#237;tulo</label><input id="ser-tit"></div><div><label>Pregador</label><input id="ser-preg"></div></div>
+    <div class="row" style="margin-top:.4rem"><div><label>Data</label><input type="date" id="ser-dt"></div><div><label>Link YouTube</label><input id="ser-url" placeholder="https://youtu.be/..."></div></div>
+    <label>Passagem</label><input id="ser-pas">
+    <label>Resumo</label><textarea id="ser-res" rows="3"></textarea>
+    <div style="margin-top:.6rem"><button class="btn bs" onclick="addSer()">+ Publicar</button></div>
+  </div>
+  <div id="lista-ser"></div>
+</div>
+<!-- CULTO FOI ASSIM -->
+<div id="aba-clt" class="aba">
+  <h2>&#128248; Nosso Culto Foi Assim</h2>
+  <div class="card">
+    <div class="row"><div><label>T&#237;tulo</label><input id="clt-tit" placeholder="Culto de Domingo"></div><div><label>Data</label><input type="date" id="clt-dt"></div></div>
+    <label>Relato</label><textarea id="clt-rel" rows="3"></textarea>
+    <input type="file" id="clt-f1" accept="image/*,video/*" multiple style="display:none" onchange="cltUp(this)">
+    <input type="file" id="clt-f2" accept="image/*" capture="environment" style="display:none" onchange="cltUp(this)">
+    <input type="file" id="clt-f3" accept="video/*" capture="environment" style="display:none" onchange="cltUp(this)">
+    <label>&#128206; Fotos/V&#237;deos</label>
+    <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.6rem">
+      <button type="button" onclick="document.getElementById('clt-f1').click()" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:.6rem 1.2rem;background:#f0f7ff;border:2px dashed var(--azul2);border-radius:10px;cursor:pointer;font-family:inherit;min-width:110px"><span style="font-size:1.4rem">&#128193;</span><span style="font-size:.78rem;font-weight:600;color:var(--azul)">Do celular/PC</span></button>
+      <button type="button" onclick="document.getElementById('clt-f2').click()" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:.6rem 1.2rem;background:#f0fff4;border:2px dashed #27ae60;border-radius:10px;cursor:pointer;font-family:inherit;min-width:110px"><span style="font-size:1.4rem">&#128247;</span><span style="font-size:.78rem;font-weight:600;color:#27ae60">Tirar Foto</span></button>
+      <button type="button" onclick="document.getElementById('clt-f3').click()" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:.6rem 1.2rem;background:#fff8f0;border:2px dashed #e67e22;border-radius:10px;cursor:pointer;font-family:inherit;min-width:110px"><span style="font-size:1.4rem">&#127916;</span><span style="font-size:.78rem;font-weight:600;color:#e67e22">Gravar V&#237;deo</span></button>
+    </div>
+    <div id="clt-sts" style="font-size:.78rem;color:var(--azul2);margin-bottom:.4rem;display:none"></div>
+    <div id="clt-pv" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:.6rem"></div>
+    <label>&#128279; Links YouTube (um por linha)</label><textarea id="clt-urls" rows="2" placeholder="https://youtu.be/..."></textarea>
+    <div style="display:flex;align-items:center;gap:.6rem;margin-top:.8rem;flex-wrap:wrap">
+      <button type="button" class="btn bs" onclick="addClt()">&#128228; Publicar</button>
+      <button type="button" class="btn bsm" style="background:#64748b;color:#fff" onclick="limClt()">&#128465; Limpar</button>
+      <span id="clt-cnt" style="font-size:.78rem;color:var(--muted)"></span>
+    </div>
+  </div>
+  <div id="lista-clt" style="margin-top:.8rem"></div>
+</div>
+<!-- PALAVRA DO PASTOR -->
+<div id="aba-pas" class="aba">
+  <h2>&#127908; Palavra do Pastor</h2>
+  <div class="card">
+    <div class="row"><div><label>T&#237;tulo</label><input id="pas-tit" placeholder="Palavra de F&#233;"></div><div><label>Data</label><input type="date" id="pas-dt"></div></div>
+    <label>Pastor</label><input id="pas-aut" placeholder="Pr. Sergio">
+    <label>Texto</label><textarea id="pas-txt" rows="6"></textarea>
+    <label>&#128206; Foto ou V&#237;deo</label>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;margin-bottom:.5rem">
+      <div class="upbox" onclick="document.getElementById('pas-f1').click()"><span>&#128193;</span><p>Arquivos</p><input type="file" id="pas-f1" accept="image/*,video/*" multiple style="display:none" onchange="upMd(this,'pas')"></div>
+      <div class="upbox" onclick="document.getElementById('pas-f2').click()"><span>&#128247;</span><p>C&#226;mera Foto</p><input type="file" id="pas-f2" accept="image/*" capture="environment" style="display:none" onchange="upMd(this,'pas')"></div>
+      <div class="upbox" onclick="pasAbrirWebcam()" style="cursor:pointer"><span>&#127916;</span><p>Gravar V&#237;deo</p></div>
+    </div>
+    <div class="prevw" id="pas-pv"></div>
+    <div id="pas-upload-sts" style="display:none;font-size:.78rem;color:var(--azul2);padding:.3rem 0;font-weight:600"></div>
+    <label>&#128279; Link YouTube</label><input id="pas-url" placeholder="https://youtu.be/...">
+    <div style="margin-top:.7rem"><button class="btn bs" onclick="addPas()">&#128228; Publicar</button></div>
+  </div>
+  <div id="lista-pas"></div>
+</div>
+<!-- ANIVERSARIANTES -->
+<div id="aba-aniv" class="aba">
+  <h2>&#127874; Aniversariantes</h2>
+  <div style="display:flex;gap:.4rem;margin-bottom:.8rem;background:#fff;border-radius:10px;padding:.4rem;box-shadow:0 1px 5px rgba(0,0,0,.07)">
+    <button class="anv-tab-btn ativo" onclick="anvTab('cadastro',this)">&#10133; Cadastrar</button>
+    <button class="anv-tab-btn" onclick="anvTab('banner',this)">&#127912; Gerar Banner</button>
+  </div>
+  <div id="anv-painel-cadastro">
+    <div class="card">
+      <div class="row">
+        <div><label>Nome</label><input id="anv-nm"></div>
+        <div><label>Data de Anivers&#225;rio</label><input type="date" id="anv-dt"></div>
+      </div>
+      <div class="row" style="margin-top:.4rem">
+        <div><label>Fun&#231;&#227;o</label><input id="anv-fn" placeholder="Membro, Di&#225;cono..."></div>
+        <div><label>Telefone</label><input id="anv-tel"></div>
+      </div>
+      <label>G&#234;nero (para o banner)</label>
+      <div style="display:flex;gap:.5rem;margin-bottom:.5rem">
+        <button type="button" class="anv-gen-btn sel" data-gen="m" onclick="anvSelGen(this)" style="--gc:#1565C0">&#128100; Masculino</button>
+        <button type="button" class="anv-gen-btn" data-gen="f" onclick="anvSelGen(this)" style="--gc:#d63384">&#128101; Feminino</button>
+        <button type="button" class="anv-gen-btn" data-gen="k" onclick="anvSelGen(this)" style="--gc:#ff6f00">&#128103; Infantil</button>
+      </div>
+      <input type="hidden" id="anv-gen" value="m">
+      <label>Foto</label>
+      <div class="upbox" style="height:70px"><span>&#128247;</span><p>Upload foto</p><input type="file" accept="image/*" onchange="upImg(this,'anv-foto')"></div>
+      <div class="prevw" id="anv-foto-pv"></div>
+      <div style="margin-top:.6rem"><button class="btn bs" onclick="addAnv()">&#127874; Cadastrar</button></div>
+    </div>
+    <div id="lista-anv" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.7rem;margin-top:.7rem"></div>
+  </div>
+  <div id="anv-painel-banner" style="display:none">
+    <div style="display:flex;gap:.8rem;align-items:flex-start;flex-wrap:wrap">
+      <div style="flex:1;min-width:280px">
+        <div class="card">
+          <strong style="font-size:.82rem;color:var(--azul);display:block;margin-bottom:.7rem">&#127775; Dados do Banner</strong>
+          <label>Nome do(a) Aniversariante</label>
+          <input id="bnranv-nm" placeholder="Ex: Maria da Silva" oninput="anvBnrAtualiza()">
+          <label>Mensagem personalizada</label>
+          <textarea id="bnranv-msg" rows="3" oninput="anvBnrAtualiza()" placeholder="Que Deus te abençoe neste novo ano de vida!">Que Deus te abençoe neste novo ano de vida! &#127775;&#128591;</textarea>
+          <label>Rodap&#233;</label>
+          <input id="bnranv-rodape" value="Com carinho, Fam&#237;lia OBPC S&#227;o Fernando" oninput="anvBnrAtualiza()">
+          <label style="margin-top:.5rem">Foto (opcional)</label>
+          <div class="upbox" style="height:65px" onclick="document.getElementById('bnranv-foto-inp').click()">
+            <span>&#128247;</span><p>Upload foto do aniversariante</p>
+            <input type="file" id="bnranv-foto-inp" accept="image/*" style="display:none" onchange="anvBnrUpFoto(this)">
+          </div>
+          <div id="bnranv-foto-pv" style="margin-top:.4rem"></div>
+        </div>
+        <div class="card">
+          <strong style="font-size:.82rem;color:var(--azul);display:block;margin-bottom:.6rem">&#127752; Tema de Cores</strong>
+          <div style="display:flex;gap:.4rem;flex-wrap:wrap">
+            <button type="button" class="anv-tema-btn sel" data-tema="m" onclick="anvSetTema(this)" style="background:linear-gradient(135deg,#1565C0,#1E88E5);color:#fff">&#128100; Masculino</button>
+            <button type="button" class="anv-tema-btn" data-tema="f" onclick="anvSetTema(this)" style="background:linear-gradient(135deg,#d63384,#f06292);color:#fff">&#128101; Feminino</button>
+            <button type="button" class="anv-tema-btn" data-tema="k" onclick="anvSetTema(this)" style="background:linear-gradient(135deg,#ff6f00,#ffb300,#43a047);color:#fff">&#128103; Infantil &#127776;</button>
+          </div>
+        </div>
+        <div class="card" style="display:flex;gap:.5rem;flex-direction:column">
+          <button onclick="anvBnrPublicar()" style="background:#e65100;color:#fff;border:none;border-radius:10px;padding:11px;font-size:.9rem;font-weight:800;cursor:pointer;width:100%">&#127760; Publicar no Site</button>
+          <div id="anv-bnr-ok" style="display:none;background:#e8f5e9;border:1px solid #a5d6a7;border-radius:8px;padding:6px 10px;font-size:.78rem;color:#2e7d32;font-weight:700;text-align:center">&#9989; Banner publicado no site!</div>
+          <button onclick="anvBnrDownload()" style="background:var(--azul);color:#fff;border:none;border-radius:8px;padding:9px;font-size:.85rem;font-weight:700;cursor:pointer;width:100%">&#11015;&#65039; Baixar Banner PNG</button>
+          <button onclick="anvBnrCopiar()" style="background:#27ae60;color:#fff;border:none;border-radius:8px;padding:9px;font-size:.85rem;font-weight:700;cursor:pointer;width:100%">&#128203; Copiar para WhatsApp</button>
+        </div>
+      </div>
+      <div style="flex:1;min-width:280px">
+        <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:.4rem">&#128065; Preview</div>
+        <div id="anv-bnr-prev" style="width:100%;max-width:380px;min-height:420px;border-radius:16px;overflow:hidden;position:relative;background:linear-gradient(135deg,#1565C0 0%,#1E88E5 50%,#0d47a1 100%);box-shadow:0 8px 32px rgba(0,0,0,.2)">
+          <div id="anv-bnr-bg" style="position:absolute;inset:0;overflow:hidden;pointer-events:none"></div>
+          <div style="position:relative;z-index:2;padding:28px 20px 22px;display:flex;flex-direction:column;align-items:center;min-height:420px">
+            <div id="anv-bnr-deco-top" style="font-size:2rem;margin-bottom:6px">&#127881; &#127874; &#127881;</div>
+            <div id="anv-bnr-foto-wrap" style="width:110px;height:110px;border-radius:50%;border:5px solid rgba(255,255,255,.9);overflow:hidden;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;margin-bottom:12px;box-shadow:0 4px 20px rgba(0,0,0,.3)">
+              <span id="anv-bnr-foto-icon" style="font-size:3rem">&#128100;</span>
+              <img id="anv-bnr-foto-img" src="" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:50%">
+            </div>
+            <div style="font-size:.72rem;font-weight:900;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,.75);margin-bottom:4px" id="anv-bnr-label">&#127775; PARAB&#201;NS &#127775;</div>
+            <div id="anv-bnr-nm" style="font-size:1.6rem;font-weight:900;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.3);text-align:center;margin-bottom:10px;line-height:1.2">Nome do Aniversariante</div>
+            <div id="anv-bnr-sep" style="width:60px;height:3px;background:rgba(255,255,255,.5);border-radius:10px;margin-bottom:12px"></div>
+            <div id="anv-bnr-msg" style="font-size:.85rem;color:rgba(255,255,255,.92);text-align:center;line-height:1.55;padding:0 8px;margin-bottom:14px">Que Deus te abençoe neste novo ano de vida! &#127775;&#128591;</div>
+            <div style="font-size:1.4rem;margin-bottom:10px">&#128214;</div>
+            <div id="anv-bnr-verso" style="font-size:.72rem;color:rgba(255,255,255,.7);text-align:center;font-style:italic;padding:0 12px;margin-bottom:14px">"Este &#233; o dia que o SENHOR fez; alegremo-nos nele." — Sl 118:24</div>
+            <div id="anv-bnr-rodape" style="font-size:.72rem;font-weight:700;color:rgba(255,255,255,.8);text-align:center;background:rgba(0,0,0,.2);border-radius:20px;padding:5px 14px;margin-top:auto">Com carinho, Fam&#237;lia OBPC S&#227;o Fernando</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- OBREIROS -->
+<div id="aba-ob" class="aba">
+  <h2>&#128119; Obreiros</h2>
+  <div class="card">
+    <div class="row"><div><label>Nome</label><input id="ob-nm"></div><div><label>Fun&#231;&#227;o</label><input id="ob-fn" placeholder="Di&#225;cono, Ac&#243;lito..."></div></div>
+    <label>Telefone</label><input id="ob-tel">
+    <label>Foto</label><div class="upbox" style="height:70px"><span>&#128247;</span><p>Upload foto</p><input type="file" accept="image/*" onchange="upImg(this,'ob-foto')"></div>
+    <div class="prevw" id="ob-foto-pv"></div>
+    <div style="margin-top:.6rem"><button class="btn bs" onclick="addOb()">+ Cadastrar</button></div>
+  </div>
+  <div id="lista-ob" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.7rem;margin-top:.7rem"></div>
+</div>
+<!-- ESCALA -->
+<div id="aba-esc" class="aba">
+  <h2>&#128203; Escala de Obreiros</h2>
+  <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-bottom:.8rem">
+    <button class="btn bs" onclick="escAdd()">&#10133; Novo Culto</button>
+    <button class="btn bp" style="background:#6366f1" onclick="escAbrLst()">&#9881;&#65039; Listas</button>
+    <div style="display:flex;align-items:center;gap:5px;background:#fff;border-radius:8px;padding:3px 9px;box-shadow:0 1px 4px rgba(0,0,0,.08)">
+      <button onclick="escMes(-1)" style="background:var(--azul);color:#fff;border:none;border-radius:50%;width:28px;height:28px;font-size:1rem;cursor:pointer;line-height:1">&#8249;</button>
+      <span id="esc-mes" style="font-weight:700;color:var(--azul);min-width:140px;text-align:center;font-size:.92rem">&#8212;</span>
+      <button onclick="escMes(1)" style="background:var(--azul);color:#fff;border:none;border-radius:50%;width:28px;height:28px;font-size:1rem;cursor:pointer;line-height:1">&#8250;</button>
+    </div>
+  </div>
+  <div class="etb" id="esc-tb"></div>
+  <div style="overflow-x:auto;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.08)">
+    <table class="et"><thead><tr>
+      <th style="width:100px">DATA</th><th style="width:90px">DIA</th><th style="width:110px">ENSAIO</th>
+      <th style="width:160px">CULTO / EVENTO</th><th style="width:130px">PORTA / RECEP&#199;&#195;O</th>
+      <th style="width:130px">DIRIGENTE</th><th style="width:110px">OPORTUNIDADE</th>
+      <th style="width:110px">MINISTRANTE</th><th style="width:32px"></th>
+    </tr></thead><tbody id="esc-body"></tbody></table>
+  </div>
+  <p style="margin-top:.5rem;font-size:.72rem;color:var(--muted)">&#128161; Clique nas c&#233;lulas para selecionar</p>
+  <div class="mbg" id="esc-modal">
+    <div class="mbox" style="width:580px">
+      <h3 style="color:var(--azul2);margin-bottom:1rem">&#9881;&#65039; Editar Listas</h3>
+      <div class="row">
+        <div><label style="font-size:.73rem;font-weight:700">CULTOS (um por linha)</label><textarea id="elst-clt" style="height:230px"></textarea></div>
+        <div><label style="font-size:.73rem;font-weight:700">OBREIROS (um por linha)</label><textarea id="elst-obr" style="height:230px"></textarea></div>
+      </div>
+      <div style="display:flex;gap:.6rem;justify-content:flex-end;margin-top:.8rem">
+        <button onclick="escSalvLst()" style="background:#27ae60;color:#fff;border:none;border-radius:8px;padding:7px 18px;font-weight:700;cursor:pointer">&#9989; Salvar</button>
+        <button onclick="document.getElementById('esc-modal').classList.remove('on')" style="background:#64748b;color:#fff;border:none;border-radius:8px;padding:7px 14px;cursor:pointer">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- LIDERANCA -->
+<div id="aba-lid" class="aba">
+  <h2>&#127894;&#65039; Lideran&#231;a</h2>
+  <div class="card">
+    <div class="row"><div><label>Nome</label><input id="lid-nm"></div><div><label>Cargo</label><input id="lid-cg"></div></div>
+    <label>Descri&#231;&#227;o</label><input id="lid-dsc">
+    <label>Foto</label><div class="upbox" style="height:70px"><span>&#128247;</span><p>Upload foto</p><input type="file" accept="image/*" onchange="upImg(this,'lid-foto')"></div>
+    <div class="prevw" id="lid-foto-pv"></div>
+    <div style="margin-top:.6rem"><button class="btn bs" onclick="addLid()">+ Adicionar</button></div>
+  </div>
+  <div id="lista-lid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:.7rem;margin-top:.7rem"></div>
+</div>
+<!-- DIZIMOS -->
+<div id="aba-diz" class="aba">
+  <h2>&#128160; PIX / D&#237;zimos</h2>
+  <div style="background:linear-gradient(135deg,#1E3A5F,#3B9BD6);color:#fff;border-radius:12px;padding:1.3rem;margin-bottom:1rem">
+    <div style="font-size:.72rem;opacity:.75;margin-bottom:.3rem">&#127974; Chave PIX</div>
+    <div style="font-size:1rem;font-weight:700">CNPJ: 03.360.287/0001-59</div>
+    <a href="https://wa.me/5511993509109?text=Segue+meu+comprovante+de+d%C3%ADzimo" target="_blank" style="display:inline-flex;align-items:center;gap:5px;margin-top:.6rem;background:#25D366;color:#fff;padding:6px 14px;border-radius:20px;font-size:.8rem;font-weight:700;text-decoration:none">&#128242; (11) 99350-9109</a>
+  </div>
+  <div class="card"><label>Mensagem adicional</label><textarea id="diz-msg" rows="3"></textarea><div style="margin-top:.6rem"><button class="btn bp" onclick="salvDiz()">&#128190; Salvar</button><span class="mok" id="ok-diz">&#10004; Salvo!</span></div></div>
+</div>
+<!-- GALERIA -->
+<div id="aba-gal" class="aba">
+  <h2>&#128444;&#65039; Galeria</h2>
+  <input type="file" id="gal-f1" accept="image/*,video/*" multiple style="display:none" onchange="upGal(this)">
+  <input type="file" id="gal-f2" accept="image/*" capture="environment" style="display:none" onchange="upGal(this)">
+  <input type="file" id="gal-f3" accept="video/*" capture="environment" style="display:none" onchange="upGal(this)">
+  <div class="card">
+    <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.6rem">
+      <button type="button" onclick="document.getElementById('gal-f1').click()" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:.7rem 1.1rem;background:#f0f7ff;border:2px dashed var(--azul2);border-radius:10px;cursor:pointer;font-family:inherit;flex:1;min-width:100px"><span style="font-size:1.4rem">&#128193;</span><span style="font-size:.8rem;font-weight:600;color:var(--azul)">Do celular/PC</span></button>
+      <button type="button" onclick="document.getElementById('gal-f2').click()" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:.7rem 1.1rem;background:#f0fff4;border:2px dashed #27ae60;border-radius:10px;cursor:pointer;font-family:inherit;flex:1;min-width:100px"><span style="font-size:1.4rem">&#128247;</span><span style="font-size:.8rem;font-weight:600;color:#27ae60">Tirar Foto</span></button>
+      <button type="button" onclick="document.getElementById('gal-f3').click()" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:.7rem 1.1rem;background:#fff8f0;border:2px dashed #e67e22;border-radius:10px;cursor:pointer;font-family:inherit;flex:1;min-width:100px"><span style="font-size:1.4rem">&#127916;</span><span style="font-size:.8rem;font-weight:600;color:#e67e22">Gravar V&#237;deo</span></button>
+    </div>
+    <div id="gal-sts" style="font-size:.78rem;color:var(--azul2);margin-bottom:.4rem;display:none"></div>
+    <div class="prevw" id="gal-pv"></div>
+  </div>
+  <div id="lista-gal" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.7rem;margin-top:.7rem"></div>
+</div>
+<!-- VIDEOS -->
+<div id="aba-vid" class="aba">
+  <h2>&#9654;&#65039; V&#237;deos YouTube</h2>
+  <div class="card">
+    <div class="row"><div><label>Link YouTube</label><input id="vid-url" placeholder="https://youtu.be/..."></div><div><label>T&#237;tulo</label><input id="vid-tit"></div></div>
+    <div class="row" style="margin-top:.4rem"><div><label>Descri&#231;&#227;o</label><input id="vid-dsc"></div><div><label>Categoria</label><input id="vid-cat" placeholder="Prega&#231;&#227;o, Louvor..."></div></div>
+    <div style="margin-top:.6rem"><button class="btn bs" onclick="addVid()">+ Adicionar</button></div>
+  </div>
+  <div id="lista-vid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.7rem;margin-top:.7rem"></div>
+</div>
+<!-- DIVULGAR -->
+<div id="aba-div" class="aba">
+  <h2>&#128227; Compartilhar Site</h2>
+  <div class="dh">
+    <div class="dhl">&#127760; Link oficial</div>
+    <div class="dhv" id="div-link-show">https://obpcsaofernando199-sudo.github.io/Obpc/</div>
+    <div class="dlr">
+      <input id="div-link-inp" placeholder="Cole outro link aqui..." oninput="divUpdLink(this.value)">
+      <button class="dlb" onclick="divCpLink()">&#128203; Copiar</button>
+    </div>
+  </div>
+  <div class="dst">&#10006; Escolha o estilo</div>
+  <div class="dmg" id="div-grid"></div>
+  <div id="div-prev-area" style="display:none">
+    <div class="dst">&#128065; Pr&#233;via WhatsApp</div>
+    <div class="dww">
+      <div class="dwb"><div class="dwa">&#9962;</div><div class="dwi"><div class="dwn" id="div-wpp-nm">OBPC S&#227;o Fernando</div><div class="dws">online</div></div><div class="dwic"><span>&#128249;</span><span>&#128222;</span><span>&#8942;</span></div></div>
+      <div class="dwbd"><div class="dbb"><div id="div-prev-txt"></div><div class="dbf"><span id="div-hora">agora</span><span class="dbt">&#10003;&#10003;</span></div></div></div>
+    </div>
+    <div class="dar">
+      <button class="da daw" onclick="divEnviar()">&#128242; Enviar no WhatsApp</button>
+      <button class="da dac" onclick="divCopiar()">&#128203; Copiar Mensagem</button>
+    </div>
+  </div>
+</div>
+<!-- MIGRAR -->
+<div id="aba-mig" class="aba">
+  <h2>&#128260; Migrar M&#237;dias</h2>
+  <div class="card" style="background:#e8f5e9;border-left:4px solid #27ae60">
+    <h3 style="color:#1b5e20;font-size:.9rem;margin-bottom:.5rem">&#128228; Exportar dados</h3>
+    <button class="btn bs" onclick="expDados()">&#11015;&#65039; Baixar arquivo</button>
+    <div id="exp-ok" style="display:none;margin-top:.5rem;color:var(--verde);font-size:.82rem">&#9989; Baixado!</div>
+  </div>
+  <div class="card" style="background:#e3f2fd;border-left:4px solid var(--azul2)">
+    <h3 style="color:var(--azul);font-size:.9rem;margin-bottom:.5rem">&#128229; Importar dados</h3>
+    <label style="display:inline-flex;align-items:center;gap:.5rem;background:var(--azul);color:#fff;border-radius:8px;padding:.5rem 1.2rem;cursor:pointer;font-size:.85rem;font-weight:700">&#11014;&#65039; Carregar<input type="file" accept=".json" style="display:none" onchange="impDados(this)"></label>
+    <div id="imp-ok" style="display:none;margin-top:.5rem;font-size:.82rem;font-weight:700"></div>
+  </div>
+  <div class="card">
+    <label>&#128273; API Key ImgBB</label>
+    <div style="display:flex;gap:.5rem"><input id="mig-key" placeholder="Cole sua key do ImgBB..."><button class="btn bp" onclick="migSalvKey()">&#128190;</button></div>
+  </div>
+</div>
+</main>
+</div>
+<div class="toast" id="toast-gbl"></div>
+<script>
+function ir(id,el){document.querySelectorAll('.aba').forEach(function(a){a.classList.remove('on');});var aba=document.getElementById('aba-'+id);if(aba)aba.classList.add('on');document.querySelectorAll('nav a').forEach(function(a){a.classList.remove('on');});if(el)el.classList.add('on');var nav=document.getElementById('snav');var nov=document.getElementById('nov');if(nav)nav.classList.remove('open');if(nov)nov.classList.remove('open');if(id==='dash')rndDash();else if(id==='info')carregaInfo();else if(id==='hor')rndHor();else if(id==='av')rndAv();else if(id==='or')rndOr();else if(id==='ev')rndEv();else if(id==='inf')rndInf();else if(id==='ser')rndSer();else if(id==='clt')rndClt();else if(id==='pas')rndPas();else if(id==='aniv')rndAnv();else if(id==='ob')rndOb();else if(id==='esc')rndEsc();else if(id==='lid')rndLid();else if(id==='diz')rndDiz();else if(id==='gal')rndGal();else if(id==='vid')rndVid();else if(id==='div')rndDiv();else if(id==='bnr'){rndBnr();rndPclt();}else if(id==='mig')rndMig();}
+function tnav(){var nav=document.getElementById('snav');var nov=document.getElementById('nov');if(nav)nav.classList.toggle('open');if(nov)nov.classList.toggle('open');}
+function showToast(msg){var t=document.getElementById('toast-gbl');if(!t)return;t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2800);}
+var FB='https://fcosta-31125-default-rtdb.firebaseio.com/obpc';
+var DB={g:function(k){try{return JSON.parse(localStorage.getItem('obpc_'+k));}catch(e){return null;}},s:function(k,v){localStorage.setItem('obpc_'+k,JSON.stringify(v));fetch(FB+'/'+k+'.json',{method:'PUT',body:JSON.stringify(v),headers:{'Content-Type':'application/json'}}).catch(function(){});},sync:async function(){try{var r=await fetch(FB+'.json');if(!r.ok)return;var d=await r.json();if(!d)return;Object.keys(d).forEach(function(k){try{localStorage.setItem('obpc_'+k,JSON.stringify(d[k]));}catch(e){}});}catch(e){}},listen:function(){try{var es=new EventSource(FB+'.json?accept=text/event-stream');es.addEventListener('put',function(e){try{var d=JSON.parse(e.data);if(!d||!d.data)return;if(d.path==='/'&&typeof d.data==='object')Object.keys(d.data).forEach(function(k){try{localStorage.setItem('obpc_'+k,JSON.stringify(d.data[k]));}catch(e){}});else if(d.path&&d.path.length>1){var k=d.path.replace(/^\//,'');try{localStorage.setItem('obpc_'+k,JSON.stringify(d.data));}catch(e){}}}catch(e){}});}catch(e){}}};
+var IDB=(function(){var db=null;function op(){return new Promise(function(res,rej){if(db){res(db);return;}var r=indexedDB.open('obpc_m',1);r.onupgradeneeded=function(e){e.target.result.createObjectStore('f',{keyPath:'id',autoIncrement:true});};r.onsuccess=function(e){db=e.target.result;res(db);};r.onerror=rej;});}async function salv(file){var d=await op();return new Promise(function(res,rej){var tx=d.transaction('f','readwrite');var rq=tx.objectStore('f').add({n:file.name||'',t:file.type||'',b:file,ts:Date.now()});rq.onsuccess=function(){res('idb:'+rq.result);};rq.onerror=rej;});}async function url(src){if(!src||!src.startsWith('idb:'))return src||'';try{var d=await op();var rec=await new Promise(function(res,rej){var rq=d.transaction('f','readonly').objectStore('f').get(Number(src.replace('idb:','')));rq.onsuccess=function(){res(rq.result);};rq.onerror=rej;});return rec?URL.createObjectURL(rec.b):'';}catch(e){return '';}}return{salv:salv,url:url};})();
+var _i={};var _md={clt:[],pas:[]};
+async function upImgBB(file){var key=localStorage.getItem('obpc_imgbb_key')||'';if(!key||key.length<10)return null;var b64=await new Promise(function(res,rej){var r=new FileReader();r.onload=function(e){res(e.target.result.split(',')[1]);};r.onerror=rej;r.readAsDataURL(file);});var fd=new FormData();fd.append('image',b64);fd.append('name',file.name||'obpc_'+Date.now());try{var resp=await fetch('https://api.imgbb.com/1/upload?key='+key,{method:'POST',body:fd});var data=await resp.json();if(data.success)return data.data.url;return null;}catch(e){return null;}}
+async function reduzirFoto(file){if(file.size<800*1024)return file;return new Promise(function(res){var img=new Image();var url=URL.createObjectURL(file);img.onload=function(){URL.revokeObjectURL(url);var max=1600;var w=img.width;var h=img.height;if(w>max||h>max){if(w>h){h=Math.round(h*max/w);w=max;}else{w=Math.round(w*max/h);h=max;}}var c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);c.toBlob(function(b){res(b?new File([b],file.name,{type:'image/jpeg'}):file);},'image/jpeg',0.82);};img.onerror=function(){URL.revokeObjectURL(url);res(file);};img.src=url;});}
+async function upCloud(file,onProgress){return new Promise(function(res){var xhr=new XMLHttpRequest();var fd=new FormData();fd.append('file',file);fd.append('upload_preset','fcosta_imoveis');fd.append('folder','obpc_sao_fernando');fd.append('resource_type','video');xhr.open('POST','https://api.cloudinary.com/v1_1/dpquob8gh/video/upload');xhr.timeout=600000;xhr.upload.onprogress=function(e){if(e.lengthComputable&&onProgress)onProgress(Math.round(e.loaded/e.total*100));};xhr.onload=function(){try{var d=JSON.parse(xhr.responseText);d.secure_url?res(d.secure_url):res(null);}catch(e){res(null);}};xhr.onerror=function(){res(null);};xhr.ontimeout=function(){res(null);};xhr.send(fd);});}
+async function upArq(file,onProgress){var isV=file.type.startsWith('video/');if(isV){if(onProgress)onProgress(0);var u=await upCloud(file,function(pct){if(onProgress)onProgress(pct);});if(u)return{tp:'video',src:u,nm:file.name||''};}else{var fOtim=await reduzirFoto(file);var u2=await upImgBB(fOtim);if(u2)return{tp:'img',src:u2,nm:file.name||''};}var id=await IDB.salv(file);return{tp:isV?'video':'img',src:id,nm:file.name||'',local:true};}
+async function upImg(inp,campo){var f=inp.files[0];if(!f)return;var pv=document.getElementById(campo+'-pv');if(!pv)return;var loc=URL.createObjectURL(f);pv.innerHTML='<div style="position:relative;display:inline-block"><img src="'+loc+'" style="width:88px;height:70px;object-fit:contain;border-radius:6px;background:#f0f4f8"><span style="position:absolute;inset:0;background:rgba(255,255,255,.7);display:flex;align-items:center;justify-content:center;font-size:.7rem;border-radius:6px" id="'+campo+'-sts">⬆️</span></div>';var url=await upImgBB(f);var sts=document.getElementById(campo+'-sts');if(url){_i[campo]=url;if(sts)sts.textContent='☁️';}else{var r=new FileReader();r.onload=function(e){_i[campo]=e.target.result;if(sts)sts.textContent='⚠️';};r.readAsDataURL(f);}try{inp.value='';}catch(e){}}
+function upLogo(inp){var f=inp.files[0];if(!f)return;var r=new FileReader();r.onload=function(e){_i.logo=e.target.result;var lp=document.getElementById('lgpv');if(lp){lp.src=e.target.result;lp.style.display='block';}};r.readAsDataURL(f);}
+async function cltUp(inp){var files=Array.from(inp.files||[]);if(!files.length)return;var sts=document.getElementById('clt-sts');var pv=document.getElementById('clt-pv');var cnt=document.getElementById('clt-cnt');var ok=0;for(var i=0;i<files.length;i++){var f=files[i];var isV=f.type.startsWith('video/');if(sts){sts.style.display='block';sts.textContent='['+(i+1)+'/'+files.length+'] '+(isV?'📹':'📷')+' '+f.name+'...';}try{var m=await upArq(f);_md.clt.push(m);var u=m.src;if(u&&u.startsWith('idb:'))u=await IDB.url(u);if(u&&pv){if(m.tp==='video'){var v=document.createElement('video');v.src=u;v.controls=true;v.style.cssText='max-width:120px;height:auto;max-height:160px;border-radius:6px';pv.appendChild(v);}else{var imgEl=document.createElement('img');imgEl.src=u;imgEl.style.cssText='max-width:120px;height:auto;max-height:160px;border-radius:6px';pv.appendChild(imgEl);}}ok++;}catch(e){}}if(cnt)cnt.textContent=_md.clt.length+' mídia(s)';try{inp.value='';}catch(e){}if(sts){sts.textContent=ok===files.length?'✅ '+ok+' arquivo(s)!':'⚠️ '+ok+'/'+files.length+' OK';setTimeout(function(){sts.style.display='none';},5000);}}
+async function upMd(inp,ctx){var files=Array.from(inp.files||[]);if(!files.length)return;var pv=document.getElementById(ctx+'-pv');for(var i=0;i<files.length;i++){var f=files[i];try{var m=await upArq(f);_md[ctx]=_md[ctx]||[];_md[ctx].push(m);if(pv){var u=m.src;if(u&&u.startsWith('idb:'))u=await IDB.url(u);if(m.tp==='video'){var v=document.createElement('video');v.src=u;v.controls=true;v.style.cssText='width:88px;height:70px;border-radius:6px;background:#000';pv.appendChild(v);}else{var imgEl=document.createElement('img');imgEl.src=u;imgEl.style.cssText='width:88px;height:70px;border-radius:6px';pv.appendChild(imgEl);}}}catch(e){}}try{inp.value='';}catch(e){}}
+async function upGal(inp){var files=Array.from(inp.files||[]);if(!files.length)return;var sts=document.getElementById('gal-sts');var pv=document.getElementById('gal-pv');var ok=0;for(var i=0;i<files.length;i++){var f=files[i];if(sts){sts.style.display='block';sts.textContent='['+(i+1)+'/'+files.length+'] '+f.name+'...';}try{var m=await upArq(f);var pu=m.src;if(pu&&pu.startsWith('idb:'))pu=await IDB.url(pu);if(pu&&pv){if(m.tp==='video'){var v=document.createElement('video');v.src=pu;v.controls=true;v.style.cssText='max-width:120px;height:auto;border-radius:6px;background:#000';pv.appendChild(v);}else{var imgEl=document.createElement('img');imgEl.src=pu;imgEl.style.cssText='max-width:120px;height:auto;border-radius:6px';pv.appendChild(imgEl);}}var l=DB.g('galeria')||[];l.push({url:m.src,tp:m.tp,leg:f.name.replace(/\.[^.]+$/,''),ts:Date.now()});DB.s('galeria',l);ok++;rndGal();}catch(e){}await new Promise(function(r){setTimeout(r,300);});}try{inp.value='';}catch(e){}if(sts){sts.textContent=ok===files.length?'✅ '+ok+' arquivo(s)!':'⚠️ '+ok+'/'+files.length+' OK';setTimeout(function(){sts.style.display='none';},5000);}}
+function carregaInfo(){var d=DB.g('info')||{};['ig-nome','ig-pastor','ig-end','ig-cidade','ig-tel','ig-email','ig-cnpj','ig-logo','ig-bv','ig-sobre'].forEach(function(id,j){var keys=['nome','pastor','end','cidade','tel','email','cnpj','logo','bv','sobre'];var el=document.getElementById(id);if(el&&d[keys[j]])el.value=d[keys[j]];});if(d.logoB64){var lp=document.getElementById('lgpv');if(lp){lp.src=d.logoB64;lp.style.display='block';}}}
+function salvarInfo(){var d={nome:document.getElementById('ig-nome').value,pastor:document.getElementById('ig-pastor').value,end:document.getElementById('ig-end').value,cidade:document.getElementById('ig-cidade').value,tel:document.getElementById('ig-tel').value,email:document.getElementById('ig-email').value,cnpj:document.getElementById('ig-cnpj').value,logo:document.getElementById('ig-logo').value,bv:document.getElementById('ig-bv').value,sobre:document.getElementById('ig-sobre').value};if(_i.logo)d.logoB64=_i.logo;DB.s('info',d);var ok=document.getElementById('ok-info');if(ok){ok.style.display='inline';setTimeout(function(){ok.style.display='none';},2000);}if(d.logoB64){var hl=document.getElementById('hlogo');if(hl){hl.src=d.logoB64;hl.style.display='block';}}}
+function addHor(){var l=DB.g('horarios')||[];l.push({dia:document.getElementById('hor-dia').value,h:document.getElementById('hor-h').value,tipo:document.getElementById('hor-t').value});DB.s('horarios',l);rndHor();document.getElementById('hor-h').value='';document.getElementById('hor-t').value='';}
+function rndHor(){var l=DB.g('horarios')||[];var el=document.getElementById('lista-hor');if(!el)return;if(!l.length){el.innerHTML='<p style="color:var(--muted);font-size:.82rem">Nenhum horário cadastrado.</p>';return;}el.innerHTML=l.map(function(h,i){return '<div class="li"><span>'+h.dia+' — '+h.h+' — '+h.tipo+'</span><button class="btn bd bsm" onclick="del(\'horarios\','+i+',rndHor)">✕</button></div>';}).join('');}
+function addAv(){var l=DB.g('avisos')||[];l.unshift({tit:document.getElementById('av-tit').value,txt:document.getElementById('av-txt').value,pri:document.getElementById('av-pri').value,dt:document.getElementById('av-dt').value,img:_i['av-img']||'',ts:Date.now()});DB.s('avisos',l);_i['av-img']='';document.getElementById('av-tit').value='';document.getElementById('av-txt').value='';document.getElementById('av-img-pv').innerHTML='';rndAv();}
+function rndAv(){var l=DB.g('avisos')||[];var c=document.getElementById('lista-av');if(!c)return;c.innerHTML=l.map(function(a,i){var pri=a.pri||'normal';var badge=pri==='urgente'?'<span class="bdu">URGENTE</span>':pri==='importante'?'<span class="bdi">IMPORTANTE</span>':'<span class="bdn">Normal</span>';return '<div class="card" style="margin-bottom:.5rem">'+(a.img?'<img src="'+a.img+'" style="width:100%;max-height:160px;object-fit:cover;border-radius:8px;margin-bottom:.5rem">':'')+'<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem">'+badge+'<strong style="font-size:.88rem">'+a.tit+'</strong></div><p style="font-size:.82rem;color:var(--muted)">'+a.txt+'</p><div style="display:flex;justify-content:space-between;align-items:center;margin-top:.5rem"><span style="font-size:.72rem;color:var(--muted)">'+a.dt+'</span><button class="btn bd bsm" onclick="del(\'avisos\','+i+',rndAv)">✕ Excluir</button></div></div>';}).join('');var cnt=document.getElementById('cnt-av');if(cnt)cnt.textContent=l.length;}
+function addOr(){var l=DB.g('oracoes')||[];l.unshift({nome:document.getElementById('or-nome').value,sit:document.getElementById('or-sit').value,txt:document.getElementById('or-txt').value,anon:document.getElementById('or-anon').checked,resp:document.getElementById('or-resp').checked,ts:Date.now()});DB.s('oracoes',l);document.getElementById('or-nome').value='';document.getElementById('or-txt').value='';document.getElementById('or-anon').checked=false;document.getElementById('or-resp').checked=false;rndOr();}
+function rndOr(){var l=DB.g('oracoes')||[];var c=document.getElementById('lista-or');if(!c)return;c.innerHTML=l.map(function(o,i){var nm=o.anon?'Anônimo':o.nome;return '<div class="card" style="margin-bottom:.5rem">'+(o.resp?'<span style="background:#e8f5e9;color:#2e7d32;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:20px;display:inline-block;margin-bottom:.3rem">✅ Respondido</span>':'')+'<div style="font-weight:700;font-size:.85rem">'+nm+'<span style="font-size:.72rem;font-weight:400;color:var(--muted);margin-left:.5rem">'+o.sit+'</span></div><p style="font-size:.82rem;color:var(--muted);margin-top:.3rem">'+o.txt+'</p><div style="text-align:right;margin-top:.4rem"><button class="btn bd bsm" onclick="del(\'oracoes\','+i+',rndOr)">✕</button></div></div>';}).join('');}
+function addEv(){var l=DB.g('eventos')||[];l.unshift({nom:document.getElementById('ev-nom').value,dt:document.getElementById('ev-dt').value,h:document.getElementById('ev-h').value,loc:document.getElementById('ev-loc').value,tp:document.getElementById('ev-tp').value,dsc:document.getElementById('ev-dsc').value,img:_i['ev-img']||'',ts:Date.now()});DB.s('eventos',l);_i['ev-img']='';document.getElementById('ev-nom').value='';document.getElementById('ev-dsc').value='';document.getElementById('ev-img-pv').innerHTML='';rndEv();}
+function rndEv(){var l=DB.g('eventos')||[];var c=document.getElementById('lista-ev');if(!c)return;c.innerHTML=l.map(function(e,i){return '<div class="card" style="margin-bottom:.5rem">'+(e.img?'<img src="'+e.img+'" style="width:100%;max-height:140px;object-fit:cover;border-radius:8px;margin-bottom:.5rem">':'')+'<div style="font-weight:700;font-size:.88rem">'+e.nom+'</div><div style="font-size:.78rem;color:var(--azul2);margin:.2rem 0">📅 '+e.dt+' — '+e.h+' | 📍 '+e.loc+'</div><p style="font-size:.8rem;color:var(--muted)">'+e.dsc+'</p><div style="text-align:right;margin-top:.4rem"><button class="btn bd bsm" onclick="del(\'eventos\','+i+',rndEv)">✕ Excluir</button></div></div>';}).join('');var cnt=document.getElementById('cnt-ev');if(cnt)cnt.textContent=l.length;}
+function addInf(){var l=DB.g('informativos')||[];l.unshift({tit:document.getElementById('inf-tit').value,cat:document.getElementById('inf-cat').value,txt:document.getElementById('inf-txt').value,img:_i['inf-img']||'',ts:Date.now()});DB.s('informativos',l);_i['inf-img']='';document.getElementById('inf-tit').value='';document.getElementById('inf-txt').value='';document.getElementById('inf-img-pv').innerHTML='';rndInf();}
+function rndInf(){var l=DB.g('informativos')||[];var c=document.getElementById('lista-inf');if(!c)return;c.innerHTML=l.map(function(it,i){return '<div class="card" style="margin-bottom:.5rem">'+(it.img?'<img src="'+it.img+'" style="width:100%;max-height:140px;object-fit:cover;border-radius:8px;margin-bottom:.5rem">':'')+'<div style="font-weight:700;font-size:.88rem">'+it.tit+'<span style="font-size:.72rem;font-weight:400;color:var(--azul2);margin-left:.5rem">'+it.cat+'</span></div><p style="font-size:.82rem;color:var(--muted);margin-top:.3rem">'+it.txt+'</p><div style="text-align:right;margin-top:.4rem"><button class="btn bd bsm" onclick="del(\'informativos\','+i+',rndInf)">✕</button></div></div>';}).join('');}
+function addSer(){var l=DB.g('sermoes')||[];var url=document.getElementById('ser-url').value||'';var yid=(url.match(/(?:youtu\.be\/|v=|shorts\/)([a-zA-Z0-9_-]+)/)||[])[1]||'';l.unshift({tit:document.getElementById('ser-tit').value,preg:document.getElementById('ser-preg').value,dt:document.getElementById('ser-dt').value,url:url,yid:yid,pas:document.getElementById('ser-pas').value,res:document.getElementById('ser-res').value,ts:Date.now()});DB.s('sermoes',l);['ser-tit','ser-preg','ser-res','ser-url','ser-pas'].forEach(function(id){document.getElementById(id).value='';});rndSer();}
+function rndSer(){var l=DB.g('sermoes')||[];var c=document.getElementById('lista-ser');if(!c)return;c.innerHTML=l.map(function(s,i){return '<div class="card" style="margin-bottom:.5rem">'+(s.yid?'<img src="https://img.youtube.com/vi/'+s.yid+'/mqdefault.jpg" style="width:100%;max-height:140px;object-fit:cover;border-radius:8px;margin-bottom:.5rem">':'')+'<div style="font-weight:700;font-size:.88rem">'+s.tit+'</div><div style="font-size:.78rem;color:var(--muted);margin:.2rem 0">'+s.preg+' | '+s.dt+(s.pas?' | '+s.pas:'')+'</div>'+(s.res?'<p style="font-size:.8rem;color:var(--muted)">'+s.res+'</p>':'')+'<div style="text-align:right;margin-top:.4rem"><button class="btn bd bsm" onclick="del(\'sermoes\','+i+',rndSer)">✕</button></div></div>';}).join('');}
+function addClt(){var l=DB.g('cultos')||[];var urls=document.getElementById('clt-urls').value.split('\n').filter(function(u){return u.trim();});l.unshift({tit:document.getElementById('clt-tit').value,dt:document.getElementById('clt-dt').value,rel:document.getElementById('clt-rel').value,midias:_md.clt.slice(),urls:urls,ts:Date.now()});DB.s('cultos',l);_md.clt=[];['clt-tit','clt-rel','clt-urls'].forEach(function(id){document.getElementById(id).value='';});document.getElementById('clt-pv').innerHTML='';var cnt=document.getElementById('clt-cnt');if(cnt)cnt.textContent='';rndClt();showToast('✅ Publicado!');}
+function limClt(){_md.clt=[];['clt-tit','clt-rel','clt-urls'].forEach(function(id){document.getElementById(id).value='';});document.getElementById('clt-pv').innerHTML='';var cnt=document.getElementById('clt-cnt');if(cnt)cnt.textContent='';}
+async function rndClt(){var l=DB.g('cultos')||[];var c=document.getElementById('lista-clt');if(!c)return;c.innerHTML='';for(var i=0;i<l.length;i++){var ct=l[i];var div=document.createElement('div');div.className='card';div.style.marginBottom='.5rem';var html='<div style="font-weight:700;font-size:.88rem">'+ct.tit+'</div><div style="font-size:.78rem;color:var(--muted);margin:.2rem 0">'+ct.dt+'</div>';if(ct.rel)html+='<p style="font-size:.82rem;margin:.3rem 0">'+ct.rel+'</p>';div.innerHTML=html;var foot=document.createElement('div');foot.style.cssText='text-align:right;margin-top:.4rem';foot.innerHTML='<button class="btn bd bsm" onclick="del(\'cultos\','+i+',rndClt)">✕ Excluir</button>';div.appendChild(foot);c.appendChild(div);}}
+function addPas(){var l=DB.g('palavras')||[];var url=document.getElementById('pas-url').value||'';l.unshift({tit:document.getElementById('pas-tit').value,dt:document.getElementById('pas-dt').value,aut:document.getElementById('pas-aut').value,txt:document.getElementById('pas-txt').value,url:url,midias:(_md.pas||[]).slice(),ts:Date.now()});DB.s('palavras',l);_md.pas=[];['pas-tit','pas-txt','pas-url'].forEach(function(id){document.getElementById(id).value='';});document.getElementById('pas-pv').innerHTML='';rndPas();showToast('✅ Publicado!');}
+function rndPas(){var l=DB.g('palavras')||[];var c=document.getElementById('lista-pas');if(!c)return;c.innerHTML=l.map(function(p,i){return '<div class="card" style="margin-bottom:.5rem"><div style="font-weight:700;font-size:.88rem">'+p.tit+'</div><div style="font-size:.78rem;color:var(--muted);margin:.2rem 0">'+p.aut+' | '+p.dt+'</div><p style="font-size:.82rem;margin:.3rem 0">'+p.txt+'</p><div style="text-align:right;margin-top:.4rem"><button class="btn bd bsm" onclick="del(\'palavras\','+i+',rndPas)">✕</button></div></div>';}).join('');}
+function addAnv(){var nm=(document.getElementById('anv-nm').value||'').trim();if(!nm){alert('Informe o nome.');return;}var l=DB.g('aniversariantes')||[];var gen=document.getElementById('anv-gen')?document.getElementById('anv-gen').value:'m';l.push({nm:nm,dt:document.getElementById('anv-dt').value,fn:document.getElementById('anv-fn').value,tel:document.getElementById('anv-tel').value,foto:_i['anv-foto']||'',gen:gen});DB.s('aniversariantes',l);_i['anv-foto']='';['anv-nm','anv-tel','anv-fn'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});var dtEl=document.getElementById('anv-dt');if(dtEl)dtEl.value='';document.getElementById('anv-foto-pv').innerHTML='';showToast('🎂 Cadastrado!');rndAnv();}
+function rndAnv(){var l=DB.g('aniversariantes')||[];var c=document.getElementById('lista-anv');if(!c)return;var hoje=new Date();var hM=hoje.getMonth();var hD=hoje.getDate();c.innerHTML=l.map(function(a,i){var niver='';var dt=a.dt||'';var nm=a.nm||'';if(dt){var p=dt.split('-');var dM=parseInt(p[1])-1;var dD=parseInt(p[2]);if(dM===hM&&dD===hD)niver='🎉 HOJE!';}return '<div style="background:#fff;border-radius:10px;padding:.9rem;box-shadow:0 1px 5px rgba(0,0,0,.07);text-align:center">'+(niver?'<div style="background:#fff9c4;color:#e65100;font-size:.7rem;font-weight:700;border-radius:20px;padding:2px 8px;margin-bottom:.3rem">'+niver+'</div>':'')+'<img src="'+(a.foto||'https://ui-avatars.com/api/?name='+encodeURIComponent(nm)+'&background=1E3A5F&color=fff')+'" style="width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid var(--azul2);margin-bottom:.4rem"><div style="font-weight:700;font-size:.83rem">'+nm+'</div><div style="font-size:.72rem;color:var(--azul2)">'+a.fn+'</div>'+(dt?'<div style="font-size:.7rem;color:var(--muted);margin-top:.2rem">'+dt.split('-').reverse().join('/')+'</div>':'')+'<button class="btn bd bsm" style="margin-top:.4rem" onclick="del(\'aniversariantes\','+i+',rndAnv)">✕</button></div>';}).join('');}
+function addOb(){var l=DB.g('obreiros')||[];l.push({nm:document.getElementById('ob-nm').value,fn:document.getElementById('ob-fn').value,tel:document.getElementById('ob-tel').value,foto:_i['ob-foto']||''});DB.s('obreiros',l);_i['ob-foto']='';['ob-nm','ob-tel'].forEach(function(id){document.getElementById(id).value='';});document.getElementById('ob-foto-pv').innerHTML='';rndOb();}
+function rndOb(){var l=DB.g('obreiros')||[];var c=document.getElementById('lista-ob');if(!c)return;c.innerHTML=l.map(function(o,i){var nm=o.nm||'';return '<div style="background:#fff;border-radius:10px;padding:.9rem;box-shadow:0 1px 5px rgba(0,0,0,.07);text-align:center"><img src="'+(o.foto||'https://ui-avatars.com/api/?name='+encodeURIComponent(nm)+'&background=1E3A5F&color=fff')+'" style="width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid var(--azul2);margin-bottom:.4rem"><div style="font-weight:700;font-size:.83rem">'+nm+'</div><div style="font-size:.72rem;color:var(--azul2)">'+o.fn+'</div>'+(o.tel?'<div style="font-size:.7rem;color:var(--muted);margin-top:.2rem">'+o.tel+'</div>':'')+'<button class="btn bd bsm" style="margin-top:.4rem" onclick="del(\'obreiros\','+i+',rndOb)">✕</button></div>';}).join('');var cnt=document.getElementById('cnt-ob');if(cnt)cnt.textContent=l.length;}
+var escP=new Date();var escCel=null;var escTp='';
+var DIAS=['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+var MESES=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+function escLsts(){var d=DB.g('esc_listas')||{};return{clt:(d.clt||'').split('\n').filter(function(n){return n.trim();}),obr:(d.obr||'').split('\n').filter(function(n){return n.trim();})};}
+function escAbrLst(){var d=DB.g('esc_listas')||{};var ec=document.getElementById('elst-clt');var eo=document.getElementById('elst-obr');if(ec)ec.value=d.clt||'';if(eo)eo.value=d.obr||'';document.getElementById('esc-modal').classList.add('on');}
+function escSalvLst(){DB.s('esc_listas',{clt:document.getElementById('elst-clt').value,obr:document.getElementById('elst-obr').value});document.getElementById('esc-modal').classList.remove('on');showToast('✅ Listas salvas!');}
+function escRndMes(){var el=document.getElementById('esc-mes');if(el)el.textContent=MESES[escP.getMonth()]+' '+escP.getFullYear();}
+function escMes(d){escP=new Date(escP.getFullYear(),escP.getMonth()+d,1);escRndMes();}
+function escFmt(dt){if(!dt)return '';var p=dt.split('-');return p[2]+'/'+p[1];}
+function escCor(tr,dia){tr.className='';if(dia==='Domingo')tr.classList.add('rdom');else if(dia==='Quarta-feira')tr.classList.add('rqua');else if(dia==='Sábado')tr.classList.add('rsab');}
+function escEhCeia(v){return v.toLowerCase().indexOf('ceia')>-1;}
+function escOnDt(inp,silent){var tr=inp.closest('tr');var disp=tr.querySelector('.edtd');if(inp.value){var d=new Date(inp.value+'T12:00');var dia=DIAS[d.getDay()]||'';disp.textContent=escFmt(inp.value);disp.classList.remove('vz');tr.querySelector('.etdia').textContent=dia;escCor(tr,dia);}else{disp.textContent='📅 Selecionar';disp.classList.add('vz');tr.querySelector('.etdia').textContent='';}if(!silent)escSalv();}
+function escSetV(cel,v){if(!cel)return;cel.setAttribute('data-v',v||'');escRndCel(cel);}
+function escRndCel(cel){var v=(cel.getAttribute('data-v')||'').trim();if(!v){cel.innerHTML='<span class="ecv">— clique</span>';return;}cel.innerHTML=v.split('\n').map(function(n){n=n.trim();if(!n)return '';return '<span class="en" draggable="true" ondragstart="escDrS(event,\''+n.replace(/'/g,"\\'")+'\',this)" ondragend="escDrE()">'+n+'<span class="erm" onclick="escRem(this,\''+n.replace(/'/g,"\\'")+'\');event.stopPropagation()">✕</span></span>';}).filter(Boolean).join('');}
+var _dn='';var _ds=null;
+function escDrS(e,nm,el){_dn=nm;_ds=el.closest('.ec');e.dataTransfer.effectAllowed='move';setTimeout(function(){el.style.opacity='.35';},0);}
+function escDrE(){document.querySelectorAll('.en').forEach(function(el){el.style.opacity='';});document.querySelectorAll('.ec.dov').forEach(function(c){c.classList.remove('dov');});}
+function escRem(el,nm){var cel=el.closest('.ec');var ns=(cel.getAttribute('data-v')||'').split('\n').filter(function(n){return n.trim()&&n.trim()!==nm;});escSetV(cel,ns.join('\n'));if(escCel===cel)escAbrTb();escSalv();}
+function escCeiaMount(tdDir,dir,cel){tdDir.innerHTML='<div class="ceiaw"><div class="ceias"><span class="ceial">Dirigente</span><div class="ec ec-dir" data-v="'+(dir||'').replace(/"/g,'&quot;')+'" onclick="escAtv(this,\'obr\')"></div></div><div class="ceias"><span class="ceial">Celebração</span><div class="ec ec-cel" data-v="'+(cel||'').replace(/"/g,'&quot;')+'" onclick="escAtv(this,\'obr\')"></div></div></div>';tdDir.querySelectorAll('.ec').forEach(function(c){escRndCel(c);});if(tdDir.closest('tr'))tdDir.closest('tr').classList.add('rcei');}
+function escAtv(cel,tp){escCel=cel;escTp=tp;escAbrTb();}
+function escAbrTb(){var tb=document.getElementById('esc-tb');var lst=escTp==='clt'?escLsts().clt:escLsts().obr;var atual=(escCel?escCel.getAttribute('data-v')||'':'').split('\n').map(function(n){return n.trim();}).filter(Boolean);tb.innerHTML=lst.map(function(n){var sel=atual.indexOf(n)>-1;return '<button class="etbn'+(sel?' sel':'')+'" onclick="escPush(\''+n.replace(/'/g,"\\'")+'\');event.stopPropagation()">'+n+(sel?' ✓':'')+'</button>';}).join('')+'<button class="etbn" style="background:#e74c3c;border-color:#e74c3c;margin-left:auto" onclick="escFTb()">✕ Fechar</button>';tb.classList.add('show');tb.scrollIntoView({behavior:'smooth',block:'nearest'});}
+function escFTb(){document.getElementById('esc-tb').classList.remove('show');escCel=null;}
+function escPush(nm){if(!escCel)return;var v=escCel.getAttribute('data-v')||'';var ns=v.split('\n').map(function(n){return n.trim();}).filter(Boolean);var idx=ns.indexOf(nm);if(idx>-1)ns.splice(idx,1);else ns.push(nm);escSetV(escCel,ns.join('\n'));escAbrTb();escSalv();}
+function escAdd(dados){var tb=document.getElementById('esc-body');if(!tb)return;var tr=document.createElement('tr');var d=dados||{};var dtVal=d.dt||'';var dia=d.day||'';if(dtVal&&!dia){var dd=new Date(dtVal+'T12:00');dia=DIAS[dd.getDay()]||'';}var rc='';if(dia==='Domingo')rc='rdom';else if(dia==='Quarta-feira')rc='rqua';else if(dia==='Sábado')rc='rsab';if(rc)tr.classList.add(rc);tr.innerHTML='<td><div class="edtw"><span class="edtd'+(dtVal?'':' vz')+'" onclick="this.nextElementSibling.showPicker&&this.nextElementSibling.showPicker();this.nextElementSibling.click()">'+(dtVal?escFmt(dtVal):'📅 Selecionar')+'</span><input type="date" class="edti" value="'+dtVal+'" onchange="escOnDt(this)"></div></td><td style="padding:4px 8px;font-size:.78rem;font-weight:600;color:var(--azul);text-align:center" class="etdia">'+dia+'</td><td><div class="ec ec-ens" data-v="'+(d.ensaio||'')+'" onclick="escAtv(this,\'obr\')"></div></td><td><div class="ec ec-clt" data-v="'+(d.clt||'')+'" onclick="escAtv(this,\'clt\')"></div></td><td><div class="ec ec-p1" data-v="'+(d.p1||'')+'" onclick="escAtv(this,\'obr\')"></div></td><td class="etdir"></td><td><div class="ec ec-opt" data-v="'+(d.opt||'')+'" onclick="escAtv(this,\'obr\')"></div></td><td><div class="ec ec-min" data-v="'+(d.min||'')+'" onclick="escAtv(this,\'obr\')"></div></td><td><button class="edel" onclick="this.closest(\'tr\').remove();escSalv()">✕</button></td>';tb.appendChild(tr);tr.querySelectorAll('.ec').forEach(function(c){escRndCel(c);});var tdDir=tr.querySelector('.etdir');if(d.clt&&escEhCeia(d.clt)){escCeiaMount(tdDir,d.dir||'',d.cel||'');}else{tdDir.innerHTML='<div class="ec ec-dir" data-v="'+(d.dir||'')+'" onclick="escAtv(this,\'obr\')"></div>';escRndCel(tdDir.querySelector('.ec'));}if(!dados)escSalv();}
+function escSalv(){var rows=[];document.querySelectorAll('#esc-body tr').forEach(function(tr){var dt=tr.querySelector('.edti');var dia=tr.querySelector('.etdia');var tdDir=tr.querySelector('.etdir');var dir='';var dc=tdDir?tdDir.querySelectorAll('.ec'):[];if(dc.length>=2){dir=dc[0].getAttribute('data-v')||'';}else if(tr.querySelector('.ec-dir'))dir=tr.querySelector('.ec-dir').getAttribute('data-v')||'';rows.push({dt:dt?dt.value:'',day:dia?dia.textContent:'',ensaio:tr.querySelector('.ec-ens')?tr.querySelector('.ec-ens').getAttribute('data-v')||'':'',clt:tr.querySelector('.ec-clt')?tr.querySelector('.ec-clt').getAttribute('data-v')||'':'',p1:tr.querySelector('.ec-p1')?tr.querySelector('.ec-p1').getAttribute('data-v')||'':'',dir:dir,opt:tr.querySelector('.ec-opt')?tr.querySelector('.ec-opt').getAttribute('data-v')||'':'',min:tr.querySelector('.ec-min')?tr.querySelector('.ec-min').getAttribute('data-v')||'':''});});DB.s('escala_agenda',{mes:escP.getMonth(),ano:escP.getFullYear(),rows:rows});}
+function rndEsc(){var dados=DB.g('escala_agenda');if(dados&&dados.mes!==undefined)escP=new Date(dados.ano,dados.mes,1);else escP=new Date();escRndMes();document.getElementById('esc-body').innerHTML='';if(dados&&dados.rows&&dados.rows.length)dados.rows.forEach(function(r){escAdd(r);});document.getElementById('esc-tb').classList.remove('show');}
+function addLid(){var l=DB.g('lideranca')||[];l.push({nm:document.getElementById('lid-nm').value,cg:document.getElementById('lid-cg').value,dsc:document.getElementById('lid-dsc').value,foto:_i['lid-foto']||''});DB.s('lideranca',l);_i['lid-foto']='';document.getElementById('lid-foto-pv').innerHTML='';rndLid();}
+function rndLid(){var l=DB.g('lideranca')||[];var c=document.getElementById('lista-lid');if(!c)return;c.innerHTML=l.map(function(lid,i){var nm=lid.nm||'';return '<div style="background:#fff;border-radius:10px;padding:.9rem;box-shadow:0 1px 5px rgba(0,0,0,.07);text-align:center"><img src="'+(lid.foto||'https://ui-avatars.com/api/?name='+encodeURIComponent(nm)+'&background=1E3A5F&color=fff')+'" style="width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid var(--azul2);margin-bottom:.4rem"><div style="font-weight:700;font-size:.83rem">'+nm+'</div><div style="font-size:.72rem;color:var(--azul2)">'+lid.cg+'</div>'+(lid.dsc?'<div style="font-size:.7rem;color:var(--muted);margin-top:.2rem">'+lid.dsc+'</div>':'')+'<button class="btn bd bsm" style="margin-top:.4rem" onclick="del(\'lideranca\','+i+',rndLid)">✕</button></div>';}).join('');var cnt=document.getElementById('cnt-lid');if(cnt)cnt.textContent=l.length;}
+function rndDiz(){var msg=DB.g('diz-msg')||'';var el=document.getElementById('diz-msg');if(el)el.value=msg;}
+function salvDiz(){DB.s('diz-msg',document.getElementById('diz-msg').value);var ok=document.getElementById('ok-diz');if(ok){ok.style.display='inline';setTimeout(function(){ok.style.display='none';},2000);}}
+async function rndGal(){var l=DB.g('galeria')||[];var c=document.getElementById('lista-gal');if(!c)return;c.innerHTML='';for(var i=0;i<l.length;i++){var it=l[i];var u=it.url||'';if(u.startsWith('idb:'))u=await IDB.url(u);if(!u)continue;var wrap=document.createElement('div');wrap.style.cssText='background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 5px rgba(0,0,0,.07);position:relative';if(it.tp==='video'){var v=document.createElement('video');v.src=u;v.controls=true;v.style.cssText='width:100%;height:auto;max-height:180px;display:block;background:#000';wrap.appendChild(v);}else{var imgEl=document.createElement('img');imgEl.src=u;imgEl.style.cssText='width:100%;height:auto;max-height:180px;object-fit:contain;display:block;background:#f0f4f8';wrap.appendChild(imgEl);}var leg=document.createElement('div');leg.style.cssText='font-size:.7rem;padding:3px 6px;color:var(--muted)';leg.textContent=it.leg||'';wrap.appendChild(leg);var btn=document.createElement('button');btn.className='btn bd bsm';btn.style.cssText='position:absolute;top:4px;right:4px;padding:2px 6px';btn.textContent='✕';(function(idx){btn.onclick=function(){del('galeria',idx,rndGal);};})(i);wrap.appendChild(btn);c.appendChild(wrap);}}
+function addVid(){var l=DB.g('videos')||[];var url=(document.getElementById('vid-url').value||'').trim();var yid=(url.match(/(?:youtu\.be\/|v=|shorts\/)([a-zA-Z0-9_-]+)/)||[])[1]||'';l.push({url:url,yid:yid,tit:document.getElementById('vid-tit').value,dsc:document.getElementById('vid-dsc').value,cat:document.getElementById('vid-cat').value});DB.s('videos',l);rndVid();}
+function rndVid(){var l=DB.g('videos')||[];var c=document.getElementById('lista-vid');if(!c)return;c.innerHTML=l.map(function(v,i){return '<div style="background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 5px rgba(0,0,0,.07)">'+(v.yid?'<img src="https://img.youtube.com/vi/'+v.yid+'/mqdefault.jpg" style="width:100%;height:auto">':'')+'<div style="padding:.7rem"><div style="font-weight:700;font-size:.83rem">'+v.tit+'</div><div style="font-size:.7rem;color:var(--muted)">'+v.cat+'</div><button class="btn bd bsm" style="margin-top:.4rem" onclick="del(\'videos\','+i+',rndVid)">✕</button></div></div>';}).join('');}
+var divLink='https://obpcsaofernando199-sudo.github.io/Obpc/';var divSel=0;
+var DIV_MODS=[{e:'🔥',lb:'Convite de Culto',sb:'Para chamar ao culto hoje',tg:'ALTO IMPACTO',c:'#e74c3c',fn:function(l,d){return '🔥 *HOJE TEM CULTO!*\n\n⛪ *'+(d.nome||'OBPC São Fernando')+'*\n📍 '+(d.end||'Rua Sen. José Ermírio de Moraes, 199')+'\n\n🌐 '+l+'\n\n_"Não deixemos de reunirmos." — Hb 10.25_';}},{e:'📸',lb:'Culto Foi Assim',sb:'Após o culto',tg:'PÓS-CULTO',c:'#27ae60',fn:function(l,d){return '📸 *NOSSO CULTO FOI ASSIM!*\n\n🌐 '+l+'\n\n⛪ *'+(d.nome||'OBPC São Fernando')+'*';}},{e:'✨',lb:'Elegante & Inspirador',sb:'Oração e família',tg:'DEVOCIONAL',c:'#1E3A5F',fn:function(l,d){return '✨ *'+((d.nome||'OBPC São Fernando').toUpperCase())+'*\n\n🌐 *'+l+'*\n\n_Que Deus abençoe cada lar!_ 🙏';}},{e:'🙏',lb:'Corrente de Oração',sb:'Mural de pedidos',tg:'VIRAL',c:'#e67e22',fn:function(l,d){return '🙏 *CORRENTE DE ORAÇÃO*\n\n🌐 '+l+'\n\n⛪ *'+(d.nome||'OBPC São Fernando')+'*';}},{e:'🎉',lb:'Animado — Jovens',sb:'Redes sociais',tg:'JOVENS',c:'#7c3aed',fn:function(l,d){return '🎉 *EI, FAMÍLIA!*\n\n🌐 '+l+'\n\n_'+(d.nome||'OBPC São Fernando')+'_ 💙';}},{e:'🗓️',lb:'Agenda Semanal',sb:'Informativo semanal',tg:'INFORMATIVO',c:'#0891b2',fn:function(l,d){return '🗓️ *AGENDA DA SEMANA*\n⛪ *'+(d.nome||'OBPC São Fernando')+'*\n\n🌐 *'+l+'*';}},{e:'👷',lb:'Para Obreiros',sb:'Aviso da escala',tg:'OBREIROS',c:'#475569',fn:function(l,d){return '📋 *ESCALA DE OBREIROS*\n⛪ *'+(d.nome||'OBPC São Fernando')+'*\n\n🌐 *'+l+'*';}},{e:'📣',lb:'Comunicado Oficial',sb:'Anúncios formais',tg:'FORMAL',c:'#b45309',fn:function(l,d){return '📣 *COMUNICADO OFICIAL*\n*'+((d.nome||'OBPC SÃO FERNANDO').toUpperCase())+'*\n\n🌐 *'+l+'*';}}];
+function divUpdLink(v){divLink=v.trim()||'https://obpcsaofernando199-sudo.github.io/Obpc/';var el=document.getElementById('div-link-show');if(el)el.textContent=divLink;divClk(divSel);}
+function divCpLink(){navigator.clipboard.writeText(divLink).then(function(){showToast('🔗 Link copiado!');}).catch(function(){});}
+function rndDiv(){var d=DB.g('info')||{};var nm=document.getElementById('div-wpp-nm');if(nm)nm.textContent=d.nome||'OBPC São Fernando';var grid=document.getElementById('div-grid');if(!grid)return;grid.innerHTML=DIV_MODS.map(function(m,i){return '<button class="dmb'+(divSel===i?' sel':'')+'" style="--c:'+m.c+'" onclick="divClk('+i+')"><div class="dmi">'+m.e+'</div><div><div class="dmn">'+m.lb+'</div><div class="dms">'+m.sb+'</div><span class="dmt" style="background:'+m.c+'">'+m.tg+'</span></div></button>';}).join('');divClk(divSel);}
+function divClk(i){divSel=i;var d=DB.g('info')||{};var m=DIV_MODS[i];var txt=m.fn(divLink,d);var pv=document.getElementById('div-prev-txt');if(pv)pv.innerHTML=fmtWpp(txt);var hr=document.getElementById('div-hora');if(hr){var n=new Date();hr.textContent=n.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});}var area=document.getElementById('div-prev-area');if(area)area.style.display='block';document.querySelectorAll('.dmb').forEach(function(btn,j){btn.classList.toggle('sel',j===i);});}
+function fmtWpp(txt){var s=txt.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');s=s.replace(/\*([^*\n]+)\*/g,'<strong>$1</strong>');s=s.replace(/_(.*?)_/g,'<em>$1</em>');s=s.replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank">$1</a>');return s.replace(/\n/g,'<br>');}
+function divCopiar(){var txt=DIV_MODS[divSel].fn(divLink,DB.g('info')||{});navigator.clipboard.writeText(txt).then(function(){showToast('✔ Mensagem copiada!');}).catch(function(){var ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast('✔ Copiada!');});}
+function divEnviar(){var txt=DIV_MODS[divSel].fn(divLink,DB.g('info')||{});window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank');}
+function rndDash(){rndAv();rndEv();rndOb();rndLid();var agenda=DB.g('escala_agenda');var hj=new Date().toISOString().split('T')[0];var cHj=null;if(agenda&&agenda.rows)cHj=agenda.rows.filter(function(r){return r.dt===hj;})[0]||null;var dh=document.getElementById('dh-hj');if(cHj&&dh){dh.textContent=cHj.clt||'Culto programado';}else if(dh){dh.textContent='Sem culto programado';}var sd=document.getElementById('dh-sem');if(!sd)return;sd.innerHTML='';var ABREV=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];var n=new Date();var dS=n.getDay();for(var i=0;i<7;i++){var d=new Date(n);d.setDate(n.getDate()-dS+i);var dtS=d.toISOString().split('T')[0];var linhas=agenda&&agenda.rows?agenda.rows.filter(function(r){return r.dt===dtS;}):[];var isH=d.toDateString()===n.toDateString();var div=document.createElement('div');div.style.cssText='background:'+(isH?'#e3f2fd':'#fff')+';border-radius:8px;padding:5px 4px;box-shadow:0 1px 3px rgba(0,0,0,.06);'+(isH?'border:2px solid var(--azul2)':'');div.innerHTML='<div style="font-size:.65rem;font-weight:700;text-transform:uppercase;color:'+(isH?'var(--azul2)':'var(--muted)')+';text-align:center;margin-bottom:3px">'+ABREV[i]+'<br><span style="font-weight:400">'+d.getDate().toString().padStart(2,'0')+'/'+(d.getMonth()+1).toString().padStart(2,'0')+'</span></div>'+linhas.map(function(r){return (r.clt?'<div style="background:#1E3A5F;color:#fff;border-radius:4px;padding:1px 4px;font-size:.62rem;margin-bottom:2px">⛪ '+r.clt+'</div>':'');}).join('');sd.appendChild(div);}}
+function rndMig(){var k=localStorage.getItem('obpc_imgbb_key')||'';var el=document.getElementById('mig-key');if(el&&k)el.value=k;}
+function migSalvKey(){var k=(document.getElementById('mig-key').value||'').trim();if(!k||k.length<10){alert('Cole uma key válida.');return;}localStorage.setItem('obpc_imgbb_key',k);showToast('✅ Key salva!');}
+function expDados(){var cs=['info','horarios','avisos','eventos','informativos','sermoes','cultos','palavras','obreiros','lideranca','escala','escala_agenda','esc_listas','galeria','videos','diz-msg','aniversariantes','oracoes','banner_culto','proximos_cultos'];var d={};cs.forEach(function(k){var v=DB.g(k);if(v!==null)d[k]=v;});var json=JSON.stringify({obpc:d,ts:Date.now(),v:3});var blob=new Blob([json],{type:'application/json'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='OBPC_dados_'+new Date().toISOString().split('T')[0]+'.json';a.click();URL.revokeObjectURL(url);var ok=document.getElementById('exp-ok');if(ok){ok.style.display='block';setTimeout(function(){ok.style.display='none';},4000);}}
+function impDados(inp){var f=inp.files[0];if(!f)return;var ok=document.getElementById('imp-ok');var r=new FileReader();r.onload=function(e){try{var json=JSON.parse(e.target.result);var dados=json.obpc||json;var cnt=0;Object.keys(dados).forEach(function(k){try{localStorage.setItem('obpc_'+k,JSON.stringify(dados[k]));cnt++;}catch(e){}});if(ok){ok.style.display='block';ok.style.color='var(--verde)';ok.textContent='✅ '+cnt+' itens importados! Recarregando...';setTimeout(function(){location.reload();},1500);}}catch(e){if(ok){ok.style.display='block';ok.style.color='var(--verm)';ok.textContent='❌ Arquivo inválido.';}}};r.readAsText(f);}
+function del(key,i,fn){var l=DB.g(key)||[];l.splice(i,1);DB.s(key,l);if(typeof fn==='function')fn();}
+(function tick(){var h=document.getElementById('hhor');if(h)h.textContent=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});setTimeout(tick,30000);})();
+/* ═══ BANNER DESTAQUE VISUAL DO MÊS ═══ */
+var _bnrMidia=null;var _bnrBgUrl='';var _bnrCor='#D4A843';var _bnrElemPos={};
+var BNR_TPLS=[{id:'escuro',nm:'Escuro Clássico',ov1:'#0a1e35',ov2:'#1E3A5F',opac:80},{id:'roxo',nm:'Roxo Profético',ov1:'#1a0533',ov2:'#4c1d95',opac:82},{id:'vinho',nm:'Vinho Majestoso',ov1:'#1a0a0a',ov2:'#7f1d1d',opac:80},{id:'verde',nm:'Verde Esperança',ov1:'#052e16',ov2:'#14532d',opac:78},{id:'azul',nm:'Azul Céu',ov1:'#0c1445',ov2:'#1e40af',opac:78},{id:'preto',nm:'Preto Total',ov1:'#000000',ov2:'#111827',opac:88}];
+var BNR_CORES=['#D4A843','#3B9BD6','#e74c3c','#27ae60','#7c3aed','#e67e22','#fff','#f0c040'];
+var _bnrTplSel='escuro';
+function rndBnr(){var tpCont=document.getElementById('bnr-tpls');if(tpCont)tpCont.innerHTML=BNR_TPLS.map(function(t){return '<button class="tpl-btn'+(t.id===_bnrTplSel?' sel':'')+'" onclick="bnrSetTpl(\''+t.id+'\')" data-tpl="'+t.id+'">'+t.nm+'</button>';}).join('');var corCont=document.getElementById('bnr-cores');if(corCont)corCont.innerHTML=BNR_CORES.map(function(c){return '<div onclick="bnrSetCor(\''+c+'\')" style="width:28px;height:28px;border-radius:50%;background:'+c+';cursor:pointer;border:3px solid '+(c===_bnrCor?'#1E3A5F':'transparent')+';box-shadow:0 1px 4px rgba(0,0,0,.2)"></div>';}).join('');fetch('https://fcosta-31125-default-rtdb.firebaseio.com/obpc/banner_culto.json').then(function(r){return r.ok?r.json():null;}).then(function(fb){if(fb&&fb.ts){var local=DB.g('banner_culto');if(!local||!local.ts||fb.ts>local.ts){localStorage.setItem('obpc_banner_culto',JSON.stringify(fb));}}}).catch(function(){}).finally(function(){_bnrPreencherCampos();});}
+function _bnrPreencherCampos(){var d=DB.g('banner_culto')||{};if(d.badge)document.getElementById('bnr-badge').value=d.badge;if(d.titulo)document.getElementById('bnr-tit').value=d.titulo;if(d.subtit)document.getElementById('bnr-sub').value=d.subtit;if(d.dt)document.getElementById('bnr-dt').value=d.dt;if(d.hora)document.getElementById('bnr-hora').value=d.hora;if(d.local)document.getElementById('bnr-loc').value=d.local;if(d.cta)document.getElementById('bnr-cta').value=d.cta;if(d.cor){_bnrCor=d.cor;}if(d.tpl){_bnrTplSel=d.tpl;}if(d.bgUrl){_bnrBgUrl=d.bgUrl;var bgUrlEl=document.getElementById('bnr-bg-url');if(bgUrlEl)bgUrlEl.value=d.bgUrl;bnrAplBg(d.bgUrl,d.bgTp||'img');}if(d.ov1){var e1=document.getElementById('bnr-ov1');if(e1)e1.value=d.ov1;}if(d.ov2){var e2=document.getElementById('bnr-ov2');if(e2)e2.value=d.ov2;}if(d.opac){var ep=document.getElementById('bnr-opac');if(ep)ep.value=d.opac;var ev=document.getElementById('bnr-ov-val');if(ev)ev.textContent=d.opac;}var info=DB.g('info')||{};var el=document.getElementById('bnr-prev-church');if(el)el.textContent=info.nome||'OBPC São Fernando';var logo=document.getElementById('bnr-prev-logo');if(logo&&info.logoB64){logo.innerHTML='';var img=document.createElement('img');img.src=info.logoB64;img.style.cssText='width:36px;height:36px;border-radius:50%;object-fit:cover';logo.appendChild(img);}bnrBindInputs();if(d.elemPos&&typeof d.elemPos==='object'){_bnrElemPos=d.elemPos;}else{_bnrElemPos={};}bnrAtualiza();if(d.tpl){document.querySelectorAll('[data-tpl]').forEach(function(b){b.classList.toggle('sel',b.getAttribute('data-tpl')===_bnrTplSel);});}if(d.cor)bnrSetCor(d.cor);}
+function bnrBindInputs(){['bnr-badge','bnr-tit','bnr-sub','bnr-dt','bnr-hora','bnr-loc','bnr-cta','bnr-ov1','bnr-ov2'].forEach(function(id){var el=document.getElementById(id);if(el)el.oninput=bnrAtualiza;});}
+function bnrAtualiza(){var badge=(document.getElementById('bnr-badge')||{}).value||'PRÓXIMO CULTO';var el=document.getElementById('bnr-prev-badge');if(el){el.textContent=badge;el.style.background=_bnrCor;el.style.color=bnrContraste(_bnrCor);}var tit=(document.getElementById('bnr-tit')||{}).value||'Culto de Domingo';var et=document.getElementById('bnr-prev-tit');if(et)et.textContent=tit;var sub=(document.getElementById('bnr-sub')||{}).value||'';var es=document.getElementById('bnr-prev-sub');if(es)es.textContent=sub;var dt=(document.getElementById('bnr-dt')||{}).value||'';var dtTxt='';if(dt){var p=dt.split('-');var d=new Date(dt+'T12:00');var dias=['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];dtTxt=dias[d.getDay()]+', '+p[2]+'/'+p[1]+'/'+p[0];}var eDt=document.getElementById('bnr-prev-dt-txt');if(eDt)eDt.textContent=dtTxt||'—';var hora=(document.getElementById('bnr-hora')||{}).value||'—';var eH=document.getElementById('bnr-prev-hora-txt');if(eH)eH.textContent=hora;var loc=(document.getElementById('bnr-loc')||{}).value||'—';var eL=document.getElementById('bnr-prev-loc-txt');if(eL)eL.textContent=loc;var cta=(document.getElementById('bnr-cta')||{}).value||'Esperamos por você! 🙏';var eCta=document.getElementById('bnr-prev-cta');if(eCta){eCta.textContent=cta;eCta.style.background=_bnrCor;eCta.style.color=bnrContraste(_bnrCor);}var ov1=(document.getElementById('bnr-ov1')||{}).value||'#0a1e35';var ov2=(document.getElementById('bnr-ov2')||{}).value||'#1E3A5F';var opac=(document.getElementById('bnr-opac')||{}).value||75;var op=(Math.round(opac)/100).toFixed(2);function hex2rgb(h){h=(h||'#000000').replace('#','');if(h.length===3)h=h[0]+h[0]+h[1]+h[1]+h[2]+h[2];var n=parseInt(h,16);return[(n>>16)&255,(n>>8)&255,n&255];}var r1=hex2rgb(ov1),r2=hex2rgb(ov2);var eOv=document.getElementById('bnr-prev-overlay');if(eOv)eOv.style.background='linear-gradient(180deg,rgba('+r1[0]+','+r1[1]+','+r1[2]+','+op+') 0%,rgba('+r2[0]+','+r2[1]+','+r2[2]+','+op+') 100%)';bnrAplicarPosicoesSalvas();}
+var _bnrDragEl=null;var _bnrDragKey=null;var _bnrDragStartX=0;var _bnrDragStartY=0;var _bnrDragOrigX=0;var _bnrDragOrigY=0;var _bnrDragMode=false;
+function bnrToggleDragMode(){_bnrDragMode=!_bnrDragMode;var btn=document.getElementById('bnr-drag-toggle');var hint=document.getElementById('bnr-drag-hint');if(_bnrDragMode){if(btn){btn.style.background='#e74c3c';btn.textContent='🔒 Travar Posições';}if(hint)hint.style.display='block';bnrHabilitarDrag();}else{if(btn){btn.style.background='var(--azul2)';btn.textContent='✋ Arrastar Elementos';}if(hint)hint.style.display='none';}}
+function bnrHabilitarDrag(){var mapa={'bnr-prev-badge-wrap':'badge','bnr-prev-tit-wrap':'titulo','bnr-prev-sub-wrap':'subtit','bnr-prev-infos-wrap':'infos','bnr-prev-cta-wrap':'cta'};Object.keys(mapa).forEach(function(wid){var wrap=document.getElementById(wid);if(!wrap)return;var key=mapa[wid];wrap.style.cursor='grab';wrap.onmousedown=function(e){bnrStartDrag(e,wrap,key);};wrap.ontouchstart=function(e){bnrStartDrag(e.touches[0],wrap,key);};});}
+function bnrStartDrag(e,el,key){if(!_bnrDragMode)return;_bnrDragEl=el;_bnrDragKey=key;var prev=document.getElementById('bnr-prev');var rect=prev.getBoundingClientRect();var curX=parseFloat(el.style.left)||0;var curY=parseFloat(el.style.top)||0;_bnrDragOrigX=curX*rect.width/100;_bnrDragOrigY=curY*rect.height/100;_bnrDragStartX=e.clientX;_bnrDragStartY=e.clientY;el.style.cursor='grabbing';document.onmousemove=bnrDragMove;document.ontouchmove=function(ev){bnrDragMove(ev.touches[0]);};document.onmouseup=bnrEndDrag;document.ontouchend=bnrEndDrag;e.preventDefault();}
+function bnrDragMove(e){if(!_bnrDragEl)return;var prev=document.getElementById('bnr-prev');if(!prev)return;var rect=prev.getBoundingClientRect();var dx=e.clientX-_bnrDragStartX;var dy=e.clientY-_bnrDragStartY;var newPxX=_bnrDragOrigX+dx;var newPxY=_bnrDragOrigY+dy;var pctX=Math.max(0,Math.min(90,(newPxX/rect.width)*100));var pctY=Math.max(0,Math.min(90,(newPxY/rect.height)*100));_bnrDragEl.style.position='absolute';_bnrDragEl.style.left=pctX.toFixed(2)+'%';_bnrDragEl.style.top=pctY.toFixed(2)+'%';_bnrElemPos[_bnrDragKey]={x:parseFloat(pctX.toFixed(2)),y:parseFloat(pctY.toFixed(2))};}
+function bnrEndDrag(){if(_bnrDragEl)_bnrDragEl.style.cursor='grab';_bnrDragEl=null;_bnrDragKey=null;document.onmousemove=null;document.ontouchmove=null;document.onmouseup=null;document.ontouchend=null;}
+function bnrAplicarPosicoesSalvas(){if(!_bnrElemPos||!Object.keys(_bnrElemPos).length)return;var mapa={badge:'bnr-prev-badge-wrap',titulo:'bnr-prev-tit-wrap',subtit:'bnr-prev-sub-wrap',infos:'bnr-prev-infos-wrap',cta:'bnr-prev-cta-wrap'};Object.keys(_bnrElemPos).forEach(function(key){var pos=_bnrElemPos[key];var el=document.getElementById(mapa[key]);if(el&&pos){el.style.position='absolute';el.style.left=pos.x+'%';el.style.top=pos.y+'%';el.style.margin='0';}});}
+function bnrResetarPosicoes(){_bnrElemPos={};['bnr-prev-badge-wrap','bnr-prev-tit-wrap','bnr-prev-sub-wrap','bnr-prev-infos-wrap','bnr-prev-cta-wrap'].forEach(function(id){var el=document.getElementById(id);if(el){el.style.position='';el.style.left='';el.style.top='';el.style.margin='';}});showToast('↩️ Posições resetadas');}
+function bnrDownloadPNG(){var alvo=document.getElementById('bnr-prev');if(!alvo){alert('Preview não encontrado');return;}var btn=document.getElementById('bnr-dl-btn');if(btn){btn.textContent='⏳...';btn.disabled=true;}function reset(){if(btn){btn.textContent='⬇️ Baixar PNG';btn.disabled=false;}}var s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';s.onload=function(){html2canvas(alvo,{useCORS:true,allowTaint:true,backgroundColor:'#1e1830',scale:3,logging:false}).then(function(canvas){var url=canvas.toDataURL('image/png',1.0);var a=document.createElement('a');a.href=url;a.download='destaque-mes-'+Date.now()+'.png';a.click();reset();}).catch(function(){reset();});};s.onerror=reset;if(window.html2canvas){s.onload();}else{document.head.appendChild(s);}}
+function bnrContraste(hex){var r=parseInt((hex||'#ffffff').slice(1,3),16);var g=parseInt((hex||'#ffffff').slice(3,5),16);var b=parseInt((hex||'#ffffff').slice(5,7),16);return(r*299+g*587+b*114)/1000>140?'#1E3A5F':'#ffffff';}
+function bnrSetTpl(id){_bnrTplSel=id;var tpl=BNR_TPLS.filter(function(t){return t.id===id;})[0];if(!tpl)return;document.getElementById('bnr-ov1').value=tpl.ov1;document.getElementById('bnr-ov2').value=tpl.ov2;document.getElementById('bnr-opac').value=tpl.opac;document.getElementById('bnr-ov-val').textContent=tpl.opac;document.querySelectorAll('[data-tpl]').forEach(function(b){b.classList.toggle('sel',b.getAttribute('data-tpl')===id);});bnrAtualiza();}
+function bnrSetCor(c){_bnrCor=c;var corCont=document.getElementById('bnr-cores');if(corCont)corCont.innerHTML=BNR_CORES.map(function(cor){return '<div onclick="bnrSetCor(\''+cor+'\')" style="width:28px;height:28px;border-radius:50%;background:'+cor+';cursor:pointer;border:3px solid '+(cor===_bnrCor?'#1E3A5F':'transparent')+';box-shadow:0 1px 4px rgba(0,0,0,.2)"></div>';}).join('');bnrAtualiza();}
+function bnrSetBg(url){if(!url)return;_bnrBgUrl=url;bnrAplBg(url,url.match(/\.(mp4|webm|mov)/i)?'video':'img');}
+function bnrAplBg(src,tp){var bg=document.getElementById('bnr-prev-bg');if(!bg)return;bg.innerHTML='';bg.style.backgroundImage='';if(tp==='video'){var v=document.createElement('video');v.src=src;v.autoplay=true;v.muted=true;v.loop=true;v.playsInline=true;v.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover';bg.appendChild(v);}else{bg.style.backgroundImage='url('+src+')';}}
+async function bnrUpMidia(inp){var f=inp.files[0];if(!f)return;var isV=f.type.startsWith('video/');var sts=document.getElementById('bnr-up-sts');var pv=document.getElementById('bnr-up-pv');if(sts){sts.style.display='block';sts.textContent='⬆️ Enviando...';}var locUrl=URL.createObjectURL(f);bnrAplBg(locUrl,isV?'video':'img');try{var m=await upArq(f,function(pct){if(sts)sts.textContent='⬆️ '+pct+'%';});_bnrMidia=m;_bnrBgUrl=m.src;if(sts){sts.textContent='✅ Pronto!';setTimeout(function(){sts.style.display='none';},3000);}}catch(e){_bnrBgUrl=locUrl;if(sts){sts.textContent='⚠️ Salvo localmente';setTimeout(function(){sts.style.display='none';},3000);}}try{inp.value='';}catch(e){}bnrAtualiza();}
+function bnrLimparMidia(){_bnrMidia=null;_bnrBgUrl='';var bg=document.getElementById('bnr-prev-bg');if(bg){bg.innerHTML='';bg.style.backgroundImage='';}var pv=document.getElementById('bnr-up-pv');if(pv)pv.innerHTML='';var inp=document.getElementById('bnr-bg-url');if(inp)inp.value='';}
+function bnrLimpar(){['bnr-badge','bnr-tit','bnr-sub','bnr-dt','bnr-hora','bnr-loc','bnr-cta'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});bnrLimparMidia();bnrAtualiza();}
+function bnrSalvar(){var dados={badge:(document.getElementById('bnr-badge')||{}).value||'',titulo:(document.getElementById('bnr-tit')||{}).value||'',subtit:(document.getElementById('bnr-sub')||{}).value||'',dt:(document.getElementById('bnr-dt')||{}).value||'',hora:(document.getElementById('bnr-hora')||{}).value||'',local:(document.getElementById('bnr-loc')||{}).value||'',cta:(document.getElementById('bnr-cta')||{}).value||'',cor:_bnrCor,tpl:_bnrTplSel,bgUrl:_bnrBgUrl||'',bgTp:_bnrMidia?_bnrMidia.tp:(_bnrBgUrl&&_bnrBgUrl.match(/\.(mp4|webm|mov)/i)?'video':'img'),ov1:(document.getElementById('bnr-ov1')||{}).value||'#0a1e35',ov2:(document.getElementById('bnr-ov2')||{}).value||'#1E3A5F',opac:(document.getElementById('bnr-opac')||{}).value||75,ts:Date.now()};if(_bnrElemPos&&Object.keys(_bnrElemPos).length)dados.elemPos=_bnrElemPos;localStorage.setItem('obpc_banner_culto',JSON.stringify(dados));fetch('https://fcosta-31125-default-rtdb.firebaseio.com/obpc/banner_culto.json',{method:'PUT',body:JSON.stringify(dados),headers:{'Content-Type':'application/json'}}).then(function(){showToast('✅ Destaque Visual publicado no site!');}).catch(function(){showToast('⚠️ Salvo local (sem conexão)');});var ok=document.getElementById('bnr-ok');if(ok){ok.style.display='block';setTimeout(function(){ok.style.display='none';},3500);}}
+/* ═══ AGENDA DE CULTOS ═══ */
+var _pcltImgUrl='';var _pcltAudUrl='';
+var PCLT_GRUPOS=[
+  {id:'geral',   nm:'Geral',    ic:'⛪', cor:'#3B9BD6', g:'linear-gradient(160deg,#1a4a7a,#0a1e35)'},
+  {id:'santa_ceia', nm:'Santa Ceia', ic:'🍷', cor:'#e74c3c', g:'linear-gradient(160deg,#7c0a02,#3d0000)'},
+  {id:'primicias', nm:'Primícias', ic:'✨', cor:'#d4a843', g:'linear-gradient(160deg,#b8860b,#5c4000)'},
+  {id:'missoes',  nm:'Missões',  ic:'🌍', cor:'#2980b9', g:'linear-gradient(160deg,#1a4a7a,#0a1e35)'},
+  {id:'familia',  nm:'Família',  ic:'👨‍👩‍👧‍👦', cor:'#27ae60', g:'linear-gradient(160deg,#1a5c3a,#0a2a1a)'},
+  {id:'ufebrac',  nm:'UFEBRAC',  ic:'🌸', cor:'#e91e8c', g:'linear-gradient(160deg,#880e4f,#3a0a2a)'},
+  {id:'umasbrac', nm:'UMASBRAC', ic:'💪', cor:'#1565C0', g:'linear-gradient(160deg,#0d47a1,#1565C0)'},
+  {id:'jubrac',   nm:'JUBRAC',   ic:'🔥', cor:'#5c6bc0', g:'linear-gradient(160deg,#1a237e,#283593)'},
+  {id:'menibrac', nm:'MENIBRAC', ic:'🌟', cor:'#ffa000', g:'linear-gradient(160deg,#e65100,#ff8f00 60%,#388e3c)'},
+  {id:'louvor',   nm:'Louvor',   ic:'🎶', cor:'#8e44ad', g:'linear-gradient(160deg,#3a1a5c,#1a0a2d)'},
+];
+var _pcltGrupoSel='geral';
+
+function rndPcltGrupos(){
+  var c=document.getElementById('pclt-grupo-btns');if(!c)return;
+  c.innerHTML=PCLT_GRUPOS.map(function(g){
+    var sel=g.id===_pcltGrupoSel;
+    return '<button type="button" onclick="pcltSelGrupo(\''+g.id+'\',this)" style="display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:20px;border:2px solid '+(sel?g.cor:'var(--borda)')+';background:'+(sel?g.cor+'22':'#fff')+';cursor:pointer;font-family:inherit;font-size:.75rem;font-weight:700;color:'+(sel?g.cor:'var(--muted)')+';transition:all .15s" data-gid="'+g.id+'"><span>'+g.ic+'</span>'+g.nm+'</button>';
+  }).join('');
+}
+function pcltSelGrupo(id,btn){
+  _pcltGrupoSel=id;
+  var grp=PCLT_GRUPOS.filter(function(g){return g.id===id;})[0]||PCLT_GRUPOS[0];
+  document.getElementById('pclt-grupo-sel').value=id;
+  document.getElementById('pclt-grupo-cor').value=grp.cor;
+  // Preencher título automático se estiver vazio
+  var titEl=document.getElementById('pclt-tit');
+  if(titEl&&!titEl.value.trim()){titEl.value=grp.nm==='Geral'?'Culto Geral':grp.nm;}
+  rndPcltGrupos();
+}
+function rndPclt(){
+  rndPcltGrupos();
+  rndPcltLista();
+  // Sync Firebase
+  fetch('https://fcosta-31125-default-rtdb.firebaseio.com/obpc/proximos_cultos.json').then(function(r){return r.ok?r.json():null;}).then(function(fb){if(fb&&Array.isArray(fb.lista)&&fb.lista.length){localStorage.setItem('obpc_proximos_cultos',JSON.stringify(fb));}rndPcltLista();}).catch(function(){});
+}
+function rndPcltLista(){
+  var d=DB.g('proximos_cultos')||{lista:[]};
+  var lista=d.lista||[];
+  var c=document.getElementById('pclt-lista');if(!c)return;
+  if(!lista.length){c.innerHTML='<p style="color:var(--muted);font-size:.82rem;padding:.5rem 0">Nenhum culto cadastrado.</p>';return;}
+  c.innerHTML=lista.map(function(it,i){
+    var dtFmt=it.dt?it.dt.split('-').reverse().join('/'):'—';
+    var grp=PCLT_GRUPOS.filter(function(g){return g.id===it.grupo;})[0]||PCLT_GRUPOS[0];
+    var ic=grp.ic;var cor=it.bgCor1||grp.cor;
+    return '<div class="li" style="flex-wrap:wrap;gap:.3rem;border-left:4px solid '+cor+'">'
+      +'<div style="flex:1;min-width:180px">'
+      +'<div style="display:flex;align-items:center;gap:.4rem;margin-bottom:.2rem"><span style="font-size:1rem">'+ic+'</span><strong style="font-size:.83rem">'+it.titulo+'</strong></div>'
+      +'<div style="font-size:.72rem;color:var(--muted)">📅 '+dtFmt+' — ⏰ '+(it.hora||'—')+(it.local?' — 📍 '+it.local:'')+'</div>'
+      +(it.subtit?'<div style="font-size:.72rem;color:var(--azul2)">'+it.subtit+'</div>':'')
+      +(it.imgUrl?'<div style="font-size:.68rem;color:var(--verde)">🖼️ Com imagem</div>':'')
+      +(it.audioUrl?'<div style="font-size:.68rem;color:#8e44ad">🎵 Com áudio</div>':'')
+      +'</div>'
+      +'<button class="btn bd bsm" onclick="pcltDel('+i+')">✕</button></div>';
+  }).join('');
+}
+async function pcltUpImg(inp){
+  var f=inp.files[0];if(!f)return;
+  var sts=document.getElementById('pclt-img-sts');var pv=document.getElementById('pclt-img-pv');
+  if(sts){sts.style.display='block';sts.textContent='⬆️ Enviando...';}
+  var loc=URL.createObjectURL(f);
+  var isV=f.type.startsWith('video/');
+  if(pv){pv.innerHTML=isV?'<video src="'+loc+'" controls style="max-width:120px;height:auto;border-radius:6px;background:#000"></video>':'<img src="'+loc+'" style="max-width:120px;height:auto;border-radius:6px">';}
+  try{
+    var m=await upArq(f);
+    _pcltImgUrl=m.src;
+    if(sts){sts.textContent='✅ Pronto!';setTimeout(function(){sts.style.display='none';},3000);}
+  }catch(e){_pcltImgUrl=loc;if(sts){sts.textContent='⚠️ Salvo local';setTimeout(function(){sts.style.display='none';},3000);}}
+  try{inp.value='';}catch(e){}
+}
+async function pcltUpAud(inp){
+  var f=inp.files[0];if(!f)return;
+  var sts=document.getElementById('pclt-aud-sts');var pv=document.getElementById('pclt-aud-pv');
+  if(sts){sts.style.display='block';sts.textContent='⬆️ Enviando áudio...';}
+  var loc=URL.createObjectURL(f);
+  if(pv)pv.innerHTML='<audio src="'+loc+'" controls style="width:100%;height:32px"></audio>';
+  try{
+    var key=localStorage.getItem('obpc_imgbb_key')||'';
+    if(key&&key.length>10){
+      var b64=await new Promise(function(res,rej){var r=new FileReader();r.onload=function(e){res(e.target.result.split(',')[1]);};r.onerror=rej;r.readAsDataURL(f);});
+      var fd=new FormData();fd.append('image',b64);fd.append('name',f.name||'audio_'+Date.now());
+      var resp=await fetch('https://api.imgbb.com/1/upload?key='+key,{method:'POST',body:fd});
+      var data=await resp.json();
+      if(data.success){_pcltAudUrl=data.data.url;}else{_pcltAudUrl=loc;}
+    }else{_pcltAudUrl=loc;}
+    if(sts){sts.textContent='✅ Áudio pronto!';setTimeout(function(){sts.style.display='none';},3000);}
+  }catch(e){_pcltAudUrl=loc;if(sts){sts.textContent='⚠️ Salvo local';setTimeout(function(){sts.style.display='none';},3000);}}
+  try{inp.value='';}catch(e){}
+}
+function pcltResetCores(){
+  var grp=PCLT_GRUPOS.filter(function(g){return g.id===_pcltGrupoSel;})[0]||PCLT_GRUPOS[0];
+  var c1=document.getElementById('pclt-bg-cor1');var c2=document.getElementById('pclt-bg-cor2');
+  if(c1)c1.value='#1a237e';if(c2)c2.value='#283593';
+}
+function pcltSalvar(){
+  var titulo=(document.getElementById('pclt-tit')||{}).value||'';
+  var subtit=(document.getElementById('pclt-sub')||{}).value||'';
+  var dt=(document.getElementById('pclt-dt')||{}).value||'';
+  var hora=(document.getElementById('pclt-hora')||{}).value||'';
+  var local=(document.getElementById('pclt-loc')||{}).value||'';
+  var cor1=(document.getElementById('pclt-bg-cor1')||{}).value||'#1a237e';
+  var cor2=(document.getElementById('pclt-bg-cor2')||{}).value||'#283593';
+  var grp=PCLT_GRUPOS.filter(function(g){return g.id===_pcltGrupoSel;})[0]||PCLT_GRUPOS[0];
+  if(!titulo){showToast('⚠️ Informe o título do culto.');return;}
+  var d=DB.g('proximos_cultos')||{lista:[]};
+  d.lista=d.lista||[];
+  d.lista.unshift({
+    titulo:titulo,
+    subtit:subtit,
+    dt:dt,hora:hora,local:local,
+    grupo:_pcltGrupoSel,
+    ic:grp.ic,
+    bgCor1:cor1,bgCor2:cor2,
+    gradiente:'linear-gradient(160deg,'+cor1+','+cor2+')',
+    imgUrl:_pcltImgUrl||'',
+    audioUrl:_pcltAudUrl||'',
+    ts:Date.now()
+  });
+  DB.s('proximos_cultos',d);
+  rndPcltLista();
+  showToast('✅ Culto publicado na agenda!');
+  var ok=document.getElementById('pclt-ok');if(ok){ok.style.display='block';setTimeout(function(){ok.style.display='none';},3000);}
+}
+function pcltLimpar(){
+  ['pclt-tit','pclt-sub','pclt-dt','pclt-hora','pclt-loc'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  _pcltImgUrl='';_pcltAudUrl='';
+  var pv1=document.getElementById('pclt-img-pv');if(pv1)pv1.innerHTML='';
+  var pv2=document.getElementById('pclt-aud-pv');if(pv2)pv2.innerHTML='';
+  _pcltGrupoSel='geral';rndPcltGrupos();
+}
+function pcltDel(i){var d=DB.g('proximos_cultos')||{lista:[]};d.lista=d.lista||[];d.lista.splice(i,1);DB.s('proximos_cultos',d);rndPcltLista();}
+
+/* ═══ BANNER ANIVERSARIANTE ═══ */
+var _anvTema='m';var _anvFotoB64='';
+var ANV_TEMAS={m:{bg:'linear-gradient(135deg,#1565C0 0%,#1E88E5 50%,#0d47a1 100%)',deco:'🎉 🎂 🎉',icon:'👨',sep:'rgba(255,255,255,.5)',confeti:['#90CAF9','#42A5F5','#fff','#FFF176'],label:'✨ PARABÉNS ✨'},f:{bg:'linear-gradient(135deg,#AD1457 0%,#E91E63 45%,#F48FB1 100%)',deco:'💐 🎂 💐',icon:'👩',sep:'rgba(255,255,255,.6)',confeti:['#F48FB1','#fff','#FCE4EC'],label:'🌸 PARABÉNS 🌸'},k:{bg:'linear-gradient(135deg,#E65100 0%,#FF8F00 40%,#43A047 100%)',deco:'🎈 🎉 🎈',icon:'👧',sep:'rgba(255,255,255,.6)',confeti:['#FFB300','#F4511E','#43A047','#fff'],label:'🎊 PARABÉNS 🎊'}};
+function anvTab(id,btn){document.getElementById('anv-painel-cadastro').style.display=id==='cadastro'?'':'none';document.getElementById('anv-painel-banner').style.display=id==='banner'?'':'none';document.querySelectorAll('.anv-tab-btn').forEach(function(b){b.classList.remove('ativo');});if(btn)btn.classList.add('ativo');if(id==='banner'){anvBnrAtualiza();anvBnrConfeti();}}
+function anvSelGen(btn){document.querySelectorAll('.anv-gen-btn').forEach(function(b){b.classList.remove('sel');});btn.classList.add('sel');var g=btn.getAttribute('data-gen');var hid=document.getElementById('anv-gen');if(hid)hid.value=g;}
+function anvSetTema(btn){document.querySelectorAll('.anv-tema-btn').forEach(function(b){b.classList.remove('sel');});btn.classList.add('sel');_anvTema=btn.getAttribute('data-tema');anvBnrAtualiza();anvBnrConfeti();}
+function anvBnrUpFoto(inp){var f=inp.files[0];if(!f)return;var r=new FileReader();r.onload=function(e){_anvFotoB64=e.target.result;var icon=document.getElementById('anv-bnr-foto-icon');var img=document.getElementById('anv-bnr-foto-img');var pv=document.getElementById('bnranv-foto-pv');if(img){img.src=_anvFotoB64;img.style.display='block';}if(icon)icon.style.display='none';if(pv)pv.innerHTML='<img src="'+_anvFotoB64+'" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid var(--azul2)">';anvBnrAtualiza();};r.readAsDataURL(f);}
+function anvBnrAtualiza(){var tema=ANV_TEMAS[_anvTema]||ANV_TEMAS.m;var prev=document.getElementById('anv-bnr-prev');if(prev)prev.style.background=tema.bg;var deco=document.getElementById('anv-bnr-deco-top');if(deco)deco.textContent=tema.deco;var lbl=document.getElementById('anv-bnr-label');if(lbl)lbl.textContent=tema.label;var sep=document.getElementById('anv-bnr-sep');if(sep)sep.style.background=tema.sep;var icon=document.getElementById('anv-bnr-foto-icon');if(icon&&!_anvFotoB64)icon.textContent=tema.icon;var nm=(document.getElementById('bnranv-nm')||{}).value||'Nome do Aniversariante';var nmEl=document.getElementById('anv-bnr-nm');if(nmEl)nmEl.textContent=nm;var msg=(document.getElementById('bnranv-msg')||{}).value||'';var msgEl=document.getElementById('anv-bnr-msg');if(msgEl)msgEl.innerHTML=msg.replace(/\n/g,'<br>');var rod=(document.getElementById('bnranv-rodape')||{}).value||'';var rodEl=document.getElementById('anv-bnr-rodape');if(rodEl)rodEl.textContent=rod;}
+function anvBnrConfeti(){var bg=document.getElementById('anv-bnr-bg');if(!bg)return;var tema=ANV_TEMAS[_anvTema]||ANV_TEMAS.m;var cores=tema.confeti;var html='';for(var i=0;i<22;i++){var c=cores[i%cores.length];var x=Math.random()*100;var delay=(Math.random()*4).toFixed(2);var dur=(2.5+Math.random()*2.5).toFixed(2);var sz=(7+Math.random()*8).toFixed(0);html+='<div style="position:absolute;left:'+x+'%;top:-20px;width:'+sz+'px;height:'+sz+'px;background:'+c+';opacity:.8;border-radius:50%;animation:confeti '+dur+'s '+delay+'s linear infinite"></div>';}bg.innerHTML=html;if(!document.getElementById('anv-confeti-css')){var st=document.createElement('style');st.id='anv-confeti-css';st.textContent='@keyframes confeti{0%{transform:translateY(-20px) rotate(0deg);opacity:.9}100%{transform:translateY(460px) rotate(720deg);opacity:0}}';document.head.appendChild(st);}}
+function anvBnrDownload(){var alvo=document.getElementById('anv-bnr-prev');if(!alvo){alert('Preview não encontrado');return;}var nm=(document.getElementById('bnranv-nm')||{}).value||'aniversariante';var s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';s.onload=function(){html2canvas(alvo,{useCORS:true,allowTaint:true,scale:3,logging:false}).then(function(canvas){var url=canvas.toDataURL('image/png',1.0);var a=document.createElement('a');a.href=url;a.download='aniversario-'+nm.replace(/\s+/g,'-')+'.png';a.click();showToast('✅ Banner baixado!');});};if(window.html2canvas){s.onload();}else{document.head.appendChild(s);}}
+function anvBnrCopiar(){var nm=(document.getElementById('bnranv-nm')||{}).value||'';var msg=(document.getElementById('bnranv-msg')||{}).value||'';var rod=(document.getElementById('bnranv-rodape')||{}).value||'';var txt='🎂 *FELIZ ANIVERSÁRIO, '+nm.toUpperCase()+'!* 🎂\n\n'+msg+'\n\n"Este é o dia que o SENHOR fez; alegremo-nos nele." — Sl 118:24\n\n🙏 '+rod;navigator.clipboard.writeText(txt).then(function(){showToast('📋 Mensagem copiada!');}).catch(function(){var ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast('📋 Copiado!');});}
+function anvBnrPublicar(){var alvo=document.getElementById('anv-bnr-prev');if(!alvo){alert('Preview não encontrado');return;}var nm=(document.getElementById('bnranv-nm')||{}).value||'';var msg=(document.getElementById('bnranv-msg')||{}).value||'';var rod=(document.getElementById('bnranv-rodape')||{}).value||'';var s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';s.onload=function(){html2canvas(alvo,{useCORS:true,allowTaint:true,scale:2,logging:false}).then(function(canvas){var dados={nm:nm,msg:msg,rodape:rod,tema:_anvTema,fotoB64:_anvFotoB64||'',pngB64:canvas.toDataURL('image/png',0.92),visivel:true,ts:Date.now()};DB.s('banner_aniversario',dados);var ok=document.getElementById('anv-bnr-ok');if(ok){ok.style.display='block';setTimeout(function(){ok.style.display='none';},4000);}showToast('🎂 Banner publicado no site!');});};if(window.html2canvas){s.onload();}else{document.head.appendChild(s);}}
+/* ═══ WEBCAM PASTOR ═══ */
+var _wcmStream=null,_wcmRec=null,_wcmChunks=[];
+function pasAbrirWebcam(){var m=document.getElementById('wcm-modal');if(m)m.style.display='flex';navigator.mediaDevices.getUserMedia({video:true,audio:true}).then(function(stream){_wcmStream=stream;var pv=document.getElementById('wcm-preview');if(pv){pv.srcObject=stream;pv.style.display='block';}}).catch(function(err){var sts=document.getElementById('wcm-sts');if(sts)sts.textContent='⚠️ Sem acesso: '+err.message;});}
+function wcmFechar(){wcmPararStream();var m=document.getElementById('wcm-modal');if(m)m.style.display='none';document.getElementById('wcm-btn-gravar').style.display='';document.getElementById('wcm-btn-parar').style.display='none';document.getElementById('wcm-btn-usar').style.display='none';document.getElementById('wcm-btn-nova').style.display='none';document.getElementById('wcm-rec-ind').style.display='none';document.getElementById('wcm-playback').style.display='none';_wcmChunks=[];_wcmRec=null;}
+function wcmPararStream(){if(_wcmStream){_wcmStream.getTracks().forEach(function(t){t.stop();});_wcmStream=null;}}
+function wcmIniciarGravacao(){if(!_wcmStream)return;_wcmChunks=[];var opts={mimeType:'video/webm;codecs=vp9,opus'};try{_wcmRec=new MediaRecorder(_wcmStream,opts);}catch(e){_wcmRec=new MediaRecorder(_wcmStream);}_wcmRec.ondataavailable=function(e){if(e.data&&e.data.size>0)_wcmChunks.push(e.data);};_wcmRec.onstop=function(){var blob=new Blob(_wcmChunks,{type:'video/webm'});var url=URL.createObjectURL(blob);var play=document.getElementById('wcm-play');if(play)play.src=url;document.getElementById('wcm-playback').style.display='block';document.getElementById('wcm-rec-ind').style.display='none';document.getElementById('wcm-btn-parar').style.display='none';document.getElementById('wcm-btn-usar').style.display='';document.getElementById('wcm-btn-nova').style.display='';};_wcmRec.start(100);document.getElementById('wcm-rec-ind').style.display='block';document.getElementById('wcm-btn-gravar').style.display='none';document.getElementById('wcm-btn-parar').style.display='';}
+function wcmPararGravacao(){if(_wcmRec&&_wcmRec.state!=='inactive')_wcmRec.stop();}
+function wcmNovaGravacao(){document.getElementById('wcm-playback').style.display='none';document.getElementById('wcm-btn-usar').style.display='none';document.getElementById('wcm-btn-nova').style.display='none';document.getElementById('wcm-btn-gravar').style.display='';_wcmChunks=[];}
+async function wcmUsarVideo(){if(!_wcmChunks||!_wcmChunks.length){showToast('⚠️ Nenhum vídeo gravado.');return;}var blob=new Blob(_wcmChunks,{type:'video/webm'});wcmFechar();showToast('⬆️ Enviando vídeo...');var file=new File([blob],'webcam-'+Date.now()+'.webm',{type:'video/webm'});try{var m=await upArq(file);if(!window._md)window._md={};if(!window._md.pas)window._md.pas=[];window._md.pas.push({tp:'video',src:m.src,nm:m.nm||'webcam.webm'});showToast('✅ Vídeo pronto!');}catch(e){showToast('⚠️ Erro ao enviar.');}}
+(async function init(){var d=DB.g('info')||{};if(d.logoB64){var hl=document.getElementById('hlogo');if(hl){hl.src=d.logoB64;hl.style.display='block';}}rndDash();try{await DB.sync();}catch(e){}DB.listen();var anivLocal=DB.g('aniversariantes');if(anivLocal&&anivLocal.length){DB.s('aniversariantes',anivLocal);}carregarEnsaioAdmin();})();
+
+// ════════ ENSAIO DE LOUVOR ════════
+var ENS_FB='https://fcosta-31125-default-rtdb.firebaseio.com/obpc/ensaio_louvor.json';
+
+function ensYtId(url){
+  if(!url)return null;
+  var m;
+  m=url.match(/[?&]v=([A-Za-z0-9_-]{11})/);if(m)return m[1];
+  m=url.match(/youtu\.be\/([A-Za-z0-9_-]{11})/);if(m)return m[1];
+  m=url.match(/embed\/([A-Za-z0-9_-]{11})/);if(m)return m[1];
+  return null;
+}
+function ensPrevVideo(tipo){
+  var url=document.getElementById(tipo==='orig'?'ens-link':'ens-playback').value.trim();
+  var vid=ensYtId(url);
+  var wrap=document.getElementById(tipo==='orig'?'ens-prev-orig':'ens-prev-play');
+  var ifrm=document.getElementById(tipo==='orig'?'ens-iframe-orig':'ens-iframe-play');
+  if(vid){ifrm.src='https://www.youtube.com/embed/'+vid+'?rel=0';wrap.style.display='block';}
+  else{wrap.style.display='none';ifrm.src='';}
+}
+function carregarEnsaioAdmin(){
+  fetch(ENS_FB+'?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(d){
+    if(!d)return;
+    document.getElementById('ens-visivel').checked=d.visivel!==false;
+    document.getElementById('ens-grupo').value=d.grupo||'';
+    document.getElementById('ens-data').value=d.data||'';
+    document.getElementById('ens-local').value=d.local||'';
+    document.getElementById('ens-titulo').value=d.titulo||'';
+    document.getElementById('ens-link').value=d.link||'';
+    document.getElementById('ens-playback').value=d.playback||'';
+    document.getElementById('ens-letra').value=d.letra||'';
+    if(d.link)ensPrevVideo('orig');
+    if(d.playback)ensPrevVideo('play');
+  }).catch(function(){});
+}
+function salvarEnsaio(){
+  var payload={
+    visivel:document.getElementById('ens-visivel').checked,
+    grupo:document.getElementById('ens-grupo').value.trim(),
+    data:document.getElementById('ens-data').value,
+    local:document.getElementById('ens-local').value.trim(),
+    titulo:document.getElementById('ens-titulo').value.trim(),
+    link:document.getElementById('ens-link').value.trim(),
+    playback:document.getElementById('ens-playback').value.trim(),
+    letra:document.getElementById('ens-letra').value,
+    ts:Date.now()
+  };
+  fetch(ENS_FB,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+    .then(function(){showToast('Ensaio publicado!');})
+    .catch(function(){showToast('Erro ao salvar.');});
+  localStorage.setItem('obpc_ensaio_louvor',JSON.stringify(payload));
+}
+function limparEnsaio(){
+  if(!confirm('Encerrar o ensaio e remover do site?'))return;
+  fetch(ENS_FB,{method:'PUT',headers:{'Content-Type':'application/json'},body:'null'})
+    .then(function(){showToast('Ensaio encerrado.');}).catch(function(){});
+  localStorage.removeItem('obpc_ensaio_louvor');
+  ['ens-grupo','ens-data','ens-local','ens-titulo','ens-link','ens-playback','ens-letra'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('ens-visivel').checked=true;
+  document.getElementById('ens-prev-orig').style.display='none';
+  document.getElementById('ens-prev-play').style.display='none';
+  document.getElementById('ens-iframe-orig').src='';
+  document.getElementById('ens-iframe-play').src='';
+}
+function compartilharEnsaioWpp(){
+  var titulo=document.getElementById('ens-titulo').value.trim()||'Louvor';
+  var grupo=document.getElementById('ens-grupo').value.trim();
+  var data=document.getElementById('ens-data').value;
+  var local=document.getElementById('ens-local').value.trim();
+  var link=document.getElementById('ens-link').value.trim();
+  var siteUrl='https://obpcsaofernando199-sudo.github.io/Obpc/';
+  var dt='';
+  if(data){var dd=new Date(data);var dias=['Dom','Seg','Ter','Qua','Qui','Sex','Sab'];var meses=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];dt=dias[dd.getDay()]+', '+dd.getDate()+' '+meses[dd.getMonth()]+' '+String(dd.getHours()).padStart(2,'0')+'h';}
+  var txt='Ensaio de Louvor - OBPC Jardim Sao Fernando\n\n';
+  if(grupo)txt+='Grupo: '+grupo+'\n';
+  if(dt)txt+='Data: '+dt+'\n';
+  if(local)txt+='Local: '+local+'\n';
+  txt+='\nLouvor: '+titulo+'\n';
+  if(link)txt+=link+'\n';
+  txt+='\nLetra e karaoke: '+siteUrl;
+  window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank');
+}
+function ensAjudaTs(){var d=document.getElementById('ens-ts-ajuda');d.style.display=d.style.display==='none'?'block':'none';}
+function ensInserirMarcador(marcador){
+  var ta=document.getElementById('ens-letra');
+  var s=ta.selectionStart;
+  var insert='\n'+marcador+'\n';
+  ta.value=ta.value.substring(0,s)+insert+ta.value.substring(s);
+  ta.selectionStart=ta.selectionEnd=s+insert.length;
+  ta.focus();
+}
+function ensTestarKaraoke(){
+  var pv=document.getElementById('ens-preview-kar');
+  pv.style.display='block';
+  pv.innerHTML=document.getElementById('ens-letra').value.split('\n').map(function(l){
+    var m=l.match(/^\[(\d+):(\d+)\]\s*(.*)/);
+    if(m)return '<div style="color:#c7d2fe;padding:2px 0"><span style="color:#6366f1;font-size:.7rem;min-width:42px;display:inline-block">['+m[1]+':'+m[2]+']</span> '+ensRenderMarcadores(m[3])+'</div>';
+    var t=l.trim();if(!t)return '<div style="height:.4rem"></div>';
+    if(t.charAt(0)==='[')return '<div style="text-align:center;margin:.3rem 0">'+ensRenderMarcadores(t)+'</div>';
+    return '<div style="color:#a5b4fc;font-weight:700;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;margin:.5rem 0 .1rem">'+t+'</div>';
+  }).join('');
+}
+function ensRenderMarcadores(txt){
+  return txt
+    .replace(/\[ Bis \]/g,'<span style="background:rgba(99,102,241,.4);color:#c7d2fe;border-radius:4px;padding:1px 7px;font-size:.72rem;font-weight:700">Bis</span>')
+    .replace(/\[ Todos \]/g,'<span style="background:rgba(16,185,129,.3);color:#6ee7b7;border-radius:4px;padding:1px 7px;font-size:.72rem;font-weight:700">Todos</span>')
+    .replace(/\[ Coro \]/g,'<span style="background:rgba(245,158,11,.3);color:#fde68a;border-radius:4px;padding:1px 7px;font-size:.72rem;font-weight:700">Coro</span>')
+    .replace(/\[ (\d+x) \]/g,'<span style="background:rgba(239,68,68,.25);color:#fca5a5;border-radius:4px;padding:1px 7px;font-size:.72rem;font-weight:700">$1</span>')
+    .replace(/\[ Homens \]/g,'<span style="background:rgba(59,130,246,.3);color:#93c5fd;border-radius:4px;padding:1px 7px;font-size:.72rem;font-weight:700">Homens</span>')
+    .replace(/\[ Mulheres \]/g,'<span style="background:rgba(236,72,153,.3);color:#f9a8d4;border-radius:4px;padding:1px 7px;font-size:.72rem;font-weight:700">Mulheres</span>');
+}
+
+</script>
+<!-- MODAL WEBCAM -->
+<div id="wcm-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:900;align-items:center;justify-content:center;flex-direction:column;gap:.7rem">
+  <div style="background:#1e293b;border-radius:16px;padding:1.2rem;width:min(96vw,520px);border:2px solid var(--azul2)">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem">
+      <strong style="color:#fff;font-size:.95rem">&#127916; Gravar V&#237;deo (Webcam)</strong>
+      <button onclick="wcmFechar()" style="background:none;border:none;color:#fff;font-size:1.4rem;cursor:pointer">&#215;</button>
+    </div>
+    <video id="wcm-preview" autoplay muted playsinline style="width:100%;border-radius:10px;background:#000;max-height:280px;display:block"></video>
+    <div id="wcm-rec-ind" style="display:none;text-align:center;margin:.4rem 0;font-size:.78rem;color:#e74c3c;font-weight:700">&#9679; GRAVANDO...</div>
+    <div id="wcm-playback" style="display:none;margin-top:.5rem"><video id="wcm-play" controls style="width:100%;border-radius:10px;background:#000;max-height:220px"></video></div>
+    <div style="display:flex;gap:.5rem;margin-top:.7rem;flex-wrap:wrap;justify-content:center">
+      <button id="wcm-btn-gravar" class="btn bs" onclick="wcmIniciarGravacao()">&#9679; Iniciar</button>
+      <button id="wcm-btn-parar" class="btn bd" onclick="wcmPararGravacao()" style="display:none">&#9632; Parar</button>
+      <button id="wcm-btn-usar" class="btn bp" onclick="wcmUsarVideo()" style="display:none">&#10003; Usar</button>
+      <button id="wcm-btn-nova" class="btn bsm" onclick="wcmNovaGravacao()" style="background:#64748b;color:#fff;display:none">&#8635; Nova</button>
+    </div>
+    <div id="wcm-sts" style="font-size:.75rem;color:rgba(255,255,255,.55);text-align:center;margin-top:.4rem"></div>
+  </div>
+</div>
+<style>@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}</style>
+</body>
+</html>
