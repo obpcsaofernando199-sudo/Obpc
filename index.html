@@ -3082,5 +3082,495 @@ function _linkCopiado(){
   if(b){b.textContent='Copiado!';b.classList.add('copiado');setTimeout(function(){b.textContent='Copiar';b.classList.remove('copiado');},2500);}
 }
 </script>
+   <!-- ============================================================
+  OBPC — SISTEMA "FACEBOOK" DE COMPARTILHAMENTO COM DEEP LINK
+  
+  INSTRUÇÕES:
+  1. Cole o bloco <script> abaixo logo ANTES do </body> do index.html
+  2. Substitua  SEU-WORKER  pelo nome real do seu Worker Cloudflare
+     ex: obpc-og.sergiofcosta.workers.dev
+  3. Adicione os botões de compartilhar em cada seção conforme indicado
+  
+  COMO FUNCIONA:
+  - Cada seção gera um link:  https://SEU-WORKER.workers.dev/og?s=banner&titulo=...&img=...
+  - O WhatsApp bate nesse link, lê as OG tags e mostra preview com IMAGEM
+  - O usuário clica → vai para o site → o modal da seção abre automaticamente
+  ============================================================ -->
+
+<!-- ══════════════════════════════════════════════════════════
+     COLE ESTE BLOCO INTEIRO NO index.html ANTES DO </body>
+     Substitua SEUWORKER pelo nome real do Worker
+═══════════════════════════════════════════════════════════ -->
+<script>
+// ════════════════════════════════════════════════
+// CONFIGURAÇÃO — troque pelo nome do seu Worker
+// ════════════════════════════════════════════════
+var OG_WORKER = 'https://lively-dawn-abf1.sergiofcostacorretor.workers.dev/og';
+var _SITE_OBPC = 'https://obpcsaofernando199-sudo.github.io/Obpc/';
+
+// ────────────────────────────────────────────────
+// GERA URL de compartilhamento para qualquer seção
+// ────────────────────────────────────────────────
+function obpcShareUrl(secao, opcoes) {
+  var o = opcoes || {};
+  var p = new URLSearchParams();
+  p.set('s', secao);
+  if (o.id    !== undefined) p.set('id',    o.id);
+  if (o.titulo) p.set('titulo', o.titulo);
+  if (o.desc)   p.set('desc',   o.desc);
+  if (o.img)    p.set('img',    o.img);
+  if (o.dt)     p.set('dt',     o.dt);
+  if (o.hora)   p.set('hora',   o.hora);
+  if (o.local)  p.set('local',  o.local);
+  return OG_WORKER + '?' + p.toString();
+}
+
+// ────────────────────────────────────────────────
+// MODAL DE COMPARTILHAMENTO UNIFICADO
+// ────────────────────────────────────────────────
+function obpcAbrirShareModal(opcoes) {
+  // opcoes: {secao, id, titulo, desc, img, dt, hora, local, imgBlob}
+  var o = opcoes || {};
+  var shareUrl = obpcShareUrl(o.secao || 'default', o);
+  var txt = montarTextoShare(o, shareUrl);
+
+  // Cria modal se não existir
+  var modal = document.getElementById('obpc-share-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'obpc-share-modal';
+    modal.style.cssText = 'display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:999999;align-items:flex-end;justify-content:center;backdrop-filter:blur(8px)';
+    modal.innerHTML = [
+      '<div id="obpc-sm-sheet" style="background:#fff;border-radius:20px 20px 0 0;padding:1.5rem 1.2rem 2.4rem;width:100%;max-width:480px;animation:slideUp .25s ease">',
+        '<div style="width:36px;height:4px;background:#ddd;border-radius:4px;margin:0 auto 1rem"></div>',
+        '<div id="obpc-sm-titulo" style="text-align:center;font-size:1rem;font-weight:800;color:#6b5b8c;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.3rem"></div>',
+        '<div id="obpc-sm-desc" style="text-align:center;font-size:.8rem;color:#606770;margin-bottom:.9rem"></div>',
+        '<div id="obpc-sm-preview" style="margin-bottom:1rem"></div>',
+        '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem;margin-bottom:1rem">',
+          '<button onclick="obpcShareRede(\'wpp\')" style="display:flex;flex-direction:column;align-items:center;gap:.35rem;background:#f7f3ff;border:1px solid #ddd;border-radius:12px;padding:.75rem .4rem;cursor:pointer;font-size:.68rem;font-weight:600;font-family:inherit;color:#128c7e;border-color:rgba(37,211,102,.3)"><span style="font-size:1.5rem">💬</span>WhatsApp</button>',
+          '<button onclick="obpcShareRede(\'facebook\')" style="display:flex;flex-direction:column;align-items:center;gap:.35rem;background:#f7f3ff;border:1px solid rgba(24,119,242,.3);border-radius:12px;padding:.75rem .4rem;cursor:pointer;font-size:.68rem;font-weight:600;font-family:inherit;color:#1877f2"><span style="font-size:1.5rem">📘</span>Facebook</button>',
+          '<button onclick="obpcShareRede(\'telegram\')" style="display:flex;flex-direction:column;align-items:center;gap:.35rem;background:#f7f3ff;border:1px solid rgba(0,136,204,.3);border-radius:12px;padding:.75rem .4rem;cursor:pointer;font-size:.68rem;font-weight:600;font-family:inherit;color:#0088cc"><span style="font-size:1.5rem">✈️</span>Telegram</button>',
+          '<button onclick="obpcShareRede(\'nativo\')" style="display:flex;flex-direction:column;align-items:center;gap:.35rem;background:#f7f3ff;border:1px solid #ddd;border-radius:12px;padding:.75rem .4rem;cursor:pointer;font-size:.68rem;font-weight:600;font-family:inherit;color:#6b5b8c"><span style="font-size:1.5rem">⬆️</span>Mais</button>',
+        '</div>',
+        '<div style="display:flex;align-items:center;gap:.6rem;background:#f7f3ff;border:1px solid #ddd;border-radius:10px;padding:.6rem .9rem;margin-bottom:.8rem">',
+          '<span id="obpc-sm-link" style="flex:1;font-size:.72rem;color:#606770;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></span>',
+          '<button onclick="obpcCopiarShareLink()" id="obpc-sm-copiar" style="background:#ede8f7;border:1.5px solid #c8b4e8;color:#6b5b8c;border-radius:7px;padding:5px 12px;font-size:.72rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap">Copiar</button>',
+        '</div>',
+        '<button onclick="obpcFecharShareModal()" style="width:100%;background:#f7f3ff;border:1px solid #ddd;color:#606770;border-radius:10px;padding:.75rem;font-size:.85rem;font-weight:600;cursor:pointer;font-family:inherit">Fechar</button>',
+      '</div>'
+    ].join('');
+    document.body.appendChild(modal);
+    modal.addEventListener('click', function(e){if(e.target===modal)obpcFecharShareModal();});
+  }
+
+  // Salva estado atual
+  window._obpcShareAtual = {opcoes: o, url: shareUrl, txt: txt};
+
+  // Preenche modal
+  document.getElementById('obpc-sm-titulo').textContent = '📤 ' + (o.tituloModal || 'Compartilhar');
+  document.getElementById('obpc-sm-desc').textContent = o.desc || '';
+  document.getElementById('obpc-sm-link').textContent = shareUrl;
+
+  // Preview de imagem
+  var prev = document.getElementById('obpc-sm-preview');
+  prev.innerHTML = '';
+  if (o.img) {
+    var img = document.createElement('img');
+    img.src = o.img;
+    img.style.cssText = 'width:100%;max-height:200px;object-fit:cover;border-radius:12px;display:block';
+    img.onerror = function(){img.style.display='none';};
+    prev.appendChild(img);
+  }
+
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function obpcFecharShareModal() {
+  var m = document.getElementById('obpc-share-modal');
+  if (m) { m.style.display = 'none'; document.body.style.overflow = ''; }
+}
+
+function obpcShareRede(rede) {
+  var st = window._obpcShareAtual || {};
+  var url = st.url || _SITE_OBPC;
+  var txt = st.txt || _SITE_OBPC;
+  var enc = encodeURIComponent;
+
+  if (rede === 'wpp') {
+    window.open('https://wa.me/?text=' + enc(txt), '_blank');
+  } else if (rede === 'facebook') {
+    window.open('https://www.facebook.com/sharer/sharer.php?u=' + enc(url), '_blank');
+  } else if (rede === 'telegram') {
+    window.open('https://t.me/share/url?url=' + enc(url) + '&text=' + enc(txt), '_blank');
+  } else if (rede === 'nativo') {
+    if (navigator.share) {
+      navigator.share({title: (st.opcoes||{}).titulo || 'OBPC', text: txt, url: url}).catch(function(){});
+    } else {
+      navigator.clipboard && navigator.clipboard.writeText(url).then(function(){alert('Link copiado!');});
+    }
+  }
+}
+
+function obpcCopiarShareLink() {
+  var url = (window._obpcShareAtual || {}).url || _SITE_OBPC;
+  var btn = document.getElementById('obpc-sm-copiar');
+  navigator.clipboard && navigator.clipboard.writeText(url).then(function(){
+    if (btn) { btn.textContent = '✓ Copiado!'; setTimeout(function(){btn.textContent='Copiar';}, 2500); }
+  });
+}
+
+function montarTextoShare(o, url) {
+  var info = DB.get('info') || {};
+  var nomeIg = info.nome || 'OBPC Jardim São Fernando';
+  var linhas = ['⛪ *' + nomeIg + '*', ''];
+  if (o.titulo) linhas.push('✨ *' + o.titulo + '*');
+  if (o.desc)   linhas.push(o.desc);
+  linhas.push('');
+  if (o.dt)    linhas.push('📅 ' + o.dt);
+  if (o.hora)  linhas.push('🕐 ' + o.hora);
+  if (o.local) linhas.push('📍 ' + o.local);
+  linhas.push('');
+  linhas.push('📲 Veja no site:');
+  linhas.push('🌐 ' + url);
+  return linhas.filter(function(l,i,a){return !(l===''&&a[i-1]==='');}).join('\n');
+}
+
+// ────────────────────────────────────────────────
+// FUNÇÕES DE COMPARTILHAR POR SEÇÃO
+// ────────────────────────────────────────────────
+
+// BANNER (Destaque do Mês)
+window.obpcCompartilharBanner = function() {
+  var d = DB.get('banner_culto') || {};
+  var info = DB.get('info') || {};
+  var titulo = d.titulo || d.badge || 'Destaque do Mês';
+  var desc = d.subtit || d.sub || d.texto || ('OBPC — ' + titulo);
+  var img = d.bgUrl || OG_PADRAO;
+  // Se imagem for idb:/blob: usa padrão
+  if (!img || img.startsWith('idb:') || img.startsWith('blob:')) img = _SITE_OBPC + 'og-banner.png';
+  var dtFmt = '';
+  if (d.dt) { try { var dd=new Date(d.dt+'T12:00'); dtFmt=dd.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'}); } catch(e){} }
+
+  // Tenta capturar o banner como PNG e usa como imagem OG via data URL
+  // (funciona para compartilhamento nativo; para WhatsApp preview usa Cloudinary se disponível)
+  obpcAbrirShareModal({
+    secao: 'banner',
+    tituloModal: 'Compartilhar Destaque',
+    titulo: titulo,
+    desc: desc,
+    img: img,
+    dt: dtFmt,
+    hora: d.hora || '',
+    local: d.local || '',
+  });
+};
+
+// CULTO FOI ASSIM (por índice)
+window.obpcCompartilharCulto = function(idx, culto) {
+  var c = culto || (DB.get('cultos') || [])[idx] || {};
+  var titulo = c.tit || c.titulo || 'Nosso Culto Foi Assim';
+  var desc = c.rel || c.relato || '';
+  var dtFmt = '';
+  if (c.dt) { try { var dd=new Date(c.dt+'T12:00'); dtFmt=dd.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'}); } catch(e){} }
+  // Pega primeira imagem do culto como preview
+  var midia = c.midias || c.midia || [];
+  var img = '';
+  for (var i = 0; i < midia.length; i++) {
+    var src = midia[i] && midia[i].src;
+    if (src && !src.startsWith('idb:') && !src.startsWith('blob:') && !src.startsWith('mem:')) {
+      // Thumbnail do Cloudinary ou YouTube
+      if (src.includes('/video/upload/')) {
+        img = src.replace('/video/upload/', '/video/upload/so_0,w_1200/').replace(/\.(mp4|mov|webm|avi|3gp|m4v)(\?.*)?$/i, '.jpg');
+      } else if (src.match(/youtu/)) {
+        var ym = src.match(/(?:v=|youtu\.be\/|embed\/)([a-zA-Z0-9_-]{11})/);
+        if (ym) img = 'https://img.youtube.com/vi/' + ym[1] + '/hqdefault.jpg';
+      } else if (!src.startsWith('data:')) {
+        img = src;
+      }
+      if (img) break;
+    }
+  }
+  if (!img) img = _SITE_OBPC + 'og-banner.png';
+
+  obpcAbrirShareModal({
+    secao: 'culto',
+    id: idx,
+    tituloModal: 'Compartilhar Culto',
+    titulo: titulo,
+    desc: desc || dtFmt,
+    img: img,
+    dt: dtFmt,
+  });
+};
+
+// PRÓXIMOS CULTOS
+window.obpcCompartilharProximos = function() {
+  var d = DB.get('proximos_cultos') || {};
+  var lista = d.lista || [];
+  var proximo = lista[0] || {};
+  var titulo = proximo.titulo || 'Próximos Cultos';
+  var dtFmt = '';
+  if (proximo.dt) { try { var dd=new Date(proximo.dt+'T12:00'); dtFmt=dd.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'}); } catch(e){} }
+  var img = proximo.imgUrl || proximo.img || (_SITE_OBPC + 'og-banner.png');
+  if (img.startsWith('idb:') || img.startsWith('blob:')) img = _SITE_OBPC + 'og-banner.png';
+
+  obpcAbrirShareModal({
+    secao: 'proximos',
+    tituloModal: 'Compartilhar Próximos Cultos',
+    titulo: titulo,
+    desc: 'Confira os próximos cultos da OBPC Jardim São Fernando!',
+    img: img,
+    dt: dtFmt,
+    hora: proximo.hora || '',
+    local: proximo.local || '',
+  });
+};
+
+// ANIVERSARIANTES
+window.obpcCompartilharAniversario = function() {
+  var hoje = new Date();
+  var mes = hoje.toLocaleDateString('pt-BR', {month:'long'});
+  obpcAbrirShareModal({
+    secao: 'aniversario',
+    tituloModal: 'Compartilhar Aniversariantes',
+    titulo: 'Aniversariantes de ' + mes.charAt(0).toUpperCase() + mes.slice(1),
+    desc: 'Parabéns aos aniversariantes do mês! 🎂',
+    img: _SITE_OBPC + 'og-banner.png',
+  });
+};
+
+// PALAVRA DO PASTOR (por índice)
+window.obpcCompartilharPalavra = function(idx, palavra) {
+  var p = palavra || (DB.get('palavras') || [])[idx] || {};
+  var titulo = p.tit || p.titulo || 'Palavra do Pastor';
+  var desc = p.txt || p.texto || '';
+  var dtFmt = '';
+  if (p.dt) { try { var dd=new Date(p.dt+'T12:00'); dtFmt=dd.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'}); } catch(e){} }
+  var midia = p.midias || p.midia || [];
+  var img = '';
+  for (var i=0;i<midia.length;i++){var src=midia[i]&&midia[i].src;if(src&&!src.startsWith('idb:')&&!src.startsWith('blob:')&&!src.startsWith('data:')){img=src;break;}}
+  if (!img) img = _SITE_OBPC + 'og-banner.png';
+
+  obpcAbrirShareModal({
+    secao: 'palavra',
+    id: idx,
+    tituloModal: 'Compartilhar Palavra',
+    titulo: titulo,
+    desc: desc.substring(0, 200),
+    img: img,
+    dt: dtFmt,
+  });
+};
+
+// EVENTO (por índice)
+window.obpcCompartilharEvento = function(idx, evento) {
+  var e = evento || (DB.get('eventos') || [])[idx] || {};
+  var titulo = e.nome || e.nom || 'Evento';
+  var dtFmt = '';
+  if (e.data||e.dt) { try { var dd=new Date((e.data||e.dt)+'T12:00'); dtFmt=dd.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'}); } catch(err){} }
+  var img = e.img || (_SITE_OBPC + 'og-banner.png');
+
+  obpcAbrirShareModal({
+    secao: 'evento',
+    id: idx,
+    tituloModal: 'Compartilhar Evento',
+    titulo: titulo,
+    desc: e.tipo || e.tp || '',
+    img: img,
+    dt: dtFmt,
+    hora: e.hora || e.h || '',
+    local: e.local || e.loc || '',
+  });
+};
+
+// AVISO (por índice)
+window.obpcCompartilharAviso = function(idx, aviso) {
+  var a = aviso || (DB.get('avisos') || [])[idx] || {};
+  var titulo = a.titulo || a.tit || 'Aviso';
+  var desc = a.texto || a.txt || '';
+  var img = a.img || (_SITE_OBPC + 'og-banner.png');
+
+  obpcAbrirShareModal({
+    secao: 'aviso',
+    id: idx,
+    tituloModal: 'Compartilhar Aviso',
+    titulo: titulo,
+    desc: desc.substring(0, 200),
+    img: img,
+  });
+};
+
+// ────────────────────────────────────────────────
+// DEEP LINK — Lê a URL e abre o modal correto
+// Chamado no init() do index.html
+// ────────────────────────────────────────────────
+window.obpcDeepLink = function() {
+  var params = new URLSearchParams(window.location.search);
+  var s  = params.get('s');
+  var id = params.get('id');
+  if (!s) return;
+
+  // Limpa a URL para não ficar feia (sem recarregar)
+  try {
+    var limpa = window.location.pathname;
+    window.history.replaceState({}, '', limpa);
+  } catch(e) {}
+
+  // Aguarda o conteúdo carregar antes de abrir o modal
+  setTimeout(function() {
+    _obpcAbrirSecao(s, id ? parseInt(id) : 0);
+  }, 800);
+};
+
+function _obpcAbrirSecao(s, idx) {
+  idx = idx || 0;
+
+  if (s === 'banner') {
+    // Rola até o banner e faz pulsar
+    var el = document.getElementById('sec-banner');
+    if (el) { el.scrollIntoView({behavior:'smooth', block:'center'}); _obpcPulsar(el); }
+
+  } else if (s === 'culto') {
+    var sec = document.getElementById('sec-cultos');
+    if (sec) {
+      sec.classList.remove('hidden');
+      sec.scrollIntoView({behavior:'smooth', block:'start'});
+      // Destaca o card pelo índice
+      setTimeout(function(){
+        var cards = sec.querySelectorAll('.culto-card');
+        if (cards[idx]) {
+          cards[idx].scrollIntoView({behavior:'smooth', block:'center'});
+          _obpcPulsar(cards[idx]);
+        }
+      }, 400);
+    }
+
+  } else if (s === 'proximos') {
+    var sec2 = document.getElementById('sec-proximos-cultos');
+    if (sec2) { sec2.classList.remove('hidden'); sec2.scrollIntoView({behavior:'smooth', block:'start'}); _obpcPulsar(sec2); }
+
+  } else if (s === 'aniversario') {
+    var sec3 = document.getElementById('sec-aniversariantes');
+    if (sec3) { sec3.classList.remove('hidden'); sec3.scrollIntoView({behavior:'smooth', block:'start'}); _obpcPulsar(sec3); }
+
+  } else if (s === 'palavra') {
+    var sec4 = document.getElementById('sec-palavras');
+    if (sec4) {
+      sec4.classList.remove('hidden');
+      sec4.scrollIntoView({behavior:'smooth', block:'start'});
+      setTimeout(function(){
+        var cards4 = sec4.querySelectorAll('.pastor-card');
+        if (cards4[idx]) { cards4[idx].scrollIntoView({behavior:'smooth', block:'center'}); _obpcPulsar(cards4[idx]); }
+      }, 400);
+    }
+
+  } else if (s === 'evento') {
+    var sec5 = document.getElementById('sec-eventos');
+    if (sec5) {
+      sec5.classList.remove('hidden');
+      sec5.scrollIntoView({behavior:'smooth', block:'start'});
+      setTimeout(function(){
+        var cards5 = sec5.querySelectorAll('.evt-card');
+        if (cards5[idx]) { cards5[idx].scrollIntoView({behavior:'smooth', block:'center'}); _obpcPulsar(cards5[idx]); }
+      }, 400);
+    }
+
+  } else if (s === 'aviso') {
+    var sec6 = document.getElementById('sec-avisos');
+    if (sec6) {
+      sec6.classList.remove('hidden');
+      sec6.scrollIntoView({behavior:'smooth', block:'start'});
+      setTimeout(function(){
+        var cards6 = sec6.querySelectorAll('.aviso-card');
+        if (cards6[idx]) { cards6[idx].scrollIntoView({behavior:'smooth', block:'center'}); _obpcPulsar(cards6[idx]); }
+      }, 400);
+    }
+
+  } else if (s === 'informativo') {
+    var sec7 = document.getElementById('sec-informativos');
+    if (sec7) { sec7.classList.remove('hidden'); sec7.scrollIntoView({behavior:'smooth', block:'start'}); }
+
+  } else if (s === 'sermao') {
+    var sec8 = document.getElementById('sec-sermoes');
+    if (sec8) { sec8.classList.remove('hidden'); sec8.scrollIntoView({behavior:'smooth', block:'start'}); }
+  }
+}
+
+// Efeito de "pulsar" para chamar atenção para o card aberto pelo link
+function _obpcPulsar(el) {
+  if (!el) return;
+  el.style.transition = 'box-shadow .3s, outline .3s';
+  el.style.outline = '3px solid #f5c842';
+  el.style.boxShadow = '0 0 0 6px rgba(245,200,66,.25)';
+  setTimeout(function(){
+    el.style.outline = '';
+    el.style.boxShadow = '';
+  }, 2500);
+}
+
+// ────────────────────────────────────────────────
+// INJETAR BOTÕES DE COMPARTILHAR NAS SEÇÕES
+// Chamado após carregarCultos(), carregarPalavras() etc.
+// ────────────────────────────────────────────────
+
+// Sobrescreve as funções antigas de compartilhar das seções
+// para usar o novo sistema com deep link
+
+// Botão de compartilhar para cada CULTO
+window.obpcBtnShareCulto = function(idx, culto) {
+  var btn = document.createElement('button');
+  btn.className = 'share-btn';
+  btn.style.cssText = 'display:inline-flex;align-items:center;gap:6px;margin-top:.5rem;background:linear-gradient(135deg,rgba(245,200,66,.15),rgba(107,91,140,.15));border:1.5px solid rgba(245,200,66,.4);color:#c9973d;font-size:.75rem;border-radius:20px;padding:6px 14px;cursor:pointer;font-family:inherit;font-weight:700';
+  btn.innerHTML = '📤 Compartilhar este culto';
+  btn.onclick = function() { obpcCompartilharCulto(idx, culto); };
+  return btn;
+};
+
+// Botão de compartilhar para cada PALAVRA
+window.obpcBtnSharePalavra = function(idx, palavra) {
+  var btn = document.createElement('button');
+  btn.className = 'share-btn';
+  btn.style.cssText = 'display:inline-flex;align-items:center;gap:6px;margin-top:.5rem;background:rgba(107,91,140,.1);border:1px solid rgba(107,91,140,.3);color:#6b5b8c;font-size:.72rem;border-radius:20px;padding:5px 12px;cursor:pointer;font-family:inherit;font-weight:600';
+  btn.innerHTML = '📤 Compartilhar';
+  btn.onclick = function() { obpcCompartilharPalavra(idx, palavra); };
+  return btn;
+};
+
+// ─── CHAMAR NO init() ───
+// Adicione  obpcDeepLink();  no final da função init() do seu index.html
+// Exemplo:
+//   async function init(){
+//     ...código existente...
+//     obpcDeepLink(); // ← ADICIONE ESTA LINHA NO FINAL
+//   }
+
+</script>
+
+<!-- ══════════════════════════════════════════════════════════
+     BOTÕES A ADICIONAR NAS SEÇÕES DO index.html
+     
+     1) DESTAQUE DO MÊS — adicione após o botão "Compartilhar" existente:
+     
+     <button onclick="obpcCompartilharBanner()" style="...igual ao btn Baixar PNG...">
+       📤 Compartilhar com Link
+     </button>
+     
+     2) PRÓXIMOS CULTOS — substitua o onclick do botão compartilhar por:
+     
+     onclick="obpcCompartilharProximos()"
+     
+     3) ANIVERSARIANTES — adicione ao final da seção:
+     
+     <button onclick="obpcCompartilharAniversario()" class="share-btn">📤 Compartilhar</button>
+     
+     4) CULTOS — o sistema injeta automaticamente em cada card
+        (via obpcBtnShareCulto no carregarCultos)
+        
+     5) EVENTOS — substitua o onclick compartilharEvento() por:
+     
+     onclick="obpcCompartilharEvento(IDX, EVENTO_OBJ)"
+     
+     ══════════════════════════════════════════════════════════ -->
 </body>
 </html>
