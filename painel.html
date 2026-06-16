@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Painel ADM — OBPC São Fernando</title>
+<style>
+:root{--azul:#1E3A5F;--azul2:#3B9BD6;--cinza:#f4f6f9;--borda:#dde2ea;--txt:#1a2535;--muted:#6b7a90;--verde:#27ae60;--laranja:#e67e22;--verm:#e74c3c}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:var(--cinza);color:var(--txt);min-height:100vh}
+header{background:var(--azul);color:#fff;padding:14px 24px;display:flex;align-items:center;gap:12px}
+header img{height:40px;border-radius:50%}
+header h1{font-size:1.1rem;font-weight:700}
+header small{opacity:.7;font-size:.8rem}
+.sync-badge{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:.75rem;background:rgba(255,255,255,.15);padding:5px 12px;border-radius:20px}
+.sync-dot{width:8px;height:8px;border-radius:50%;background:#ccc;transition:.3s}
+.sync-dot.ok{background:#27ae60}
+.sync-dot.erro{background:#e74c3c}
+.sync-dot.sync{background:#f39c12;animation:pulse .8s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+nav{background:#fff;border-bottom:2px solid var(--borda);display:flex;gap:0;overflow-x:auto}
+nav button{border:none;background:none;padding:13px 20px;font-size:.85rem;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;transition:.2s}
+nav button.ativo{color:var(--azul);border-bottom-color:var(--azul2)}
+.pg{display:none;padding:24px;max-width:1100px;margin:0 auto}
+.pg.ativo{display:block}
+.card{background:#fff;border-radius:12px;border:1px solid var(--borda);padding:20px;margin-bottom:20px}
+.card h2{font-size:1rem;font-weight:700;margin-bottom:16px;color:var(--azul);display:flex;align-items:center;gap:8px}
+label{display:block;font-size:.78rem;font-weight:600;color:var(--muted);margin:12px 0 4px;text-transform:uppercase;letter-spacing:.5px}
+input[type=text],input[type=url],input[type=color],select,textarea{width:100%;padding:9px 12px;border:1.5px solid var(--borda);border-radius:8px;font-size:.9rem;color:var(--txt);outline:none;transition:.2s;background:#fff}
+input[type=text]:focus,input[type=url]:focus,select:focus,textarea:focus{border-color:var(--azul2)}
+input[type=color]{height:40px;padding:4px 8px;cursor:pointer}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.upbox{border:2px dashed var(--borda);border-radius:10px;text-align:center;padding:20px;cursor:pointer;position:relative;transition:.2s;background:var(--cinza)}
+.upbox:hover{border-color:var(--azul2);background:#eaf4fd}
+.upbox span{font-size:2rem}
+.upbox p{font-size:.8rem;color:var(--muted);margin-top:4px}
+.upbox input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer}
+.prevw{margin-top:8px;text-align:center}
+.prevw img{max-height:80px;border-radius:8px;border:1px solid var(--borda)}
+.toggle-row{display:flex;align-items:center;gap:10px;margin:8px 0}
+.toggle{position:relative;width:46px;height:24px}
+.toggle input{opacity:0;width:0;height:0}
+.slider{position:absolute;inset:0;background:#ccc;border-radius:24px;cursor:pointer;transition:.3s}
+.slider:before{content:'';position:absolute;width:18px;height:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s}
+input:checked+.slider{background:var(--azul2)}
+input:checked+.slider:before{transform:translateX(22px)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 22px;border-radius:8px;border:none;font-size:.9rem;font-weight:600;cursor:pointer;transition:.2s}
+.btn-prim{background:var(--azul);color:#fff}
+.btn-prim:hover{background:#16304f}
+.btn-sec{background:#fff;color:var(--azul);border:1.5px solid var(--borda)}
+.btn-sec:hover{border-color:var(--azul2)}
+.btn-verm{background:var(--verm);color:#fff}
+.ac-bar{display:flex;gap:10px;justify-content:flex-end;margin-top:16px;padding-top:16px;border-top:1px solid var(--borda)}
+.badge-sel{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.badge-opt{padding:6px 14px;border-radius:20px;border:2px solid var(--borda);font-size:.8rem;font-weight:600;cursor:pointer;transition:.2s;background:#fff}
+.badge-opt.sel{background:var(--azul);color:#fff;border-color:var(--azul)}
+.tpl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-top:8px}
+.tpl-card{border:2px solid var(--borda);border-radius:10px;overflow:hidden;cursor:pointer;transition:.2s}
+.tpl-card:hover,.tpl-card.sel{border-color:var(--azul2);box-shadow:0 0 0 3px rgba(59,155,214,.2)}
+.tpl-card p{font-size:.75rem;font-weight:600;padding:6px 8px;text-align:center;color:var(--txt)}
+.agenda-lista{display:flex;flex-direction:column;gap:10px}
+.ag-item{background:#fff;border:1px solid var(--borda);border-radius:10px;padding:14px 16px;display:flex;align-items:flex-start;gap:14px}
+.ag-item .ag-info{flex:1}
+.ag-item .ag-titulo{font-weight:700;font-size:.95rem}
+.ag-item .ag-sub{font-size:.8rem;color:var(--muted);margin-top:2px}
+.ag-item .ag-acoes{display:flex;gap:6px;align-items:center}
+.tag{display:inline-block;padding:2px 10px;border-radius:12px;font-size:.72rem;font-weight:700;text-transform:uppercase}
+.tag-culto{background:#dbeafe;color:#1d4ed8}
+.tag-ev{background:#dcfce7;color:#166534}
+.tag-esp{background:#fef9c3;color:#854d0e}
+.tag-dep{background:#f3e8ff;color:#6b21a8}
+.notif-lista{display:flex;flex-direction:column;gap:10px}
+.notif-item{background:#fff;border:1px solid var(--borda);border-radius:10px;padding:14px 16px}
+.notif-item .n-titulo{font-weight:700;font-size:.9rem}
+.notif-item .n-txt{font-size:.82rem;color:var(--muted);margin-top:3px}
+.notif-item .n-acoes{display:flex;gap:8px;margin-top:10px}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-bottom:20px}
+.stat-card{background:#fff;border:1px solid var(--borda);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:4px}
+.stat-card .s-label{font-size:.75rem;color:var(--muted);font-weight:600;text-transform:uppercase}
+.stat-card .s-val{font-size:1.6rem;font-weight:800;color:var(--azul)}
+.stat-card .s-sub{font-size:.75rem;color:var(--muted)}
+.color-row{display:flex;align-items:center;gap:10px}
+.color-row input[type=color]{width:50px;flex-shrink:0}
+.color-row input[type=text]{flex:1}
+#toast{position:fixed;bottom:24px;right:24px;background:var(--azul);color:#fff;padding:12px 22px;border-radius:10px;font-weight:600;font-size:.9rem;opacity:0;transition:.4s;pointer-events:none;z-index:9999}
+#toast.show{opacity:1}
+.help{font-size:.75rem;color:var(--muted);margin-top:3px}
+.loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,.85);z-index:8888;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;font-size:.95rem;color:var(--azul);font-weight:600}
+.spinner{width:36px;height:36px;border:3px solid var(--borda);border-top-color:var(--azul2);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:600px){.row2,.row3{grid-template-columns:1fr}.pg{padding:14px}}
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <span>Conectando ao Firebase...</span>
+</div>
+
+<header>
+  <img src="https://i.imgur.com/YWwWMJg.png" alt="logo">
+  <div>
+    <h1>Painel ADM — OBPC São Fernando</h1>
+    <small>Central de Comando — sincronizado em tempo real</small>
+  </div>
+  <div class="sync-badge">
+    <div class="sync-dot" id="sync-dot"></div>
+    <span id="sync-txt">Conectando...</span>
+  </div>
+</header>
+
+<nav>
+  <button class="ativo" onclick="aba('banner',this)">🖼️ Banner Principal</button>
+  <button onclick="aba('agenda',this)">📅 Agenda</button>
+  <button onclick="aba('notif',this)">🔔 Notificações</button>
+  <button onclick="aba('stats',this)">📊 Estatísticas</button>
+</nav>
+
+<!-- ===== BANNER ===== -->
+<div id="pg-banner" class="pg ativo">
+  <div class="card">
+    <h2>🖼️ Configurar Banner Principal</h2>
+
+    <label>🏷️ Badge / Tipo de Evento</label>
+    <div class="badge-sel" id="badge-sel">
+      <div class="badge-opt sel" data-v="CULTO">CULTO</div>
+      <div class="badge-opt" data-v="EVENTO">EVENTO</div>
+      <div class="badge-opt" data-v="CONFERÊNCIA">CONFERÊNCIA</div>
+      <div class="badge-opt" data-v="RETIRO">RETIRO</div>
+      <div class="badge-opt" data-v="ENCONTRO">ENCONTRO</div>
+      <div class="badge-opt" data-v="">SEM BADGE</div>
+    </div>
+    <input type="text" id="bnr-badge" placeholder="Ou digite um badge personalizado..." style="margin-top:8px">
+
+    <label>📝 Título Principal</label>
+    <input type="text" id="bnr-titulo" placeholder="Ex: Culto de Celebração">
+
+    <label>💬 Subtítulo</label>
+    <input type="text" id="bnr-sub" placeholder="Ex: Venha e experimente a presença de Deus">
+
+    <label>🎯 CTA (botão de chamada)</label>
+    <input type="text" id="bnr-cta" placeholder="Ex: Saiba Mais, Inscreva-se">
+
+    <label>📖 Versículo / Texto de Apoio</label>
+    <input type="text" id="bnr-tx" placeholder='Ex: "E quando despertaram viram a Sua glória" — Lucas 9:32b'>
+
+    <div style="background:var(--cinza);border-radius:10px;padding:16px;margin-top:16px">
+      <h2 style="font-size:.9rem;font-weight:700;color:var(--azul);margin-bottom:4px">🎤 Ministrante</h2>
+      <p class="help" style="margin-bottom:10px">Deixe em branco se não houver ministrante convidado</p>
+      <div class="row2">
+        <div>
+          <label>Nome</label>
+          <input type="text" id="bnr-min-nome" placeholder="Ex: Pr. Fulano de Tal">
+        </div>
+        <div>
+          <label>Cargo / Título</label>
+          <input type="text" id="bnr-min-cargo" placeholder="Ex: Pastor, Evangelista...">
+        </div>
+      </div>
+      <div class="row2" style="margin-top:4px">
+        <div>
+          <label>📷 Foto (URL)</label>
+          <input type="url" id="bnr-min-foto" placeholder="https://...">
+          <p class="help">Cole a URL ou faça upload ao lado</p>
+        </div>
+        <div>
+          <label>📤 Upload da Foto</label>
+          <div class="upbox" style="height:80px"><span>📷</span><p>Clique ou arraste</p>
+            <input type="file" accept="image/*" onchange="upImg(this,'bnr-min-foto')">
+          </div>
+        </div>
+      </div>
+      <div class="prevw" id="bnr-min-foto-pv"></div>
+    </div>
+
+    <div class="row3">
+      <div>
+        <label>📅 Data</label>
+        <input type="text" id="bnr-dt" placeholder="Ex: Domingo, 08 de Junho">
+      </div>
+      <div>
+        <label>⏰ Horário</label>
+        <input type="text" id="bnr-hora" placeholder="Ex: 19h00">
+      </div>
+      <div>
+        <label>📍 Local</label>
+        <input type="text" id="bnr-local" placeholder="Ex: Sede Principal">
+      </div>
+    </div>
+
+    <div class="row2" style="margin-top:16px">
+      <div>
+        <label>🎨 Cor do Destaque</label>
+        <div class="color-row">
+          <input type="color" id="bnr-cor" value="#3B9BD6">
+          <input type="text" id="bnr-cor-txt" value="#3B9BD6">
+        </div>
+      </div>
+      <div>
+        <label>🌈 Overlay Gradiente 1</label>
+        <div class="color-row">
+          <input type="color" id="bnr-ov1" value="#0d1b2a">
+          <input type="text" id="bnr-ov1-txt" value="#0d1b2a">
+        </div>
+      </div>
+    </div>
+    <div class="row2">
+      <div>
+        <label>🌈 Overlay Gradiente 2</label>
+        <div class="color-row">
+          <input type="color" id="bnr-ov2" value="#1E3A5F">
+          <input type="text" id="bnr-ov2-txt" value="#1E3A5F">
+        </div>
+      </div>
+      <div>
+        <label>🌫️ Opacidade do Overlay (0–1)</label>
+        <input type="text" id="bnr-opac" value="0.82">
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🖼️ Imagem de Fundo</h2>
+    <div class="row2">
+      <div>
+        <label>📎 URL da Imagem</label>
+        <input type="url" id="bnr-bg-url" placeholder="https://...">
+        <p class="help">Cole uma URL ou faça upload abaixo</p>
+      </div>
+      <div>
+        <label>📤 Upload de Imagem</label>
+        <div class="upbox"><span>🖼️</span><p>Clique ou arraste</p>
+          <input type="file" accept="image/*" onchange="upImg(this,'bnr-bg-url')">
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:12px">
+      <label>📌 Tipo de Fundo</label>
+      <select id="bnr-bg-tp">
+        <option value="imagem">Imagem</option>
+        <option value="video">Vídeo (YouTube)</option>
+        <option value="cor">Cor Sólida</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📐 Template Visual</h2>
+    <p class="help" style="margin-bottom:10px">Escolha o layout do banner</p>
+    <div class="tpl-grid">
+      <div class="tpl-card sel" data-v="classico" onclick="selTpl(this)">
+        <div style="height:90px;background:linear-gradient(135deg,#1E3A5F,#3B9BD6);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.7rem;font-weight:700">CLÁSSICO</div>
+        <p>Clássico</p>
+      </div>
+      <div class="tpl-card" data-v="moderno" onclick="selTpl(this)">
+        <div style="height:90px;background:linear-gradient(135deg,#0d1b2a,#e67e22);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.7rem;font-weight:700">MODERNO</div>
+        <p>Moderno</p>
+      </div>
+      <div class="tpl-card" data-v="minimalista" onclick="selTpl(this)">
+        <div style="height:90px;background:#fff;border:2px solid #1E3A5F;display:flex;align-items:center;justify-content:center;color:#1E3A5F;font-size:.7rem;font-weight:700">MINIMALISTA</div>
+        <p>Minimalista</p>
+      </div>
+      <div class="tpl-card" data-v="vibrante" onclick="selTpl(this)">
+        <div style="height:90px;background:linear-gradient(135deg,#6b21a8,#ec4899);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.7rem;font-weight:700">VIBRANTE</div>
+        <p>Vibrante</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📅 Agenda no Banner</h2>
+    <div class="toggle-row">
+      <label class="toggle"><input type="checkbox" id="bnr-agenda" checked><span class="slider"></span></label>
+      <span style="font-size:.9rem">Exibir prévia da agenda no banner</span>
+    </div>
+  </div>
+
+  <div class="ac-bar">
+    <button class="btn btn-sec" onclick="bnrCarregar()">↺ Recarregar Salvo</button>
+    <button class="btn btn-prim" onclick="bnrSalvar()">💾 Salvar Banner</button>
+  </div>
+</div>
+
+<!-- ===== AGENDA ===== -->
+<div id="pg-agenda" class="pg">
+  <div class="card">
+    <h2>➕ Adicionar Evento</h2>
+    <div class="row2">
+      <div>
+        <label>Título do Evento</label>
+        <input type="text" id="ag-titulo" placeholder="Ex: Culto de Celebração">
+      </div>
+      <div>
+        <label>Tipo</label>
+        <select id="ag-tipo">
+          <option value="culto">Culto</option>
+          <option value="evento">Evento</option>
+          <option value="especial">Especial</option>
+          <option value="departamento">Departamento</option>
+        </select>
+      </div>
+    </div>
+    <div class="row3">
+      <div>
+        <label>Data</label>
+        <input type="text" id="ag-dt" placeholder="Ex: Domingo, 08/06">
+      </div>
+      <div>
+        <label>Horário</label>
+        <input type="text" id="ag-hora" placeholder="Ex: 19h00">
+      </div>
+      <div>
+        <label>Local</label>
+        <input type="text" id="ag-local" placeholder="Ex: Sede">
+      </div>
+    </div>
+    <div style="margin-top:10px">
+      <label>Descrição (opcional)</label>
+      <textarea id="ag-desc" rows="2" placeholder="Breve descrição..."></textarea>
+    </div>
+    <div class="ac-bar" style="margin-top:10px">
+      <button class="btn btn-prim" onclick="agAdd()">➕ Adicionar</button>
+    </div>
+  </div>
+  <div class="card">
+    <h2>📋 Eventos Cadastrados</h2>
+    <div class="agenda-lista" id="ag-lista"></div>
+  </div>
+</div>
+
+<!-- ===== NOTIFICAÇÕES ===== -->
+<div id="pg-notif" class="pg">
+  <div class="card">
+    <h2>✉️ Nova Notificação</h2>
+    <label>Título</label>
+    <input type="text" id="nt-titulo" placeholder="Ex: Culto especial amanhã!">
+    <label>Mensagem</label>
+    <textarea id="nt-txt" rows="3" placeholder="Texto completo da notificação..."></textarea>
+    <div class="row2" style="margin-top:8px">
+      <div>
+        <label>Tipo</label>
+        <select id="nt-tipo">
+          <option value="info">ℹ️ Informação</option>
+          <option value="aviso">⚠️ Aviso</option>
+          <option value="urgente">🚨 Urgente</option>
+        </select>
+      </div>
+      <div>
+        <label>Agendado para</label>
+        <input type="text" id="nt-data" placeholder="Ex: 08/06/2025 19:00">
+      </div>
+    </div>
+    <div class="ac-bar">
+      <button class="btn btn-prim" onclick="ntAdd()">📤 Publicar</button>
+    </div>
+  </div>
+  <div class="card">
+    <h2>📬 Notificações Publicadas</h2>
+    <div class="notif-lista" id="nt-lista"></div>
+  </div>
+</div>
+
+<!-- ===== STATS ===== -->
+<div id="pg-stats" class="pg">
+  <div class="stat-grid">
+    <div class="stat-card"><div class="s-label">Eventos Ativos</div><div class="s-val" id="st-ev">—</div><div class="s-sub">Na agenda</div></div>
+    <div class="stat-card"><div class="s-label">Notificações</div><div class="s-val" id="st-nt">—</div><div class="s-sub">Publicadas</div></div>
+    <div class="stat-card"><div class="s-label">Último Save</div><div class="s-val" id="st-save" style="font-size:1rem">—</div><div class="s-sub">Banner</div></div>
+    <div class="stat-card"><div class="s-label">Status Firebase</div><div class="s-val" id="st-fb" style="font-size:1rem">—</div><div class="s-sub">Sincronização</div></div>
+  </div>
+  <div class="card">
+    <h2>📊 Resumo</h2>
+    <p id="st-resumo" style="font-size:.9rem;color:var(--muted);line-height:1.7">Carregando...</p>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- ===== FIREBASE SDK ===== -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, get, push, remove, onValue, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+// ======= CONFIG FIREBASE OBPC =======
+const firebaseConfig = {
+  apiKey: "AIzaSyAqWvLv2AUhr6UA9QO9yFPq-pT_Ek9euy0",
+  authDomain: "obpc-saofernando.firebaseapp.com",
+  databaseURL: "https://obpc-saofernando-default-rtdb.firebaseio.com",
+  projectId: "obpc-saofernando",
+  storageBucket: "obpc-saofernando.firebasestorage.app",
+  messagingSenderId: "792680960207",
+  appId: "1:792680960207:web:5b084cf10329a7f11aa7ba"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// ======= STATUS CONEXÃO =======
+const dot = document.getElementById('sync-dot');
+const syncTxt = document.getElementById('sync-txt');
+
+function setStatus(s) {
+  dot.className = 'sync-dot ' + s;
+  syncTxt.textContent = s === 'ok' ? '🟢 Online' : s === 'erro' ? '🔴 Offline' : '🟡 Sincronizando...';
+}
+
+// ======= TOAST =======
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ======= ABAS =======
+window.aba = function(id, btn) {
+  document.querySelectorAll('.pg').forEach(p => p.classList.remove('ativo'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('ativo'));
+  document.getElementById('pg-' + id).classList.add('ativo');
+  if (btn) btn.classList.add('ativo');
+  if (id === 'stats') statsLoad();
+};
+
+// ======= BADGE =======
+document.querySelectorAll('.badge-opt').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.badge-opt').forEach(x => x.classList.remove('sel'));
+    b.classList.add('sel');
+    document.getElementById('bnr-badge').value = b.dataset.v;
+  });
+});
+document.getElementById('bnr-badge').addEventListener('input', function() {
+  document.querySelectorAll('.badge-opt').forEach(x => x.classList.remove('sel'));
+});
+
+// ======= COR SYNC =======
+['bnr-cor','bnr-ov1','bnr-ov2'].forEach(id => {
+  const cp = document.getElementById(id);
+  const tx = document.getElementById(id + '-txt');
+  cp.addEventListener('input', () => tx.value = cp.value);
+  tx.addEventListener('input', () => { if (/^#[0-9a-fA-F]{6}$/.test(tx.value)) cp.value = tx.value; });
+});
+
+// ======= UPLOAD IMG =======
+window.upImg = function(input, targetId) {
+  const file = input.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const url = e.target.result;
+    const el = document.getElementById(targetId);
+    if (el) el.value = url;
+    if (targetId === 'bnr-min-foto') {
+      const pv = document.getElementById('bnr-min-foto-pv');
+      if (pv) { pv.innerHTML = ''; const img = document.createElement('img'); img.src = url; pv.appendChild(img); }
+    }
+  };
+  reader.readAsDataURL(file);
+};
+
+// ======= TEMPLATE =======
+window.selTpl = function(el) {
+  document.querySelectorAll('.tpl-card').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+};
+
+// ======= BANNER SALVAR =======
+window.bnrSalvar = async function() {
+  setStatus('sync');
+  const dados = {
+    badge:      document.getElementById('bnr-badge').value,
+    titulo:     document.getElementById('bnr-titulo').value,
+    subtit:     document.getElementById('bnr-sub').value,
+    dt:         document.getElementById('bnr-dt').value,
+    hora:       document.getElementById('bnr-hora').value,
+    local:      document.getElementById('bnr-local').value,
+    cta:        document.getElementById('bnr-cta').value,
+    cor:        document.getElementById('bnr-cor').value,
+    tpl:        document.querySelector('.tpl-card.sel')?.dataset.v || 'classico',
+    bgUrl:      document.getElementById('bnr-bg-url').value,
+    bgTp:       document.getElementById('bnr-bg-tp').value,
+    ov1:        document.getElementById('bnr-ov1').value,
+    ov2:        document.getElementById('bnr-ov2').value,
+    opac:       document.getElementById('bnr-opac').value,
+    exibir_agenda: document.getElementById('bnr-agenda').checked,
+    tx:         document.getElementById('bnr-tx').value,
+    minNome:    document.getElementById('bnr-min-nome').value,
+    minCargo:   document.getElementById('bnr-min-cargo').value,
+    minFoto:    document.getElementById('bnr-min-foto').value,
+    ts:         new Date().toISOString()
+  };
+  try {
+    await set(ref(db, 'banner_culto'), dados);
+    setStatus('ok');
+    toast('✅ Banner salvo e sincronizado em todos os dispositivos!');
+  } catch(e) {
+    setStatus('erro');
+    toast('❌ Erro ao salvar: ' + e.message);
+  }
+};
+
+// ======= BANNER CARREGAR (tempo real) =======
+window.bnrCarregar = async function() {
+  try {
+    const snap = await get(ref(db, 'banner_culto'));
+    if (!snap.exists()) { toast('Nenhum banner salvo ainda.'); return; }
+    preencherBanner(snap.val());
+    toast('↺ Dados recarregados do Firebase!');
+  } catch(e) {
+    toast('❌ Erro ao carregar: ' + e.message);
+  }
+};
+
+function preencherBanner(d) {
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+  set('bnr-badge',    d.badge);
+  set('bnr-titulo',   d.titulo);
+  set('bnr-sub',      d.subtit);
+  set('bnr-dt',       d.dt);
+  set('bnr-hora',     d.hora);
+  set('bnr-local',    d.local);
+  set('bnr-cta',      d.cta);
+  set('bnr-cor',      d.cor || '#3B9BD6');
+  set('bnr-cor-txt',  d.cor || '#3B9BD6');
+  set('bnr-ov1',      d.ov1 || '#0d1b2a');
+  set('bnr-ov1-txt',  d.ov1 || '#0d1b2a');
+  set('bnr-ov2',      d.ov2 || '#1E3A5F');
+  set('bnr-ov2-txt',  d.ov2 || '#1E3A5F');
+  set('bnr-opac',     d.opac || '0.82');
+  set('bnr-bg-url',   d.bgUrl);
+  set('bnr-tx',       d.tx);
+  set('bnr-min-nome', d.minNome);
+  set('bnr-min-cargo',d.minCargo);
+  set('bnr-min-foto', d.minFoto);
+  const bgTp = document.getElementById('bnr-bg-tp');
+  if (bgTp) bgTp.value = d.bgTp || 'imagem';
+  const agCk = document.getElementById('bnr-agenda');
+  if (agCk) agCk.checked = !!d.exibir_agenda;
+  if (d.minFoto) {
+    const pv = document.getElementById('bnr-min-foto-pv');
+    if (pv) { pv.innerHTML = ''; const img = document.createElement('img'); img.src = d.minFoto; pv.appendChild(img); }
+  }
+  document.querySelectorAll('.badge-opt').forEach(b => b.classList.toggle('sel', b.dataset.v === d.badge));
+  document.querySelectorAll('.tpl-card').forEach(c => c.classList.toggle('sel', c.dataset.v === d.tpl));
+}
+
+// ======= AGENDA — escuta em tempo real =======
+let agendaCache = {};
+
+onValue(ref(db, 'agenda'), snap => {
+  agendaCache = snap.val() || {};
+  renderAgenda();
+});
+
+function renderAgenda() {
+  const el = document.getElementById('ag-lista');
+  const lista = Object.entries(agendaCache);
+  el.innerHTML = '';
+  if (!lista.length) {
+    el.innerHTML = '<p style="color:var(--muted);font-size:.85rem">Nenhum evento cadastrado.</p>';
+    return;
+  }
+  const tagMap = { culto:'tag-culto', evento:'tag-ev', especial:'tag-esp', departamento:'tag-dep' };
+  const lblMap = { culto:'Culto', evento:'Evento', especial:'Especial', departamento:'Departamento' };
+  lista.forEach(([key, ev]) => {
+    const div = document.createElement('div'); div.className = 'ag-item';
+    div.innerHTML = `<div class="ag-info">
+      <span class="tag ${tagMap[ev.tipo]||'tag-ev'}">${lblMap[ev.tipo]||ev.tipo}</span>
+      <div class="ag-titulo" style="margin-top:4px">${ev.titulo}</div>
+      <div class="ag-sub">${ev.dt} • ${ev.hora} • ${ev.local}</div>
+      ${ev.desc ? `<div class="ag-sub" style="margin-top:2px">${ev.desc}</div>` : ''}
+    </div>
+    <div class="ag-acoes">
+      <button class="btn btn-verm" style="padding:6px 14px;font-size:.8rem" onclick="agDel('${key}')">🗑️</button>
+    </div>`;
+    el.appendChild(div);
+  });
+}
+
+window.agAdd = async function() {
+  const titulo = document.getElementById('ag-titulo').value.trim();
+  if (!titulo) { toast('Informe o título do evento'); return; }
+  setStatus('sync');
+  try {
+    await push(ref(db, 'agenda'), {
+      titulo,
+      tipo:  document.getElementById('ag-tipo').value,
+      dt:    document.getElementById('ag-dt').value,
+      hora:  document.getElementById('ag-hora').value,
+      local: document.getElementById('ag-local').value,
+      desc:  document.getElementById('ag-desc').value,
+      ts:    new Date().toISOString()
+    });
+    ['ag-titulo','ag-dt','ag-hora','ag-local','ag-desc'].forEach(id => document.getElementById(id).value = '');
+    setStatus('ok');
+    toast('✅ Evento adicionado e sincronizado!');
+  } catch(e) {
+    setStatus('erro');
+    toast('❌ Erro: ' + e.message);
+  }
+};
+
+window.agDel = async function(key) {
+  if (!confirm('Remover este evento?')) return;
+  setStatus('sync');
+  try {
+    await remove(ref(db, 'agenda/' + key));
+    setStatus('ok');
+    toast('🗑️ Evento removido.');
+  } catch(e) {
+    setStatus('erro');
+    toast('❌ Erro: ' + e.message);
+  }
+};
+
+// ======= NOTIFICAÇÕES — escuta em tempo real =======
+let notifCache = {};
+
+onValue(ref(db, 'notificacoes'), snap => {
+  notifCache = snap.val() || {};
+  renderNotifs();
+});
+
+function renderNotifs() {
+  const el = document.getElementById('nt-lista');
+  const lista = Object.entries(notifCache);
+  el.innerHTML = '';
+  if (!lista.length) {
+    el.innerHTML = '<p style="color:var(--muted);font-size:.85rem">Nenhuma notificação publicada.</p>';
+    return;
+  }
+  lista.forEach(([key, n]) => {
+    const div = document.createElement('div'); div.className = 'notif-item';
+    div.innerHTML = `<div class="n-titulo">${n.tipo==='urgente'?'🚨':n.tipo==='aviso'?'⚠️':'ℹ️'} ${n.titulo}</div>
+      <div class="n-txt">${n.txt}</div>
+      <div class="n-txt" style="margin-top:4px;font-size:.75rem">Agendado: ${n.data||'—'}</div>
+      <div class="n-acoes">
+        <button class="btn btn-verm" style="padding:5px 12px;font-size:.8rem" onclick="ntDel('${key}')">🗑️ Remover</button>
+      </div>`;
+    el.appendChild(div);
+  });
+}
+
+window.ntAdd = async function() {
+  const titulo = document.getElementById('nt-titulo').value.trim();
+  if (!titulo) { toast('Informe o título'); return; }
+  setStatus('sync');
+  try {
+    await push(ref(db, 'notificacoes'), {
+      titulo,
+      txt:  document.getElementById('nt-txt').value,
+      tipo: document.getElementById('nt-tipo').value,
+      data: document.getElementById('nt-data').value,
+      ts:   new Date().toISOString()
+    });
+    ['nt-titulo','nt-txt','nt-data'].forEach(id => document.getElementById(id).value = '');
+    setStatus('ok');
+    toast('📤 Notificação publicada e sincronizada!');
+  } catch(e) {
+    setStatus('erro');
+    toast('❌ Erro: ' + e.message);
+  }
+};
+
+window.ntDel = async function(key) {
+  if (!confirm('Remover esta notificação?')) return;
+  setStatus('sync');
+  try {
+    await remove(ref(db, 'notificacoes/' + key));
+    setStatus('ok');
+    toast('🗑️ Notificação removida.');
+  } catch(e) {
+    setStatus('erro');
+    toast('❌ Erro: ' + e.message);
+  }
+};
+
+// ======= STATS =======
+async function statsLoad() {
+  try {
+    const [snapBnr, snapAg, snapNt] = await Promise.all([
+      get(ref(db, 'banner_culto')),
+      get(ref(db, 'agenda')),
+      get(ref(db, 'notificacoes'))
+    ]);
+    const bnr = snapBnr.val() || {};
+    const ag  = snapAg.val()  || {};
+    const nt  = snapNt.val()  || {};
+    document.getElementById('st-ev').textContent   = Object.keys(ag).length;
+    document.getElementById('st-nt').textContent   = Object.keys(nt).length;
+    document.getElementById('st-save').textContent = bnr.ts ? new Date(bnr.ts).toLocaleString('pt-BR') : '—';
+    document.getElementById('st-fb').textContent   = '🟢 OK';
+    const prox = Object.values(ag)[0];
+    document.getElementById('st-resumo').innerHTML = `
+      <b>Banner:</b> ${bnr.titulo || '(não configurado)'}<br>
+      <b>Próximo evento:</b> ${prox?.titulo || 'Nenhum'}<br>
+      <b>Notificações ativas:</b> ${Object.keys(nt).length}<br>
+      <b>Banco:</b> obpc-saofernando-default-rtdb.firebaseio.com
+    `;
+  } catch(e) {
+    document.getElementById('st-fb').textContent = '🔴 Erro';
+  }
+}
+
+// ======= INIT =======
+async function init() {
+  try {
+    // Carrega banner ao abrir
+    const snap = await get(ref(db, 'banner_culto'));
+    if (snap.exists()) preencherBanner(snap.val());
+    setStatus('ok');
+  } catch(e) {
+    setStatus('erro');
+    toast('⚠️ Sem conexão com Firebase. Verifique sua internet.');
+  }
+  document.getElementById('loading').style.display = 'none';
+}
+
+init();
+</script>
+</body>
+</html>
