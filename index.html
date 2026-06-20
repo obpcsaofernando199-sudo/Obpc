@@ -4204,7 +4204,8 @@ window.obpcCompartilharComunicado = function() {
     .then(function(blob){
       resetBtn();
       var file = new File([blob], 'comunicado-obpc.png', { type: 'image/png' });
-      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+      var ehMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|Mobile/i.test(navigator.userAgent);
+      if (ehMobile && navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
         navigator.share({
           files: [file],
           title: 'OBPC Jardim São Fernando',
