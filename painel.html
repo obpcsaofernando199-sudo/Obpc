@@ -2920,26 +2920,26 @@ function pushAtualizarUI(){
   var btn=document.getElementById('push-btn');
   if(!lbl||!btn)return;
   if(!('Notification' in window)){
-    lbl.textContent='&#9940; Não suportado';
+    lbl.innerHTML='&#9940; Não suportado';
     sub.textContent='Este navegador não suporta notificações.';
     btn.style.display='none';
     return;
   }
   var perm=Notification.permission;
   if(perm==='granted'){
-    lbl.textContent='&#9989; Notificações ativadas';
+    lbl.innerHTML='&#9989; Notificações ativadas';
     sub.textContent='Você vai receber os avisos deste painel.';
     btn.textContent='Ativado';
     btn.disabled=true;
     btn.style.opacity='.6';
   }else if(perm==='denied'){
-    lbl.textContent='&#128683; Bloqueado';
+    lbl.innerHTML='&#128683; Bloqueado';
     sub.textContent='Você bloqueou notificações. Libere nas configurações do navegador.';
     btn.textContent='Bloqueado';
     btn.disabled=true;
     btn.style.opacity='.6';
   }else{
-    lbl.textContent='&#128276; Ativar Notificações';
+    lbl.innerHTML='&#128276; Ativar Notificações';
     sub.textContent='Clique para permitir notificações deste painel';
     btn.textContent='Ativar';
     btn.disabled=false;
