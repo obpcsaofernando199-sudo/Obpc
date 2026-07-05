@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Galeria — OBPC Jardim São Fernando</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+
+  :root{
+    --navy: #0d1b2e;
+    --navy-deep: #08121f;
+    --gold: #c9a24b;
+    --gold-soft: #e6cd8a;
+    --cream: #f3ede0;
+    --line: rgba(201,162,75,0.25);
+  }
+
+  * { box-sizing: border-box; }
+
+  body{
+    margin:0;
+    background: radial-gradient(ellipse at top, #14273f 0%, var(--navy) 45%, var(--navy-deep) 100%);
+    color: var(--cream);
+    font-family: 'Jost', sans-serif;
+    min-height:100vh;
+  }
+
+  header{
+    text-align:center;
+    padding: 48px 20px 30px;
+  }
+
+  header::after{
+    content:"";
+    display:block;
+    width:64px;
+    height:2px;
+    background: var(--gold);
+    margin: 20px auto 0;
+    opacity:0.7;
+  }
+
+  header .eyebrow{
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    font-size: 12px;
+    color: var(--gold-soft);
+    opacity:0.85;
+  }
+
+  header h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size: clamp(28px, 5vw, 46px);
+    margin: 10px 0 8px;
+  }
+
+  header p{
+    font-size: 14px;
+    color: rgba(243,237,224,0.6);
+    margin:0;
+    font-style: italic;
+    font-family:'Fraunces', serif;
+  }
+
+  .painel-envio{
+    max-width: 560px;
+    margin: 0 auto 40px;
+    padding: 22px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: rgba(201,162,75,0.05);
+  }
+
+  .painel-envio label{
+    display:block;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    color: var(--gold-soft);
+    margin-bottom: 6px;
+    margin-top: 14px;
+  }
+
+  .painel-envio label:first-child{ margin-top:0; }
+
+  .painel-envio input[type="text"], .painel-envio select{
+    width:100%;
+    background: rgba(8,18,31,0.7);
+    border: 1px solid var(--line);
+    color: var(--cream);
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-family: 'Jost', sans-serif;
+    font-size: 14px;
+  }
+
+  .campo-foto{
+    display:flex;
+    align-items:center;
+    gap: 12px;
+    margin-top: 6px;
+  }
+
+  .btn-escolher{
+    background: rgba(201,162,75,0.12);
+    border: 1px dashed var(--gold);
+    color: var(--gold-soft);
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor:pointer;
+    flex-shrink:0;
+  }
+
+  #nome-arquivo{
+    font-size: 12px;
+    color: rgba(243,237,224,0.5);
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+
+  .btn-enviar{
+    width:100%;
+    margin-top: 20px;
+    background: var(--gold);
+    color: var(--navy-deep);
+    border:none;
+    padding: 13px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight:600;
+    letter-spacing: 0.5px;
+    cursor:pointer;
+    transition: background 0.2s ease;
+  }
+
+  .btn-enviar:hover{ background: var(--gold-soft); }
+  .btn-enviar:disabled{ opacity: 0.5; cursor:not-allowed; }
+
+  .status-envio{
+    margin-top: 12px;
+    font-size: 13px;
+    text-align:center;
+    min-height: 18px;
+    color: var(--gold-soft);
+  }
+
+  .filtros{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    flex-wrap:wrap;
+    padding: 0 20px 30px;
+  }
+
+  .filtro-btn{
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--gold-soft);
+    padding: 8px 18px;
+    border-radius: 30px;
+    font-family:'Jost', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    cursor:pointer;
+    transition: all 0.25s ease;
+  }
+
+  .filtro-btn:hover{
+    border-color: var(--gold);
+    color: var(--navy-deep);
+    background: var(--gold-soft);
+  }
+
+  .filtro-btn.ativo{
+    background: var(--gold);
+    color: var(--navy-deep);
+    border-color: var(--gold);
+    font-weight:500;
+  }
+
+  .galeria{
+    columns: 4 260px;
+    column-gap: 16px;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 20px 70px;
+  }
+
+  .foto-card{
+    break-inside: avoid;
+    margin-bottom: 16px;
+    border-radius: 10px;
+    overflow:hidden;
+    position:relative;
+    border: 1px solid var(--line);
+    cursor: pointer;
+    background: #0a1727;
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+  }
+
+  .foto-card:hover{
+    transform: translateY(-4px);
+    box-shadow: 0 14px 28px rgba(0,0,0,0.45);
+  }
+
+  .foto-card img{
+    width:100%;
+    display:block;
+    transition: transform 0.5s ease;
+  }
+
+  .foto-card:hover img{ transform: scale(1.04); }
+
+  .foto-legenda{
+    position:absolute;
+    left:0; right:0; bottom:0;
+    padding: 22px 14px 12px;
+    background: linear-gradient(to top, rgba(6,12,20,0.92), transparent);
+    font-size: 12.5px;
+    color: var(--gold-soft);
+    opacity:0;
+    transform: translateY(6px);
+    transition: all 0.3s ease;
+  }
+
+  .foto-card:hover .foto-legenda{ opacity:1; transform: translateY(0); }
+
+  .lightbox{
+    position:fixed; inset:0;
+    background: rgba(5,10,18,0.96);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:999;
+    padding: 30px;
+    flex-direction: column;
+    overflow-y: auto;
+    gap: 10px;
+  }
+
+  .lightbox.aberto{ display:flex; }
+
+  .lightbox img{
+    max-width: 90vw;
+    max-height: 58vh;
+    border-radius: 8px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    border: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+
+  .lightbox-legenda{
+    color: var(--gold-soft);
+    font-family:'Fraunces', serif;
+    font-style: italic;
+    font-size: 15px;
+    margin-top: 18px;
+    text-align:center;
+    max-width: 600px;
+  }
+
+  .lb-fechar, .lb-prev, .lb-next{
+    position:fixed;
+    background: rgba(201,162,75,0.12);
+    border: 1px solid var(--line);
+    color: var(--gold-soft);
+    font-size: 22px;
+    width: 44px; height:44px;
+    border-radius: 50%;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .lb-fechar:hover, .lb-prev:hover, .lb-next:hover{
+    background: var(--gold);
+    color: var(--navy-deep);
+  }
+
+  .lb-fechar{ top: 26px; right: 26px; }
+  .lb-prev{ top: 50%; left: 26px; transform: translateY(-50%); }
+  .lb-next{ top: 50%; right: 26px; transform: translateY(-50%); }
+
+  .lb-excluir{
+    margin-top: 6px;
+    margin-bottom: 10px;
+    flex-shrink: 0;
+    background: rgba(196,64,64,0.12);
+    border: 1px solid rgba(196,64,64,0.4);
+    color: #e08a8a;
+    font-family: 'Jost', sans-serif;
+    font-size: 13px;
+    padding: 9px 18px;
+    border-radius: 30px;
+    cursor:pointer;
+    transition: all 0.2s ease;
+  }
+
+  .lb-excluir:hover{
+    background: #c44040;
+    color: #fff;
+    border-color: #c44040;
+  }
+
+  .vazio{
+    text-align:center;
+    color: rgba(243,237,224,0.4);
+    font-style:italic;
+    font-family:'Fraunces', serif;
+    padding: 40px 20px;
+  }
+
+  footer{
+    text-align:center;
+    padding: 26px 20px 40px;
+    font-size:12px;
+    color: rgba(243,237,224,0.35);
+  }
+
+  @media (max-width:600px){
+    .galeria{ columns: 2 160px; }
+    .lb-prev, .lb-next{ width:38px; height:38px; font-size:18px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">OBPC Jardim São Fernando</div>
+  <h1>Galeria de Fotos</h1>
+  <p>Momentos da nossa congregação</p>
+</header>
+
+<div class="painel-envio">
+  <label>Categoria da foto</label>
+  <select id="input-categoria">
+    <option value="cultos">Cultos</option>
+    <option value="missoes">Missões</option>
+    <option value="santa-ceia">Santa Ceia</option>
+    <option value="familia">Família</option>
+    <option value="jubrac">Jubrac</option>
+    <option value="umasbrac">Umasbrac</option>
+    <option value="ufebrac">Ufebrac</option>
+    <option value="menibrac">Menibrac</option>
+  </select>
+
+  <label>Legenda (opcional)</label>
+  <input type="text" id="input-legenda" placeholder="Ex: Culto de celebração de domingo">
+
+  <label>Escolher fotos do celular</label>
+  <div class="campo-foto">
+    <label class="btn-escolher" for="input-arquivo">📷 Escolher fotos</label>
+    <input type="file" id="input-arquivo" accept="image/*" multiple style="display:none;">
+    <span id="nome-arquivo">Nenhuma foto selecionada</span>
+  </div>
+
+  <button class="btn-enviar" id="btn-enviar" disabled>Enviar para a galeria</button>
+  <div class="status-envio" id="status-envio"></div>
+</div>
+
+<div class="filtros" id="filtros"></div>
+
+<div class="galeria" id="galeria"></div>
+
+<div class="vazio" id="vazio" style="display:none;">Nenhuma foto encontrada nessa categoria.</div>
+
+<div class="lightbox" id="lightbox">
+  <button class="lb-fechar" onclick="fecharLightbox()">✕</button>
+  <button class="lb-prev" onclick="navegar(-1)">‹</button>
+  <button class="lb-next" onclick="navegar(1)">›</button>
+  <img id="lightbox-img" src="" alt="">
+  <div class="lightbox-legenda" id="lightbox-legenda"></div>
+  <button class="lb-excluir" onclick="excluirFotoAtual()">🗑️ Excluir esta foto</button>
+</div>
+
+<footer>Igreja Evangélica Pentecostal O Brasil para Cristo — Congregação Jardim São Fernando</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+/* ==================================================================
+   CONFIGURAÇÃO — só precisa mexer aqui se algo mudar no futuro
+================================================================== */
+
+// Cloudinary (mesma conta usada no painel_adm / Palavra do Pastor)
+const CLOUDINARY_CLOUD = "dvvxiri22";
+const CLOUDINARY_PRESET = "obpc_media";
+const CLOUDINARY_PASTA = "obpc_sao_fernando/galeria";
+
+// Firebase — COLE AQUI a mesma configuração (firebaseConfig) que já
+// está dentro do seu arquivo painel.html. É o mesmo bloco com
+// apiKey, authDomain, databaseURL, projectId, appId, etc.
+const firebaseConfig = {
+  apiKey: "AIzaSyBwrxwxOVAkMuxg3KrBokms7DvVtZisRNM",
+  authDomain: "obpc-saofernando-1d6f3.firebaseapp.com",
+  databaseURL: "https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com",
+  projectId: "obpc-saofernando-1d6f3",
+  storageBucket: "obpc-saofernando-1d6f3.firebasestorage.app",
+  messagingSenderId: "338504197999",
+  appId: "1:338504197999:web:bef16273d1a7135da8ea9a"
+};
+
+/* ================================================================== */
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const galeriaRef = ref(db, "obpc/galeria_fotos");
+
+let FOTOS = [];
+let categoriaAtiva = "todas";
+let indiceAtual = 0;
+let fotosFiltradas = [];
+let arquivosSelecionados = [];
+
+// Carrega as fotos do Firebase em tempo real
+onValue(galeriaRef, (snapshot) => {
+  const dados = snapshot.val() || {};
+  FOTOS = Object.entries(dados)
+    .map(([chave, foto]) => ({ ...foto, _chave: chave }))
+    .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+  montarFiltros();
+  montarGaleria();
+});
+
+function nomeCategoria(cat){
+  const nomes = {
+    todas: "Todas", cultos: "Cultos", missoes: "Missões",
+    "santa-ceia": "Santa Ceia", familia: "Família",
+    jubrac: "Jubrac", umasbrac: "Umasbrac", ufebrac: "Ufebrac", menibrac: "Menibrac"
+  };
+  return nomes[cat] || (cat.charAt(0).toUpperCase() + cat.slice(1));
+}
+
+function montarFiltros(){
+  const categorias = ["todas", ...new Set(FOTOS.map(f => f.categoria))];
+  const container = document.getElementById("filtros");
+  container.innerHTML = categorias.map(cat =>
+    `<button class="filtro-btn ${cat === categoriaAtiva ? 'ativo' : ''}" data-cat="${cat}">${nomeCategoria(cat)}</button>`
+  ).join("");
+
+  container.querySelectorAll(".filtro-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      categoriaAtiva = btn.dataset.cat;
+      montarFiltros();
+      montarGaleria();
+    });
+  });
+}
+
+function montarGaleria(){
+  fotosFiltradas = categoriaAtiva === "todas"
+    ? FOTOS
+    : FOTOS.filter(f => f.categoria === categoriaAtiva);
+
+  const galeria = document.getElementById("galeria");
+  const vazio = document.getElementById("vazio");
+
+  if (fotosFiltradas.length === 0){
+    galeria.innerHTML = "";
+    vazio.style.display = "block";
+    return;
+  }
+  vazio.style.display = "none";
+
+  galeria.innerHTML = fotosFiltradas.map((foto, i) => `
+    <div class="foto-card" data-i="${i}">
+      <img src="${foto.url}" alt="${foto.legenda || ''}" loading="lazy">
+      <div class="foto-legenda">${foto.legenda || ''}</div>
+    </div>
+  `).join("");
+
+  galeria.querySelectorAll(".foto-card").forEach(card => {
+    card.addEventListener("click", () => abrirLightbox(parseInt(card.dataset.i)));
+  });
+}
+
+function abrirLightbox(i){
+  indiceAtual = i;
+  atualizarLightbox();
+  document.getElementById("lightbox").classList.add("aberto");
+}
+
+function atualizarLightbox(){
+  const foto = fotosFiltradas[indiceAtual];
+  document.getElementById("lightbox-img").src = foto.url;
+  document.getElementById("lightbox-legenda").textContent = foto.legenda || '';
+}
+
+window.excluirFotoAtual = async function(){
+  const foto = fotosFiltradas[indiceAtual];
+  if (!foto) return;
+
+  const confirmar = confirm("Excluir esta foto da galeria? Essa ação não pode ser desfeita.");
+  if (!confirmar) return;
+
+  try {
+    await remove(ref(db, "obpc/galeria_fotos/" + foto._chave));
+    fecharLightbox();
+  } catch (erro) {
+    console.error(erro);
+    alert("Não foi possível excluir a foto. Tente novamente.");
+  }
+};
+
+window.fecharLightbox = function(){
+  document.getElementById("lightbox").classList.remove("aberto");
+};
+
+window.navegar = function(direcao){
+  indiceAtual = (indiceAtual + direcao + fotosFiltradas.length) % fotosFiltradas.length;
+  atualizarLightbox();
+};
+
+document.addEventListener("keydown", (e) => {
+  if (!document.getElementById("lightbox").classList.contains("aberto")) return;
+  if (e.key === "Escape") fecharLightbox();
+  if (e.key === "ArrowRight") navegar(1);
+  if (e.key === "ArrowLeft") navegar(-1);
+});
+
+document.getElementById("lightbox").addEventListener("click", (e) => {
+  if (e.target.id === "lightbox") fecharLightbox();
+});
+
+/* ---------- Envio de fotos ---------- */
+
+const inputArquivo = document.getElementById("input-arquivo");
+const nomeArquivoSpan = document.getElementById("nome-arquivo");
+const btnEnviar = document.getElementById("btn-enviar");
+const statusEnvio = document.getElementById("status-envio");
+
+inputArquivo.addEventListener("change", () => {
+  arquivosSelecionados = Array.from(inputArquivo.files || []);
+  if (arquivosSelecionados.length === 0){
+    nomeArquivoSpan.textContent = "Nenhuma foto selecionada";
+  } else if (arquivosSelecionados.length === 1){
+    nomeArquivoSpan.textContent = arquivosSelecionados[0].name;
+  } else {
+    nomeArquivoSpan.textContent = arquivosSelecionados.length + " fotos selecionadas";
+  }
+  btnEnviar.disabled = arquivosSelecionados.length === 0;
+});
+
+async function enviarUmaFoto(arquivo, categoria, legenda){
+  const formData = new FormData();
+  formData.append("file", arquivo);
+  formData.append("upload_preset", CLOUDINARY_PRESET);
+  formData.append("folder", CLOUDINARY_PASTA);
+
+  const resposta = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, {
+    method: "POST",
+    body: formData
+  });
+
+  if (!resposta.ok) throw new Error("Falha no envio ao Cloudinary");
+  const dados = await resposta.json();
+
+  await push(galeriaRef, {
+    url: dados.secure_url,
+    legenda: legenda,
+    categoria: categoria,
+    timestamp: Date.now()
+  });
+}
+
+btnEnviar.addEventListener("click", async () => {
+  if (arquivosSelecionados.length === 0) return;
+
+  btnEnviar.disabled = true;
+  const categoria = document.getElementById("input-categoria").value;
+  const legenda = document.getElementById("input-legenda").value.trim();
+
+  const total = arquivosSelecionados.length;
+  let concluidas = 0;
+  let falhas = 0;
+  const LIMITE_PARALELO = 10; // envia até 10 fotos ao mesmo tempo
+
+  statusEnvio.textContent = `Enviando 0 de ${total}...`;
+
+  const fila = [...arquivosSelecionados];
+
+  async function processarFila(){
+    while (fila.length){
+      const arquivo = fila.shift();
+      try {
+        await enviarUmaFoto(arquivo, categoria, legenda);
+      } catch (erro) {
+        console.error(erro);
+        falhas++;
+      }
+      concluidas++;
+      statusEnvio.textContent = `Enviando ${concluidas} de ${total}...`;
+    }
+  }
+
+  const trabalhadores = Array.from({ length: Math.min(LIMITE_PARALELO, total) }, () => processarFila());
+  await Promise.all(trabalhadores);
+
+  if (falhas === 0){
+    statusEnvio.textContent = `✓ ${total} foto${total > 1 ? 's' : ''} adicionada${total > 1 ? 's' : ''} à galeria!`;
+  } else {
+    statusEnvio.textContent = `${total - falhas} de ${total} fotos enviadas. ${falhas} falharam — tente novamente.`;
+  }
+
+  inputArquivo.value = "";
+  document.getElementById("input-legenda").value = "";
+  arquivosSelecionados = [];
+  nomeArquivoSpan.textContent = "Nenhuma foto selecionada";
+  btnEnviar.disabled = false;
+
+  setTimeout(() => { statusEnvio.textContent = ""; }, 4000);
+});
+</script>
+
+</body>
+</html>
