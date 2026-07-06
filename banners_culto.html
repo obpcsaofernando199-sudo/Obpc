@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Banners de Culto — OBPC Jardim São Fernando</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --gold:#c9a24b;
+    --gold-light:#e9d8a6;
+    --cream:#f4ece0;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:linear-gradient(180deg,#12090d,#1b1420);
+    color:var(--cream);
+    font-family:'Manrope',sans-serif;
+    min-height:100vh;
+    padding:18px 14px 40px;
+  }
+  h1{
+    font-family:'Cinzel',serif;
+    font-size:1.15rem;
+    text-align:center;
+    color:var(--gold-light);
+    letter-spacing:1px;
+    margin:6px 0 4px;
+  }
+  .sub{
+    text-align:center;
+    font-size:.8rem;
+    color:#c9bdb0;
+    margin:0 0 18px;
+  }
+  .tabs{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:16px;
+  }
+  .tab{
+    flex:1 1 28%;
+    padding:10px 4px;
+    border-radius:10px;
+    border:1px solid #4a3a30;
+    background:#241a1e;
+    color:#d8c9b8;
+    font-size:.68rem;
+    font-weight:700;
+    text-align:center;
+    cursor:pointer;
+    line-height:1.25;
+  }
+  .tab.active{
+    background:linear-gradient(135deg,#c9a24b,#8a6a2c);
+    color:#1b1420;
+    border-color:#c9a24b;
+  }
+  .card{
+    background:#221921;
+    border:1px solid #3a2b2a;
+    border-radius:14px;
+    padding:14px;
+    margin-bottom:14px;
+  }
+  label{
+    display:block;
+    font-size:.72rem;
+    color:#c9a24b;
+    margin:10px 0 4px;
+    font-weight:700;
+  }
+  input{
+    width:100%;
+    padding:10px;
+    border-radius:8px;
+    border:1px solid #4a3a30;
+    background:#171015;
+    color:#f4ece0;
+    font-size:.9rem;
+    font-family:'Manrope',sans-serif;
+  }
+  input:focus{outline:2px solid var(--gold);}
+  canvas{
+    width:100%;
+    max-width:420px;
+    display:block;
+    margin:16px auto;
+    border-radius:14px;
+    box-shadow:0 8px 30px rgba(0,0,0,.5);
+  }
+  .btns{
+    display:flex;
+    gap:10px;
+    max-width:420px;
+    margin:0 auto;
+  }
+  button.act{
+    flex:1;
+    padding:14px 8px;
+    border-radius:10px;
+    border:none;
+    font-size:.85rem;
+    font-weight:700;
+    cursor:pointer;
+  }
+  .share{background:linear-gradient(135deg,#25D366,#128C4A);color:#fff;}
+  .dl{background:linear-gradient(135deg,#c9a24b,#8a6a2c);color:#1b1420;}
+  .publish{background:linear-gradient(135deg,#2c5a9a,#1E3A5F);color:#fff;width:100%;}
+  .note{
+    text-align:center;
+    font-size:.72rem;
+    color:#a3968a;
+    margin-top:10px;
+    max-width:420px;
+    margin-left:auto;margin-right:auto;
+  }
+</style>
+</head>
+<body>
+
+<h1>Banners de Culto</h1>
+<p class="sub">Escolha o estilo, ajuste os dados e compartilhe a imagem — não só a mensagem</p>
+
+<div class="tabs" id="tabs"></div>
+
+<div class="card">
+  <label>Versículo (opcional)</label>
+  <input id="versiculo" placeholder='"Onde estiverem dois ou três reunidos..."'>
+  <label>Referência (opcional)</label>
+  <input id="referencia" placeholder="Mateus 18:20">
+  <label>Dia da semana</label>
+  <input id="dia" value="Domingo">
+  <label>Data (dia/mês)</label>
+  <input id="data" placeholder="12/07">
+  <label>Horário</label>
+  <input id="horario" value="18h">
+  <label>Local (opcional)</label>
+  <input id="local" placeholder="Rua Senador José Ermírio de Moraes, 199">
+  <label>🎵 Louvor em áudio (opcional)</label>
+  <button type="button" onclick="document.getElementById('audioFile').click()" style="display:flex;align-items:center;gap:8px;width:100%;padding:10px;border-radius:8px;border:2px dashed #4a3a30;background:#171015;color:#e9d8a6;font-size:.85rem;font-weight:700;cursor:pointer;">📁 Escolher áudio do celular (mp3)</button>
+  <input type="file" id="audioFile" accept="audio/*" style="display:none">
+  <div id="audioSts" style="font-size:.75rem;color:#c9a24b;margin-top:6px;display:none;"></div>
+  <input type="hidden" id="audioUrl">
+  <button type="button" id="btnTestarAudio" style="margin-top:6px;padding:8px 12px;border-radius:8px;border:none;background:#3a2b2a;color:#e9d8a6;font-size:.78rem;font-weight:700;cursor:pointer;display:none;">▶️ Testar áudio</button>
+  <audio id="audioPreview"></audio>
+  <p style="font-size:.68rem;color:#a3968a;margin:6px 0 0;">Esse áudio vai junto quando você publicar — o site toca ele sozinho no banner, igual já faz no banner de aniversário.</p>
+</div>
+
+<div style="position:relative;max-width:420px;margin:16px auto;">
+  <canvas id="banner" width="1080" height="1920" style="width:100%;display:block;border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,.5);"></canvas>
+  <canvas id="overlay" width="1080" height="1920" style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:14px;pointer-events:none;"></canvas>
+</div>
+<p class="note" id="notaAnim" style="display:none;">✨ A animação (cor e movimento combinando com o estilo) só aparece aqui na prévia — a imagem baixada/compartilhada/publicada continua sendo uma foto parada.</p>
+
+<div class="btns">
+  <button class="act dl" id="btnBaixar">⬇️ Baixar imagem</button>
+  <button class="act share" id="btnShare">📲 Compartilhar</button>
+</div>
+<div class="btns" style="margin-top:10px;">
+  <button class="act publish" id="btnPublicar">🌐 Publicar no Site</button>
+</div>
+<p class="note" id="notaPublicar" style="display:none;color:#8fd9c4;">✅ Publicado! Esse banner já está no "Destaque do Mês" do site.</p>
+<p class="note" id="nota">A imagem é gerada na hora, direto no navegador. O botão Compartilhar envia o arquivo de imagem (não texto) para WhatsApp e outras redes.</p>
+
+<script>
+const THEMES = {
+  familia:   { tab:'Família',              titulo:'FAMÍLIA',                 icon:'👨‍👩‍👧‍👦', top:'#3a2416', mid:'#5c3a1e', bottom:'#1c1108', accent:'#e8a95c', accent2:'#c9793a',
+               part:{ dir:'up', color:'255,200,150', count:22, speedMin:0.3, speedMax:0.8, sizeMin:3, sizeMax:6, driftMax:0.3 } },
+  oracao:    { tab:'Oração',                titulo:'ORAÇÃO',                  icon:'🙏',       top:'#141b33', mid:'#232f55', bottom:'#0a0e1c', accent:'#9fb4e8', accent2:'#5d76c9',
+               part:{ dir:'up', color:'210,225,255', count:20, speedMin:0.2, speedMax:0.5, sizeMin:2, sizeMax:5, driftMax:0.2 } },
+  louvor:    { tab:'Louvor',                titulo:'LOUVOR',                  icon:'🕊️',       top:'#3a1e10', mid:'#5c3316', bottom:'#160b05', accent:'#e9c877', accent2:'#c9a24b',
+               part:{ dir:'up', color:'255,210,120', count:38, speedMin:0.6, speedMax:2.2, sizeMin:3, sizeMax:10, driftMax:0.8 } },
+  ceia:      { tab:'Santa Ceia',            titulo:'SANTA CEIA E PRIMÍCIAS',  icon:'🍷',       top:'#2a0d12', mid:'#4a1620', bottom:'#150609', accent:'#e9c877', accent2:'#8a2c3a',
+               part:{ dir:'up', color:'235,195,150', count:14, speedMin:0.15, speedMax:0.35, sizeMin:2, sizeMax:5, driftMax:0.15 } },
+  missoes:   { tab:'Missões',               titulo:'MISSÕES',                icon:'🌍',       top:'#0f2b26', mid:'#184a3f', bottom:'#071410', accent:'#8fd9c4', accent2:'#2f8a6f',
+               part:{ dir:'up', color:'170,230,210', count:24, speedMin:0.3, speedMax:0.7, sizeMin:2, sizeMax:6, driftMax:1.1 } },
+  quarta:    { tab:'4ª de Adoração',        titulo:'QUARTA DE ADORAÇÃO',      icon:'🙌',       top:'#241033', mid:'#3a1a52', bottom:'#100518', accent:'#d8b4e8', accent2:'#8a4fc9',
+               part:{ dir:'up', color:'220,185,235', count:28, speedMin:0.4, speedMax:1.2, sizeMin:3, sizeMax:7, driftMax:0.6 } },
+  jubrac:    { tab:'Jubrac',                titulo:'JUBRAC',                  icon:'🔥',       top:'#331408', mid:'#5c2410', bottom:'#180a04', accent:'#f5a75c', accent2:'#c9542c',
+               part:{ dir:'up', color:'255,150,80', count:42, speedMin:1.0, speedMax:2.8, sizeMin:3, sizeMax:9, driftMax:1.4 } },
+  menibrac:  { tab:'Menibrac',              titulo:'MENIBRAC',                icon:'🎈',       top:'#0d2433', mid:'#164a5c', bottom:'#051218', accent:'#ffe08a', accent2:'#2c9ac9',
+               part:{ dir:'up', color:'255,224,138', count:20, speedMin:0.4, speedMax:0.9, sizeMin:5, sizeMax:11, driftMax:1.6 } },
+  umasbrac:  { tab:'Umasbrac',              titulo:'UMASBRAC',                icon:'🤝',       top:'#0d1b2a', mid:'#1b3a5c', bottom:'#050c14', accent:'#9fc4e8', accent2:'#2c5a9a',
+               part:{ dir:'up', color:'160,200,235', count:16, speedMin:0.25, speedMax:0.5, sizeMin:2, sizeMax:5, driftMax:0.15 } },
+  ufebrac:   { tab:'Ufebrac',               titulo:'UFEBRAC',                 icon:'🌸',       top:'#330d24', mid:'#5c1a42', bottom:'#180512', accent:'#e8a9d0', accent2:'#c92c8a',
+               part:{ dir:'down', color:'235,170,210', count:18, speedMin:0.3, speedMax:0.7, sizeMin:4, sizeMax:8, driftMax:1.0 } }
+};
+let temaAtual = 'familia';
+
+const tabsEl = document.getElementById('tabs');
+Object.keys(THEMES).forEach(key=>{
+  const div = document.createElement('div');
+  div.className = 'tab' + (key===temaAtual ? ' active':'');
+  div.dataset.tema = key;
+  div.textContent = THEMES[key].tab;
+  div.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    div.classList.add('active');
+    temaAtual = key;
+    render();
+    atualizarAnimacao();
+    carregarAudioTema();
+  });
+  tabsEl.appendChild(div);
+});
+
+const cv = document.getElementById('banner');
+const ctx = cv.getContext('2d');
+const W = cv.width, H = cv.height;
+
+const ov = document.getElementById('overlay');
+const octx = ov.getContext('2d');
+let rafId = null;
+let particles = [];
+
+function novoConjuntoParticulas(cfg){
+  const arr = [];
+  for(let i=0;i<cfg.count;i++){
+    arr.push({
+      x: Math.random()*W,
+      y: cfg.dir==='down' ? Math.random()*H : H*0.35 + Math.random()*H*0.65,
+      r: cfg.sizeMin + Math.random()*(cfg.sizeMax-cfg.sizeMin),
+      speed: cfg.speedMin + Math.random()*(cfg.speedMax-cfg.speedMin),
+      drift: (Math.random()-0.5)*cfg.driftMax*2,
+      alpha: 0.2 + Math.random()*0.6,
+      flicker: Math.random()*Math.PI*2
+    });
+  }
+  return arr;
+}
+
+function desenharParticulas(context, arr, cfg){
+  arr.forEach(p=>{
+    if(cfg.dir==='down'){ p.y += p.speed; } else { p.y -= p.speed; }
+    p.x += p.drift;
+    p.flicker += 0.08;
+    if(cfg.dir==='down' && p.y > H*0.98){ p.y = -H*0.02; p.x = Math.random()*W; }
+    if(cfg.dir==='up' && p.y < H*0.08){ p.y = H*0.98; p.x = Math.random()*W; }
+    const a = p.alpha * (0.6 + 0.4*Math.sin(p.flicker));
+    context.beginPath();
+    const grad = context.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*3);
+    grad.addColorStop(0, `rgba(${cfg.color},${a})`);
+    grad.addColorStop(1, `rgba(${cfg.color},0)`);
+    context.fillStyle = grad;
+    context.arc(p.x,p.y,p.r*3,0,Math.PI*2);
+    context.fill();
+  });
+}
+
+function animarOverlay(){
+  octx.clearRect(0,0,W,H);
+  desenharParticulas(octx, particles, THEMES[temaAtual].part);
+  rafId = requestAnimationFrame(animarOverlay);
+}
+
+function atualizarAnimacao(){
+  if(rafId){ cancelAnimationFrame(rafId); rafId = null; }
+  octx.clearRect(0,0,W,H);
+  const notaAnim = document.getElementById('notaAnim');
+  const cfg = THEMES[temaAtual].part;
+  if(cfg){
+    particles = novoConjuntoParticulas(cfg);
+    animarOverlay();
+    notaAnim.style.display = 'block';
+  } else {
+    notaAnim.style.display = 'none';
+  }
+}
+
+function wrapText(text, maxWidth, font){
+  ctx.font = font;
+  const words = text.split(' ');
+  let lines = [], cur = '';
+  for(const w of words){
+    const test = cur ? cur+' '+w : w;
+    if(ctx.measureText(test).width > maxWidth && cur){
+      lines.push(cur); cur = w;
+    } else { cur = test; }
+  }
+  if(cur) lines.push(cur);
+  return lines;
+}
+
+function fitTitle(title, maxWidth, maxFont, minFont){
+  let fontSize = maxFont;
+  while(fontSize > minFont){
+    const font = `900 ${fontSize}px 'Cinzel'`;
+    const lines = wrapText(title, maxWidth, font);
+    ctx.font = font;
+    const tooWide = lines.some(l=>ctx.measureText(l).width > maxWidth);
+    if(!tooWide && lines.length <= 3){
+      return { fontSize, lines };
+    }
+    fontSize -= 6;
+  }
+  return { fontSize: minFont, lines: wrapText(title, maxWidth, `900 ${minFont}px 'Cinzel'`) };
+}
+
+function drawSpaced(text, x, y, font, color, spacing){
+  ctx.font = font;
+  ctx.fillStyle = color;
+  ctx.textAlign = 'left';
+  let widths = [...text].map(ch=>ctx.measureText(ch).width);
+  let total = widths.reduce((a,b)=>a+b,0) + spacing*(text.length-1);
+  let curX = x - total/2;
+  for(let i=0;i<text.length;i++){
+    ctx.fillText(text[i], curX, y);
+    curX += widths[i] + spacing;
+  }
+}
+
+async function render(){
+  const t = THEMES[temaAtual];
+
+  const bg = ctx.createLinearGradient(0,0,0,H);
+  bg.addColorStop(0, t.top);
+  bg.addColorStop(0.55, t.mid);
+  bg.addColorStop(1, t.bottom);
+  ctx.fillStyle = bg;
+  ctx.fillRect(0,0,W,H);
+
+  const glow = ctx.createRadialGradient(W/2,H*0.18,50,W/2,H*0.18,W*0.9);
+  glow.addColorStop(0,'rgba(255,235,190,0.35)');
+  glow.addColorStop(1,'rgba(255,235,190,0)');
+  ctx.fillStyle = glow;
+  ctx.fillRect(0,0,W,H);
+
+  ctx.save();
+  ctx.globalAlpha = 0.10;
+  ctx.strokeStyle = '#ffffff';
+  for(let i=-6;i<=6;i++){
+    ctx.beginPath();
+    ctx.moveTo(W/2, -50);
+    ctx.lineTo(W/2 + i*120, H*0.6);
+    ctx.lineWidth = 6;
+    ctx.stroke();
+  }
+  ctx.restore();
+
+  const vig = ctx.createRadialGradient(W/2,H/2,H*0.3,W/2,H/2,H*0.75);
+  vig.addColorStop(0,'rgba(0,0,0,0)');
+  vig.addColorStop(1,'rgba(0,0,0,0.55)');
+  ctx.fillStyle = vig;
+  ctx.fillRect(0,0,W,H);
+
+  ctx.textAlign = 'center';
+  drawSpaced('C U L T O', W/2, 330, "600 34px 'EB Garamond'", t.accent, 4);
+
+  ctx.beginPath();
+  ctx.strokeStyle = t.accent;
+  ctx.lineWidth = 2;
+  ctx.moveTo(W/2-70,365); ctx.lineTo(W/2+70,365);
+  ctx.stroke();
+
+  const maxTitleWidth = W*0.86;
+  const { fontSize, lines } = fitTitle(t.titulo, maxTitleWidth, 118, 56);
+  const titleGrad = ctx.createLinearGradient(0,420,0,420+fontSize*lines.length+120);
+  titleGrad.addColorStop(0, t.accent);
+  titleGrad.addColorStop(1, t.accent2);
+  ctx.fillStyle = titleGrad;
+  ctx.textAlign = 'center';
+  ctx.font = `900 ${fontSize}px 'Cinzel'`;
+  let ty = 430 + fontSize*0.55;
+  lines.forEach(word=>{
+    ctx.fillText(word, W/2, ty);
+    ty += fontSize*1.08;
+  });
+
+  const versiculo = document.getElementById('versiculo').value.trim();
+  const referencia = document.getElementById('referencia').value.trim();
+  let ty2 = ty;
+  if(versiculo){
+    ctx.fillStyle = '#f4ece0';
+    ctx.font = "italic 40px 'EB Garamond'";
+    const vlines = wrapText(versiculo, W*0.72, "italic 40px 'EB Garamond'");
+    let vy = ty2 + 40;
+    vlines.forEach(l=>{ ctx.fillText(l, W/2, vy); vy += 52; });
+    if(referencia){
+      ctx.font = "600 32px 'EB Garamond'";
+      ctx.fillStyle = t.accent;
+      ctx.fillText(referencia, W/2, vy + 20);
+      vy += 20;
+    }
+    ty2 = vy + 30;
+  }
+
+  ctx.font = "220px sans-serif";
+  ctx.textAlign = 'center';
+  ctx.save();
+  const iconGlow = ctx.createRadialGradient(W/2,H*0.72,20,W/2,H*0.72,260);
+  iconGlow.addColorStop(0,'rgba(255,220,150,0.35)');
+  iconGlow.addColorStop(1,'rgba(255,220,150,0)');
+  ctx.fillStyle = iconGlow;
+  ctx.fillRect(W/2-280,H*0.72-280,560,560);
+  ctx.restore();
+  ctx.fillText(t.icon, W/2, H*0.78);
+
+  const dia = document.getElementById('dia').value.trim();
+  const data = document.getElementById('data').value.trim();
+  const horario = document.getElementById('horario').value.trim();
+  const local = document.getElementById('local').value.trim();
+
+  const barY = H - (local ? 260 : 190);
+  ctx.fillStyle = 'rgba(0,0,0,0.45)';
+  ctx.fillRect(0, barY, W, local ? 260 : 190);
+
+  ctx.fillStyle = '#f4ece0';
+  ctx.font = "700 56px 'EB Garamond'";
+  ctx.textAlign = 'center';
+  let diaCompleto = [dia, data].filter(Boolean).join(' - ');
+  let linhaHorario = [diaCompleto, horario].filter(Boolean).join('  |  ');
+  ctx.fillText(linhaHorario, W/2, barY + 90);
+
+  if(local){
+    ctx.font = "36px 'Manrope'";
+    ctx.fillStyle = '#d8c9b8';
+    const lls = wrapText(local, W*0.8, "36px 'Manrope'");
+    let ly = barY + 150;
+    lls.forEach(l=>{ ctx.fillText(l, W/2, ly); ly += 46; });
+  }
+
+  ctx.font = "600 30px 'Manrope'";
+  ctx.fillStyle = 'rgba(244,236,224,0.6)';
+  ctx.fillText('OBPC Jardim São Fernando', W/2, H-30);
+}
+
+['versiculo','referencia','dia','data','horario','local'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', render);
+});
+
+const audioUrlInput = document.getElementById('audioUrl');
+const audioPreviewEl = document.getElementById('audioPreview');
+const btnTestarAudio = document.getElementById('btnTestarAudio');
+const audioFileInput = document.getElementById('audioFile');
+const audioSts = document.getElementById('audioSts');
+let testandoAudio = false;
+
+function carregarAudioTema(){
+  audioPreviewEl.pause();
+  testandoAudio = false;
+  btnTestarAudio.textContent = '▶️ Testar áudio';
+  const salvo = localStorage.getItem('obpc_banner_audio_'+temaAtual) || '';
+  audioUrlInput.value = salvo;
+  btnTestarAudio.style.display = salvo ? 'inline-block' : 'none';
+  audioSts.style.display = salvo ? 'block' : 'none';
+  if(salvo){
+    audioSts.style.color = '#8fd9c4';
+    audioSts.textContent = '✅ Áudio salvo pra esse estilo.';
+  }
+}
+
+audioFileInput.addEventListener('change', async ()=>{
+  const f = audioFileInput.files[0];
+  if(!f) return;
+  audioSts.style.display = 'block';
+  audioSts.style.color = '#c9a24b';
+  audioSts.textContent = '⬆️ Enviando áudio...';
+  try{
+    const fd = new FormData();
+    fd.append('file', f);
+    fd.append('upload_preset', 'obpc_media');
+    fd.append('folder', 'obpc_sao_fernando');
+    fd.append('resource_type', 'video');
+    const resp = await fetch('https://api.cloudinary.com/v1_1/dvvxiri22/video/upload', { method:'POST', body: fd });
+    const data = await resp.json();
+    if(!data.secure_url) throw new Error('sem url');
+    audioUrlInput.value = data.secure_url;
+    localStorage.setItem('obpc_banner_audio_'+temaAtual, data.secure_url);
+    audioSts.style.color = '#8fd9c4';
+    audioSts.textContent = '✅ Áudio enviado!';
+    btnTestarAudio.style.display = 'inline-block';
+  }catch(e){
+    audioSts.style.color = '#e07a7a';
+    audioSts.textContent = '❌ Não consegui enviar. Tenta de novo com internet melhor.';
+  }
+  audioFileInput.value = '';
+});
+
+btnTestarAudio.addEventListener('click', ()=>{
+  const url = audioUrlInput.value.trim();
+  if(!url){ return; }
+  if(testandoAudio){
+    audioPreviewEl.pause();
+    testandoAudio = false;
+    btnTestarAudio.textContent = '▶️ Testar áudio';
+  } else {
+    audioPreviewEl.src = url;
+    audioPreviewEl.play().then(()=>{
+      testandoAudio = true;
+      btnTestarAudio.textContent = '⏸️ Pausar';
+    }).catch(()=>{ alert('Não consegui tocar esse áudio agora.'); });
+  }
+});
+
+carregarAudioTema();
+
+document.getElementById('btnBaixar').addEventListener('click', ()=>{
+  cv.toBlob(blob=>{
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'banner_'+temaAtual+'.png';
+    a.click();
+  }, 'image/png');
+});
+
+document.getElementById('btnShare').addEventListener('click', ()=>{
+  cv.toBlob(async blob=>{
+    const file = new File([blob], 'banner_'+temaAtual+'.png', {type:'image/png'});
+    if(navigator.canShare && navigator.canShare({files:[file]})){
+      try{
+        await navigator.share({
+          files:[file],
+          title: THEMES[temaAtual].titulo,
+          text: THEMES[temaAtual].titulo
+        });
+      }catch(e){}
+    } else {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'banner_'+temaAtual+'.png';
+      a.click();
+      document.getElementById('nota').textContent = 'Seu navegador não permite compartilhar o arquivo direto. A imagem foi baixada — é só anexar ela no WhatsApp normalmente.';
+    }
+  }, 'image/png');
+});
+
+document.getElementById('btnPublicar').addEventListener('click', async ()=>{
+  const btn = document.getElementById('btnPublicar');
+  const nota = document.getElementById('notaPublicar');
+  const original = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = '⏳ Publicando...';
+  nota.style.display = 'none';
+  try{
+    const blob = await new Promise(resolve => cv.toBlob(resolve, 'image/png', 1.0));
+    const base64 = await new Promise((resolve, reject)=>{
+      const r = new FileReader();
+      r.onload = e => resolve(e.target.result.split(',')[1]);
+      r.onerror = reject;
+      r.readAsDataURL(blob);
+    });
+    const key = '882bf38d3bf05650732a78da66c23568';
+    const fd = new FormData();
+    fd.append('image', base64);
+    fd.append('name', 'banner_'+temaAtual+'_'+Date.now());
+    const resp = await fetch('https://api.imgbb.com/1/upload?key='+key, {method:'POST', body:fd});
+    const data = await resp.json();
+    if(!data.success) throw new Error('upload falhou');
+    const url = data.data.url;
+    const audioUrlFinal = document.getElementById('audioUrl').value.trim();
+
+    const dados = {
+      badge:'', titulo:'', subtit:'', dt:'', hora:'', local:'', cta:'',
+      cor:'#D4A843', tpl:'', bgUrl:url, bgTp:'img',
+      ov1:'#0a1e35', ov2:'#1E3A5F', opac:75, ts: Date.now(),
+      audioUrl: audioUrlFinal, audioLoop:true, audioVol:0.5
+    };
+    await fetch('https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com/obpc/banner_culto.json', {
+      method:'PUT',
+      body: JSON.stringify(dados),
+      headers: {'Content-Type':'application/json'}
+    });
+
+    btn.textContent = '✅ Publicado!';
+    nota.style.display = 'block';
+    setTimeout(()=>{ btn.disabled = false; btn.textContent = original; }, 4000);
+  }catch(e){
+    btn.disabled = false;
+    btn.textContent = original;
+    alert('Não consegui publicar agora. Verifique a internet e tente de novo.');
+  }
+});
+
+if(document.fonts && document.fonts.ready){
+  document.fonts.load("900 118px 'Cinzel'");
+  document.fonts.load("italic 40px 'EB Garamond'");
+  document.fonts.ready.then(render);
+} else {
+  render();
+}
+setTimeout(render, 400);
+atualizarAnimacao();
+</script>
+</body>
+</html>
