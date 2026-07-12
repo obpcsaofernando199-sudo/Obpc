@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agenda do Mês | OBPC JD SÃO FERNANDO</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700;900&family=DM+Serif+Display&family=Playfair+Display:wght@700;900&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root{--bg:#1a5c8a;--bg-dark:#0d3d5e;--card:#155075;--gold:#D4A843;--blue:#3B9BD6;--white:#FFFFFF;--sunday:#FFF1F2;--wednesday:#F0F9FF;--saturday:#F0FDF4}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:linear-gradient(160deg,#0d3d5e 0%,#1a5c8a 50%,#1a6ea0 100%);min-height:100vh;font-family:'DM Sans',sans-serif;padding:5px;color:#fff;overflow-x:hidden}
+.top-nav{width:1200px;margin:0 auto 5px;display:flex;justify-content:space-between;align-items:center;background:var(--bg-dark);padding:8px 12px;border-radius:8px;border:1px solid rgba(212,168,67,0.5);box-shadow:0 2px 12px rgba(0,0,0,0.3)}
+.btn{padding:6px 12px;border-radius:6px;border:none;font-weight:bold;cursor:pointer;display:flex;align-items:center;gap:6px;font-size:0.75rem;transition:0.2s}
+.btn:hover{filter:brightness(1.15)}
+.btn-add{background:#10B981;color:#fff}.btn-config{background:#6366F1;color:#fff}.btn-photo{background:var(--gold);color:#000}.btn-clear{background:#EF4444;color:#fff}
+#save-bar{width:1200px;margin:0 auto 5px;background:linear-gradient(135deg,#0a2a40,#0d3d5e);border:1.5px solid var(--gold);border-radius:8px;padding:8px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;box-shadow:0 2px 12px rgba(0,0,0,0.35)}
+.save-bar-label{font-size:0.68rem;font-weight:900;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;display:flex;align-items:center;gap:5px;padding-right:10px;border-right:1px solid rgba(212,168,67,0.3);white-space:nowrap}
+.btn-salvar-pc{background:linear-gradient(135deg,#1B7A3F,#145c2f);color:#CAFCE0;border:1.5px solid #24A354;font-size:0.75rem;font-weight:900;padding:7px 14px;border-radius:7px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:0.2s;white-space:nowrap}
+.btn-salvar-pc:hover{filter:brightness(1.15);transform:translateY(-1px)}
+.btn-carregar-pc{background:linear-gradient(135deg,#1559A0,#0d3d7a);color:#C9E4FF;border:1.5px solid #1E72C8;font-size:0.75rem;font-weight:900;padding:7px 14px;border-radius:7px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:0.2s;white-space:nowrap}
+.btn-carregar-pc:hover{filter:brightness(1.15);transform:translateY(-1px)}
+#inp-carregar{display:none}
+.save-bar-info{font-size:0.65rem;color:rgba(255,255,255,0.5);line-height:1.4;flex:1}
+.save-bar-info strong{color:rgba(255,255,255,0.75)}
+.save-bar-status{font-size:0.68rem;font-weight:700;padding:4px 10px;border-radius:5px;background:rgba(27,122,63,0.2);color:#69f0ae;border:1px solid rgba(36,163,84,0.4);display:none;align-items:center;gap:5px;white-space:nowrap}
+.save-bar-status.on{display:flex}
+.save-bar-status.warn{background:rgba(184,148,10,0.2);color:#FFE07A;border-color:rgba(212,170,16,0.4)}
+.save-filename-wrap{display:flex;align-items:center;gap:5px}
+.save-filename-wrap label{font-size:0.62rem;color:var(--gold);font-weight:700;white-space:nowrap}
+.save-filename-input{background:rgba(255,255,255,0.08);border:1.5px solid rgba(212,168,67,0.35);border-radius:6px;padding:5px 9px;color:#fff;font-size:0.72rem;font-family:inherit;outline:none;width:200px;transition:border-color 0.2s}
+.save-filename-input:focus{border-color:var(--gold);background:rgba(255,255,255,0.12)}
+#filter-panel{width:1200px;margin:0 auto 5px;background:var(--card);padding:10px 14px;border-radius:8px;border:1px solid rgba(59,155,214,0.5);box-shadow:0 2px 8px rgba(0,0,0,0.2)}
+.filter-tabs{display:flex;gap:4px;margin-bottom:10px;border-bottom:1px solid #0d3d5e;padding-bottom:8px}
+.filter-tab{padding:5px 14px;border-radius:6px 6px 0 0;border:none;font-size:0.75rem;font-weight:900;cursor:pointer;transition:0.2s;background:#0d3d5e;color:#94A3B8;letter-spacing:0.5px}
+.filter-tab.active{background:var(--blue);color:#fff}
+.filter-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.filter-row label{font-size:0.72rem;color:var(--gold);font-weight:bold;white-space:nowrap}
+.filter-select{flex:1;min-width:180px;max-width:300px;padding:5px 8px;border-radius:6px;background:#0d3d5e;color:#fff;border:1px solid #2a6a9a;font-family:inherit;font-size:0.8rem}
+.filter-actions{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.btn-share{background:#0EA5E9;color:#fff}.btn-upload{background:#8B5CF6;color:#fff}.btn-clear-f{background:#64748B;color:#fff}.btn-screenshot-f{background:var(--gold);color:#000}
+.jpg-group{display:flex;gap:4px;align-items:center}
+.btn-jpg-quadro{background:#F59E0B;color:#000;font-size:0.72rem;padding:6px 10px;border-radius:6px;border:none;font-weight:900;cursor:pointer;display:flex;align-items:center;gap:4px;white-space:nowrap;transition:0.2s}
+.btn-jpg-quadro:hover{background:#D97706}
+.btn-jpg-individual{background:#10B981;color:#fff;font-size:0.72rem;padding:6px 10px;border-radius:6px;border:none;font-weight:900;cursor:pointer;display:flex;align-items:center;gap:4px;white-space:nowrap;transition:0.2s}
+.btn-jpg-individual:hover{background:#059669}
+#active-filter-badge{width:1200px;margin:0 auto 3px;background:#0d3d5e;border:1px solid var(--blue);border-radius:6px;padding:5px 12px;font-size:0.78rem;color:#7DD3FC;display:none;align-items:center;gap:8px}
+#active-filter-badge.visible{display:flex}
+#active-filter-badge strong{color:#fff}
+#toolbar-selection{width:1200px;margin:0 auto 0;background:var(--blue);border-radius:10px 10px 0 0;display:none;padding:10px;flex-wrap:wrap;gap:8px;justify-content:center;border:2px solid #fff;border-bottom:none}
+.chip{background:#fff;color:#000;padding:5px 12px;border-radius:20px;font-size:0.85rem;font-weight:900;cursor:pointer;box-shadow:0 2px 4px rgba(0,0,0,0.2)}
+.chip:hover{background:var(--gold)}
+#scale-sheet{width:1200px;background:var(--white);margin:0 auto;padding:10px 25px 20px;color:#000;border-radius:0 0 4px 4px}
+.compact-header{border:1.5px solid #000;padding:5px;margin-bottom:8px;text-align:center}
+.church-title{font-family:'DM Serif Display',serif;font-size:1.6rem;text-transform:uppercase;margin-bottom:2px;line-height:1}
+.period-wrap{display:flex;align-items:center;justify-content:center;gap:10px;margin:3px 0 2px}
+.period-nav{background:none;border:1.5px solid #000;border-radius:50%;width:22px;height:22px;font-size:0.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:900;color:#000;line-height:1;transition:0.15s;padding:0}
+.period-nav:hover{background:#000;color:#fff}
+.period-label-wrap{text-align:center;line-height:1}
+.period-sub{font-family:'DM Sans',sans-serif;font-size:0.6rem;font-weight:900;letter-spacing:3px;color:#888;text-transform:uppercase;display:block;margin-bottom:3px}
+.period-month{font-family:'Playfair Display','DM Serif Display',serif;font-size:2rem;font-weight:900;letter-spacing:2px;color:#000;display:inline;line-height:1;text-transform:uppercase}
+.period-sep{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600;color:#999;margin:0 6px;vertical-align:middle}
+.period-year{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;letter-spacing:1px;color:#333;display:inline;line-height:1}
+.theme-line{font-weight:bold;font-style:italic;font-size:0.85rem;text-transform:uppercase;outline:none;display:block;margin-top:2px}
+#filter-name-line{display:none;font-size:0.85rem;font-weight:bold;color:#1E40AF;margin-top:4px;letter-spacing:0.5px}
+table{width:100%;border-collapse:collapse;table-layout:fixed;border:2px solid #000}
+th{background:#E2E8F0;color:#000;border:1.5px solid #000;padding:5px 2px;font-size:0.68rem;text-transform:uppercase;font-weight:900;letter-spacing:0.3px;vertical-align:middle;text-align:center}
+td{border:1.5px solid #000;padding:0;vertical-align:middle;position:relative}
+.hide-for-export .col-dirigente,.hide-for-export .col-oportunidade,.hide-for-export .col-ministrante,.hide-for-export .col-excluir,.hide-for-export .col-arrastar{display:none!important}
+.td-dirigente-split{padding:0!important}
+.td-dirigente-split .dir-split-wrap{display:flex;width:100%;height:100%;min-height:36px}
+.td-dirigente-split .dir-sub{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:0}
+.td-dirigente-split .dir-sub:first-child{border-right:1.5px solid #000}
+.dir-sub-label{font-size:0.55rem;font-weight:900;text-transform:uppercase;color:#7C3AED;background:#EDE9FE;width:100%;text-align:center;padding:1px 0;border-bottom:1px solid #C4B5FD;letter-spacing:0.3px;line-height:1.3}
+.dir-sub-input{flex:1;width:100%;border:none;background:transparent;text-align:center;font-size:0.75rem;color:#000;outline:none;padding:2px;white-space:pre-wrap;cursor:pointer;display:flex;align-items:center;justify-content:center;min-height:24px;line-height:1.2}
+.cell-data{width:100%;min-height:36px;border:none;background:transparent;text-align:center;font-size:0.78rem;color:#000;outline:none;display:flex;align-items:center;justify-content:center;padding:2px 3px;white-space:pre-wrap;cursor:pointer;line-height:1.2}
+.cell-data.cell-ensaio{font-size:0.75rem}
+.active-cell{background:rgba(59,155,214,0.15)!important;outline:2px solid var(--blue);z-index:5}
+.cell-data .nome-highlight{background:#FBBF24;padding:1px 4px;border-radius:3px;font-weight:900;font-size:0.75rem}
+.cell-data .nome-oculto{color:#ccc;font-size:0.7rem;font-style:italic}
+.td-data-wrap{position:relative;width:100%;height:36px;display:flex;align-items:center;justify-content:center}
+.dt-input{position:absolute;inset:0;width:100%;height:100%;border:none;background:transparent;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:bold;font-size:0.78rem;color:transparent;letter-spacing:0.3px;padding:0;margin:0;-webkit-appearance:none;appearance:none;outline:none;z-index:2}
+.dt-input::-webkit-calendar-picker-indicator{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.dt-display{position:relative;z-index:1;font-family:'DM Sans',sans-serif;font-weight:bold;font-size:0.78rem;color:#000;pointer-events:none;letter-spacing:0.3px;white-space:nowrap;user-select:none}
+.dt-display.vazio{color:#1a80cc;font-weight:900;font-size:0.72rem}
+.td-data-wrap::after{content:"📅";position:absolute;right:4px;top:50%;transform:translateY(-50%);font-size:0.7rem;pointer-events:none;z-index:1;opacity:0.6}
+.row-dom{background-color:var(--sunday)}.row-qua{background-color:var(--wednesday)}.row-sab{background-color:var(--saturday)}
+.row-ceia .td-dirigente-normal,.row-ceia .td-dirigente-split{border-top:2px solid #7C3AED!important}
+tr.row-filtered-out{display:none}tr.row-no-match{display:none}
+tr.row-mes-oculto{display:none}
+.col-excluir{width:40px!important;background:#FEF2F2;text-align:center;cursor:pointer;padding:0!important}
+.linha-acoes{display:flex;flex-direction:column;width:100%}
+.btn-del-linha{display:flex;align-items:center;justify-content:center;width:100%;height:18px;min-height:18px;background:none;border:none;cursor:pointer;font-size:0.85rem;color:#DC2626;font-weight:900;transition:0.15s}
+.btn-del-linha:hover{background:#DC2626;color:#fff}
+.btn-edit-linha{display:flex;align-items:center;justify-content:center;width:100%;height:18px;min-height:18px;background:#EFF6FF;border:none;border-bottom:1px solid #BFDBFE;cursor:pointer;font-size:0.8rem;color:#2563EB;font-weight:900;transition:0.15s}
+.btn-edit-linha:hover{background:#2563EB;color:#fff}
+.col-arrastar{width:24px!important;background:#F1F5F9;text-align:center;cursor:grab;padding:0!important}
+.row-drag-handle{display:flex;align-items:center;justify-content:center;width:100%;height:36px;min-height:36px;color:#64748B;font-size:1rem;user-select:none}
+tr.row-dragging{opacity:0.35}
+tr.row-drop-target td.col-arrastar{box-shadow:inset 0 3px 0 #3B9BD6}
+#upload-modal{position:fixed;inset:0;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;z-index:6000}
+.upload-box{background:#1E293B;padding:25px;border-radius:12px;width:480px;border:1px solid #8B5CF6}
+.upload-box h2{color:#A78BFA;text-align:center;margin-bottom:15px}
+.upload-drop{border:2px dashed #8B5CF6;border-radius:8px;padding:30px;text-align:center;cursor:pointer;color:#94A3B8;font-size:0.9rem;transition:0.2s}
+.upload-drop:hover{background:rgba(139,92,246,0.1)}
+.upload-drop input{display:none}
+#upload-preview{max-width:100%;max-height:300px;display:none;margin:10px auto;border-radius:8px}
+.upload-info{color:#7DD3FC;font-size:0.8rem;text-align:center;margin-top:8px}
+#config-modal{position:fixed;inset:0;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;z-index:5000}
+.config-box{background:#1E293B;padding:25px;border-radius:12px;width:600px;border:1px solid var(--gold)}
+.config-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:15px}
+.config-grid textarea{width:100%;height:260px;padding:10px;border-radius:5px;background:#0F172A;color:#fff;border:1px solid #444;font-family:inherit;font-size:0.82rem}
+.config-grid label{font-size:0.8rem;color:var(--gold);display:block;margin-bottom:5px}
+@media print{.top-nav,#save-bar,#filter-panel,#active-filter-badge,#toolbar-selection,.col-excluir,.col-arrastar{display:none!important}}
+#share-modal{position:fixed;inset:0;background:rgba(0,0,0,0.92);display:none;align-items:center;justify-content:center;z-index:7000}
+.share-box{background:#1E293B;padding:20px;border-radius:14px;width:340px;border:2px solid #25D366;text-align:center}
+.share-box h2{color:#25D366;margin-bottom:12px;font-size:1rem}
+#share-preview-img{max-width:100%;max-height:220px;border-radius:8px;margin-bottom:12px;border:1px solid #334155}
+#share-status{font-size:0.85rem;color:#94A3B8;margin-bottom:14px}
+.share-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.btn-baixar-share{background:var(--gold);color:#000}.btn-zap-share{background:#25D366;color:#fff}.btn-fechar-share{background:#64748B;color:#fff}
+#load-confirm-modal{position:fixed;inset:0;background:rgba(0,0,0,0.88);display:none;align-items:center;justify-content:center;z-index:8000}
+#load-confirm-modal.on{display:flex}
+.load-confirm-box{background:#1E293B;border:2px solid var(--gold);border-radius:14px;padding:28px;width:400px;text-align:center}
+.load-confirm-box h2{color:var(--gold);margin-bottom:10px;font-size:1.05rem}
+.load-confirm-box p{font-size:0.82rem;color:#94A3B8;margin-bottom:6px;line-height:1.6}
+.load-confirm-box .arquivo-nome{background:rgba(255,255,255,0.06);border:1px solid rgba(212,168,67,0.3);border-radius:6px;padding:8px 12px;margin:10px 0 16px;font-size:0.82rem;color:var(--gold);font-weight:700;word-break:break-all}
+.load-confirm-btns{display:flex;gap:10px;justify-content:center}
+.btn-confirmar-load{background:#1B7A3F;color:#CAFCE0;border:1.5px solid #24A354;padding:9px 20px;border-radius:8px;font-weight:900;font-size:0.82rem;cursor:pointer;transition:0.2s}
+.btn-confirmar-load:hover{filter:brightness(1.15)}
+.btn-cancelar-load{background:#64748B;color:#fff;border:1.5px solid #475569;padding:9px 20px;border-radius:8px;font-weight:900;font-size:0.82rem;cursor:pointer;transition:0.2s}
+.btn-cancelar-load:hover{filter:brightness(1.15)}
+.td-data-wrap:hover::before{content:"Clique para selecionar a data";position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);background:#1a5c8a;color:#fff;font-size:0.65rem;padding:3px 7px;border-radius:4px;white-space:nowrap;z-index:10;pointer-events:none}
+</style>
+</head>
+<body>
+
+<div class="top-nav">
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-add" onclick="addRow()">➕ Novo Culto</button>
+    <button class="btn btn-config" onclick="openConfig(true)">⚙️ Listas</button>
+    <button class="btn" id="btn-agenda-mes" style="background:#7C3AED;color:#fff" onclick="inserirAgendaRegional2026()">📅 Agenda Regional do Mês</button>
+  </div>
+  <div style="text-align:center"><strong style="color:var(--gold);font-size:0.8rem;">SISTEMA DE ESCALA OBPC</strong></div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-photo" onclick="takeScreenshot()">📸 Foto Completa</button>
+    <button class="btn btn-clear" onclick="resetData()">🗑️</button>
+  </div>
+</div>
+
+<div id="save-bar">
+  <div class="save-bar-label">💾 ARQUIVO</div>
+  <div class="save-filename-wrap">
+    <label>Nome:</label>
+    <input type="text" class="save-filename-input" id="nome-arquivo" value="Agenda_do_Mes_OBPC_JdSaoFernando" placeholder="Nome do arquivo..."/>
+  </div>
+  <button class="btn-salvar-pc" onclick="salvarArquivo()">💾 Salvar no PC (.json)</button>
+  <button class="btn-carregar-pc" onclick="document.getElementById('inp-carregar').click()">📂 Carregar do PC</button>
+  <input type="file" id="inp-carregar" accept=".json" onchange="carregarArquivo(event)"/>
+  <div class="save-bar-info"><strong>Como usar:</strong> Salvar gera um arquivo <strong>.json</strong> na pasta Downloads. Para continuar depois, clique em <strong>Carregar do PC</strong> e selecione o arquivo salvo.</div>
+  <div class="save-bar-status" id="save-status"></div>
+</div>
+
+<div id="filter-panel">
+  <div class="filter-tabs">
+    <button class="filter-tab active" onclick="switchTab('obreiro')">👤 POR OBREIRO</button>
+    <button class="filter-tab" onclick="switchTab('data')">📅 POR DATA</button>
+    <button class="filter-tab" onclick="switchTab('culto')">⛪ POR CULTO</button>
+    <button class="filter-tab" onclick="switchTab('atividade')">🎯 POR ATIVIDADE</button>
+  </div>
+  <div id="tab-obreiro" class="filter-row">
+    <label>🔍 OBREIRO:</label>
+    <select id="sel-obreiro" class="filter-select" onchange="applyFilter()"><option value="">— Selecione —</option></select>
+    <div class="filter-actions">
+      <div class="jpg-group">
+        <button class="btn-jpg-quadro" onclick="gerarJpgQuadro()">🖼️ JPG Quadro</button>
+        <button class="btn-jpg-individual" onclick="gerarJpgIndividual()">👤 JPG Individual</button>
+      </div>
+      <button class="btn btn-share" onclick="compartilharFiltro()">📤 Compartilhar</button>
+      <button class="btn btn-upload" onclick="openUpload()">📁 Upload</button>
+      <button class="btn btn-clear-f" onclick="clearFilter()">✕ Limpar</button>
+    </div>
+  </div>
+  <div id="tab-data" class="filter-row" style="display:none">
+    <label>📅 DATA:</label>
+    <select id="sel-data" class="filter-select" onchange="applyFilter()"><option value="">— Selecione —</option></select>
+    <div class="filter-actions">
+      <button class="btn btn-screenshot-f" onclick="gerarFotoFiltro()">📲 Gerar Foto</button>
+      <button class="btn btn-share" onclick="compartilharFiltro()">📤 Compartilhar</button>
+      <button class="btn btn-upload" onclick="openUpload()">📁 Upload</button>
+      <button class="btn btn-clear-f" onclick="clearFilter()">✕ Limpar</button>
+    </div>
+  </div>
+  <div id="tab-culto" class="filter-row" style="display:none">
+    <label>⛪ CULTO:</label>
+    <select id="sel-culto" class="filter-select" onchange="applyFilter()"><option value="">— Selecione —</option></select>
+    <div class="filter-actions">
+      <button class="btn btn-screenshot-f" onclick="gerarFotoFiltro()">📲 Gerar Foto</button>
+      <button class="btn btn-share" onclick="compartilharFiltro()">📤 Compartilhar</button>
+      <button class="btn btn-upload" onclick="openUpload()">📁 Upload</button>
+      <button class="btn btn-clear-f" onclick="clearFilter()">✕ Limpar</button>
+    </div>
+  </div>
+  <div id="tab-atividade" class="filter-row" style="display:none">
+    <label>🎯 ATIVIDADE:</label>
+    <select id="sel-atividade" class="filter-select" onchange="applyFilter()">
+      <option value="">— Selecione —</option>
+      <option value="PORTA">Porta / Recepção</option>
+      <option value="ENSAIO">Ensaio</option>
+      <option value="DIRIGENTE">Dirigente</option>
+      <option value="CELEBRACAO">Celebração (Ceia)</option>
+      <option value="OPORTUNIDADE">Oportunidade</option>
+      <option value="MINISTRANTE">Ministrante</option>
+    </select>
+    <select id="sel-atividade-obr" class="filter-select" onchange="applyFilter()" style="display:none"><option value="">— Todos os obreiros —</option></select>
+    <div class="filter-actions">
+      <button class="btn btn-screenshot-f" onclick="gerarFotoFiltro()">📲 Gerar Foto</button>
+      <button class="btn btn-share" onclick="compartilharFiltro()">📤 Compartilhar</button>
+      <button class="btn btn-upload" onclick="openUpload()">📁 Upload</button>
+      <button class="btn btn-clear-f" onclick="clearFilter()">✕ Limpar</button>
+    </div>
+  </div>
+</div>
+
+<div id="active-filter-badge">
+  <span>🔎 FILTRO ATIVO:</span>
+  <strong id="badge-text">—</strong>
+  <span style="margin-left:auto;font-size:0.7rem;color:#64748B;">Apenas os registros correspondentes são exibidos</span>
+</div>
+
+<div id="toolbar-selection"></div>
+
+<div id="scale-sheet">
+  <div class="compact-header">
+    <div class="church-title" contenteditable="true" id="save-church">O BRASIL PARA CRISTO - JD SÃO FERNANDO</div>
+    <div class="period-wrap">
+      <button class="period-nav" onclick="mudaMes(-1)">&#8249;</button>
+      <div class="period-label-wrap">
+        <span class="period-sub">Agenda do Mês</span>
+        <div id="periodo-display">
+          <span class="period-month" id="periodo-mes"></span>
+          <span class="period-sep">/</span>
+          <span class="period-year" id="periodo-ano"></span>
+        </div>
+      </div>
+      <button class="period-nav" onclick="mudaMes(1)">&#8250;</button>
+    </div>
+    <div class="theme-line" contenteditable="true" id="save-theme">TEMA: "2026 ANO DA UNÇÃO"</div>
+    <div id="filter-name-line">📋 <span id="filter-name-display"></span></div>
+  </div>
+  <table id="main-table">
+    <thead>
+      <tr>
+        <th style="width:24px;" class="col-arrastar"></th>
+        <th style="width:105px;">DATA</th>
+        <th style="width:82px;">DIA</th>
+        <th style="width:90px;">ENSAIO</th>
+        <th style="width:145px;">CULTO / EVENTO</th>
+        <th style="width:115px;">PORTA (RECEPÇÃO)</th>
+        <th style="width:115px;" class="col-dirigente">DIRIGENTE</th>
+        <th style="width:105px;" class="col-oportunidade">OPORTUNIDADE</th>
+        <th style="width:105px;" class="col-ministrante">MINISTRANTE</th>
+        <th style="width:30px;" class="col-excluir">✕</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+</div>
+
+<div id="upload-modal">
+  <div class="upload-box">
+    <h2>📁 Upload de Agenda</h2>
+    <div class="upload-drop" onclick="document.getElementById('file-input').click()">
+      <input type="file" id="file-input" accept="image/*,.html" onchange="handleUpload(event)">
+      <div style="font-size:2rem;margin-bottom:8px">📤</div>
+      <div>Toque para selecionar imagem ou arquivo HTML</div>
+    </div>
+    <img id="upload-preview" alt="Preview">
+    <div id="upload-status" class="upload-info"></div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="btn btn-share" style="flex:1;justify-content:center" onclick="compartilharUpload()">📤 Compartilhar via Zap</button>
+      <button class="btn btn-clear-f" style="flex:1;justify-content:center" onclick="closeUpload()">✕ Fechar</button>
+    </div>
+  </div>
+</div>
+
+<div id="config-modal">
+  <div class="config-box">
+    <h2 style="color:var(--gold);text-align:center;">⚙️ Editar Listas</h2>
+    <div class="config-grid">
+      <div>
+        <label>Cultos (um por linha)</label>
+        <textarea id="list-cultos" oninput="saveSettings();populateCultoSelect()"></textarea>
+      </div>
+      <div>
+        <label>Obreiros (um por linha)</label>
+        <textarea id="list-obreiros" oninput="saveSettings();populateObreiroSelects()"></textarea>
+      </div>
+    </div>
+    <button class="btn btn-add" style="width:100%;margin-top:20px;justify-content:center;height:40px;" onclick="openConfig(false)">✅ Salvar e Fechar</button>
+  </div>
+</div>
+
+<div id="share-modal">
+  <div class="share-box">
+    <h2>📤 Compartilhar Agenda</h2>
+    <img id="share-preview-img" alt="Preview da escala">
+    <div id="share-status">⏳ Gerando imagem...</div>
+    <div class="share-btns">
+      <button class="btn btn-baixar-share" id="share-btn-baixar" style="display:none">⬇️ Baixar PNG</button>
+      <button class="btn btn-zap-share" id="share-btn-zap" style="display:none">💬 Baixar + WhatsApp</button>
+      <button class="btn btn-fechar-share" onclick="document.getElementById('share-modal').style.display='none'">✕ Fechar</button>
+    </div>
+  </div>
+</div>
+
+<div id="load-confirm-modal">
+  <div class="load-confirm-box">
+    <h2>📂 Carregar Arquivo</h2>
+    <p>Deseja carregar o arquivo abaixo?<br/><strong style="color:#FFE07A;">Os dados atuais serão substituídos.</strong></p>
+    <div class="arquivo-nome" id="load-arquivo-nome">—</div>
+    <p style="font-size:0.75rem;color:#64748B;">Dica: salve antes de carregar para não perder os dados atuais.</p>
+    <div class="load-confirm-btns">
+      <button class="btn-confirmar-load" id="btn-confirmar-load">✅ Carregar</button>
+      <button class="btn-cancelar-load" onclick="fecharModalLoad()">✕ Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<div id="edit-linha-modal" style="position:fixed;inset:0;background:rgba(0,0,0,0.88);display:none;align-items:center;justify-content:center;z-index:8500">
+  <div style="background:#1E293B;border:2px solid var(--blue);border-radius:14px;padding:24px;width:460px;max-width:92vw;max-height:88vh;overflow-y:auto">
+    <h2 style="color:var(--blue);margin-bottom:14px;font-size:1.05rem;text-align:center">✎ Editar Culto Completo</h2>
+    <label style="font-size:0.72rem;color:var(--gold);font-weight:700;display:block;margin-bottom:3px">Data</label>
+    <input type="date" id="eln-dt" style="width:100%;padding:7px;border-radius:6px;border:1px solid #444;background:#0F172A;color:#fff;margin-bottom:10px;font-family:inherit">
+    <label style="font-size:0.72rem;color:var(--gold);font-weight:700;display:block;margin-bottom:3px">Ensaio</label>
+    <textarea id="eln-ens" style="width:100%;min-height:44px;padding:7px;border-radius:6px;border:1px solid #444;background:#0F172A;color:#fff;margin-bottom:10px;font-family:inherit;font-size:0.85rem"></textarea>
+    <label style="font-size:0.72rem;color:var(--gold);font-weight:700;display:block;margin-bottom:3px">Culto / Evento</label>
+    <textarea id="eln-clt" oninput="elnVerificarCeia()" style="width:100%;min-height:44px;padding:7px;border-radius:6px;border:1px solid #444;background:#0F172A;color:#fff;margin-bottom:10px;font-family:inherit;font-size:0.85rem"></textarea>
+    <label style="font-size:0.72rem;color:var(--gold);font-weight:700;display:block;margin-bottom:3px">Porta / Recepção</label>
+    <textarea id="eln-p1" style="width:100%;min-height:44px;padding:7px;border-radius:6px;border:1px solid #444;background:#0F172A;color:#fff;margin-bottom:10px;font-family:inherit;font-size:0.85rem"></textarea>
+    <label style="font-size:0.72rem;color:var(--gold);font-weight:700;display:block;margin-bottom:3px">Dirigente</label>
+    <textarea id="eln-dir" style="width:100%;min-height:44px;padding:7px;border-radius:6px;border:1px solid #444;background:#0F172A;color:#fff;margin-bottom:10px;font-family:inherit;font-size:0.85rem"></textarea>
+    <div id="eln-cel-wrap" style="display:none">
+      <label style="font-size:0.72rem;color:#A78BFA;font-weight:700;display:block;margin-bottom:3px">Celebração (Santa Ceia)</label>
+      <textarea id="eln-cel" style="width:100%;min-height:44px;padding:7px;border-radius:6px;border:1px solid #7C3AED;background:#0F172A;color:#fff;margin-bottom:10px;font-family:inherit;font-size:0.85rem"></textarea>
+    </div>
+    <label style="font-size:0.72rem;color:var(--gold);font-weight:700;display:block;margin-bottom:3px">Oportunidade</label>
+    <textarea id="eln-opt" style="width:100%;min-height:44px;padding:7px;border-radius:6px;border:1px solid #444;background:#0F172A;color:#fff;margin-bottom:10px;font-family:inherit;font-size:0.85rem"></textarea>
+    <label style="font-size:0.72rem;color:var(--gold);font-weight:700;display:block;margin-bottom:3px">Ministrante</label>
+    <textarea id="eln-min" style="width:100%;min-height:44px;padding:7px;border-radius:6px;border:1px solid #444;background:#0F172A;color:#fff;margin-bottom:14px;font-family:inherit;font-size:0.85rem"></textarea>
+    <div style="display:flex;gap:10px;justify-content:center">
+      <button class="btn-confirmar-load" onclick="salvarEdicaoLinha()">✅ Salvar</button>
+      <button class="btn-cancelar-load" onclick="fecharEditarLinha()">✕ Cancelar</button>
+    </div>
+    <p style="font-size:0.68rem;color:#64748B;margin-top:10px;text-align:center">Para incluir mais de um nome no mesmo campo, separe por linha (Enter).</p>
+  </div>
+</div>
+
+<script>
+var globalActiveCell = null;
+var currentTab = 'obreiro';
+var uploadedImageBlob = null;
+var _pendingLoadData = null;
+var periodoAtual = new Date();
+
+var MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+var DEFAULT_OBREIROS = 'Pr Sergio\nPr André\nDiac. Sergio\nDiac. Dorico\nDiac. Charles\nDiac. Lucimar\nDiac. Nair\nDiac. Katia\nDiac. Zilandra\nDiac. Angélica\nDiac. Munique\nFlavia\nBianca\nCoop. Carol\nCoop. Wallace\nPreletor Convidado\nCoop Lucas\nUFEBRAC\nUMASBRAC\nMENIBRAC\nJUBRAC';
+var DEFAULT_CULTOS = 'Culto de Louvor\nCulto de Ensino\nCulto de Jovens\nSanta Ceia\nPrimícias\nCulto de Oração\nUFEBRAC\nUMASBRAC\nMENIBRAC\nJUBRAC\nCulto Especial\nConferência';
+
+function renderPeriodo() {
+  document.getElementById('periodo-mes').textContent = MESES[periodoAtual.getMonth()].toUpperCase();
+  document.getElementById('periodo-ano').textContent = periodoAtual.getFullYear();
+  var btnAgenda = document.getElementById('btn-agenda-mes');
+  if (btnAgenda) btnAgenda.textContent = '📅 Agenda Regional — ' + MESES[periodoAtual.getMonth()] + '/' + periodoAtual.getFullYear();
+}
+
+function mudaMes(delta) {
+  periodoAtual.setMonth(periodoAtual.getMonth() + delta);
+  renderPeriodo(); filtrarPorMes(); save();
+}
+
+function filtrarPorMes() {
+  var mes = periodoAtual.getMonth();
+  var ano = periodoAtual.getFullYear();
+  document.querySelectorAll('#tableBody tr').forEach(function(tr){
+    var dtInp = tr.querySelector('.dt-input');
+    var valor = dtInp ? dtInp.value : '';
+    if (!valor) { tr.classList.remove('row-mes-oculto'); return; }
+    var d = new Date(valor + 'T00:00:00');
+    if (d.getMonth() === mes && d.getFullYear() === ano) tr.classList.remove('row-mes-oculto');
+    else tr.classList.add('row-mes-oculto');
+  });
+}
+
+function formatDate(val) {
+  if (!val) return '';
+  var p = val.split('-');
+  return p[2] + '/' + p[1] + '/' + p[0];
+}
+
+function isCeia(t) {
+  t = (t || '').toLowerCase();
+  return t.includes('ceia') || t.includes('primícias') || t.includes('primicias');
+}
+
+function escAttr(s) { return (s || '').replace(/"/g, '&quot;'); }
+
+function updateCeiaRow(tr) {
+  var cltCell = tr.querySelector('.cell-clt');
+  var ehCeia = isCeia(cltCell ? cltCell.innerText : '');
+  var tdDir = tr.querySelector('td.td-dirigente');
+  if (!tdDir) return;
+  if (ehCeia) {
+    if (tdDir.classList.contains('td-dirigente-split')) return;
+    var oldEl = tdDir.querySelector('.cell-obr-dir');
+    var oldVal = oldEl ? (oldEl.getAttribute('data-raw') || oldEl.innerText) : '';
+    var oldCel = tdDir.getAttribute('data-cel') || '';
+    tdDir.classList.replace('td-dirigente-normal','td-dirigente-split');
+    tdDir.innerHTML = '<div class="dir-split-wrap"><div class="dir-sub"><div class="dir-sub-label">DIRIGENTE</div><div class="dir-sub-input cell-obr cell-obr-dir" onclick="activateCell(this,\'obreiros\')" contenteditable="true" data-raw="'+escAttr(oldVal)+'">'+oldVal+'</div></div><div class="dir-sub"><div class="dir-sub-label">CELEBRAÇÃO</div><div class="dir-sub-input cell-obr cell-obr-cel" onclick="activateCell(this,\'obreiros\')" contenteditable="true" data-raw="'+escAttr(oldCel)+'">'+oldCel+'</div></div></div>';
+    tr.classList.add('row-ceia');
+  } else {
+    if (tdDir.classList.contains('td-dirigente-normal')) return;
+    var dirEl = tdDir.querySelector('.cell-obr-dir');
+    var curVal = dirEl ? (dirEl.getAttribute('data-raw') || dirEl.innerText) : '';
+    var celEl = tdDir.querySelector('.cell-obr-cel');
+    var celVal = celEl ? (celEl.getAttribute('data-raw') || celEl.innerText) : '';
+    tdDir.setAttribute('data-cel', celVal);
+    tdDir.classList.replace('td-dirigente-split','td-dirigente-normal');
+    tdDir.innerHTML = '<div class="cell-data cell-obr cell-obr-dir" onclick="activateCell(this,\'obreiros\')" contenteditable="true" data-raw="'+escAttr(curVal)+'">'+curVal+'</div>';
+    tr.classList.remove('row-ceia');
+  }
+}
+
+function checkGlobalCeia() {
+  document.querySelectorAll('#tableBody tr').forEach(function(tr){ updateCeiaRow(tr); });
+}
+
+function coletarDados() {
+  var rows = [];
+  document.querySelectorAll('#tableBody tr').forEach(function(tr) {
+    var ensaioEl = tr.querySelector('.cell-ensaio');
+    var portaEl  = tr.querySelector('.cell-obr');
+    var tdDir    = tr.querySelector('td.td-dirigente');
+    var dirEl    = tdDir ? tdDir.querySelector('.cell-obr-dir') : null;
+    var celEl    = tdDir ? tdDir.querySelector('.cell-obr-cel') : null;
+    var optEl    = tr.querySelector('td.col-oportunidade .cell-obr');
+    var minEl    = tr.querySelector('td.col-ministrante .cell-obr');
+    rows.push({
+      dt:     tr.querySelector('.dt-input').value,
+      day:    tr.querySelector('.cell-day').innerText,
+      clt:    tr.querySelector('.cell-clt').innerText,
+      ensaio: ensaioEl ? ensaioEl.innerText : '',
+      p1:     portaEl ? (portaEl.getAttribute('data-raw') || portaEl.innerText) : '',
+      dir:    dirEl   ? (dirEl.getAttribute('data-raw')   || dirEl.innerText)   : '',
+      cel:    celEl   ? (celEl.getAttribute('data-raw')   || celEl.innerText)   : (tdDir ? tdDir.getAttribute('data-cel') || '' : ''),
+      opt:    optEl   ? (optEl.getAttribute('data-raw')   || optEl.innerText)   : '',
+      min:    minEl   ? (minEl.getAttribute('data-raw')   || minEl.innerText)   : ''
+    });
+  });
+  return {
+    versao: 'obpc_v4',
+    exportadoEm: new Date().toISOString(),
+    ts: Date.now(),
+    church:     document.getElementById('save-church').innerText,
+    theme:      document.getElementById('save-theme').innerText,
+    periodoMes: periodoAtual.getMonth(),
+    periodoAno: periodoAtual.getFullYear(),
+    cultos:     document.getElementById('list-cultos').value,
+    obreiros:   document.getElementById('list-obreiros').value,
+    rows: rows
+  };
+}
+
+function salvarArquivo() {
+  var dados = coletarDados();
+  var nome  = (document.getElementById('nome-arquivo').value.trim() || 'Agenda_do_Mes_OBPC').replace(/[^a-zA-Z0-9À-ú_\-\s]/g,'');
+  var blob  = new Blob([JSON.stringify(dados,null,2)],{type:'application/json'});
+  var url   = URL.createObjectURL(blob);
+  var a     = document.createElement('a');
+  a.href = url; a.download = nome+'.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+  localStorage.setItem('obpc_1click_scale_v4', JSON.stringify(dados));
+  mostrarStatus('✅ Arquivo salvo: '+nome+'.json', false);
+}
+
+function mostrarStatus(msg, warn) {
+  var el = document.getElementById('save-status');
+  el.textContent = msg;
+  el.className = 'save-bar-status on' + (warn ? ' warn' : '');
+  setTimeout(function(){ el.className = 'save-bar-status'; }, 4000);
+}
+
+// ── CARREGAR ARQUIVO DO PC ──────────────────────────────────────────────────
+function carregarArquivo(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+
+  if (!file.name.endsWith('.json')) {
+    mostrarStatus('⚠️ Selecione um arquivo .json da escala.', true);
+    event.target.value = '';
+    return;
+  }
+
+  var nomeArquivo = file.name;
+  var reader = new FileReader();
+
+  reader.onload = function(e) {
+    event.target.value = '';
+    try {
+      var dados = JSON.parse(e.target.result);
+      if (!dados.rows || !Array.isArray(dados.rows)) {
+        mostrarStatus('❌ Arquivo inválido. Não é uma escala OBPC.', true);
+        return;
+      }
+      _pendingLoadData = dados;
+      document.getElementById('load-arquivo-nome').textContent = nomeArquivo;
+      document.getElementById('load-confirm-modal').classList.add('on');
+      document.getElementById('btn-confirmar-load').onclick = function() {
+        var dadosParaCarregar = _pendingLoadData;
+        var nomeParaCarregar = nomeArquivo;
+        _pendingLoadData = null;
+        document.getElementById('load-confirm-modal').classList.remove('on');
+        aplicarDadosCarregados(dadosParaCarregar, nomeParaCarregar);
+      };
+    } catch(err) {
+      mostrarStatus('❌ Erro ao ler arquivo: '+err.message, true);
+    }
+  };
+
+  reader.onerror = function() {
+    mostrarStatus('❌ Erro ao abrir o arquivo.', true);
+    event.target.value = '';
+  };
+
+  reader.readAsText(file, 'UTF-8');
+}
+
+function fecharModalLoad() {
+  document.getElementById('load-confirm-modal').classList.remove('on');
+  _pendingLoadData = null;
+}
+
+function aplicarDadosCarregados(dados, nomeArquivo) {
+  document.getElementById('tableBody').innerHTML = '';
+
+  if (dados.cultos) {
+    document.getElementById('list-cultos').value = dados.cultos;
+    localStorage.setItem('obpc_set_cultos_v3', dados.cultos);
+  }
+  if (dados.obreiros) {
+    document.getElementById('list-obreiros').value = dados.obreiros;
+    localStorage.setItem('obpc_set_obreiros_v3', dados.obreiros);
+  }
+  populateObreiroSelects();
+  populateCultoSelect();
+
+  if (dados.church) document.getElementById('save-church').innerText = dados.church;
+  if (dados.theme)  document.getElementById('save-theme').innerText  = dados.theme;
+
+  if (dados.periodoMes !== undefined && dados.periodoAno !== undefined) {
+    periodoAtual = new Date(dados.periodoAno, dados.periodoMes, 1);
+  } else {
+    periodoAtual = new Date();
+  }
+  renderPeriodo();
+
+  dados.rows.forEach(function(r){ addRow(r); });
+
+  setTimeout(function() {
+    checkGlobalCeia();
+    clearFilter();
+    filtrarPorMes();
+    document.getElementById('nome-arquivo').value = nomeArquivo.replace(/\.json$/i,'');
+    localStorage.setItem('obpc_1click_scale_v4', JSON.stringify(dados));
+    mostrarStatus('✅ Carregado: '+nomeArquivo, false);
+  }, 150);
+}
+
+// ── FILTROS ─────────────────────────────────────────────────────────────────
+function getNomeArquivo() {
+  if (currentTab==='obreiro') { var v=document.getElementById('sel-obreiro').value; return v||'Agenda_do_Mes_OBPC'; }
+  if (currentTab==='data')    { var v=document.getElementById('sel-data').value; if(v){var p=v.split('-');return 'Agenda_'+p[2]+'-'+p[1]+'-'+p[0];}return 'Agenda_do_Mes_OBPC'; }
+  if (currentTab==='culto')   { var v=document.getElementById('sel-culto').value; return v?v.replace(/[^a-zA-Z0-9À-ú\s]/g,'').trim():'Agenda_do_Mes_OBPC'; }
+  if (currentTab==='atividade'){ var atv=document.getElementById('sel-atividade').value; var obr=document.getElementById('sel-atividade-obr').value; return obr||(atv?'Agenda_'+atv:'Agenda_do_Mes_OBPC'); }
+  return 'Agenda_do_Mes_OBPC';
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  ['obreiro','data','culto','atividade'].forEach(function(t,i){
+    document.getElementById('tab-'+t).style.display = t===tab?'flex':'none';
+    document.querySelectorAll('.filter-tab')[i].classList.toggle('active',t===tab);
+  });
+  if (tab==='data') populateDatasSelect();
+  clearFilter();
+}
+
+function getLista(chaveLS, idTA) {
+  var ls = localStorage.getItem(chaveLS) || '';
+  var ta = document.getElementById(idTA) ? document.getElementById(idTA).value : '';
+  return (ls||ta).split('\n').map(function(n){return n.trim();}).filter(Boolean);
+}
+
+function populateObreiroSelects() {
+  var nomes = getLista('obpc_set_obreiros_v3','list-obreiros');
+  ['sel-obreiro','sel-atividade-obr'].forEach(function(id){
+    var sel = document.getElementById(id);
+    var cur = sel.value;
+    var first = id==='sel-atividade-obr'?'<option value="">— Todos os obreiros —</option>':'<option value="">— Selecione —</option>';
+    sel.innerHTML = first + nomes.map(function(n){return '<option value="'+n+'">'+n+'</option>';}).join('');
+    if (cur) sel.value = cur;
+  });
+}
+
+function populateCultoSelect() {
+  var cultos = getLista('obpc_set_cultos_v3','list-cultos');
+  var sel = document.getElementById('sel-culto');
+  var cur = sel.value;
+  sel.innerHTML = '<option value="">— Selecione —</option>' + cultos.map(function(c){return '<option value="'+c+'">'+c+'</option>';}).join('');
+  if (cur) sel.value = cur;
+}
+
+function populateDatasSelect() {
+  var sel = document.getElementById('sel-data');
+  var cur = sel.value;
+  var datas = [];
+  document.querySelectorAll('#tableBody tr').forEach(function(tr){
+    var dt = tr.querySelector('.dt-input');
+    if (dt && dt.value) {
+      var label = formatDate(dt.value)+' — '+(tr.querySelector('.cell-day').innerText||'');
+      if (!datas.find(function(d){return d.val===dt.value;})) datas.push({val:dt.value,label:label.trim()});
+    }
+  });
+  datas.sort(function(a,b){return a.val.localeCompare(b.val);});
+  sel.innerHTML = '<option value="">— Selecione —</option>'+datas.map(function(d){return '<option value="'+d.val+'">'+d.label+'</option>';}).join('');
+  if (cur) sel.value = cur;
+}
+
+function applyFilter() {
+  var atv = document.getElementById('sel-atividade').value;
+  document.getElementById('sel-atividade-obr').style.display = atv?'block':'none';
+  var rows = document.querySelectorAll('#tableBody tr');
+  var badge = document.getElementById('active-filter-badge');
+  var nameLine = document.getElementById('filter-name-line');
+  var nameDisplay = document.getElementById('filter-name-display');
+  rows.forEach(function(tr){tr.classList.remove('row-filtered-out','row-no-match');restoreCells(tr);});
+  nameLine.style.display='none';
+  var filterActive=false, badgeLabel='';
+
+  if (currentTab==='obreiro') {
+    var nome = document.getElementById('sel-obreiro').value;
+    if (!nome){clearBadge();return;}
+    filterActive=true; badgeLabel='OBREIRO: '+nome.toUpperCase();
+    rows.forEach(function(tr){
+      var obrs=tr.querySelectorAll('.cell-obr');
+      var aparece=false;
+      obrs.forEach(function(cell){var lista=(cell.getAttribute('data-raw')||cell.innerText).split('\n').map(function(n){return n.trim();}).filter(Boolean);if(lista.some(function(n){return n.toLowerCase()===nome.toLowerCase();}))aparece=true;});
+      if(!aparece){tr.classList.add('row-no-match');}
+      else{
+        obrs.forEach(function(cell){var lista=(cell.getAttribute('data-raw')||cell.innerText).split('\n').map(function(n){return n.trim();}).filter(Boolean);var tem=lista.some(function(n){return n.toLowerCase()===nome.toLowerCase();});cell.innerHTML=tem?'<span class="nome-highlight">'+nome+'</span>':'<span class="nome-oculto">—</span>';});
+        nameLine.style.display='block';nameDisplay.textContent='MINHA ESCALA — '+nome.toUpperCase();
+      }
+    });
+  } else if (currentTab==='data') {
+    var data=document.getElementById('sel-data').value;
+    if(!data){clearBadge();return;}
+    filterActive=true;var fmt=formatDate(data);badgeLabel='DATA: '+fmt;
+    rows.forEach(function(tr){var dt=tr.querySelector('.dt-input');if(!dt||dt.value!==data)tr.classList.add('row-filtered-out');});
+    nameLine.style.display='block';nameDisplay.textContent='CULTO DO DIA: '+fmt;
+  } else if (currentTab==='culto') {
+    var culto=document.getElementById('sel-culto').value;
+    if(!culto){clearBadge();return;}
+    filterActive=true;badgeLabel='CULTO: '+culto.toUpperCase();
+    rows.forEach(function(tr){var clt=tr.querySelector('.cell-clt');if(!clt||!clt.innerText.trim().toLowerCase().includes(culto.toLowerCase()))tr.classList.add('row-filtered-out');});
+    nameLine.style.display='block';nameDisplay.textContent='CULTO: '+culto.toUpperCase();
+  } else if (currentTab==='atividade') {
+    var atividade=document.getElementById('sel-atividade').value;
+    var obreiro=document.getElementById('sel-atividade-obr').value;
+    if(!atividade){clearBadge();return;}
+    filterActive=true;badgeLabel='ATIVIDADE: '+atividade+(obreiro?' — '+obreiro:'');
+    var atividadeIdx={'PORTA':0,'DIRIGENTE':1,'CELEBRACAO':2,'OPORTUNIDADE':3,'MINISTRANTE':4};
+    if(atividade==='ENSAIO'){
+      rows.forEach(function(tr){var ec=tr.querySelector('.cell-ensaio');if(!ec||!ec.innerText.trim())tr.classList.add('row-filtered-out');});
+    } else {
+      var idx=atividadeIdx[atividade];
+      rows.forEach(function(tr){var obrs=tr.querySelectorAll('.cell-obr');if(!obrs[idx]){tr.classList.add('row-filtered-out');return;}var nomes=(obrs[idx].getAttribute('data-raw')||obrs[idx].innerText).split('\n').map(function(n){return n.trim();}).filter(Boolean);if(obreiro){var tem=nomes.some(function(n){return n.toLowerCase()===obreiro.toLowerCase();});if(!tem){tr.classList.add('row-filtered-out');return;}obrs[idx].innerHTML='<span class="nome-highlight">'+obreiro+'</span>';}else if(nomes.length===0){tr.classList.add('row-filtered-out');}});
+    }
+    nameLine.style.display='block';nameDisplay.textContent='ATIVIDADE: '+atividade+(obreiro?' — '+obreiro.toUpperCase():'');
+  }
+  if(filterActive){badge.classList.add('visible');document.getElementById('badge-text').textContent=badgeLabel;}
+}
+
+function clearBadge(){document.getElementById('active-filter-badge').classList.remove('visible');document.getElementById('filter-name-line').style.display='none';}
+
+function clearFilter(){
+  ['sel-obreiro','sel-data','sel-culto','sel-atividade','sel-atividade-obr'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('sel-atividade-obr').style.display='none';
+  document.querySelectorAll('#tableBody tr').forEach(function(tr){tr.classList.remove('row-filtered-out','row-no-match');restoreCells(tr);});
+  clearBadge();
+}
+
+function restoreCells(tr){tr.querySelectorAll('.cell-obr').forEach(function(cell){var raw=cell.getAttribute('data-raw');if(raw!==null)cell.innerText=raw;});}
+
+function excluirLinha(btn){
+  if(!confirm('Excluir este culto da escala?'))return;
+  btn.closest('tr').remove();save();
+  if(currentTab==='data')populateDatasSelect();
+}
+
+// ── ARRASTAR E SOLTAR LINHA (reordenar cultos) ──────────────────────────────
+var _rowDragEl = null;
+
+function rowDragStart(e, handle) {
+  _rowDragEl = handle.closest('tr');
+  _rowDragEl.classList.add('row-dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  try { e.dataTransfer.setData('text/plain', 'row'); } catch (err) {}
+}
+
+function rowDragOver(e) {
+  e.preventDefault();
+  if (!_rowDragEl || _rowDragEl === this) return;
+  document.querySelectorAll('#tableBody tr').forEach(function(tr){ tr.classList.remove('row-drop-target'); });
+  this.classList.add('row-drop-target');
+  var rect = this.getBoundingClientRect();
+  var meio = rect.top + rect.height / 2;
+  var tbody = this.parentNode;
+  if (e.clientY < meio) { tbody.insertBefore(_rowDragEl, this); }
+  else { tbody.insertBefore(_rowDragEl, this.nextSibling); }
+}
+
+function rowDrop(e) { e.preventDefault(); }
+
+function rowDragEnd(e, handle) {
+  if (_rowDragEl) _rowDragEl.classList.remove('row-dragging');
+  document.querySelectorAll('#tableBody tr').forEach(function(tr){ tr.classList.remove('row-drop-target'); });
+  _rowDragEl = null;
+  save();
+  if (currentTab === 'data') populateDatasSelect();
+}
+
+// ── EDITAR A LINHA COMPLETA EM UM SÓ FORMULÁRIO ─────────────────────────────
+var _elnTr = null;
+
+function abrirEditarLinha(btn) {
+  var tr = btn.closest('tr');
+  _elnTr = tr;
+  var dtInp = tr.querySelector('.dt-input');
+  document.getElementById('eln-dt').value = dtInp ? dtInp.value : '';
+  var ensEl = tr.querySelector('.cell-ensaio');
+  document.getElementById('eln-ens').value = ensEl ? ensEl.innerText : '';
+  var cltEl = tr.querySelector('.cell-clt');
+  document.getElementById('eln-clt').value = cltEl ? cltEl.innerText : '';
+  var portaEl = tr.querySelector('.cell-obr');
+  document.getElementById('eln-p1').value = portaEl ? (portaEl.getAttribute('data-raw') || portaEl.innerText) : '';
+  var tdDir = tr.querySelector('td.td-dirigente');
+  var dirEl = tdDir ? tdDir.querySelector('.cell-obr-dir') : null;
+  var celEl = tdDir ? tdDir.querySelector('.cell-obr-cel') : null;
+  document.getElementById('eln-dir').value = dirEl ? (dirEl.getAttribute('data-raw') || dirEl.innerText) : '';
+  document.getElementById('eln-cel').value = celEl ? (celEl.getAttribute('data-raw') || celEl.innerText) : (tdDir ? (tdDir.getAttribute('data-cel') || '') : '');
+  var obrs = tr.querySelectorAll('td.col-oportunidade .cell-obr, td.col-ministrante .cell-obr');
+  document.getElementById('eln-opt').value = obrs[0] ? (obrs[0].getAttribute('data-raw') || obrs[0].innerText) : '';
+  document.getElementById('eln-min').value = obrs[1] ? (obrs[1].getAttribute('data-raw') || obrs[1].innerText) : '';
+  elnVerificarCeia();
+  document.getElementById('edit-linha-modal').style.display = 'flex';
+}
+
+function elnVerificarCeia() {
+  var v = document.getElementById('eln-clt').value;
+  document.getElementById('eln-cel-wrap').style.display = isCeia(v) ? 'block' : 'none';
+}
+
+function fecharEditarLinha() {
+  document.getElementById('edit-linha-modal').style.display = 'none';
+  _elnTr = null;
+}
+
+function salvarEdicaoLinha() {
+  if (!_elnTr) return;
+  var tr = _elnTr;
+
+  var dtInp = tr.querySelector('.dt-input');
+  dtInp.value = document.getElementById('eln-dt').value;
+  updateDate(dtInp);
+
+  var ensEl = tr.querySelector('.cell-ensaio');
+  if (ensEl) ensEl.innerText = document.getElementById('eln-ens').value;
+
+  var novoClt = document.getElementById('eln-clt').value;
+  tr.querySelector('.cell-clt').innerText = novoClt;
+
+  var portaEl = tr.querySelector('.cell-obr');
+  if (portaEl) {
+    var novoP1 = document.getElementById('eln-p1').value;
+    portaEl.innerText = novoP1;
+    portaEl.setAttribute('data-raw', novoP1);
+  }
+
+  updateCeiaRow(tr);
+
+  var tdDir = tr.querySelector('td.td-dirigente');
+  var dirEl = tdDir ? tdDir.querySelector('.cell-obr-dir') : null;
+  var celEl = tdDir ? tdDir.querySelector('.cell-obr-cel') : null;
+  var novoDir = document.getElementById('eln-dir').value;
+  var novoCel = document.getElementById('eln-cel').value;
+  if (dirEl) { dirEl.innerText = novoDir; dirEl.setAttribute('data-raw', novoDir); }
+  if (celEl) { celEl.innerText = novoCel; celEl.setAttribute('data-raw', novoCel); }
+  else if (tdDir) { tdDir.setAttribute('data-cel', novoCel); }
+
+  var obrs = tr.querySelectorAll('td.col-oportunidade .cell-obr, td.col-ministrante .cell-obr');
+  if (obrs[0]) { var novoOpt = document.getElementById('eln-opt').value; obrs[0].innerText = novoOpt; obrs[0].setAttribute('data-raw', novoOpt); }
+  if (obrs[1]) { var novoMin = document.getElementById('eln-min').value; obrs[1].innerText = novoMin; obrs[1].setAttribute('data-raw', novoMin); }
+
+  fecharEditarLinha();
+  save();
+  if (currentTab === 'data') populateDatasSelect();
+}
+
+// ── AGENDA REGIONAL 2026 (datas fixas) ──────────────────────────────────────
+var AGENDA_REGIONAL_2026 = [
+  {dt:'2026-01-05', clt:'12 Dias de Clamor e Bênçãos'},
+  {dt:'2026-01-16', clt:'12 Dias de Clamor e Bênçãos'},
+  {dt:'2026-02-08', clt:'Reunião de Líderes e Obreiros (Regional)'},
+  {dt:'2026-02-28', clt:'Encontro Regional - Corpo Diaconal (Sede)'},
+  {dt:'2026-03-03', clt:'OBPC - 70 Anos'},
+  {dt:'2026-03-08', clt:'Comemoração Dia Internacional da Mulher'},
+  {dt:'2026-03-28', clt:'Culto de Aniversário (OBPC São Francisco)'},
+  {dt:'2026-03-29', clt:'Culto de Aniversário (OBPC São Francisco)'},
+  {dt:'2026-04-11', clt:'Culto Regional MENIBRAC / AdoBrac (Sede)'},
+  {dt:'2026-04-25', clt:'Congresso UFEBRAC (São Francisco)'},
+  {dt:'2026-04-26', clt:'Congresso UFEBRAC (São Francisco)'},
+  {dt:'2026-05-09', clt:'Culto Regional JUBRAC (Sede)'},
+  {dt:'2026-05-30', clt:'Chá para Mulheres (UFEBRAC Regional)'},
+  {dt:'2026-06-06', clt:'Congresso UMASBRAC (Sede)'},
+  {dt:'2026-06-07', clt:'Congresso UMASBRAC (Sede)'},
+  {dt:'2026-06-27', clt:'Congresso UMASBRAC (São Fernando)'},
+  {dt:'2026-06-28', clt:'Congresso UMASBRAC (São Fernando)'},
+  {dt:'2026-07-04', clt:'Congresso JUBRAC (São Fernando)'},
+  {dt:'2026-07-05', clt:'Congresso JUBRAC (São Fernando)'},
+  {dt:'2026-07-18', clt:'EBF - Sede'},
+  {dt:'2026-07-25', clt:'Congresso JUBRAC (São Francisco)'},
+  {dt:'2026-07-26', clt:'Congresso JUBRAC (São Francisco)'},
+  {dt:'2026-08-01', clt:'Congresso UMASBRAC (São Francisco)'},
+  {dt:'2026-08-02', clt:'Congresso UMASBRAC (São Francisco)'},
+  {dt:'2026-08-22', clt:'Culto de Aniversário (OBPC São Fernando)'},
+  {dt:'2026-08-23', clt:'Culto de Aniversário (OBPC São Fernando)'},
+  {dt:'2026-09-19', clt:'Congresso UFEBRAC (Sede)'},
+  {dt:'2026-09-20', clt:'Congresso UFEBRAC (Sede)'},
+  {dt:'2026-09-26', clt:'Congresso MENIBRAC (São Francisco)'},
+  {dt:'2026-10-12', clt:'Dia das Crianças (evento local)'},
+  {dt:'2026-10-24', clt:'Congresso UFEBRAC (São Fernando)'},
+  {dt:'2026-10-25', clt:'Congresso UFEBRAC (São Fernando)'},
+  {dt:'2026-11-08', clt:'Batismo Regional'},
+  {dt:'2026-11-21', clt:'Culto de Aniversário (Sede)'},
+  {dt:'2026-11-22', clt:'Culto de Aniversário (Sede)'},
+  {dt:'2026-12-20', clt:'Santa Ceia Regional (manhã)'},
+  {dt:'2026-12-25', clt:'Natal'}
+];
+
+function inserirAgendaRegional2026() {
+  var mesAtual = periodoAtual.getMonth();
+  var anoAtual = periodoAtual.getFullYear();
+  var nomeMes = MESES[mesAtual];
+  var eventosDoMes = AGENDA_REGIONAL_2026.filter(function(ev){
+    var d = new Date(ev.dt + 'T00:00:00');
+    return d.getMonth() === mesAtual && d.getFullYear() === anoAtual;
+  });
+  if (!eventosDoMes.length) {
+    mostrarStatus('ℹ️ Não há data fixa da Agenda Regional para ' + nomeMes + '/' + anoAtual + '.', true);
+    return;
+  }
+  if (!confirm('Isso vai inserir ' + eventosDoMes.length + ' data(s) fixa(s) da Agenda Regional de ' + nomeMes + '/' + anoAtual + ' na escala local, unificando as duas, sem duplicar datas já ocupadas e sem alterar as outras linhas já cadastradas. Deseja continuar?')) return;
+  var tbody = document.getElementById('tableBody');
+  var datasExistentes = [];
+  Array.prototype.slice.call(tbody.querySelectorAll('tr')).forEach(function(tr){
+    var dt = tr.querySelector('.dt-input');
+    if (dt && dt.value) datasExistentes.push(dt.value);
+  });
+  var days = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+  var inseridos = 0;
+  eventosDoMes.forEach(function(ev){
+    if (datasExistentes.indexOf(ev.dt) > -1) return;
+    var d = new Date(ev.dt + 'T00:00:00');
+    addRow({dt: ev.dt, day: days[d.getDay()] || '', clt: ev.clt, ensaio: '', p1: '', dir: '', cel: '', opt: '', min: ''});
+    var novaLinha = tbody.lastElementChild;
+    var linhas = Array.prototype.slice.call(tbody.querySelectorAll('tr')).filter(function(tr){ return tr !== novaLinha; });
+    var alvo = null;
+    for (var i = 0; i < linhas.length; i++) {
+      var dtInp = linhas[i].querySelector('.dt-input');
+      if (dtInp && dtInp.value && dtInp.value > ev.dt) { alvo = linhas[i]; break; }
+    }
+    if (alvo) tbody.insertBefore(novaLinha, alvo);
+    inseridos++;
+  });
+  checkGlobalCeia();
+  filtrarPorMes();
+  save();
+  if (currentTab === 'data') populateDatasSelect();
+  if (inseridos > 0) mostrarStatus('✅ ' + inseridos + ' data(s) de ' + nomeMes + '/' + anoAtual + ' inserida(s)! Agora edite o restante do mês.', false);
+  else mostrarStatus('ℹ️ As datas de ' + nomeMes + '/' + anoAtual + ' já estavam na escala.', false);
+}
+
+function addRow(data) {
+  var tbody = document.getElementById('tableBody');
+  var tr = document.createElement('tr');
+  tr.innerHTML = '<td class="col-arrastar"><div class="row-drag-handle" draggable="true" ondragstart="rowDragStart(event,this)" ondragend="rowDragEnd(event,this)" title="Arraste para reordenar a linha">⠿</div></td><td><div class="td-data-wrap"><div class="dt-display vazio">Selecionar data</div><input type="date" class="dt-input" onchange="updateDate(this)" onclick="this.showPicker&&this.showPicker()"></div></td><td><div class="cell-data cell-day"></div></td><td class="col-ensaio"><div class="cell-data cell-ensaio" onclick="activateCell(this,\'obreiros\')" contenteditable="true"></div></td><td><div class="cell-data cell-clt" onclick="activateCell(this,\'cultos\')" contenteditable="true" oninput="onCultoInput(this)"></div></td><td><div class="cell-data cell-obr" onclick="activateCell(this,\'obreiros\')" contenteditable="true"></div></td><td class="td-dirigente td-dirigente-normal col-dirigente"><div class="cell-data cell-obr cell-obr-dir" onclick="activateCell(this,\'obreiros\')" contenteditable="true"></div></td><td class="col-oportunidade"><div class="cell-data cell-obr" onclick="activateCell(this,\'obreiros\')" contenteditable="true"></div></td><td class="col-ministrante"><div class="cell-data cell-obr" onclick="activateCell(this,\'obreiros\')" contenteditable="true"></div></td><td class="col-excluir"><div class="linha-acoes"><button class="btn-edit-linha" onclick="abrirEditarLinha(this)" title="Editar linha completa">✎</button><button class="btn-del-linha" onclick="excluirLinha(this)" title="Excluir linha">✕</button></div></td>';
+  tr.ondragover = rowDragOver;
+  tr.ondrop = rowDrop;
+  tbody.appendChild(tr);
+
+  if (data) {
+    var dtInp = tr.querySelector('.dt-input');
+    dtInp.value = data.dt || '';
+    atualizarDisplayData(dtInp);
+    tr.querySelector('.cell-day').innerText = data.day || '';
+    tr.querySelector('.cell-clt').innerText = data.clt || '';
+    if (data.ensaio !== undefined) tr.querySelector('.cell-ensaio').innerText = data.ensaio;
+    var porta = tr.querySelector('.cell-obr');
+    porta.innerText = data.p1 || ''; porta.setAttribute('data-raw', data.p1 || '');
+    var tdDir = tr.querySelector('td.td-dirigente');
+    var dirEl = tdDir.querySelector('.cell-obr-dir');
+    dirEl.innerText = data.dir || ''; dirEl.setAttribute('data-raw', data.dir || '');
+    tdDir.setAttribute('data-cel', data.cel || '');
+    var obrs = tr.querySelectorAll('td.col-oportunidade .cell-obr, td.col-ministrante .cell-obr');
+    if (obrs[0]) { obrs[0].innerText=data.opt||''; obrs[0].setAttribute('data-raw',data.opt||''); }
+    if (obrs[1]) { obrs[1].innerText=data.min||''; obrs[1].setAttribute('data-raw',data.min||''); }
+    applyRowColor(tr, data.day);
+    updateCeiaRow(tr);
+  }
+}
+
+function atualizarDisplayData(input){
+  var wrap=input.closest('.td-data-wrap');if(!wrap)return;
+  var disp=wrap.querySelector('.dt-display');if(!disp)return;
+  if(input.value){disp.textContent=formatDate(input.value);disp.classList.remove('vazio');}
+  else{disp.textContent='Selecionar data';disp.classList.add('vazio');}
+}
+
+function onCultoInput(cell){var tr=cell.closest('tr');updateCeiaRow(tr);save();}
+
+function activateCell(cell,type){
+  if(globalActiveCell)globalActiveCell.classList.remove('active-cell');
+  globalActiveCell=cell;cell.classList.add('active-cell');
+  var toolbar=document.getElementById('toolbar-selection');
+  var listId=type==='cultos'?'list-cultos':'list-obreiros';
+  var options=document.getElementById(listId).value.split('\n').filter(function(n){return n.trim();});
+  if(!options.length){toolbar.style.display='none';return;}
+  toolbar.innerHTML=options.map(function(opt){return '<div class="chip" onclick="pushName(\''+opt.trim().replace(/'/g,"&#39;")+'\')">'+ opt.trim()+'</div>';}).join('');
+  toolbar.style.display='flex';
+}
+
+function pushName(name){
+  if(!globalActiveCell)return;
+  var cur=globalActiveCell.innerText.trim();
+  var val=cur===''?name:cur+'\n'+name;
+  globalActiveCell.innerText=val;globalActiveCell.setAttribute('data-raw',val);
+  if(globalActiveCell.classList.contains('cell-clt'))updateCeiaRow(globalActiveCell.closest('tr'));
+  save();
+}
+
+function updateDate(input){
+  atualizarDisplayData(input);
+  var row=input.closest('tr');
+  var date=new Date(input.value+'T00:00:00');
+  var days=['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+  row.querySelector('.cell-day').innerText=days[date.getDay()]||'';
+  applyRowColor(row,days[date.getDay()]);
+  reordenarLinhaPorData(row);
+  filtrarPorMes();save();
+}
+
+function reordenarLinhaPorData(tr){
+  var valor=input_valorData(tr);
+  if(!valor)return;
+  var tbody=document.getElementById('tableBody');
+  var linhas=Array.prototype.slice.call(tbody.querySelectorAll('tr')).filter(function(t){return t!==tr;});
+  var alvo=null;
+  for(var i=0;i<linhas.length;i++){
+    var outroValor=input_valorData(linhas[i]);
+    if(outroValor&&outroValor>valor){alvo=linhas[i];break;}
+  }
+  if(alvo)tbody.insertBefore(tr,alvo);
+  else tbody.appendChild(tr);
+}
+
+function input_valorData(tr){
+  var dtInp=tr.querySelector('.dt-input');
+  return dtInp?dtInp.value:'';
+}
+
+function atualizarMesPelaLinhas(){
+  var datas=[];
+  document.querySelectorAll('#tableBody tr').forEach(function(tr){var inp=tr.querySelector('.dt-input');if(inp&&inp.value)datas.push(inp.value);});
+  if(!datas.length)return;
+  datas.sort();
+  var p=datas[0].split('-');
+  var nova=new Date(parseInt(p[0]),parseInt(p[1])-1,1);
+  if(nova.getMonth()!==periodoAtual.getMonth()||nova.getFullYear()!==periodoAtual.getFullYear()){periodoAtual=nova;renderPeriodo();}
+}
+
+function applyRowColor(row,day){
+  row.classList.remove('row-dom','row-qua','row-sab');
+  if(day==='Domingo')row.classList.add('row-dom');
+  if(day==='Quarta-feira')row.classList.add('row-qua');
+  if(day==='Sábado')row.classList.add('row-sab');
+}
+
+function save(){
+  var dados=coletarDados();
+  localStorage.setItem('obpc_1click_scale_v4',JSON.stringify(dados));
+  if(currentTab==='data')populateDatasSelect();
+  // Sincronizar com Firebase - escala_pro
+  fetch('https://fcosta-31125-default-rtdb.firebaseio.com/obpc/escala_pro.json',
+    {method:'PUT',body:JSON.stringify(dados),headers:{'Content-Type':'application/json'}}
+  ).catch(function(){});
+  /* Ponte: converter e salvar também como escala_agenda para o Painel */
+  var agenda={
+    mes:dados.periodoMes,
+    ano:dados.periodoAno,
+    ts:dados.ts,
+    rows:dados.rows
+  };
+  fetch('https://fcosta-31125-default-rtdb.firebaseio.com/obpc/escala_agenda.json',
+    {method:'PUT',body:JSON.stringify(agenda),headers:{'Content-Type':'application/json'}}
+  ).catch(function(){});
+}
+
+function saveSettings(){
+  var cultos=document.getElementById('list-cultos').value;
+  var obreiros=document.getElementById('list-obreiros').value;
+  var ts=Date.now();
+  localStorage.setItem('obpc_set_cultos_v3',cultos);
+  localStorage.setItem('obpc_set_obreiros_v3',obreiros);
+  localStorage.setItem('obpc_listas_ts',ts);
+  // Sincronizar listas com Firebase
+  fetch('https://fcosta-31125-default-rtdb.firebaseio.com/obpc/escala_pro_listas.json',
+    {method:'PUT',body:JSON.stringify({cultos:cultos,obreiros:obreiros,ts:ts}),headers:{'Content-Type':'application/json'}}
+  ).catch(function(){});
+}
+
+function openConfig(show){document.getElementById('config-modal').style.display=show?'flex':'none';}
+
+function _aplicarDadosEscalaPro(data){
+  // Aplica dados sem perguntar — usado na sincronização silenciosa
+  document.getElementById('tableBody').innerHTML='';
+  if(data.cultos){document.getElementById('list-cultos').value=data.cultos;localStorage.setItem('obpc_set_cultos_v3',data.cultos);}
+  if(data.obreiros){document.getElementById('list-obreiros').value=data.obreiros;localStorage.setItem('obpc_set_obreiros_v3',data.obreiros);}
+  populateObreiroSelects();populateCultoSelect();
+  if(data.church)document.getElementById('save-church').innerText=data.church;
+  if(data.theme)document.getElementById('save-theme').innerText=data.theme;
+  if(data.periodoMes!==undefined&&data.periodoAno!==undefined)periodoAtual=new Date(data.periodoAno,data.periodoMes,1);
+  else periodoAtual=new Date();
+  data.rows.forEach(function(r){addRow(r);});
+  renderPeriodo();checkGlobalCeia();clearFilter();filtrarPorMes();
+}
+
+function load(){
+  // 1. Carregar listas do localStorage (fallback para defaults)
+  var savedCultos=localStorage.getItem('obpc_set_cultos_v3')||DEFAULT_CULTOS;
+  var savedObreiros=localStorage.getItem('obpc_set_obreiros_v3')||DEFAULT_OBREIROS;
+  document.getElementById('list-cultos').value=savedCultos;
+  document.getElementById('list-obreiros').value=savedObreiros;
+  if(!localStorage.getItem('obpc_set_cultos_v3'))localStorage.setItem('obpc_set_cultos_v3',DEFAULT_CULTOS);
+  if(!localStorage.getItem('obpc_set_obreiros_v3'))localStorage.setItem('obpc_set_obreiros_v3',DEFAULT_OBREIROS);
+  populateObreiroSelects();populateCultoSelect();
+
+  // 2. Carregar dados locais primeiro (exibição imediata)
+  var savedRaw=localStorage.getItem('obpc_1click_scale_v4')||localStorage.getItem('obpc_1click_scale_v3')||localStorage.getItem('obpc_1click_scale_v2');
+  var localTs=0;
+  if(savedRaw){
+    var data=JSON.parse(savedRaw);
+    localTs=data.ts||0;
+    document.getElementById('save-church').innerText=data.church||'';
+    document.getElementById('save-theme').innerText=data.theme||'';
+    if(data.periodoMes!==undefined&&data.periodoAno!==undefined)periodoAtual=new Date(data.periodoAno,data.periodoMes,1);
+    else periodoAtual=new Date();
+    data.rows.forEach(function(r){addRow(r);});
+  } else {periodoAtual=new Date();for(var i=0;i<4;i++)addRow();}
+  renderPeriodo();checkGlobalCeia();filtrarPorMes();
+
+  // 3. Verificar Firebase — só substitui se Firebase tiver dados MAIS RECENTES
+  var FB_URL='https://fcosta-31125-default-rtdb.firebaseio.com/obpc/escala_pro.json';
+  fetch(FB_URL).then(function(r){return r.ok?r.json():null;}).then(function(fb){
+    if(!fb||!fb.rows)return; // Firebase vazio — mantém local
+    var fbTs=fb.ts||0;
+    if(fbTs>localTs){
+      // Firebase mais recente: aplicar silenciosamente
+      localStorage.setItem('obpc_1click_scale_v4',JSON.stringify(fb));
+      _aplicarDadosEscalaPro(fb);
+      mostrarStatus('🔄 Sincronizado com o servidor',false);
+    } else if(localTs>fbTs&&savedRaw){
+      // Local mais recente: enviar ao Firebase para atualizar outros dispositivos
+      var localData=JSON.parse(savedRaw);
+      fetch(FB_URL,{method:'PUT',body:JSON.stringify(localData),headers:{'Content-Type':'application/json'}}).catch(function(){});
+    }
+    // Carregar também as listas do Firebase se mais recentes
+    fetch('https://fcosta-31125-default-rtdb.firebaseio.com/obpc/escala_pro_listas.json')
+      .then(function(r){return r.ok?r.json():null;})
+      .then(function(listas){
+        if(!listas||!listas.ts)return;
+        var lsTs=parseInt(localStorage.getItem('obpc_listas_ts')||'0');
+        if(listas.ts>lsTs){
+          if(listas.cultos){document.getElementById('list-cultos').value=listas.cultos;localStorage.setItem('obpc_set_cultos_v3',listas.cultos);}
+          if(listas.obreiros){document.getElementById('list-obreiros').value=listas.obreiros;localStorage.setItem('obpc_set_obreiros_v3',listas.obreiros);}
+          localStorage.setItem('obpc_listas_ts',listas.ts);
+          populateObreiroSelects();populateCultoSelect();
+        }
+      }).catch(function(){});
+  }).catch(function(){
+    // Sem internet — dados locais já exibidos, tudo ok
+  });
+
+  // 4. Escutar mudanças em tempo real (SSE) para sinc PC <-> celular
+  _escalaProListen();
+
+  // 5. Re-sincronizar quando aba volta ao foco
+  document.addEventListener('visibilitychange',function(){
+    if(document.visibilityState==='visible')_escalaProSyncSilent();
+  });
+}
+
+function _escalaProListen(){
+  try{
+    var es=new EventSource('https://fcosta-31125-default-rtdb.firebaseio.com/obpc/escala_pro.json?accept=text/event-stream');
+    es.addEventListener('put',function(e){
+      try{
+        var d=JSON.parse(e.data);
+        if(!d||!d.data||!d.data.rows)return;
+        var fb=d.data;
+        var localRaw=localStorage.getItem('obpc_1click_scale_v4');
+        var localTs=localRaw?JSON.parse(localRaw).ts||0:0;
+        if((fb.ts||0)>localTs){
+          localStorage.setItem('obpc_1click_scale_v4',JSON.stringify(fb));
+          _aplicarDadosEscalaPro(fb);
+        }
+      }catch(err){}
+    });
+    es.onerror=function(){es.close();setTimeout(_escalaProListen,15000);};
+  }catch(err){}
+}
+
+function _escalaProSyncSilent(){
+  var localRaw=localStorage.getItem('obpc_1click_scale_v4');
+  var localTs=localRaw?JSON.parse(localRaw).ts||0:0;
+  fetch('https://fcosta-31125-default-rtdb.firebaseio.com/obpc/escala_pro.json')
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(fb){
+      if(!fb||!fb.rows)return;
+      if((fb.ts||0)>localTs){
+        localStorage.setItem('obpc_1click_scale_v4',JSON.stringify(fb));
+        _aplicarDadosEscalaPro(fb);
+        mostrarStatus('🔄 Atualizado',false);
+      }
+    }).catch(function(){});
+}
+
+function resetData(){
+  if(confirm('Deseja apagar todos os dados da escala?')){
+    ['obpc_1click_scale_v4','obpc_1click_scale_v3','obpc_1click_scale_v2'].forEach(function(k){localStorage.removeItem(k);});
+    location.reload();
+  }
+}
+
+function gerarJpgQuadro(){
+  if(globalActiveCell)globalActiveCell.classList.remove('active-cell');
+  document.getElementById('toolbar-selection').style.display='none';
+  var savedFO=[],savedNM=[];
+  document.querySelectorAll('#tableBody tr').forEach(function(tr){savedFO.push(tr.classList.contains('row-filtered-out'));savedNM.push(tr.classList.contains('row-no-match'));tr.classList.remove('row-filtered-out','row-no-match');restoreCells(tr);});
+  document.getElementById('scale-sheet').classList.add('hide-for-export');
+  document.querySelectorAll('#tableBody tr').forEach(function(tr){[6,7,8,9].forEach(function(i){var tds=tr.querySelectorAll('td');if(tds[i])tds[i].style.display='none';});});
+  var nl=document.getElementById('filter-name-line');var pnd=nl.style.display;nl.style.display='none';
+  setTimeout(function(){
+    html2canvas(document.querySelector('#scale-sheet'),{scale:3,backgroundColor:'#ffffff'}).then(function(canvas){
+      document.getElementById('scale-sheet').classList.remove('hide-for-export');
+      document.querySelectorAll('#tableBody tr').forEach(function(tr,i){[6,7,8,9].forEach(function(j){var tds=tr.querySelectorAll('td');if(tds[j])tds[j].style.display='';});if(savedFO[i])tr.classList.add('row-filtered-out');if(savedNM[i])tr.classList.add('row-no-match');});
+      nl.style.display=pnd;checkGlobalCeia();applyFilter();
+      var link=document.createElement('a');link.download='Quadro_Avisos_OBPC.jpg';link.href=canvas.toDataURL('image/jpeg',0.95);link.click();
+    });
+  },80);
+}
+
+function gerarJpgIndividual(){
+  var nome=document.getElementById('sel-obreiro').value;
+  if(!nome){alert('Selecione um obreiro primeiro.');return;}
+  if(globalActiveCell)globalActiveCell.classList.remove('active-cell');
+  document.getElementById('toolbar-selection').style.display='none';
+  var rows=document.querySelectorAll('#tableBody tr'),snaps=[];
+  rows.forEach(function(tr){var obrs=tr.querySelectorAll('.cell-obr');var cs=[];obrs.forEach(function(c){cs.push({html:c.innerHTML,raw:c.getAttribute('data-raw')});});snaps.push({fo:tr.classList.contains('row-filtered-out'),nm:tr.classList.contains('row-no-match'),cells:cs});});
+  rows.forEach(function(tr){tr.classList.remove('row-filtered-out','row-no-match');var obrs=tr.querySelectorAll('.cell-obr');var ap=false;obrs.forEach(function(c){var lista=(c.getAttribute('data-raw')||c.innerText).split('\n').map(function(n){return n.trim();}).filter(Boolean);if(lista.some(function(n){return n.toLowerCase()===nome.toLowerCase();}))ap=true;});if(!ap){tr.classList.add('row-no-match');}else{obrs.forEach(function(c){var lista=(c.getAttribute('data-raw')||c.innerText).split('\n').map(function(n){return n.trim();}).filter(Boolean);var tem=lista.some(function(n){return n.toLowerCase()===nome.toLowerCase();});c.innerHTML=tem?'<span class="nome-highlight">'+nome+'</span>':'<span class="nome-oculto">—</span>';});}});
+  var nl=document.getElementById('filter-name-line'),nd=document.getElementById('filter-name-display'),pnd=nl.style.display;
+  nl.style.display='block';nd.textContent='MINHA ESCALA — '+nome.toUpperCase();
+  setTimeout(function(){
+    html2canvas(document.querySelector('#scale-sheet'),{scale:3,backgroundColor:'#ffffff'}).then(function(canvas){
+      rows.forEach(function(tr,i){var s=snaps[i];tr.classList.remove('row-filtered-out','row-no-match');if(s.fo)tr.classList.add('row-filtered-out');if(s.nm)tr.classList.add('row-no-match');var obrs=tr.querySelectorAll('.cell-obr');obrs.forEach(function(c,ci){if(s.cells[ci]!==undefined){c.innerHTML=s.cells[ci].html;if(s.cells[ci].raw!==null)c.setAttribute('data-raw',s.cells[ci].raw);}});});
+      nl.style.display=pnd;applyFilter();
+      var link=document.createElement('a');link.download=nome.replace(/[^a-zA-Z0-9À-ú\s]/g,'').trim()+'.jpg';link.href=canvas.toDataURL('image/jpeg',0.95);link.click();
+    });
+  },80);
+}
+
+function gerarFotoFiltro(){
+  if(globalActiveCell)globalActiveCell.classList.remove('active-cell');
+  document.getElementById('toolbar-selection').style.display='none';
+  var nome=getNomeArquivo();
+  html2canvas(document.querySelector('#scale-sheet'),{scale:3,backgroundColor:'#ffffff'}).then(function(canvas){
+    canvas.toBlob(function(blob){uploadedImageBlob=blob;});
+    var link=document.createElement('a');link.download=nome+'.png';link.href=canvas.toDataURL('image/png');link.click();
+  });
+}
+
+function compartilharFiltro(){
+  if(globalActiveCell)globalActiveCell.classList.remove('active-cell');
+  document.getElementById('toolbar-selection').style.display='none';
+  var nome=getNomeArquivo();
+  document.getElementById('share-modal').style.display='flex';
+  document.getElementById('share-preview-img').style.display='none';
+  document.getElementById('share-status').textContent='⏳ Gerando imagem...';
+  document.getElementById('share-btn-baixar').style.display='none';
+  document.getElementById('share-btn-zap').style.display='none';
+  html2canvas(document.querySelector('#scale-sheet'),{scale:3,backgroundColor:'#ffffff'}).then(function(canvas){
+    var dataUrl=canvas.toDataURL('image/png');
+    var img=document.getElementById('share-preview-img');img.src=dataUrl;img.style.display='block';
+    document.getElementById('share-status').textContent='✅ Pronto! Escolha como enviar:';
+    var btnB=document.getElementById('share-btn-baixar');btnB.style.display='inline-flex';
+    btnB.onclick=function(){var a=document.createElement('a');a.href=dataUrl;a.download=nome+'.png';document.body.appendChild(a);a.click();document.body.removeChild(a);};
+    var btnZ=document.getElementById('share-btn-zap');btnZ.style.display='inline-flex';
+    btnZ.onclick=function(){var a=document.createElement('a');a.href=dataUrl;a.download=nome+'.png';document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(function(){var wa=document.createElement('a');wa.href='whatsapp://send?text='+encodeURIComponent('Segue a escala: '+nome);document.body.appendChild(wa);wa.click();document.body.removeChild(wa);},600);};
+  });
+}
+
+function takeScreenshot(){
+  if(globalActiveCell)globalActiveCell.classList.remove('active-cell');
+  document.getElementById('toolbar-selection').style.display='none';
+  html2canvas(document.querySelector('#scale-sheet'),{scale:3,backgroundColor:'#ffffff'}).then(function(canvas){
+    var link=document.createElement('a');link.download='Agenda_do_Mes_OBPC_Completa.png';link.href=canvas.toDataURL('image/png');link.click();
+  });
+}
+
+function openUpload(){document.getElementById('upload-modal').style.display='flex';}
+function closeUpload(){document.getElementById('upload-modal').style.display='none';uploadedImageBlob=null;}
+
+function handleUpload(e){
+  var file=e.target.files[0];if(!file)return;
+  var preview=document.getElementById('upload-preview'),status=document.getElementById('upload-status');
+  if(file.type.startsWith('image/')){preview.src=URL.createObjectURL(file);preview.style.display='block';status.textContent='✅ Imagem carregada: '+file.name;uploadedImageBlob=file;}
+  else if(file.name.endsWith('.html')){status.textContent='⚠️ Arquivo HTML selecionado.';uploadedImageBlob=file;preview.style.display='none';}
+}
+
+function compartilharUpload(){
+  if(!uploadedImageBlob){alert('Selecione um arquivo primeiro.');return;}
+  var nome=getNomeArquivo();
+  var file=new File([uploadedImageBlob],nome+'.png',{type:uploadedImageBlob.type});
+  if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({title:nome,files:[file]}).catch(function(){});}
+  else{var a=document.createElement('a');a.href=URL.createObjectURL(uploadedImageBlob);a.download=nome+'.png';a.click();setTimeout(function(){window.open('https://wa.me/?text=Segue+a+escala+OBPC','_blank');},800);}
+}
+
+document.addEventListener('input',function(e){
+  if(e.target.classList.contains('cell-obr'))e.target.setAttribute('data-raw',e.target.innerText);
+  if(e.target.classList.contains('cell-clt')){var tr=e.target.closest('tr');if(tr)updateCeiaRow(tr);}
+  save();
+});
+
+document.addEventListener('mousedown',function(e){
+  if(!e.target.closest('td')&&!e.target.closest('#toolbar-selection')){
+    if(globalActiveCell)globalActiveCell.classList.remove('active-cell');
+    document.getElementById('toolbar-selection').style.display='none';
+  }
+});
+
+document.addEventListener('click',function(e){
+  var input=e.target.closest('.td-data-wrap');
+  if(input){input=input.querySelector('.dt-input');try{input.showPicker();}catch(err){input.click();}}
+});
+
+window.onload = load;
+</script>
+</body>
+</html>
