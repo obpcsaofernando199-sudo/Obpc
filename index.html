@@ -2010,10 +2010,11 @@ async function carregarCultos(){
     if(r.ok){const fb=await r.json();if(Array.isArray(fb)&&fb.length)localStorage.setItem('obpc_cultos',JSON.stringify(fb));}
   }catch(e){}
   let lista=DB.get('cultos')||[];if(!lista.length){document.getElementById('sec-cultos').classList.add('hidden');return;}
-  // Deduplicar por dt+titulo para evitar registros duplicados do Firebase
+  // Deduplicar por ts (carimbo único de cada publicação) — evita remover publicações
+  // diferentes que por acaso têm o mesmo título/data padrão (ex: vários "Momento" no mesmo dia)
   const vistos=new Set();
   lista=lista.filter(function(c){
-    var chave=(c.dt||c.data||'')+'|'+(c.tit||c.titulo||'')+'|'+(c.rel||c.relato||'').slice(0,30);
+    var chave=(c.ts!=null?('ts:'+c.ts):((c.dt||c.data||'')+'|'+(c.tit||c.titulo||'')+'|'+(c.rel||c.relato||'').slice(0,30)));
     if(vistos.has(chave))return false;
     vistos.add(chave);return true;
   });
