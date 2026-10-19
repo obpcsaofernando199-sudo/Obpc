@@ -1660,6 +1660,22 @@ async function renderMidiaGrid(midia,containerEl,titulo){
 
 
 const FB_URL='https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com/obpc';
+// Firebase às vezes devolve lista como objeto; garante sempre array
+function _normAgenda(a){
+  if(!a||typeof a!=='object')return a;
+  if(a.rows&&!Array.isArray(a.rows))a.rows=Object.values(a.rows);
+  if(Array.isArray(a.rows))a.rows=a.rows.filter(Boolean);
+  return a;
+}
+// Escolhe, entre escala_pro e escala_agenda guardadas no aparelho, a mais recente
+function _melhorAgendaLocal(){
+  let p=null,g=null;
+  try{p=_normAgenda(JSON.parse(localStorage.getItem('obpc_escala_pro')));}catch(e){}
+  try{g=_normAgenda(JSON.parse(localStorage.getItem('obpc_escala_agenda')));}catch(e){}
+  const okP=p&&p.rows&&p.rows.length, okG=g&&g.rows&&g.rows.length;
+  if(okP&&okG)return ((p.ts||0)>=(g.ts||0))?p:g;
+  return okP?p:(okG?g:null);
+}
 
 // Cache local para detectar mudanças no polling
 let _dbCache={};
@@ -1683,8 +1699,8 @@ const DB={
       banner_culto:()=>carregarBanner(),
       info:()=>carregarInfo(),
       ticker:()=>carregarTicker(),
-      escala_agenda:()=>carregarEscalaHoje(),
-      escala_pro:()=>carregarEscalaHoje(),
+      escala_agenda:()=>{carregarEscalaHoje();_atualizaAgendaAberta();},
+      escala_pro:()=>{carregarEscalaHoje();_atualizaAgendaAberta();},
       proximos_cultos:()=>carregarProximosCultos(),
       palavras:()=>carregarPalavras(),
       eventos:()=>carregarEventos(),
@@ -1842,12 +1858,13 @@ function _pintarEscalaHoje(agenda){
 
 function carregarEscalaHoje(){
   // Mostra imediatamente o que houver em cache (evita tela vazia)
-  _pintarEscalaHoje(DB.get('escala_pro')||DB.get('escala_agenda'));
+  _pintarEscalaHoje(_melhorAgendaLocal());
   // Busca a versão mais recente direto do Firebase (mesma lógica do "Ver Agenda Completa")
   Promise.all([
     fetch('https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com/obpc/escala_pro.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null),
     fetch('https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com/obpc/escala_agenda.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null)
   ]).then(([fbPro, fbAgenda])=>{
+    _normAgenda(fbPro);_normAgenda(fbAgenda);
     let agenda=null;
     const tsPro=(fbPro&&fbPro.ts)||0;
     const tsAg=(fbAgenda&&fbAgenda.ts)||(fbAgenda&&fbAgenda.rows?1:0);
@@ -1861,7 +1878,7 @@ function carregarEscalaHoje(){
       agenda=fbAgenda;
       try{localStorage.setItem('obpc_escala_agenda',JSON.stringify(fbAgenda));}catch{}
     } else {
-      agenda=DB.get('escala_pro')||DB.get('escala_agenda');
+      agenda=_melhorAgendaLocal();
     }
     _pintarEscalaHoje(agenda);
   }).catch(()=>{});
@@ -1878,6 +1895,7 @@ function abrirAgendaMes(){
     fetch('https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com/obpc/escala_pro.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null),
     fetch('https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com/obpc/escala_agenda.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null)
   ]).then(([fbPro, fbAgenda])=>{
+    _normAgenda(fbPro);_normAgenda(fbAgenda);
     // Escolher o mais recente com dados válidos
     let agenda=null;
     const tsPro=(fbPro&&fbPro.ts)||0;
@@ -1894,7 +1912,7 @@ function abrirAgendaMes(){
       try{localStorage.setItem('obpc_escala_agenda',JSON.stringify(fbAgenda));}catch{}
     } else {
       // Fallback para localStorage local
-      agenda=DB.get('escala_pro')||DB.get('escala_agenda');
+      agenda=_melhorAgendaLocal();
     }
     if(!agenda||!agenda.rows||!agenda.rows.length){
       corpo.innerHTML='<p style="text-align:center;color:var(--muted);padding:2rem">Nenhuma escala cadastrada.</p>';return;
@@ -1902,7 +1920,7 @@ function abrirAgendaMes(){
     _renderAgendaMes(agenda,corpo);
   }).catch(()=>{
     // Sem internet: usar localStorage
-    const agenda=DB.get('escala_pro')||DB.get('escala_agenda');
+    const agenda=_melhorAgendaLocal();
     if(!agenda||!agenda.rows||!agenda.rows.length){
       corpo.innerHTML='<p style="text-align:center;color:var(--muted);padding:2rem">Nenhuma escala cadastrada.</p>';return;
     }
@@ -1927,6 +1945,7 @@ function _renderAgendaMes(agenda, corpo, chaveSel){
   const _hk=hoje.getFullYear()+'-'+hoje.getMonth();
   const _hn=hoje.getFullYear()*12+hoje.getMonth();
   const chaveAtual=(typeof chaveSel==='string'&&porMes[chaveSel])?chaveSel:(porMes[_hk]?_hk:(_ks.find(k=>porMes[k].ano*12+porMes[k].mes>=_hn)||_ks[_ks.length-1]));
+  window._agendaChaveSel=chaveAtual;
   const mesAtualDados=porMes[chaveAtual];
   const _ix=_ks.indexOf(chaveAtual);
   if(!mesAtualDados){
@@ -1944,7 +1963,7 @@ function _renderAgendaMes(agenda, corpo, chaveSel){
   const isCeia=t=>(t||'').toLowerCase().includes('ceia')||(t||'').toLowerCase().includes('primícias');
   // Info da igreja para o cabeçalho
   const ig=DB.get('info')||{};
-  const nomeIgreja=(ig.nome||'O BRASIL PARA CRISTO - JD SÃO FERNANDO').toUpperCase();
+  const nomeIgreja=(agenda.church||ig.nome||'O BRASIL PARA CRISTO - JD SÃO FERNANDO').toString().trim().toUpperCase();
   const tema=agenda.theme||'';
   let html='<div class="epr-scroll-dica"><span class="epr-rotate-icone">📱</span>Gire o celular na horizontal<br>para ver a agenda completa</div>';
   if(_ks.length>1){
@@ -2009,7 +2028,22 @@ function _renderAgendaMes(agenda, corpo, chaveSel){
   html+='</div>';
   corpo.innerHTML=html;
 }  // fim _renderAgendaMes
-function _agendaIrMes(k){if(window._agendaCache)_renderAgendaMes(window._agendaCache,document.getElementById('agenda-mes-corpo'),k);}
+function _atualizaAgendaAberta(){
+  const m=document.getElementById('modal-agenda');
+  if(!m||m.style.display!=='block')return;
+  const k=window._agendaChaveSel;
+  Promise.all([
+    fetch(FB_URL+'/escala_pro.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null),
+    fetch(FB_URL+'/escala_agenda.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null)
+  ]).then(([p,g])=>{
+    _normAgenda(p);_normAgenda(g);
+    const ok=a=>a&&a.rows&&a.rows.length;
+    let ag=null;
+    if(ok(p)&&(!ok(g)||(p.ts||0)>=(g.ts||0)))ag=p;else if(ok(g))ag=g;
+    if(ag)_renderAgendaMes(ag,document.getElementById('agenda-mes-corpo'),k);
+  });
+}
+function _agendaIrMes(k){window._agendaChaveSel=k;if(window._agendaCache)_renderAgendaMes(window._agendaCache,document.getElementById('agenda-mes-corpo'),k);}
 function fecharAgendaMes(){document.getElementById('modal-agenda').style.display='none';document.body.style.overflow='';}
 function _agendaCapturar(callback){
   // Pegar o HTML interno do sheet (dados já renderizados)
@@ -3252,7 +3286,7 @@ function compartilharAviso(t,x){compartilhar('📢 *'+t+'*\n\n'+x+'\n\n— OBPC 
 function compartilharInformativo(t,x){compartilhar('📰 *'+t+'*\n\n'+x+'\n\n— OBPC Jardim São Fernando');}
 
 function compartilharAgenda(){
-  const agenda=DB.get('escala_pro')||DB.get('escala_agenda');
+  const agenda=_melhorAgendaLocal();
   if(!agenda||!agenda.rows||!agenda.rows.length){alert('Nenhuma agenda cadastrada.');return;}
   const hoje=new Date();
   const DIAS=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
@@ -3274,7 +3308,7 @@ function compartilharAgenda(){
 
   // Montar HTML da tabela fundo branco
   const div=document.createElement('div');
-  div.style.cssText='position:absolute;left:-9999px;top:0;background:#ffffff;font-family:Arial,sans-serif;padding:24px 20px;width:680px;min-width:680px;';
+  div.style.cssText='position:absolute;left:-9999px;top:0;background:#ffffff;font-family:Arial,sans-serif;padding:24px 20px;width:900px;min-width:900px;';
 
   let h='<div style="text-align:center;margin-bottom:18px">'
     +'<div style="font-size:17px;font-weight:800;color:#1a1a2e;letter-spacing:.03em">📅 AGENDA — '+nomeIg.toUpperCase()+'</div>'
@@ -3288,9 +3322,11 @@ function compartilharAgenda(){
     h+='<thead><tr style="background:#1E7A52;color:#F5C242;font-size:10.5px">'
       +'<th style="padding:7px 8px;text-align:center;border:1px solid #555;white-space:nowrap">Data</th>'
       +'<th style="padding:7px 8px;text-align:center;border:1px solid #555;white-space:nowrap">Dia</th>'
+      +'<th style="padding:7px 8px;text-align:left;border:1px solid #555">Ensaio</th>'
       +'<th style="padding:7px 8px;text-align:left;border:1px solid #555">Culto</th>'
       +'<th style="padding:7px 8px;text-align:left;border:1px solid #555">Porta / Recepção</th>'
       +'<th style="padding:7px 8px;text-align:left;border:1px solid #555">Dirigente</th>'
+      +'<th style="padding:7px 8px;text-align:left;border:1px solid #555">Oportunidade</th>'
       +'<th style="padding:7px 8px;text-align:left;border:1px solid #555">Ministrante</th>'
       +'</tr></thead><tbody>';
     rows.forEach((r,i)=>{
@@ -3303,9 +3339,11 @@ function compartilharAgenda(){
         +'<td style="padding:6px 8px;border:1px solid #ddd;text-align:center;white-space:nowrap;font-weight:700">'
         +d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})+(isH?' ⭐':'')+'</td>'
         +'<td style="padding:6px 8px;border:1px solid #ddd;text-align:center;white-space:nowrap">'+DIAS[d.getDay()]+'</td>'
+        +'<td style="padding:6px 8px;border:1px solid #ddd">'+fmt(r.ensaio)+'</td>'
         +'<td style="padding:6px 8px;border:1px solid #ddd;font-weight:600;color:'+(isH?'#8b5e00':'#2d2d6b')+'">'+fmt(r.clt)+'</td>'
         +'<td style="padding:6px 8px;border:1px solid #ddd">'+fmt(r.p1)+'</td>'
-        +'<td style="padding:6px 8px;border:1px solid #ddd">'+fmt(r.dir)+'</td>'
+        +'<td style="padding:6px 8px;border:1px solid #ddd">'+fmt(r.dir)+((r.cel&&/ceia|prim[ií]cias/i.test(r.clt||''))?'<br><span style="color:#7C3AED;font-size:10px;font-weight:700">Celebração:</span> '+fmt(r.cel):'')+'</td>'
+        +'<td style="padding:6px 8px;border:1px solid #ddd">'+fmt(r.opt)+'</td>'
         +'<td style="padding:6px 8px;border:1px solid #ddd">'+fmt(r.min)+'</td>'
         +'</tr>';
     });

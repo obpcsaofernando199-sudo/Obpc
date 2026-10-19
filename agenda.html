@@ -373,6 +373,9 @@ var currentTab = 'obreiro';
 var uploadedImageBlob = null;
 var _pendingLoadData = null;
 var periodoAtual = new Date();
+var _regRemovidos = [];
+var _suprimirAuto = false;
+var _pubTimer = null;
 
 var MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 
@@ -387,7 +390,7 @@ function renderPeriodo() {
 }
 
 function mudaMes(delta) {
-  periodoAtual.setMonth(periodoAtual.getMonth() + delta);
+  periodoAtual = new Date(periodoAtual.getFullYear(), periodoAtual.getMonth() + delta, 1);
   renderPeriodo(); filtrarPorMes(); save();
 }
 
@@ -415,7 +418,8 @@ function isCeia(t) {
   return t.includes('ceia') || t.includes('primícias') || t.includes('primicias');
 }
 
-function escAttr(s) { return (s || '').replace(/"/g, '&quot;'); }
+function escAttr(s) { return (s || '').replace(/&/g,'&amp;').replace(/"/g, '&quot;'); }
+function escHtml(s) { return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 function updateCeiaRow(tr) {
   var cltCell = tr.querySelector('.cell-clt');
@@ -428,7 +432,7 @@ function updateCeiaRow(tr) {
     var oldVal = oldEl ? (oldEl.getAttribute('data-raw') || oldEl.innerText) : '';
     var oldCel = tdDir.getAttribute('data-cel') || '';
     tdDir.classList.replace('td-dirigente-normal','td-dirigente-split');
-    tdDir.innerHTML = '<div class="dir-split-wrap"><div class="dir-sub"><div class="dir-sub-label">DIRIGENTE</div><div class="dir-sub-input cell-obr cell-obr-dir" onclick="activateCell(this,\'obreiros\')" contenteditable="true" data-raw="'+escAttr(oldVal)+'">'+oldVal+'</div></div><div class="dir-sub"><div class="dir-sub-label">CELEBRAÇÃO</div><div class="dir-sub-input cell-obr cell-obr-cel" onclick="activateCell(this,\'obreiros\')" contenteditable="true" data-raw="'+escAttr(oldCel)+'">'+oldCel+'</div></div></div>';
+    tdDir.innerHTML = '<div class="dir-split-wrap"><div class="dir-sub"><div class="dir-sub-label">DIRIGENTE</div><div class="dir-sub-input cell-obr cell-obr-dir" onclick="activateCell(this,\'obreiros\')" contenteditable="true" data-raw="'+escAttr(oldVal)+'">'+escHtml(oldVal)+'</div></div><div class="dir-sub"><div class="dir-sub-label">CELEBRAÇÃO</div><div class="dir-sub-input cell-obr cell-obr-cel" onclick="activateCell(this,\'obreiros\')" contenteditable="true" data-raw="'+escAttr(oldCel)+'">'+escHtml(oldCel)+'</div></div></div>';
     tr.classList.add('row-ceia');
   } else {
     if (tdDir.classList.contains('td-dirigente-normal')) return;
@@ -438,7 +442,7 @@ function updateCeiaRow(tr) {
     var celVal = celEl ? (celEl.getAttribute('data-raw') || celEl.innerText) : '';
     tdDir.setAttribute('data-cel', celVal);
     tdDir.classList.replace('td-dirigente-split','td-dirigente-normal');
-    tdDir.innerHTML = '<div class="cell-data cell-obr cell-obr-dir" onclick="activateCell(this,\'obreiros\')" contenteditable="true" data-raw="'+escAttr(curVal)+'">'+curVal+'</div>';
+    tdDir.innerHTML = '<div class="cell-data cell-obr cell-obr-dir" onclick="activateCell(this,\'obreiros\')" contenteditable="true" data-raw="'+escAttr(curVal)+'">'+escHtml(curVal)+'</div>';
     tr.classList.remove('row-ceia');
   }
 }
@@ -480,6 +484,7 @@ function coletarDados() {
     periodoAno: periodoAtual.getFullYear(),
     cultos:     document.getElementById('list-cultos').value,
     obreiros:   document.getElementById('list-obreiros').value,
+    regionaisRemovidos: _regRemovidos.slice(),
     rows: rows
   };
 }
@@ -508,7 +513,7 @@ function carregarArquivo(event) {
   var file = event.target.files[0];
   if (!file) return;
 
-  if (!file.name.endsWith('.json')) {
+  if (!/\.(json|txt)$/i.test(file.name)) {
     mostrarStatus('⚠️ Selecione um arquivo .json da escala.', true);
     event.target.value = '';
     return;
@@ -520,8 +525,8 @@ function carregarArquivo(event) {
   reader.onload = function(e) {
     event.target.value = '';
     try {
-      var dados = JSON.parse(e.target.result);
-      if (!dados.rows || !Array.isArray(dados.rows)) {
+      var dados = normalizarImportacao(JSON.parse(String(e.target.result).replace(/^\uFEFF/, '')));
+      if (!dados) {
         mostrarStatus('❌ Arquivo inválido. Não é uma escala OBPC.', true);
         return;
       }
@@ -548,12 +553,59 @@ function carregarArquivo(event) {
   reader.readAsText(file, 'UTF-8');
 }
 
+// Aceita o formato do painel (rows) e também listas simples (eventos) com nomes de campo por extenso
+function normalizarImportacao(d) {
+  if (Array.isArray(d)) d = { eventos: d };
+  if (!d || typeof d !== 'object') return null;
+  var lista = Array.isArray(d.rows) ? d.rows : Array.isArray(d.eventos) ? d.eventos : Array.isArray(d.agenda) ? d.agenda : null;
+  if (!lista) return null;
+  var DIAS = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+  var txt = function(v){ if (v == null) return ''; if (Array.isArray(v)) return v.map(txt).filter(Boolean).join('\n'); return String(v).trim(); };
+  var iso = function(v){
+    v = txt(v);
+    var m = v.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if (m) return m[3] + '-' + ('0' + m[2]).slice(-2) + '-' + ('0' + m[1]).slice(-2);
+    m = v.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    return m ? m[1] + '-' + m[2] + '-' + m[3] : '';
+  };
+  var pick = function(r, nomes){ for (var i = 0; i < nomes.length; i++) if (r[nomes[i]] !== undefined && r[nomes[i]] !== null) return r[nomes[i]]; return ''; };
+  var rows = lista.filter(function(r){ return r && typeof r === 'object'; }).map(function(r){
+    var dt = iso(pick(r, ['dt','data']));
+    var dirRaw = pick(r, ['dir','dirigente']);
+    var cel = pick(r, ['cel','celebracao','celebração']);
+    if (dirRaw && typeof dirRaw === 'object' && !Array.isArray(dirRaw)) {
+      cel = dirRaw.celebracao || dirRaw['celebração'] || dirRaw.cel || cel;
+      dirRaw = dirRaw.dirigente || dirRaw.dir || '';
+    }
+    var dia = dt ? DIAS[new Date(dt + 'T00:00:00').getDay()] : txt(pick(r, ['day','dia']));
+    var origem = txt(r.origem) || ((r.recorrente || r.regional) ? 'regional' : '');
+    return { dt: dt, day: dia, clt: txt(pick(r, ['clt','culto_evento','culto','evento'])), ensaio: txt(r.ensaio),
+      p1: txt(pick(r, ['p1','porta_recepcao','porta','recepcao'])), dir: txt(dirRaw), cel: txt(cel),
+      opt: txt(pick(r, ['opt','oportunidade'])), min: txt(pick(r, ['min','ministrante'])), origem: origem };
+  });
+  var mes = d.periodoMes, ano = d.periodoAno;
+  if (mes === undefined) {
+    var m0 = d.mes;
+    if (typeof m0 === 'string' && isNaN(m0)) { var ix = MESES.map(function(x){return x.toLowerCase();}).indexOf(m0.trim().toLowerCase()); mes = ix > -1 ? ix : undefined; }
+    else if (m0 !== undefined) mes = Number(m0) > 0 && Number(m0) <= 12 ? Number(m0) - 1 : undefined;
+    ano = d.ano !== undefined ? Number(d.ano) : ano;
+  }
+  if (mes === undefined || !ano) {
+    var primeira = rows.filter(function(r){ return r.dt; }).map(function(r){ return r.dt; }).sort()[0];
+    if (primeira) { ano = Number(primeira.slice(0,4)); mes = Number(primeira.slice(5,7)) - 1; }
+  }
+  return { versao: 'obpc_v4', church: d.church || d.igreja || '', theme: d.theme || d.tema || '',
+    periodoMes: mes, periodoAno: ano, cultos: d.cultos, obreiros: d.obreiros,
+    regionaisRemovidos: d.regionaisRemovidos || [], rows: rows };
+}
+
 function fecharModalLoad() {
   document.getElementById('load-confirm-modal').classList.remove('on');
   _pendingLoadData = null;
 }
 
 function aplicarDadosCarregados(dados, nomeArquivo) {
+  _regRemovidos = dados.regionaisRemovidos || [];
   document.getElementById('tableBody').innerHTML = '';
 
   if (dados.cultos) {
@@ -583,8 +635,10 @@ function aplicarDadosCarregados(dados, nomeArquivo) {
     checkGlobalCeia();
     clearFilter();
     filtrarPorMes();
-    document.getElementById('nome-arquivo').value = nomeArquivo.replace(/\.json$/i,'');
-    localStorage.setItem('obpc_1click_scale_v4', JSON.stringify(dados));
+    document.getElementById('nome-arquivo').value = nomeArquivo.replace(/\.(json|txt)$/i,'');
+    // completa com a Agenda Regional e grava com carimbo NOVO (senão o servidor, mais "recente", apagava a importação)
+    _suprimirAuto = true; preencherAgendaRegionalCompleta(); _suprimirAuto = false;
+    save();
     mostrarStatus('✅ Carregado: '+nomeArquivo, false);
   }, 150);
 }
@@ -649,6 +703,12 @@ function populateDatasSelect() {
   if (cur) sel.value = cur;
 }
 
+function celulasAtividade(tr, atv) {
+  var sel = {'PORTA':'td:nth-child(6) .cell-obr','DIRIGENTE':'.cell-obr-dir','CELEBRACAO':'.cell-obr-cel','OPORTUNIDADE':'td.col-oportunidade .cell-obr','MINISTRANTE':'td.col-ministrante .cell-obr'}[atv];
+  var el = sel ? tr.querySelector(sel) : null;
+  return el ? [el] : [];
+}
+
 function applyFilter() {
   var atv = document.getElementById('sel-atividade').value;
   document.getElementById('sel-atividade-obr').style.display = atv?'block':'none';
@@ -695,8 +755,8 @@ function applyFilter() {
     if(atividade==='ENSAIO'){
       rows.forEach(function(tr){var ec=tr.querySelector('.cell-ensaio');if(!ec||!ec.innerText.trim())tr.classList.add('row-filtered-out');});
     } else {
-      var idx=atividadeIdx[atividade];
-      rows.forEach(function(tr){var obrs=tr.querySelectorAll('.cell-obr');if(!obrs[idx]){tr.classList.add('row-filtered-out');return;}var nomes=(obrs[idx].getAttribute('data-raw')||obrs[idx].innerText).split('\n').map(function(n){return n.trim();}).filter(Boolean);if(obreiro){var tem=nomes.some(function(n){return n.toLowerCase()===obreiro.toLowerCase();});if(!tem){tr.classList.add('row-filtered-out');return;}obrs[idx].innerHTML='<span class="nome-highlight">'+obreiro+'</span>';}else if(nomes.length===0){tr.classList.add('row-filtered-out');}});
+      
+      rows.forEach(function(tr){var obrs=celulasAtividade(tr,atividade);if(!obrs[0]){tr.classList.add('row-filtered-out');return;}var nomes=(obrs[0].getAttribute('data-raw')||obrs[0].innerText).split('\n').map(function(n){return n.trim();}).filter(Boolean);if(obreiro){var tem=nomes.some(function(n){return n.toLowerCase()===obreiro.toLowerCase();});if(!tem){tr.classList.add('row-filtered-out');return;}obrs[0].innerHTML='<span class="nome-highlight">'+obreiro+'</span>';}else if(nomes.length===0){tr.classList.add('row-filtered-out');}});
     }
     nameLine.style.display='block';nameDisplay.textContent='ATIVIDADE: '+atividade+(obreiro?' — '+obreiro.toUpperCase():'');
   }
@@ -714,9 +774,17 @@ function clearFilter(){
 
 function restoreCells(tr){tr.querySelectorAll('.cell-obr').forEach(function(cell){var raw=cell.getAttribute('data-raw');if(raw!==null)cell.innerText=raw;});}
 
+function _registrarRemocaoRegional(tr, dt){
+  if(!tr||tr.getAttribute('data-origem')!=='regional')return;
+  dt=dt||(tr.querySelector('.dt-input')||{}).value;
+  if(dt&&_regRemovidos.indexOf(dt)<0)_regRemovidos.push(dt);
+}
+
 function excluirLinha(btn){
   if(!confirm('Excluir este culto da escala?'))return;
-  btn.closest('tr').remove();save();
+  var trDel=btn.closest('tr');
+  _registrarRemocaoRegional(trDel);
+  trDel.remove();save();
   if(currentTab==='data')populateDatasSelect();
 }
 
@@ -884,6 +952,7 @@ function _inserirEventosRegionais(eventos) {
   var inseridos = 0;
   eventos.forEach(function(ev){
     if (datasExistentes.indexOf(ev.dt) > -1) return;
+    if (_regRemovidos.indexOf(ev.dt) > -1) return; // excluída/movida de propósito: não volta
     datasExistentes.push(ev.dt);
     var d = new Date(ev.dt + 'T00:00:00');
     addRow({dt: ev.dt, day: days[d.getDay()] || '', clt: ev.clt, ensaio: '', p1: '', dir: '', cel: '', opt: '', min: '', origem: 'regional'});
@@ -927,6 +996,7 @@ function inserirAgendaRegional2026() {
     mostrarStatus('ℹ️ Não há data fixa da Agenda Regional para ' + nomeMes + '/' + anoAtual + '.', true);
     return;
   }
+  eventosDoMes.forEach(function(ev){ var i = _regRemovidos.indexOf(ev.dt); if (i > -1) _regRemovidos.splice(i, 1); });
   var inseridos = _inserirEventosRegionais(eventosDoMes);
   checkGlobalCeia();
   filtrarPorMes();
@@ -947,6 +1017,7 @@ function addRow(data) {
   if (data) {
     var dtInp = tr.querySelector('.dt-input');
     dtInp.value = data.dt || '';
+    dtInp.dataset.prev = dtInp.value;
     atualizarDisplayData(dtInp);
     tr.querySelector('.cell-day').innerText = data.day || '';
     tr.querySelector('.cell-clt').innerText = data.clt || '';
@@ -1001,6 +1072,12 @@ function pushName(name){
 function updateDate(input){
   atualizarDisplayData(input);
   var row=input.closest('tr');
+  var _prev=input.dataset.prev||'';
+  if(row.getAttribute('data-origem')==='regional'){
+    if(_prev&&_prev!==input.value)_registrarRemocaoRegional(row,_prev);
+    var _ix=_regRemovidos.indexOf(input.value);if(_ix>-1)_regRemovidos.splice(_ix,1);
+  }
+  input.dataset.prev=input.value;
   var date=new Date(input.value+'T00:00:00');
   var days=['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
   row.querySelector('.cell-day').innerText=days[date.getDay()]||'';
@@ -1051,6 +1128,12 @@ function save(){
   localStorage.setItem('obpc_1click_scale_v4',JSON.stringify(dados));
   if(currentTab==='data')populateDatasSelect();
   marcarPendente(true);
+  if(!_suprimirAuto)agendarPublicacao();
+}
+
+function agendarPublicacao(){
+  clearTimeout(_pubTimer);
+  _pubTimer=setTimeout(function(){ if(_pendente)salvarAgenda(true); },2500);
 }
 
 var _pendente=false;
@@ -1062,11 +1145,12 @@ function marcarPendente(p){
   b.textContent=p?'💾 SALVAR AGENDA ●':'✅ AGENDA SALVA';
 }
 
-function salvarAgenda(){
+function salvarAgenda(auto){
+  clearTimeout(_pubTimer);
   var b=document.getElementById('btn-salvar-agenda');
   var dados=coletarDados();
   localStorage.setItem('obpc_1click_scale_v4',JSON.stringify(dados));
-  var agenda={mes:dados.periodoMes,ano:dados.periodoAno,ts:dados.ts,rows:dados.rows};
+  var agenda={mes:dados.periodoMes,ano:dados.periodoAno,ts:dados.ts,church:dados.church,theme:dados.theme,rows:dados.rows};
   var base='https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com/obpc/';
   var put=function(nome,obj){
     return fetch(base+nome+'.json',{method:'PUT',body:JSON.stringify(obj),headers:{'Content-Type':'application/json'}})
@@ -1074,8 +1158,13 @@ function salvarAgenda(){
   };
   b.disabled=true;b.textContent='⏳ Salvando...';
   Promise.all([put('escala_pro',dados),put('escala_agenda',agenda)])
-    .then(function(){b.disabled=false;marcarPendente(false);mostrarStatus('✅ Agenda salva e publicada no site',false);})
-    .catch(function(){b.disabled=false;marcarPendente(true);mostrarStatus('⚠️ NÃO foi salva no servidor. Verifique a internet e tente de novo',true);});
+    .then(function(){
+      b.disabled=false;
+      var tsAgora=0;try{tsAgora=JSON.parse(localStorage.getItem('obpc_1click_scale_v4')).ts||0;}catch(e){}
+      if(tsAgora>dados.ts){marcarPendente(true);agendarPublicacao();} else marcarPendente(false);
+      mostrarStatus('✅ Agenda salva e publicada no site',false);
+    })
+    .catch(function(){b.disabled=false;marcarPendente(true);mostrarStatus('⚠️ NÃO foi salva no servidor. Verifique a internet e tente de novo',true);setTimeout(function(){if(_pendente)agendarPublicacao();},15000);});
 }
 window.addEventListener('beforeunload',function(e){if(_pendente){e.preventDefault();e.returnValue='';}});
 
@@ -1096,6 +1185,8 @@ function openConfig(show){document.getElementById('config-modal').style.display=
 
 function _aplicarDadosEscalaPro(data){
   // Aplica dados sem perguntar — usado na sincronização silenciosa
+  _regRemovidos=data.regionaisRemovidos||[];
+  _suprimirAuto=true;
   document.getElementById('tableBody').innerHTML='';
   if(data.cultos){document.getElementById('list-cultos').value=data.cultos;localStorage.setItem('obpc_set_cultos_v3',data.cultos);}
   if(data.obreiros){document.getElementById('list-obreiros').value=data.obreiros;localStorage.setItem('obpc_set_obreiros_v3',data.obreiros);}
@@ -1107,6 +1198,7 @@ function _aplicarDadosEscalaPro(data){
   data.rows.forEach(function(r){addRow(r);});
   renderPeriodo();checkGlobalCeia();clearFilter();filtrarPorMes();
   preencherAgendaRegionalCompleta();
+  _suprimirAuto=false;
 }
 
 function load(){
@@ -1125,6 +1217,7 @@ function load(){
   if(savedRaw){
     var data=JSON.parse(savedRaw);
     localTs=data.ts||0;
+    _regRemovidos=data.regionaisRemovidos||[];
     document.getElementById('save-church').innerText=data.church||'';
     document.getElementById('save-theme').innerText=data.theme||'';
     if(data.periodoMes!==undefined&&data.periodoAno!==undefined)periodoAtual=new Date(data.periodoAno,data.periodoMes,1);
@@ -1132,7 +1225,9 @@ function load(){
     data.rows.forEach(function(r){addRow(r);});
   } else {periodoAtual=new Date();for(var i=0;i<4;i++)addRow();}
   renderPeriodo();checkGlobalCeia();filtrarPorMes();
+  _suprimirAuto=true;
   preencherAgendaRegionalCompleta();
+  _suprimirAuto=false;
 
   // 3. Verificar Firebase — só substitui se Firebase tiver dados MAIS RECENTES
   var FB_URL='https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com/obpc/escala_pro.json';
@@ -1147,7 +1242,8 @@ function load(){
     } else if(localTs>fbTs&&savedRaw){
       // Local mais recente: enviar ao Firebase para atualizar outros dispositivos
       var localData=JSON.parse(savedRaw);
-      marcarPendente(true); // rascunho local mais novo: aguarda o botão SALVAR AGENDA
+      marcarPendente(true); // rascunho local mais novo: publica sozinho em instantes
+      agendarPublicacao();
     }
     // Carregar também as listas do Firebase se mais recentes
     fetch('https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com/obpc/escala_pro_listas.json')
@@ -1182,6 +1278,7 @@ function _escalaProListen(){
       try{
         var d=JSON.parse(e.data);
         if(!d||!d.data||!d.data.rows)return;
+        if(_pendente)return;
         var fb=d.data;
         var localRaw=localStorage.getItem('obpc_1click_scale_v4');
         var localTs=localRaw?JSON.parse(localRaw).ts||0:0;
@@ -1196,6 +1293,7 @@ function _escalaProListen(){
 }
 
 function _escalaProSyncSilent(){
+  if(_pendente)return;
   var localRaw=localStorage.getItem('obpc_1click_scale_v4');
   var localTs=localRaw?JSON.parse(localRaw).ts||0:0;
   fetch('https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com/obpc/escala_pro.json')
@@ -1311,6 +1409,7 @@ function compartilharUpload(){
 }
 
 document.addEventListener('input',function(e){
+  if(!e.target.closest||!e.target.closest('#tableBody,#save-church,#save-theme'))return;
   if(e.target.classList.contains('cell-obr'))e.target.setAttribute('data-raw',e.target.innerText);
   if(e.target.classList.contains('cell-clt')){var tr=e.target.closest('tr');if(tr)updateCeiaRow(tr);}
   save();
