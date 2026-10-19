@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Admin da Galeria — OBPC</title>
+<style>
+:root{--navy:#0d1b2e;--deep:#08121f;--gold:#c9a24b;--soft:#e6cd8a;--cream:#f3ede0;--line:rgba(201,162,75,.25)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--navy);color:var(--cream);font-family:system-ui,sans-serif;min-height:100vh;padding:20px}
+.box{max-width:560px;margin:0 auto 24px;padding:20px;border:1px solid var(--line);border-radius:14px;background:rgba(201,162,75,.05)}
+h1{font-size:20px;margin:0 0 4px;color:var(--soft)}
+p.s{margin:0 0 14px;font-size:13px;color:rgba(243,237,224,.6)}
+label{display:block;font-size:12px;color:var(--soft);margin:14px 0 6px}
+input[type=text],input[type=email],input[type=password],select{width:100%;background:rgba(8,18,31,.7);border:1px solid var(--line);color:var(--cream);padding:11px 12px;border-radius:8px;font-size:15px}
+button{font:inherit;cursor:pointer}
+.go{width:100%;margin-top:18px;background:var(--gold);color:var(--deep);border:0;padding:13px;border-radius:8px;font-weight:600}
+.go:disabled{opacity:.5}
+.esc{background:none;border:1px dashed var(--gold);color:var(--soft);padding:10px 16px;border-radius:8px;font-size:13px;display:inline-block}
+.st{margin-top:12px;font-size:13px;text-align:center;color:var(--soft);min-height:18px}
+.topo{display:flex;justify-content:space-between;align-items:center;max-width:1100px;margin:0 auto 16px;gap:10px;flex-wrap:wrap}
+.topo a,.topo button{color:var(--soft);font-size:13px;background:none;border:1px solid var(--line);padding:7px 14px;border-radius:30px;text-decoration:none}
+.grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.it{position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden;border:1px solid var(--line);background:#0a1727}
+.it img{width:100%;height:100%;object-fit:cover;display:block}
+.it span{position:absolute;left:0;right:0;bottom:0;font-size:11px;padding:14px 6px 4px;background:linear-gradient(to top,rgba(0,0,0,.85),transparent);color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.it button{position:absolute;top:6px;right:6px;width:28px;height:28px;border-radius:50%;border:1px solid rgba(196,64,64,.6);background:rgba(10,20,35,.8);color:#e08a8a}
+.it button:hover{background:#c44040;color:#fff}
+#painel{display:none}
+</style>
+</head>
+<body>
+
+<div class="box" id="login">
+  <h1>🔒 Admin da Galeria</h1>
+  <p class="s">Acesso restrito à liderança.</p>
+  <label>E-mail</label><input type="email" id="email" autocomplete="username">
+  <label>Senha</label><input type="password" id="senha" autocomplete="current-password">
+  <button class="go" id="btn-login">Entrar</button>
+  <div class="st" id="st-login"></div>
+</div>
+
+<div id="painel">
+  <div class="topo"><strong style="color:var(--soft)">Admin da Galeria</strong><span><a href="galeria.html">Ver galeria pública</a> <button id="btn-sair">Sair</button></span></div>
+  <div class="box">
+    <label style="margin-top:0">Categoria</label>
+    <select id="cat">
+      <option value="cultos">Cultos</option><option value="missoes">Missões</option><option value="santa-ceia">Santa Ceia</option><option value="familia">Família</option>
+      <option value="jubrac">Jubrac</option><option value="umasbrac">Umasbrac</option><option value="ufebrac">Ufebrac</option><option value="menibrac">Menibrac</option>
+    </select>
+    <label>Legenda (opcional)</label><input type="text" id="leg" placeholder="Ex: Culto de celebração de domingo">
+    <label>Fotos</label>
+    <label class="esc" for="arq">📷 Escolher fotos</label>
+    <input type="file" id="arq" accept="image/*" multiple style="display:none">
+    <span id="nome" style="font-size:12px;margin-left:8px;opacity:.6">Nenhuma foto selecionada</span>
+    <button class="go" id="btn-env" disabled>Enviar para a galeria</button>
+    <div class="st" id="st-env"></div>
+  </div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const CLOUD = "dvvxiri22", PRESET = "obpc_media", PASTA = "obpc_sao_fernando/galeria";
+const app = initializeApp({
+  apiKey: "AIzaSyBwrxwxOVAkMuxg3KrBokms7DvVtZisRNM",
+  authDomain: "obpc-saofernando-1d6f3.firebaseapp.com",
+  databaseURL: "https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com",
+  projectId: "obpc-saofernando-1d6f3",
+  storageBucket: "obpc-saofernando-1d6f3.firebasestorage.app",
+  messagingSenderId: "338504197999",
+  appId: "1:338504197999:web:bef16273d1a7135da8ea9a"
+});
+const db = getDatabase(app), auth = getAuth(app), galRef = ref(db, "obpc/galeria_fotos");
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const thumb = u => /res\.cloudinary\.com/.test(u) && u.includes("/upload/") ? u.replace("/upload/", "/upload/w_300,h_300,c_fill,q_auto,f_auto/") : u;
+let arquivos = [], off = null;
+
+$("btn-login").onclick = async () => {
+  $("st-login").textContent = "Entrando...";
+  try { await signInWithEmailAndPassword(auth, $("email").value.trim(), $("senha").value); $("st-login").textContent = ""; }
+  catch (e) { $("st-login").textContent = "E-mail ou senha incorretos."; }
+};
+$("senha").addEventListener("keydown", e => { if (e.key === "Enter") $("btn-login").click(); });
+$("btn-sair").onclick = () => signOut(auth);
+
+onAuthStateChanged(auth, user => {
+  $("login").style.display = user ? "none" : "block";
+  $("painel").style.display = user ? "block" : "none";
+  if (off) { off(); off = null; }
+  if (user) off = onValue(galRef, snap => {
+    const fotos = Object.entries(snap.val() || {}).map(([k, f]) => ({...f, _k: k})).sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+    $("grid").innerHTML = fotos.map(f => `<div class="it"><img src="${esc(thumb(f.url))}" loading="lazy" alt=""><span>${esc(f.categoria)}${f.legenda ? " · " + esc(f.legenda) : ""}</span><button data-k="${esc(f._k)}" title="Excluir">✕</button></div>`).join("");
+    $("grid").querySelectorAll("button").forEach(b => b.onclick = async () => {
+      if (!confirm("Excluir esta foto da galeria? Não pode ser desfeito.")) return;
+      try { await remove(ref(db, "obpc/galeria_fotos/" + b.dataset.k)); } catch (e) { alert("Não foi possível excluir."); }
+    });
+  });
+});
+
+$("arq").addEventListener("change", () => {
+  arquivos = [...$("arq").files];
+  $("nome").textContent = !arquivos.length ? "Nenhuma foto selecionada" : arquivos.length === 1 ? arquivos[0].name : arquivos.length + " fotos selecionadas";
+  $("btn-env").disabled = !arquivos.length;
+});
+
+async function enviar(arq, categoria, legenda) {
+  const fd = new FormData();
+  fd.append("file", arq); fd.append("upload_preset", PRESET); fd.append("folder", PASTA);
+  const r = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD}/image/upload`, {method: "POST", body: fd});
+  if (!r.ok) throw new Error("Cloudinary");
+  const d = await r.json();
+  await push(galRef, {url: d.secure_url, legenda, categoria, timestamp: Date.now()});
+}
+
+$("btn-env").onclick = async () => {
+  if (!arquivos.length) return;
+  $("btn-env").disabled = true;
+  const categoria = $("cat").value, legenda = $("leg").value.trim(), total = arquivos.length, fila = [...arquivos];
+  let feitas = 0, falhas = 0;
+  $("st-env").textContent = `Enviando 0 de ${total}...`;
+  const worker = async () => { while (fila.length) { try { await enviar(fila.shift(), categoria, legenda); } catch (e) { console.error(e); falhas++; } $("st-env").textContent = `Enviando ${++feitas} de ${total}...`; } };
+  await Promise.all(Array.from({length: Math.min(6, total)}, worker));
+  $("st-env").textContent = falhas ? `${total - falhas} de ${total} enviadas. ${falhas} falharam — tente novamente.` : `✓ ${total} foto${total > 1 ? "s" : ""} adicionada${total > 1 ? "s" : ""}!`;
+  $("arq").value = ""; $("leg").value = ""; arquivos = []; $("nome").textContent = "Nenhuma foto selecionada";
+  setTimeout(() => $("st-env").textContent = "", 4000);
+};
+</script>
+</body>
+</html>

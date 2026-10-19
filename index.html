@@ -594,11 +594,14 @@ main{max-width:700px;margin:0 auto;padding:1rem 0 4rem;overflow-x:hidden;}
 
 /* ── GALERIA DE FOTOS DA FAMÍLIA (prévia) ── */
 .galfam-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
-.galfam-item{position:relative;aspect-ratio:1/1;border-radius:var(--radius-sm);overflow:hidden;background:var(--surface2);}
+.galfam-item{position:relative;aspect-ratio:1/1;border-radius:var(--radius-sm);overflow:hidden;background:var(--surface2);display:block;}
+.galfam-item:first-child{grid-column:span 2;grid-row:span 2;}
 .galfam-item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s ease;}
 .galfam-item:hover img{transform:scale(1.06);}
 .galfam-cat{position:absolute;left:4px;bottom:4px;font-size:.6rem;font-weight:700;color:#fff;background:rgba(30,24,48,.65);padding:2px 7px;border-radius:20px;letter-spacing:.03em;text-transform:uppercase;}
-.galfam-btn{display:inline-flex;align-items:center;gap:6px;background:var(--roxo);color:#fff;font-size:.8rem;font-weight:700;border-radius:8px;padding:9px 16px;text-decoration:none;margin-top:.7rem;transition:.2s;}
+.galfam-mais{position:absolute;inset:0;background:rgba(30,24,48,.62);color:#fff;font-weight:800;font-size:1.1rem;display:flex;align-items:center;justify-content:center;}
+.galfam-acoes{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-top:.7rem;}
+.galfam-btn{display:inline-flex;align-items:center;gap:6px;background:var(--roxo);color:#fff;font-size:.8rem;font-weight:700;border-radius:8px;padding:9px 16px;text-decoration:none;transition:.2s;}
 .galfam-btn:hover{background:var(--roxo2);}
 .galfam-vazio{font-size:.8rem;color:var(--texto2);font-style:italic;padding:.4rem 0;}
 
@@ -1278,9 +1281,12 @@ footer#footer-txt,#footer-txt{font-size:.82rem;color:var(--texto3);letter-spacin
 
   <!-- GALERIA DE FOTOS DA FAMÍLIA OBPC -->
   <div class="sec hidden" id="sec-galeria-familia">
-    <div class="sec-titulo">📸 Fotos da Família OBPC</div>
+    <div class="sec-titulo" style="justify-content:space-between;flex-wrap:wrap;gap:.5rem">
+      <span>📸 Fotos da Família OBPC</span>
+      <button onclick="obpcCompartilharGaleriaFamilia()" style="display:inline-flex;align-items:center;gap:6px;background:rgba(245,200,66,.15);border:1.5px solid rgba(245,200,66,.5);color:#E0961E;font-size:.75rem;font-weight:700;border-radius:20px;padding:6px 14px;cursor:pointer;font-family:inherit;transition:.2s">📤 Compartilhar</button>
+    </div>
     <div class="galfam-grid" id="galfam-lista"></div>
-    <a class="galfam-btn" href="galeria.html">🖼️ Ver galeria completa</a>
+    <div class="galfam-acoes"><a class="galfam-btn" id="galfam-btn" href="galeria.html">🖼️ Ver galeria completa</a></div>
   </div>
 
 
@@ -2450,18 +2456,33 @@ async function carregarGaleriaFamilia(){
     const r=await fetch(FB_URL+'/galeria_fotos.json',{cache:'no-store'});
     if(!r.ok)return;
     const dados=await r.json();
-    const el=document.getElementById('galfam-lista');
-    if(!dados){return;}
-    const lista=Object.values(dados).sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
+    if(!dados)return;
+    const lista=Object.values(dados).filter(f=>f&&f.url).sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
     if(!lista.length)return;
     show('sec-galeria-familia');
+    const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const mini=(u,w)=>/res\.cloudinary\.com/.test(u)&&u.indexOf('/upload/')>-1?u.replace('/upload/','/upload/w_'+w+',h_'+w+',c_fill,q_auto,f_auto/'):u;
     const nomesCat={cultos:'Cultos',missoes:'Missões','santa-ceia':'Santa Ceia',familia:'Família',jubrac:'Jubrac',umasbrac:'Umasbrac',ufebrac:'Ufebrac',menibrac:'Menibrac'};
-    el.innerHTML=lista.slice(0,6).map(f=>{
+    const mostra=lista.slice(0,7), resto=lista.length-mostra.length;
+    document.getElementById('galfam-lista').innerHTML=mostra.map((f,i)=>{
       const cat=nomesCat[f.categoria]||f.categoria||'';
-      return '<a class="galfam-item" href="galeria.html"><img src="'+f.url+'" loading="lazy" alt="'+(f.legenda||'')+'">'+(cat?'<span class="galfam-cat">'+cat+'</span>':'')+'</a>';
+      const ultimo=(i===mostra.length-1&&resto>0)?'<span class="galfam-mais">+'+resto+'</span>':'';
+      return '<a class="galfam-item" href="galeria.html"><img src="'+esc(mini(f.url,i===0?700:300))+'" loading="lazy" alt="'+esc(f.legenda)+'">'+(cat&&i===0?'<span class="galfam-cat">'+esc(cat)+'</span>':'')+ultimo+'</a>';
     }).join('');
+    const b=document.getElementById('galfam-btn');
+    if(b)b.textContent='🖼️ Ver galeria completa ('+lista.length+' fotos)';
+    window._galfamTotal=lista.length;
+    window._galfamImg=lista[0].url;
   }catch(e){console.warn('Galeria da família não carregada:',e);}
 }
+
+// Compartilhar a galeria: link curto e fixo (sem imagem/título na URL)
+window.obpcCompartilharGaleriaFamilia=function(){
+  var link=_SITE_OBPC+'galeria.html';
+  obpcAbrirShareModal({secao:'galeria',tituloModal:'Compartilhar Galeria',titulo:'Galeria de Fotos — OBPC',desc:'Veja os momentos da nossa igreja!',img:window._galfamImg||''});
+  if(window._obpcShareAtual){window._obpcShareAtual.url=link;window._obpcShareAtual.shareUrl=link;window._obpcShareAtual.txt='*Galeria de Fotos — OBPC*\n'+link;}
+  var el=document.getElementById('obpc-sm-link');if(el)el.textContent=link;
+};
 
 function carregarVideos(){
   const lista=DB.get('videos')||[];if(!lista.length)return;show('sec-videos');
@@ -4280,15 +4301,21 @@ function obpcShareUrl(secao, opcoes) {
   var o = opcoes || {};
   var p = new URLSearchParams();
   p.set('s', secao);
-  if (o.id    !== undefined) p.set('id',    o.id);
-  if (o.titulo) p.set('titulo', o.titulo);
-  // 'desc' não vai mais na URL — o texto completo do aviso/comunicado
-  // deixava o link gigante e quebrava a prévia no WhatsApp mobile.
-  // O Worker busca a descrição direto no Firebase usando secao+id.
-  if (o.img && /^https?:\/\//.test(o.img)) p.set('img', o.img);
-  if (o.dt)     p.set('dt',     o.dt);
-  if (o.hora)   p.set('hora',   o.hora);
-  if (o.local)  p.set('local',  o.local);
+  if (o.id !== undefined && o.id !== null) p.set('id', o.id);
+  // Título curto e sem emoji/markdown (cada emoji vira ~12 caracteres na URL)
+  var tit = String(o.titulo || '').replace(/\*\*/g, '')
+    .replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\u{FE0F}\u{200D}]/gu, '')
+    .replace(/\s+/g, ' ').trim();
+  if (tit.length > 60) tit = tit.slice(0, 57).trim() + '...';
+  if (tit) p.set('titulo', tit);
+  // Imagem: sem query string e só se for curta; senão o Worker usa a padrão
+  if (o.img && /^https?:\/\//.test(o.img)) {
+    var im = o.img.split('?')[0];
+    if (im.length <= 150) p.set('img', im);
+  }
+  if (o.dt)    p.set('dt',    String(o.dt).slice(0, 12));
+  if (o.hora)  p.set('hora',  String(o.hora).slice(0, 8));
+  if (o.local) p.set('local', String(o.local).slice(0, 40));
   return OG_WORKER + '?' + p.toString();
 }
 
@@ -4747,8 +4774,12 @@ function _obpcAbrirSecao(s, idx) {
     if (secH) { secH.classList.remove('hidden'); secH.scrollIntoView({behavior:'smooth', block:'start'}); _obpcPulsar(secH); }
 
   } else if (s === 'galeria') {
+    var secGF = document.getElementById('sec-galeria-familia');
+    if (secGF && !secGF.classList.contains('hidden')) { secGF.scrollIntoView({behavior:'smooth', block:'start'}); _obpcPulsar(secGF); }
+    else {
     var secG = document.getElementById('sec-galeria');
     if (secG) { secG.classList.remove('hidden'); secG.scrollIntoView({behavior:'smooth', block:'start'}); _obpcPulsar(secG); }
+    }
 
   } else if (s === 'video') {
     var secV = document.getElementById('sec-videos');
