@@ -260,7 +260,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.6;}
   <a href="https://obpcsaofernando199-sudo.github.io/Obpc/banners_culto.html" target="_blank">&#127912; Gerador de Banners de Culto</a>
   <a href="pix.html">&#128179; PIX / Financeiro</a>
   <a href="https://obpcsaofernando199-sudo.github.io/Obpc/carta.html" target="_blank">&#128231; Editor de Carta</a>
-  <a href="https://obpcsaofernando199-sudo.github.io/Obpc/galeria.html" target="_blank">&#128248; Enviar Fotos (Galeria)</a>
+  <a onclick="ir('galf',this)">&#128248; Galeria de Fotos (Fam&#237;lia)</a>
   <a onclick="ir('mig',this)">&#128260; Migrar M&#237;dias</a>
 </nav>
 <main>
@@ -274,6 +274,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.6;}
     <div class="dc"><div class="num" id="cnt-ob">0</div><div class="lbl">Obreiros</div></div>
     <div class="dc"><div class="num" id="cnt-lid">0</div><div class="lbl">L&#237;deres</div></div>
   </div>
+  <div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:.6rem;flex-wrap:wrap"><div><strong>&#128248; Galeria de Fotos</strong><div style="font-size:.78rem;color:var(--muted)">Enviar e excluir fotos da galeria p&#250;blica</div></div><button type="button" class="btn" style="background:var(--azul2);color:#fff" onclick="ir('galf',document.querySelector('nav a[onclick*=galf]'))">Abrir editor</button></div>
   <div class="card"><strong>Culto de Hoje:</strong><div id="dh-hj" style="margin-top:.4rem;font-size:.85rem;color:var(--azul2)">&#8212;</div></div>
   <div class="card"><strong>Semana</strong><div id="dh-sem" style="display:grid;grid-template-columns:repeat(7,1fr);gap:.4rem;margin-top:.7rem"></div></div>
 </div>
@@ -1052,6 +1053,36 @@ Acesse a qualquer hora, do seu celular"></textarea>
   </div>
 </div>
 </div><!-- /aba-ofe -->
+<!-- GALERIA DE FOTOS DA FAMÍLIA (editor) -->
+<div id="aba-galf" class="aba">
+  <h2>&#128248; Galeria de Fotos (Fam&#237;lia)</h2>
+  <div class="card" id="galf-login">
+    <p style="font-size:.82rem;color:var(--muted);margin:0 0 .6rem">&#128274; Acesso restrito: entre com o e-mail e a senha de administrador da galeria.</p>
+    <label>E-mail</label><input type="email" id="galf-email" autocomplete="username">
+    <label>Senha</label><input type="password" id="galf-senha" autocomplete="current-password">
+    <button type="button" class="btn" style="background:var(--azul2);color:#fff;margin-top:.7rem" onclick="galfEntrar()">Entrar</button>
+    <div id="galf-st-login" style="font-size:.8rem;margin-top:.5rem;color:var(--verm)"></div>
+  </div>
+  <div id="galf-painel" style="display:none">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:.4rem">
+        <a href="galeria.html" target="_blank" style="font-size:.8rem;color:var(--azul2)">Ver galeria p&#250;blica &#8599;</a>
+        <button type="button" class="btn bsm" style="background:#eee;color:#333" onclick="galfSair()">Sair</button>
+      </div>
+      <label>Categoria</label>
+      <select id="galf-cat"><option value="cultos">Cultos</option><option value="missoes">Miss&#245;es</option><option value="santa-ceia">Santa Ceia</option><option value="familia">Fam&#237;lia</option><option value="jubrac">Jubrac</option><option value="umasbrac">Umasbrac</option><option value="ufebrac">Ufebrac</option><option value="menibrac">Menibrac</option></select>
+      <label>Legenda (opcional)</label><input type="text" id="galf-leg" placeholder="Ex: Culto de celebra&#231;&#227;o de domingo">
+      <input type="file" id="galf-arq" accept="image/*" multiple style="display:none" onchange="galfEscolheu(this)">
+      <div style="display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin-top:.7rem">
+        <button type="button" class="btn" style="background:#f0f7ff;border:2px dashed var(--azul2);color:var(--azul)" onclick="document.getElementById('galf-arq').click()">&#128247; Escolher fotos</button>
+        <span id="galf-nome" style="font-size:.78rem;color:var(--muted)">Nenhuma foto selecionada</span>
+      </div>
+      <button type="button" class="btn" id="galf-env" disabled style="background:var(--verde);color:#fff;margin-top:.7rem;width:100%;justify-content:center" onclick="galfEnviar()">Enviar para a galeria</button>
+      <div id="galf-st" style="font-size:.8rem;margin-top:.5rem;color:var(--azul2);min-height:1em"></div>
+    </div>
+    <div id="galf-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:.6rem"></div>
+  </div>
+</div><!-- /aba-galf -->
 <!-- GALERIA -->
 <div id="aba-gal" class="aba">
   <h2>&#128444;&#65039; Galeria</h2>
@@ -1208,7 +1239,7 @@ window.addEventListener('unhandledrejection',function(ev){
 });
 </script>
 <script>
-function ir(id,el){document.querySelectorAll('.aba').forEach(function(a){a.classList.remove('on');});var aba=document.getElementById('aba-'+id);if(aba)aba.classList.add('on');document.querySelectorAll('nav a').forEach(function(a){a.classList.remove('on');});if(el)el.classList.add('on');var nav=document.getElementById('snav');var nov=document.getElementById('nov');if(nav)nav.classList.remove('open');if(nov)nov.classList.remove('open');if(id==='dash')rndDash();else if(id==='info')carregaInfo();else if(id==='hor')rndHor();else if(id==='av')rndAv();else if(id==='or')rndOr();else if(id==='ev')rndEv();else if(id==='inf')rndInf();else if(id==='ser')rndSer();else if(id==='clt')rndClt();else if(id==='pas')rndPas();else if(id==='aniv')rndAnv();else if(id==='ob')rndOb();else if(id==='lid')rndLid();else if(id==='ofe')ofeInit();else if(id==='gal')rndGal();else if(id==='vid')rndVid();else if(id==='div')rndDiv();else if(id==='bnr'){rndBnr();rndPclt();}else if(id==='mig')rndMig();}
+function ir(id,el){document.querySelectorAll('.aba').forEach(function(a){a.classList.remove('on');});var aba=document.getElementById('aba-'+id);if(aba)aba.classList.add('on');document.querySelectorAll('nav a').forEach(function(a){a.classList.remove('on');});if(el)el.classList.add('on');var nav=document.getElementById('snav');var nov=document.getElementById('nov');if(nav)nav.classList.remove('open');if(nov)nov.classList.remove('open');if(id==='dash')rndDash();else if(id==='info')carregaInfo();else if(id==='hor')rndHor();else if(id==='av')rndAv();else if(id==='or')rndOr();else if(id==='ev')rndEv();else if(id==='inf')rndInf();else if(id==='ser')rndSer();else if(id==='clt')rndClt();else if(id==='pas')rndPas();else if(id==='aniv')rndAnv();else if(id==='ob')rndOb();else if(id==='lid')rndLid();else if(id==='ofe')ofeInit();else if(id==='gal')rndGal();else if(id==='vid')rndVid();else if(id==='div')rndDiv();else if(id==='bnr'){rndBnr();rndPclt();}else if(id==='mig')rndMig();else if(id==='galf')galfInit();}
 function tnav(){var nav=document.getElementById('snav');var nov=document.getElementById('nov');if(nav)nav.classList.toggle('open');if(nov)nov.classList.toggle('open');}
 function showToast(msg){var t=document.getElementById('toast-gbl');if(!t)return;t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2800);}
 var FB='https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com/obpc';
@@ -3281,6 +3312,7 @@ function ofeReenviar(i){
 <!-- ═══ FIREBASE CLOUD MESSAGING (Notificações Push) ═══ -->
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
 <script>
 /* ⚠️ TROQUE pelos dados do SEU projeto Firebase (Configurações do projeto > Geral > Seus apps > Config) */
 var firebaseConfigOBPC = {
@@ -3387,6 +3419,72 @@ if(_pushMessaging){
       try{ new Notification(titulo,{body:corpo}); }catch(e){}
     }
   });
+}
+</script>
+<script>
+/* ═══ EDITOR DA GALERIA DE FOTOS (login Firebase + REST) ═══ */
+var GALF={arqs:[],auth:null};
+function galfAuth(){
+  if(GALF.auth)return GALF.auth;
+  if(!firebase.apps.length)firebase.initializeApp(firebaseConfigOBPC);
+  GALF.auth=firebase.auth();
+  GALF.auth.onAuthStateChanged(function(u){
+    document.getElementById('galf-login').style.display=u?'none':'block';
+    document.getElementById('galf-painel').style.display=u?'block':'none';
+    if(u)galfLista();
+  });
+  return GALF.auth;
+}
+function galfInit(){try{galfAuth();}catch(e){document.getElementById('galf-st-login').textContent='Não foi possível carregar o login.';}}
+function galfEntrar(){
+  var st=document.getElementById('galf-st-login');st.textContent='Entrando...';
+  galfAuth().signInWithEmailAndPassword(document.getElementById('galf-email').value.trim(),document.getElementById('galf-senha').value)
+    .then(function(){st.textContent='';}).catch(function(){st.textContent='E-mail ou senha incorretos.';});
+}
+function galfSair(){galfAuth().signOut();}
+function galfToken(){return galfAuth().currentUser.getIdToken();}
+function galfEsc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function galfMini(u){return /res\.cloudinary\.com/.test(u)&&u.indexOf('/upload/')>-1?u.replace('/upload/','/upload/w_300,h_300,c_fill,q_auto,f_auto/'):u;}
+async function galfLista(){
+  var g=document.getElementById('galf-grid');
+  try{
+    var r=await fetch(FB+'/galeria_fotos.json?auth='+await galfToken(),{cache:'no-store'});
+    var d=(await r.json())||{};
+    var l=Object.keys(d).map(function(k){var f=d[k];f._k=k;return f;}).sort(function(a,b){return (b.timestamp||0)-(a.timestamp||0);});
+    g.innerHTML=l.length?l.map(function(f){return '<div style="position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden;background:#eee"><img src="'+galfEsc(galfMini(f.url))+'" loading="lazy" alt="" style="width:100%;height:100%;object-fit:cover;display:block"><span style="position:absolute;left:0;right:0;bottom:0;font-size:.65rem;padding:12px 5px 3px;background:linear-gradient(to top,rgba(0,0,0,.8),transparent);color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+galfEsc(f.categoria)+(f.legenda?' · '+galfEsc(f.legenda):'')+'</span><button type="button" onclick="galfExcluir(\''+galfEsc(f._k)+'\')" title="Excluir" style="position:absolute;top:5px;right:5px;width:28px;height:28px;border-radius:50%;border:0;background:rgba(231,76,60,.9);color:#fff;cursor:pointer">&#10005;</button></div>';}).join(''):'<p style="color:var(--muted);font-size:.82rem">Nenhuma foto ainda.</p>';
+  }catch(e){g.innerHTML='<p style="color:var(--verm);font-size:.82rem">Erro ao carregar as fotos.</p>';}
+}
+async function galfExcluir(k){
+  if(!confirm('Excluir esta foto da galeria? Não pode ser desfeito.'))return;
+  try{var r=await fetch(FB+'/galeria_fotos/'+k+'.json?auth='+await galfToken(),{method:'DELETE'});if(!r.ok)throw 0;showToast('🗑️ Foto excluída');galfLista();}
+  catch(e){showToast('⚠️ Não foi possível excluir.');}
+}
+function galfEscolheu(inp){
+  GALF.arqs=Array.from(inp.files||[]);
+  document.getElementById('galf-nome').textContent=!GALF.arqs.length?'Nenhuma foto selecionada':GALF.arqs.length===1?GALF.arqs[0].name:GALF.arqs.length+' fotos selecionadas';
+  document.getElementById('galf-env').disabled=!GALF.arqs.length;
+}
+async function galfEnviarUma(arq,cat,leg){
+  var fd=new FormData();fd.append('file',arq);fd.append('upload_preset','obpc_media');fd.append('folder','obpc_sao_fernando/galeria');
+  var r=await fetch('https://api.cloudinary.com/v1_1/dvvxiri22/image/upload',{method:'POST',body:fd});
+  if(!r.ok)throw new Error('cloudinary');
+  var d=await r.json();
+  var w=await fetch(FB+'/galeria_fotos.json?auth='+await galfToken(),{method:'POST',body:JSON.stringify({url:d.secure_url,legenda:leg,categoria:cat,timestamp:Date.now()})});
+  if(!w.ok)throw new Error('firebase');
+}
+async function galfEnviar(){
+  if(!GALF.arqs.length)return;
+  var btn=document.getElementById('galf-env'),st=document.getElementById('galf-st');btn.disabled=true;
+  var cat=document.getElementById('galf-cat').value,leg=document.getElementById('galf-leg').value.trim();
+  var fila=GALF.arqs.slice(),total=fila.length,feitas=0,falhas=0;
+  st.textContent='Enviando 0 de '+total+'...';
+  async function w(){while(fila.length){try{await galfEnviarUma(fila.shift(),cat,leg);}catch(e){console.error(e);falhas++;}feitas++;st.textContent='Enviando '+feitas+' de '+total+'...';}}
+  var ws=[];for(var i=0;i<Math.min(6,total);i++)ws.push(w());
+  await Promise.all(ws);
+  st.textContent=falhas?(total-falhas)+' de '+total+' enviadas. '+falhas+' falharam — tente novamente.':'✓ '+total+' foto'+(total>1?'s':'')+' adicionada'+(total>1?'s':'')+'!';
+  document.getElementById('galf-arq').value='';document.getElementById('galf-leg').value='';GALF.arqs=[];
+  document.getElementById('galf-nome').textContent='Nenhuma foto selecionada';
+  galfLista();setTimeout(function(){st.textContent='';},4000);
 }
 </script>
 </body>
