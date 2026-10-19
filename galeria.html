@@ -74,7 +74,7 @@ footer{text-align:center;padding:10px 20px 40px;font-size:12px;color:rgba(243,23
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const app = initializeApp({
   apiKey: "AIzaSyBwrxwxOVAkMuxg3KrBokms7DvVtZisRNM",
@@ -132,12 +132,24 @@ function mostrar() {
 window.fechar = () => { $("lb").classList.remove("on"); document.body.style.overflow = ""; };
 window.nav = d => { atual = (atual + d + lista.length) % lista.length; mostrar(); };
 
-// link curto: só o endereço da galeria + id da foto (nunca o link gigante da imagem)
+// link curto com prévia da foto (inteira, sem corte): registro em obpc/links + Worker
+const WORKER = "https://obpc-og.obpcsaofernando199.workers.dev";
+function hash(str) {
+  let h1 = 0xdeadbeef, h2 = 0x41c6ce57;
+  for (let i = 0; i < str.length; i++) { const c = str.charCodeAt(i); h1 = Math.imul(h1 ^ c, 2654435761); h2 = Math.imul(h2 ^ c, 1597334677); }
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+  return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36);
+}
 window.compartilhar = async () => {
   const f = lista[atual]; if (!f) return;
-  const url = `${location.origin}${location.pathname}?f=${f._k}`;
-  const titulo = f.legenda || "Galeria — OBPC Jardim São Fernando";
-  if (navigator.share) { try { await navigator.share({title: titulo, url}); return; } catch (e) { if (e.name === "AbortError") return; } }
+  const destino = `${location.origin}${location.pathname}?f=${f._k}`;
+  const titulo = f.legenda || "Galeria de Fotos — OBPC";
+  const rec = {s: "galeria", t: titulo, d: "Veja mais fotos da nossa igreja!", i: f.url, u: destino};
+  const code = hash(JSON.stringify(rec));
+  set(ref(db, "obpc/links/" + code), rec).catch(() => {});
+  const url = `${WORKER}/${code}`;
+  if (navigator.share) { try { await navigator.share({title: titulo, text: titulo, url}); return; } catch (e) { if (e.name === "AbortError") return; } }
   try { await navigator.clipboard.writeText(url); aviso("✓ Link copiado!"); } catch (e) { prompt("Copie o link:", url); }
 };
 function aviso(t) { const a = $("aviso"); a.textContent = t; a.style.display = "block"; setTimeout(() => a.style.display = "none", 2200); }

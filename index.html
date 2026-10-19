@@ -2478,10 +2478,7 @@ async function carregarGaleriaFamilia(){
 
 // Compartilhar a galeria: link curto e fixo (sem imagem/título na URL)
 window.obpcCompartilharGaleriaFamilia=function(){
-  var link=_SITE_OBPC+'galeria.html';
-  obpcAbrirShareModal({secao:'galeria',tituloModal:'Compartilhar Galeria',titulo:'Galeria de Fotos — OBPC',desc:'Veja os momentos da nossa igreja!',img:window._galfamImg||''});
-  if(window._obpcShareAtual){window._obpcShareAtual.url=link;window._obpcShareAtual.shareUrl=link;window._obpcShareAtual.txt='*Galeria de Fotos — OBPC*\n'+link;}
-  var el=document.getElementById('obpc-sm-link');if(el)el.textContent=link;
+  obpcAbrirShareModal({secao:'galeria',destino:_SITE_OBPC+'galeria.html',tituloModal:'Compartilhar Galeria',titulo:'Galeria de Fotos — OBPC',desc:'Veja os momentos da nossa igreja!',img:window._galfamImg||''});
 };
 
 function carregarVideos(){
@@ -4297,26 +4294,36 @@ function obpcDeepUrl(secao, id) {
   return _SITE_OBPC + '?' + p.toString();
 }
 
+function _obpcHash(str) {
+  var h1 = 0xdeadbeef, h2 = 0x41c6ce57;
+  for (var i = 0; i < str.length; i++) {
+    var ch = str.charCodeAt(i);
+    h1 = Math.imul(h1 ^ ch, 2654435761); h2 = Math.imul(h2 ^ ch, 1597334677);
+  }
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+  return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36);
+}
+
+// LINK CURTO: guarda título, descrição e foto no Firebase (obpc/links/CODIGO)
+// e compartilha só  WORKER/CODIGO . O Worker lê o registro e monta a prévia
+// com a foto inteira (sem corte) e redireciona para o item certo do site.
 function obpcShareUrl(secao, opcoes) {
   var o = opcoes || {};
-  var p = new URLSearchParams();
-  p.set('s', secao);
-  if (o.id !== undefined && o.id !== null) p.set('id', o.id);
-  // Título curto e sem emoji/markdown (cada emoji vira ~12 caracteres na URL)
-  var tit = String(o.titulo || '').replace(/\*\*/g, '')
-    .replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\u{FE0F}\u{200D}]/gu, '')
-    .replace(/\s+/g, ' ').trim();
-  if (tit.length > 60) tit = tit.slice(0, 57).trim() + '...';
-  if (tit) p.set('titulo', tit);
-  // Imagem: sem query string e só se for curta; senão o Worker usa a padrão
-  if (o.img && /^https?:\/\//.test(o.img)) {
-    var im = o.img.split('?')[0];
-    if (im.length <= 150) p.set('img', im);
-  }
-  if (o.dt)    p.set('dt',    String(o.dt).slice(0, 12));
-  if (o.hora)  p.set('hora',  String(o.hora).slice(0, 8));
-  if (o.local) p.set('local', String(o.local).slice(0, 40));
-  return OG_WORKER + '?' + p.toString();
+  var rec = { s: secao };
+  if (o.id !== undefined && o.id !== null) rec.id = String(o.id);
+  if (o.titulo) rec.t = String(o.titulo).replace(/\*\*/g, '').slice(0, 120);
+  if (o.desc)   rec.d = String(o.desc).replace(/\s+/g, ' ').slice(0, 220);
+  if (o.img && /^https?:\/\//.test(o.img)) rec.i = o.img;
+  if (o.dt)     rec.dt = String(o.dt).slice(0, 40);
+  if (o.hora)   rec.h  = String(o.hora).slice(0, 20);
+  if (o.local)  rec.l  = String(o.local).slice(0, 80);
+  if (o.destino) rec.u = o.destino;
+  var code = _obpcHash(JSON.stringify(rec));
+  try {
+    fetch(FB_URL + '/links/' + code + '.json', { method: 'PUT', body: JSON.stringify(rec), keepalive: true }).catch(function(){});
+  } catch (e) {}
+  return OG_WORKER + '/' + code;
 }
 
 // ────────────────────────────────────────────────
@@ -4364,7 +4371,7 @@ function obpcAbrirShareModal(opcoes) {
   // Preenche modal
   document.getElementById('obpc-sm-titulo').textContent = '📤 ' + (o.tituloModal || 'Compartilhar');
   document.getElementById('obpc-sm-desc').textContent = o.desc || '';
-  document.getElementById('obpc-sm-link').textContent = deepUrl;
+  document.getElementById('obpc-sm-link').textContent = shareUrl.replace(/^https?:\/\//, '');
 
   // Preview de imagem
   var prev = document.getElementById('obpc-sm-preview');
@@ -4404,7 +4411,7 @@ function obpcShareRede(rede) {
     window.open('https://t.me/share/url?url=' + enc(workerUrl) + (tgTxt ? '&text=' + enc(tgTxt) : ''), '_blank');
   } else if (rede === 'nativo') {
     if (navigator.share) {
-      navigator.share({title: (st.opcoes||{}).titulo || 'OBPC', text: txt, url: workerUrl}).catch(function(){});
+      navigator.share({title: (st.opcoes||{}).titulo || 'OBPC', text: (st.opcoes||{}).titulo || 'OBPC', url: workerUrl}).catch(function(){});
     } else {
       navigator.clipboard && navigator.clipboard.writeText(deepUrl).then(function(){alert('Link copiado!');});
     }
@@ -4512,13 +4519,25 @@ window.obpcCompartilharProximos = function() {
 };
 
 // ANIVERSARIANTES
-window.obpcCompartilharAniversario = function() {
+window.obpcCompartilharAniversario = async function() {
   var hoje = new Date();
   var mes = hoje.toLocaleDateString('pt-BR', {month:'long'});
   var mesCap = mes.charAt(0).toUpperCase() + mes.slice(1);
   // Usa o banner gerado pelo painel (pngB64) se existir; senão usa og-banner
   var d = DB.get('banner_aniversario') || {};
-  var img = (d.pngB64 && d.pngB64.startsWith('data:')) ? d.pngB64 : (_SITE_OBPC + 'og-banner.png');
+  var img = _SITE_OBPC + 'og-banner.png';
+  if (d.pngB64 && d.pngB64.startsWith('data:')) {
+    try {
+      var chave = d.pngB64.length + ':' + d.pngB64.slice(-40), cache = JSON.parse(localStorage.getItem('obpc_aniv_og') || '{}');
+      if (cache.k === chave && cache.u) { img = cache.u; }
+      else {
+        var blob = await (await fetch(d.pngB64)).blob(), fd = new FormData();
+        fd.append('file', blob, 'aniversariantes.png'); fd.append('upload_preset', 'obpc_media'); fd.append('folder', 'obpc_aniversario');
+        var rs = await (await fetch('https://api.cloudinary.com/v1_1/dvvxiri22/image/upload', { method: 'POST', body: fd })).json();
+        if (rs.secure_url) { img = rs.secure_url; localStorage.setItem('obpc_aniv_og', JSON.stringify({ k: chave, u: img })); }
+      }
+    } catch (e) { console.warn('Banner de aniversário não enviado:', e); }
+  }
   obpcAbrirShareModal({
     secao: 'aniversario',
     tituloModal: 'Compartilhar Aniversariantes',
