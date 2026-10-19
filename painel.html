@@ -1056,18 +1056,10 @@ Acesse a qualquer hora, do seu celular"></textarea>
 <!-- GALERIA DE FOTOS DA FAMÍLIA (editor) -->
 <div id="aba-galf" class="aba">
   <h2>&#128248; Galeria de Fotos (Fam&#237;lia)</h2>
-  <div class="card" id="galf-login">
-    <p style="font-size:.82rem;color:var(--muted);margin:0 0 .6rem">&#128274; Acesso restrito: entre com o e-mail e a senha de administrador da galeria.</p>
-    <label>E-mail</label><input type="email" id="galf-email" autocomplete="username">
-    <label>Senha</label><input type="password" id="galf-senha" autocomplete="current-password">
-    <button type="button" class="btn" style="background:var(--azul2);color:#fff;margin-top:.7rem" onclick="galfEntrar()">Entrar</button>
-    <div id="galf-st-login" style="font-size:.8rem;margin-top:.5rem;color:var(--verm)"></div>
-  </div>
-  <div id="galf-painel" style="display:none">
+  <div id="galf-painel">
     <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:.4rem">
         <a href="galeria.html" target="_blank" style="font-size:.8rem;color:var(--azul2)">Ver galeria p&#250;blica &#8599;</a>
-        <button type="button" class="btn bsm" style="background:#eee;color:#333" onclick="galfSair()">Sair</button>
       </div>
       <label>Categoria</label>
       <select id="galf-cat"><option value="cultos">Cultos</option><option value="missoes">Miss&#245;es</option><option value="santa-ceia">Santa Ceia</option><option value="familia">Fam&#237;lia</option><option value="jubrac">Jubrac</option><option value="umasbrac">Umasbrac</option><option value="ufebrac">Ufebrac</option><option value="menibrac">Menibrac</option></select>
@@ -3312,7 +3304,6 @@ function ofeReenviar(i){
 <!-- ═══ FIREBASE CLOUD MESSAGING (Notificações Push) ═══ -->
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
 <script>
 /* ⚠️ TROQUE pelos dados do SEU projeto Firebase (Configurações do projeto > Geral > Seus apps > Config) */
 var firebaseConfigOBPC = {
@@ -3423,32 +3414,14 @@ if(_pushMessaging){
 </script>
 <script>
 /* ═══ EDITOR DA GALERIA DE FOTOS (login Firebase + REST) ═══ */
-var GALF={arqs:[],auth:null};
-function galfAuth(){
-  if(GALF.auth)return GALF.auth;
-  if(!firebase.apps.length)firebase.initializeApp(firebaseConfigOBPC);
-  GALF.auth=firebase.auth();
-  GALF.auth.onAuthStateChanged(function(u){
-    document.getElementById('galf-login').style.display=u?'none':'block';
-    document.getElementById('galf-painel').style.display=u?'block':'none';
-    if(u)galfLista();
-  });
-  return GALF.auth;
-}
-function galfInit(){try{galfAuth();}catch(e){document.getElementById('galf-st-login').textContent='Não foi possível carregar o login.';}}
-function galfEntrar(){
-  var st=document.getElementById('galf-st-login');st.textContent='Entrando...';
-  galfAuth().signInWithEmailAndPassword(document.getElementById('galf-email').value.trim(),document.getElementById('galf-senha').value)
-    .then(function(){st.textContent='';}).catch(function(){st.textContent='E-mail ou senha incorretos.';});
-}
-function galfSair(){galfAuth().signOut();}
-function galfToken(){return galfAuth().currentUser.getIdToken();}
+var GALF={arqs:[]};
+function galfInit(){galfLista();}
 function galfEsc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function galfMini(u){return /res\.cloudinary\.com/.test(u)&&u.indexOf('/upload/')>-1?u.replace('/upload/','/upload/w_300,h_300,c_fill,q_auto,f_auto/'):u;}
 async function galfLista(){
   var g=document.getElementById('galf-grid');
   try{
-    var r=await fetch(FB+'/galeria_fotos.json?auth='+await galfToken(),{cache:'no-store'});
+    var r=await fetch(FB+'/galeria_fotos.json',{cache:'no-store'});
     var d=(await r.json())||{};
     var l=Object.keys(d).map(function(k){var f=d[k];f._k=k;return f;}).sort(function(a,b){return (b.timestamp||0)-(a.timestamp||0);});
     g.innerHTML=l.length?l.map(function(f){return '<div style="position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden;background:#eee"><img src="'+galfEsc(galfMini(f.url))+'" loading="lazy" alt="" style="width:100%;height:100%;object-fit:cover;display:block"><span style="position:absolute;left:0;right:0;bottom:0;font-size:.65rem;padding:12px 5px 3px;background:linear-gradient(to top,rgba(0,0,0,.8),transparent);color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+galfEsc(f.categoria)+(f.legenda?' · '+galfEsc(f.legenda):'')+'</span><button type="button" onclick="galfExcluir(\''+galfEsc(f._k)+'\')" title="Excluir" style="position:absolute;top:5px;right:5px;width:28px;height:28px;border-radius:50%;border:0;background:rgba(231,76,60,.9);color:#fff;cursor:pointer">&#10005;</button></div>';}).join(''):'<p style="color:var(--muted);font-size:.82rem">Nenhuma foto ainda.</p>';
@@ -3456,7 +3429,7 @@ async function galfLista(){
 }
 async function galfExcluir(k){
   if(!confirm('Excluir esta foto da galeria? Não pode ser desfeito.'))return;
-  try{var r=await fetch(FB+'/galeria_fotos/'+k+'.json?auth='+await galfToken(),{method:'DELETE'});if(!r.ok)throw 0;showToast('🗑️ Foto excluída');galfLista();}
+  try{var r=await fetch(FB+'/galeria_fotos/'+k+'.json',{method:'DELETE'});if(!r.ok)throw 0;showToast('🗑️ Foto excluída');galfLista();}
   catch(e){showToast('⚠️ Não foi possível excluir.');}
 }
 function galfEscolheu(inp){
@@ -3469,7 +3442,7 @@ async function galfEnviarUma(arq,cat,leg){
   var r=await fetch('https://api.cloudinary.com/v1_1/dvvxiri22/image/upload',{method:'POST',body:fd});
   if(!r.ok)throw new Error('cloudinary');
   var d=await r.json();
-  var w=await fetch(FB+'/galeria_fotos.json?auth='+await galfToken(),{method:'POST',body:JSON.stringify({url:d.secure_url,legenda:leg,categoria:cat,timestamp:Date.now()})});
+  var w=await fetch(FB+'/galeria_fotos.json',{method:'POST',body:JSON.stringify({url:d.secure_url,legenda:leg,categoria:cat,timestamp:Date.now()})});
   if(!w.ok)throw new Error('firebase');
 }
 async function galfEnviar(){
