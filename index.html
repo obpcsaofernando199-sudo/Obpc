@@ -9,6 +9,7 @@ if ('serviceWorker' in navigator) {
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0F4A34">
 <title id="pg-titulo">OBPC Jardim São Fernando</title>
 <link rel="icon" id="favicon-dinamico" href="https://obpcsaofernando199-sudo.github.io/Obpc/og-banner.png">
 <meta property="og:type" content="website">
@@ -853,6 +854,46 @@ footer#footer-txt,#footer-txt{font-size:.82rem;color:var(--texto3);letter-spacin
 .radio-vol-row{display:flex;align-items:center;gap:8px;margin-top:.7rem;position:relative;z-index:1;}
 .radio-vol-row input[type=range]{flex:1;accent-color:#F5C242;height:4px;}
 .radio-vol-row span{font-size:1rem;flex-shrink:0;}
+
+/* ══ REFINAMENTO ESMERALDA & OURO (aditivo) ══ */
+.radio-card{background:linear-gradient(135deg,#093324 0%,#0F4A34 55%,#14573C 100%)!important;border:1px solid rgba(232,184,78,.5)!important;box-shadow:0 10px 30px rgba(9,51,36,.35),inset 0 1px 0 rgba(255,255,255,.08)!important;}
+.radio-btn-play{background:linear-gradient(135deg,#F5D27A,#E8B84E)!important;box-shadow:0 4px 18px rgba(232,184,78,.5)!important;color:#0B3B2A!important;}
+.com-card{background:linear-gradient(135deg,#093324,#14573C)!important;}
+.ser-thumb{background:#0B3B2A!important;cursor:pointer;}
+.ser-thumb::before{background:linear-gradient(135deg,#0B3B2A,#14573C)!important;}
+.ser-play{background:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.4))!important;font-size:0!important;}
+.ser-play::after{content:"▶";width:58px;height:58px;border-radius:50%;background:rgba(232,184,78,.95);color:#0B3B2A;display:flex;align-items:center;justify-content:center;font-size:1.35rem;padding-left:4px;box-shadow:0 6px 20px rgba(0,0,0,.4);transition:transform .2s;}
+.ser-thumb:hover .ser-play::after{transform:scale(1.08);}
+.ens-tab.ativo,.lou-nav-btn.ativo{background:rgba(232,184,78,.22)!important;border-color:#E8B84E!important;color:#fff!important;}
+.sbn-sheet{padding-bottom:calc(2.4rem + env(safe-area-inset-bottom,0px))!important;border-top:3px solid #E8B84E;box-shadow:0 -12px 40px rgba(0,0,0,.25);}
+.sbn-rede:active,.sbn-baixar:active,.sbn-copy:active{transform:scale(.96);}
+.sbn-rede{transition:transform .2s,background .2s,box-shadow .2s;}
+.sbn-rede:hover{box-shadow:0 6px 16px rgba(20,74,58,.18);}
+button:focus-visible,a:focus-visible,[role=button]:focus-visible{outline:3px solid #E8B84E;outline-offset:2px;}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;}}
+
+/* ══ RÁDIO v2 — visual e player ══ */
+.radio-card::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(115deg,rgba(255,255,255,.022) 0 2px,transparent 2px 14px);pointer-events:none;}
+.radio-icon{position:relative;}
+.radio-card.tocando .radio-icon::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid rgba(232,184,78,.6);animation:radioRing 2s ease-out infinite;}
+@keyframes radioRing{0%{transform:scale(.85);opacity:.9}100%{transform:scale(1.4);opacity:0}}
+.radio-btn-play{position:relative;}
+.radio-card.tocando .radio-btn-play{box-shadow:0 0 0 4px rgba(232,184,78,.25),0 4px 18px rgba(232,184,78,.55)!important;}
+.radio-card.carregando .radio-btn-play{color:transparent!important;}
+.radio-card.carregando .radio-btn-play::after{content:"";position:absolute;width:22px;height:22px;border:3px solid rgba(11,59,42,.25);border-top-color:#0B3B2A;border-radius:50%;animation:radioSpin .8s linear infinite;}
+@keyframes radioSpin{to{transform:rotate(360deg)}}
+#radio-track-titulo{white-space:normal!important;line-height:1.3;font-size:.78rem!important;color:#F5D27A!important;font-weight:600;margin-top:4px!important;}
+.radio-vol-row{gap:10px!important;}
+.radio-mute{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:1rem;color:#fff;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:.2s;}
+.radio-mute:hover{background:rgba(232,184,78,.25);}
+.radio-vol-row input[type=range]{-webkit-appearance:none;appearance:none;height:6px;border-radius:6px;background:rgba(255,255,255,.2);outline:none;}
+.radio-vol-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#E8B84E;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.45);}
+.radio-vol-row input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#E8B84E;border:2px solid #fff;}
+.radio-acoes{display:flex;gap:.5rem;margin-top:.85rem;position:relative;z-index:1;}
+.radio-acao{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;background:rgba(232,184,78,.14);border:1.5px solid rgba(232,184,78,.5);color:#F5D27A;font-size:.78rem;font-weight:700;border-radius:20px;padding:9px 8px;cursor:pointer;font-family:inherit;transition:.2s;white-space:nowrap;}
+.radio-acao:hover{background:rgba(232,184,78,.26);}
+.radio-acao:active{transform:scale(.96);}
+.radio-acao.on{background:#E8B84E;color:#0B3B2A;border-color:#E8B84E;}
 </style>
 </head>
 <body>
@@ -1006,10 +1047,10 @@ footer#footer-txt,#footer-txt{font-size:.82rem;color:var(--texto3);letter-spacin
         </div>
         <div class="radio-eq" id="radio-eq"></div>
         <div class="radio-vol-row">
-          <span>🔉</span>
-          <input type="range" id="radio-vol" min="0" max="100" value="80" oninput="obpcRadioVolume(this.value)">
+          <button type="button" id="radio-mute" class="radio-mute" onclick="obpcRadioMute()" aria-label="Silenciar rádio">🔉</button>
+          <input type="range" id="radio-vol" min="0" max="100" value="80" aria-label="Volume da rádio" oninput="obpcRadioVolume(this.value)">
         </div>
-        <button onclick="obpcCompartilharRadio()" style="display:flex;align-items:center;justify-content:center;gap:6px;width:100%;margin-top:.85rem;background:rgba(245,200,66,.15);border:1.5px solid rgba(245,200,66,.5);color:#F5C242;font-size:.78rem;font-weight:700;border-radius:20px;padding:8px;cursor:pointer;font-family:inherit;transition:.2s;position:relative;z-index:1;">📤 Compartilhar Rádio</button>
+        <div class="radio-acoes"><button type="button" class="radio-acao" id="radio-timer-btn" onclick="obpcRadioTimer()" aria-label="Temporizador para desligar">⏱ Timer</button><button type="button" class="radio-acao" onclick="obpcCompartilharRadio()">📤 Compartilhar</button></div>
         <audio id="radio-audio" preload="none" src="https://stream2.svrdedicado.org/8006/stream"></audio>
       </div>
     </div>
@@ -1069,8 +1110,8 @@ footer#footer-txt,#footer-txt{font-size:.82rem;color:var(--texto3);letter-spacin
     <div class="banner-video-info" id="banner-video-info"></div>
     <div id="banner-caption" style="display:none;margin-top:.9rem;text-align:center">
       <div style="display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-top:.2rem">
-        <button onclick="downloadBannerPNG(this)" style="display:inline-flex;align-items:center;gap:7px;background:rgba(59,155,214,.2);border:1.5px solid rgba(59,155,214,.5);color:#90d0f8;padding:9px 20px;border-radius:30px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s">⬇️ Baixar PNG</button>
-        <button onclick="abrirShareBanner()" style="display:inline-flex;align-items:center;gap:7px;background:rgba(20,74,58,.2);border:solid rgba(20,74,58,.45);color:#c4aee8;padding:9px 20px;border-radius:30px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s">📤 Compartilhar</button>
+        <button onclick="downloadBannerPNG(this)" style="display:inline-flex;align-items:center;gap:7px;background:linear-gradient(135deg,#F5D27A,#E8B84E);border:1.5px solid #C98A2E;color:#0B3B2A;padding:10px 22px;border-radius:30px;font-size:.82rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 4px 14px rgba(201,138,46,.35);transition:.2s">⬇️ Baixar PNG</button>
+        <button onclick="abrirShareBanner()" style="display:inline-flex;align-items:center;gap:7px;background:linear-gradient(135deg,#14573C,#0F4A34);border:1.5px solid #0F4A34;color:#fff;padding:10px 22px;border-radius:30px;font-size:.82rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 4px 14px rgba(15,74,52,.35);transition:.2s">📤 Compartilhar</button>
       </div>
     </div>
   </div>
@@ -1776,6 +1817,7 @@ const DB={
 };
 
 function ytId(u){const m=(u||'').match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/|v\/))([a-zA-Z0-9_-]{11})/);return m?m[1]:null;}
+function serPlayYT(el,vid){if(!el||!vid||el.querySelector('iframe'))return;el.onclick=null;el.removeAttribute('role');el.style.cursor='default';el.innerHTML='<iframe src="https://www.youtube.com/embed/'+vid+'?autoplay=1&rel=0&playsinline=1&modestbranding=1" title="Sermão OBPC" style="position:absolute;inset:0;width:100%;height:100%;border:0;z-index:3" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>';}
 function show(id){const el=document.getElementById(id);if(el)el.classList.remove('hidden');}
 function compartilhar(txt){window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank');}
 
@@ -2355,7 +2397,7 @@ function carregarSermoes(){
     const idx=lista.indexOf(s);
     var midiaHtml='';
     if(vid){
-      midiaHtml='<div class="ser-thumb"><a href="'+url+'" target="_blank"><img src="https://img.youtube.com/vi/'+vid+'/mqdefault.jpg"><div class="ser-play">▶</div></a></div>';
+      midiaHtml='<div class="ser-thumb" role="button" tabindex="0" aria-label="Assistir sermão" onclick="serPlayYT(this,\''+vid+'\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();serPlayYT(this,\''+vid+'\');}"><img loading="lazy" src="https://img.youtube.com/vi/'+vid+'/hqdefault.jpg" onerror="this.onerror=null;this.src=\'https://img.youtube.com/vi/'+vid+'/mqdefault.jpg\'"><div class="ser-play"></div></div>';
     } else if(s.fb){
       const fbAR = (s.fbFormato==='reel') ? '9/16' : '16/9';
       midiaHtml='<div style="position:relative;width:100%;max-width:'+(fbAR==='9/16'?'320px':'100%')+';margin:0 auto;aspect-ratio:'+fbAR+';background:#000;overflow:hidden"><iframe src="https://www.facebook.com/plugins/video.php?href='+encodeURIComponent(s.fb)+'&show_text=false&width=560" style="position:absolute;inset:0;width:100%;height:100%;border:none" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe></div>';
@@ -3518,7 +3560,7 @@ DB.listen();
 // ════ RÁDIO OBPC AO VIVO — player do topo ════
 var _radioTocando=false;
 // ════ RÁDIO — ONDA DE LEDS VERDES ════
-var _radioEqCols=14, _radioEqRows=6;
+var _radioEqCols=18, _radioEqRows=7; var _radioPrev=[];
 var _radioAudioCtx=null, _radioAnalyser=null, _radioSrcNode=null, _radioRAF=null, _radioFallback=false, _radioFallbackT=0;
 
 function _radioMontarLeds(){
@@ -3588,7 +3630,7 @@ function _radioLoopLeds(){
       var soma=0,cnt=0;
       for(var b=c*grupo;b<Math.min(bins,(c+1)*grupo);b++){soma+=data[b];cnt++;}
       var media=cnt?soma/cnt:0;
-      _radioAcenderColuna(cols[c], Math.min(1, media/190));
+      var alvo=Math.min(1,media/190);var pv=_radioPrev[c]||0;var vv=alvo>pv?alvo:pv*0.86+alvo*0.14;_radioPrev[c]=vv;_radioAcenderColuna(cols[c],vv);
     }
   }
   _radioRAF=requestAnimationFrame(_radioLoopLeds);
@@ -3606,6 +3648,7 @@ function _radioApagarLeds(){
 // garantir que a rádio entre AO VIVO, e não retomando um buffer antigo/travado
 var _RADIO_STREAM_URL='https://stream2.svrdedicado.org/8006/stream';
 var _radioReconectando=false;
+function _radioMediaSession(){try{if(!('mediaSession' in navigator))return;navigator.mediaSession.metadata=new MediaMetadata({title:'Rádio OBPC São Fernando',artist:'Ao vivo',album:'OBPC Jardim São Fernando',artwork:[{src:'https://obpcsaofernando199-sudo.github.io/Obpc/og-banner.png',sizes:'512x512',type:'image/png'}]});navigator.mediaSession.setActionHandler('play',function(){if(!_radioTocando)obpcRadioToggle();});navigator.mediaSession.setActionHandler('pause',function(){if(_radioTocando)obpcRadioToggle();});navigator.mediaSession.setActionHandler('stop',function(){if(_radioTocando)obpcRadioToggle();});}catch(e){}}
 
 function _radioConectar(){
   var audio=document.getElementById('radio-audio');
@@ -3648,6 +3691,7 @@ function obpcRadioToggle(){
       _radioTocando=true;
       if(btn)btn.textContent='❚❚';
       if(status)status.innerHTML='<span class="dot"></span> Ao vivo agora';
+      _radioMediaSession();
       _radioIniciarAnalise(audio);
       _radioIniciarBuscaFaixa();
     }).catch(function(){
@@ -3661,8 +3705,35 @@ function obpcRadioToggle(){
 }
 function obpcRadioVolume(v){
   var audio=document.getElementById('radio-audio');
-  if(audio)audio.volume=v/100;
+  if(audio){audio.volume=v/100;if(audio.muted&&v>0){audio.muted=false;}}
+  try{localStorage.setItem('obpc_radio_vol',String(v));}catch(e){}
+  _radioIconeVol();
 }
+function _radioIconeVol(){var a=document.getElementById('radio-audio'),b=document.getElementById('radio-mute');if(!a||!b)return;b.textContent=(a.muted||a.volume===0)?'🔇':(a.volume<0.4?'🔈':'🔉');}
+function obpcRadioMute(){var a=document.getElementById('radio-audio');if(!a)return;a.muted=!a.muted;_radioIconeVol();}
+var _radioSleepT=null,_radioSleepOpc=[0,15,30,60],_radioSleepI=0;
+function obpcRadioTimer(){
+  var b=document.getElementById('radio-timer-btn');if(!b)return;
+  _radioSleepI=(_radioSleepI+1)%_radioSleepOpc.length;
+  var m=_radioSleepOpc[_radioSleepI];
+  if(_radioSleepT){clearTimeout(_radioSleepT);_radioSleepT=null;}
+  if(!m){b.textContent='⏱ Timer';b.classList.remove('on');return;}
+  b.textContent='⏱ Desliga em '+m+' min';b.classList.add('on');
+  _radioSleepT=setTimeout(function(){_radioSleepT=null;_radioSleepI=0;b.textContent='⏱ Timer';b.classList.remove('on');if(_radioTocando)obpcRadioToggle();},m*60000);
+}
+document.addEventListener('DOMContentLoaded',function(){
+  try{var sv=localStorage.getItem('obpc_radio_vol');var r=document.getElementById('radio-vol');var a=document.getElementById('radio-audio');
+    if(sv!==null&&r&&a){r.value=sv;a.volume=sv/100;_radioIconeVol();}}catch(e){}
+});
+(function(){
+  var a=document.getElementById('radio-audio'),c=document.querySelector('.radio-card');
+  if(!a||!c)return;
+  function ps(st){try{if('mediaSession' in navigator)navigator.mediaSession.playbackState=st;}catch(e){}}
+  a.addEventListener('loadstart',function(){c.classList.add('carregando');});
+  a.addEventListener('waiting',function(){c.classList.add('carregando');});
+  a.addEventListener('playing',function(){c.classList.remove('carregando');c.classList.add('tocando');ps('playing');});
+  ['pause','emptied','error'].forEach(function(ev){a.addEventListener(ev,function(){if(ev!=='emptied'||!_radioTocando){c.classList.remove('tocando');}if(ev==='error'||a.paused&&!_radioTocando)c.classList.remove('carregando');ps('paused');});});
+})();
 document.addEventListener('DOMContentLoaded', _radioMontarLeds);
 
 // Recuperação automática: se o stream travar/cair enquanto deveria estar
@@ -3734,7 +3805,7 @@ async function _radioBuscarFaixaAtual(){
         if(texto&&texto.length<200&&!texto.trim().startsWith('<'))titulo=texto.trim();
       }
       if(titulo){
-        el.textContent='🎵 '+titulo;
+        el.textContent='🎵 '+titulo;try{if(navigator.mediaSession&&navigator.mediaSession.metadata)navigator.mediaSession.metadata.title=titulo;}catch(e){}
         el.style.display='block';
         return;
       }
