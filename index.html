@@ -2598,6 +2598,13 @@ function carregarVideos(){
       thumbHtml='<div style="position:absolute;inset:0;z-index:1;background:linear-gradient(135deg,#1a0e30,#2d1f50);display:flex;align-items:center;justify-content:center"><span style="font-size:2rem;opacity:.4">▶</span></div>';
     }
 
+    /* YouTube: toca dentro do site ao tocar na miniatura (igual aos Sermões) */
+    if(vid){
+      const cardYt=document.createElement('div');cardYt.className='vid-card';
+      cardYt.innerHTML='<div class="vid-thumb" role="button" tabindex="0" aria-label="Assistir vídeo" style="cursor:pointer" onclick="serPlayYT(this,\''+vid+'\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();serPlayYT(this,\''+vid+'\');}">'+thumbHtml+'<div class="vid-play">▶</div></div><div class="vid-body"><div class="vid-titulo">'+tit+'</div><div class="vid-cat">'+cat+'</div><a href="'+url+'" target="_blank" rel="noopener" style="display:inline-block;margin-top:.4rem;font-size:.72rem;color:#c0392b;text-decoration:none;font-weight:600">▶ Assistir no YouTube</a></div>';
+      el.appendChild(cardYt);
+      return;
+    }
     const card=document.createElement('div');card.className='vid-card';
     card.innerHTML='<a href="'+url+'" target="_blank"><div class="vid-thumb">'+thumbHtml+'<div class="vid-play">▶</div></div></a><div class="vid-body"><div class="vid-titulo">'+tit+'</div><div class="vid-cat">'+cat+'</div></div>';
     el.appendChild(card);
