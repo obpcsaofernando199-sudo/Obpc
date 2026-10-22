@@ -1221,7 +1221,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible{outline:3px sol
 
   <!-- EVENTOS -->
   <div class="sec hidden" id="sec-eventos">
-    <div class="sec-titulo">🎉 Próximos Eventos</div>
+    <div class="sec-titulo" style="justify-content:space-between;flex-wrap:wrap;gap:.5rem"><span>🎉 Próximos Eventos</span><button onclick="obpcCompartilharEvento(0)" style="display:inline-flex;align-items:center;gap:6px;background:rgba(245,200,66,.15);border:1.5px solid rgba(245,200,66,.5);color:#E0961E;font-size:.75rem;font-weight:700;border-radius:20px;padding:6px 14px;cursor:pointer;font-family:inherit;transition:.2s">📤 Compartilhar</button></div>
     <div class="eventos-grid" id="eventos-grid"></div>
   </div>
 
@@ -1296,8 +1296,9 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible{outline:3px sol
 
   <!-- OBREIROS -->
   <div class="sec hidden" id="sec-obreiros">
-    <div class="sec-titulo">
+    <div class="sec-titulo" style="justify-content:space-between;flex-wrap:wrap;gap:.5rem">
       <span>👷 Obreiros</span>
+      <button onclick="obpcCompartilharObreiros()" style="display:inline-flex;align-items:center;gap:6px;background:rgba(245,200,66,.15);border:1.5px solid rgba(245,200,66,.5);color:#E0961E;font-size:.75rem;font-weight:700;border-radius:20px;padding:6px 14px;cursor:pointer;font-family:inherit;transition:.2s">📤 Compartilhar</button>
     </div>
     <div class="lid-grid" id="obreiros-lista"></div>
   </div>
@@ -4424,13 +4425,45 @@ function _obpcHash(str) {
 // LINK CURTO: guarda título, descrição e foto no Firebase (obpc/links/CODIGO)
 // e compartilha só  WORKER/CODIGO . O Worker lê o registro e monta a prévia
 // com a foto inteira (sem corte) e redireciona para o item certo do site.
+// Foto da prévia: o WhatsApp ignora imagem pesada (acima de ~300 KB).
+// Fotos do Cloudinary são reduzidas para JPG leve antes de ir para o link.
+function obpcImgPreview(u) {
+  try {
+    if (/res\.cloudinary\.com/.test(u) && u.indexOf('/image/upload/') > -1 && !/\/upload\/[^\/]*(w_\d+|f_jpg)/.test(u)) {
+      return u.replace('/image/upload/', '/image/upload/c_limit,w_1200,q_auto,f_jpg/');
+    }
+  } catch (e) {}
+  return u;
+}
+
+// Foto editada que só existe dentro da página (base64): sobe para o Cloudinary
+// e devolve um endereço público, que é o que o WhatsApp consegue ler.
+async function obpcSubirImgShare(dataUrl) {
+  try {
+    var chave = dataUrl.length + ':' + dataUrl.slice(-40);
+    var cache = JSON.parse(localStorage.getItem('obpc_share_img') || '{}');
+    if (cache[chave]) return cache[chave];
+    var blob = await (await fetch(dataUrl)).blob();
+    var fd = new FormData();
+    fd.append('file', blob, 'compartilhar.jpg'); fd.append('upload_preset', 'obpc_media'); fd.append('folder', 'obpc_compartilhar');
+    var rs = await (await fetch('https://api.cloudinary.com/v1_1/dvvxiri22/image/upload', { method: 'POST', body: fd })).json();
+    if (rs.secure_url) {
+      var ks = Object.keys(cache); if (ks.length > 30) delete cache[ks[0]];
+      cache[chave] = rs.secure_url;
+      try { localStorage.setItem('obpc_share_img', JSON.stringify(cache)); } catch (e) {}
+      return rs.secure_url;
+    }
+  } catch (e) { console.warn('Foto não enviada para o compartilhamento:', e); }
+  return '';
+}
+
 function obpcShareUrl(secao, opcoes) {
   var o = opcoes || {};
   var rec = { s: secao };
   if (o.id !== undefined && o.id !== null) rec.id = String(o.id);
   if (o.titulo) rec.t = String(o.titulo).replace(/\*\*/g, '').slice(0, 120);
   if (o.desc)   rec.d = String(o.desc).replace(/\s+/g, ' ').slice(0, 220);
-  if (o.img && /^https?:\/\//.test(o.img)) rec.i = o.img;
+  if (o.img && /^https?:\/\//.test(o.img)) rec.i = obpcImgPreview(o.img);
   if (o.dt)     rec.dt = String(o.dt).slice(0, 40);
   if (o.hora)   rec.h  = String(o.hora).slice(0, 20);
   if (o.local)  rec.l  = String(o.local).slice(0, 80);
@@ -4448,6 +4481,17 @@ function obpcShareUrl(secao, opcoes) {
 function obpcAbrirShareModal(opcoes) {
   // opcoes: {secao, id, titulo, desc, img, dt, hora, local, imgBlob}
   var o = opcoes || {};
+  if (o.img && /^data:image\//.test(o.img) && !o._subiu) {
+    var _btn = window.event ? window.event.target : null, _txt = _btn ? _btn.textContent : '';
+    if (_btn) _btn.textContent = '⏳ Preparando foto...';
+    obpcSubirImgShare(o.img).then(function(u) {
+      if (_btn) _btn.textContent = _txt;
+      var n = {}; for (var k in o) n[k] = o[k];
+      n.img = u || (_SITE_OBPC + 'og-banner.png'); n._subiu = 1; n._previaLocal = o.img;
+      obpcAbrirShareModal(n);
+    });
+    return;
+  }
   var shareUrl = obpcShareUrl(o.secao || 'default', o);
   var deepUrl = obpcDeepUrl(o.secao || 'default', o.id !== undefined ? o.id : null);
   var txt = montarTextoShare(o, deepUrl);
@@ -4598,7 +4642,9 @@ window.obpcCompartilharCulto = function(idx, culto) {
       } else if (src.match(/youtu/)) {
         var ym = src.match(/(?:v=|youtu\.be\/|embed\/)([a-zA-Z0-9_-]{11})/);
         if (ym) img = 'https://img.youtube.com/vi/' + ym[1] + '/hqdefault.jpg';
-      } else if (!src.startsWith('data:')) {
+      } else if (src.startsWith('data:')) {
+        if (midia[i].tp !== 'video' && /^data:image\//.test(src)) img = src;
+      } else {
         img = src;
       }
       if (img) break;
@@ -4904,6 +4950,10 @@ function _obpcAbrirSecao(s, idx) {
     var secL = document.getElementById('sec-lideranca');
     if (secL) { secL.classList.remove('hidden'); secL.scrollIntoView({behavior:'smooth', block:'start'}); _obpcPulsar(secL); }
 
+  } else if (s === 'obreiros') {
+    var secO = document.getElementById('sec-obreiros');
+    if (secO) { secO.classList.remove('hidden'); secO.scrollIntoView({behavior:'smooth', block:'start'}); _obpcPulsar(secO); }
+
   } else if (s === 'horarios') {
     var secH = document.getElementById('sec-horarios');
     if (secH) { secH.classList.remove('hidden'); secH.scrollIntoView({behavior:'smooth', block:'start'}); _obpcPulsar(secH); }
@@ -5042,13 +5092,31 @@ window.obpcCompartilharInformativo = function(idx, inf) {
 };
 
 // LIDERANÇA
+function obpcPrimeiraFoto(lista) {
+  for (var i = 0; i < (lista || []).length; i++) {
+    var f = lista[i] && lista[i].foto;
+    if (f && !/^(idb:|blob:|mem:)/.test(f)) return f;
+  }
+  return '';
+}
 window.obpcCompartilharLideranca = function() {
   obpcAbrirShareModal({
     secao: 'lideranca',
     tituloModal: 'Compartilhar Liderança',
     titulo: 'Conheça Nossa Liderança',
     desc: 'Conheça quem cuida e lidera a OBPC Jardim São Fernando com amor e dedicação.',
-    img: _SITE_OBPC + 'og-banner.png',
+    img: obpcPrimeiraFoto(DB.get('lideranca')) || (_SITE_OBPC + 'og-banner.png'),
+  });
+};
+
+// OBREIROS
+window.obpcCompartilharObreiros = function() {
+  obpcAbrirShareModal({
+    secao: 'obreiros',
+    tituloModal: 'Compartilhar Obreiros',
+    titulo: 'Conheça Nossos Obreiros',
+    desc: 'Conheça os obreiros que servem na OBPC Jardim São Fernando.',
+    img: obpcPrimeiraFoto(DB.get('obreiros')) || (_SITE_OBPC + 'og-banner.png'),
   });
 };
 
@@ -5079,12 +5147,21 @@ window.obpcCompartilharGaleria = function() {
 
 // VÍDEOS
 window.obpcCompartilharVideos = function() {
+  var capa = '', lv = DB.get('videos') || [];
+  for (var i = 0; i < lv.length && !capa; i++) {
+    var u = (lv[i] && lv[i].url) || '';
+    var ym = u.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/))([a-zA-Z0-9_-]{11})/);
+    if (ym) capa = 'https://img.youtube.com/vi/' + ym[1] + '/hqdefault.jpg';
+    else if (u.indexOf('res.cloudinary.com') > -1 && u.indexOf('/video/upload/') > -1) {
+      capa = u.replace('/video/upload/', '/video/upload/so_2,w_1200,q_auto/').replace(/\.(mp4|mov|webm|avi|3gp|m4v)(\?.*)?$/i, '.jpg');
+    }
+  }
   obpcAbrirShareModal({
     secao: 'video',
     tituloModal: 'Compartilhar Vídeos',
     titulo: 'Vídeos da OBPC',
     desc: 'Assista aos vídeos da nossa igreja!',
-    img: _SITE_OBPC + 'og-banner.png',
+    img: capa || (_SITE_OBPC + 'og-banner.png'),
   });
 };
 
