@@ -4519,6 +4519,7 @@ function obpcAbrirShareModal(opcoes) {
         '<div id="obpc-sm-titulo" style="text-align:center;font-size:1rem;font-weight:800;color:#14442E;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.3rem"></div>',
         '<div id="obpc-sm-desc" style="display:none"></div>',
         '<div id="obpc-sm-preview" style="margin-bottom:1rem"></div>',
+        '<div id="obpc-sm-status" style="text-align:center;font-size:.72rem;color:#606770;margin:-.4rem 0 .8rem"></div>',
         '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem;margin-bottom:1rem">',
           '<button onclick="obpcShareRede(\'wpp\')" style="display:flex;flex-direction:column;align-items:center;gap:.35rem;background:#f7f3ff;border:1px solid #ddd;border-radius:12px;padding:.75rem .4rem;cursor:pointer;font-size:.68rem;font-weight:600;font-family:inherit;color:#128c7e;border-color:rgba(37,211,102,.3)"><span style="font-size:1.5rem">💬</span>WhatsApp</button>',
           '<button onclick="obpcShareRede(\'facebook\')" style="display:flex;flex-direction:column;align-items:center;gap:.35rem;background:#f7f3ff;border:1px solid rgba(24,119,242,.3);border-radius:12px;padding:.75rem .4rem;cursor:pointer;font-size:.68rem;font-weight:600;font-family:inherit;color:#1877f2"><span style="font-size:1.5rem">📘</span>Facebook</button>',
@@ -4547,17 +4548,29 @@ function obpcAbrirShareModal(opcoes) {
   // Foto como arquivo: é ela que garante a imagem no WhatsApp, mesmo quando a prévia do link falha
   var _fontes = (o.imgs && o.imgs.length) ? o.imgs : [o._previaLocal || o.img || ''];
   _fontes = _fontes.filter(function(x) { return x && !/og-banner|og-radio/.test(x); }).slice(0, 10);
-  if (_fontes.length && navigator.canShare) {
-    var _atual = window._obpcShareAtual;
-    Promise.all(_fontes.map(function(u, i) {
+  var _stEl = document.getElementById('obpc-sm-status');
+  var _atual = window._obpcShareAtual;
+  if (!_fontes.length) {
+    if (_stEl) _stEl.textContent = 'ℹ️ Este item não tem foto — vai só o link.';
+  } else if (!(navigator.share && navigator.canShare)) {
+    if (_stEl) _stEl.textContent = 'ℹ️ Este aparelho não envia foto junto — vai só o link.';
+  } else {
+    if (_stEl) _stEl.textContent = '⏳ Preparando foto...';
+    _atual.pronto = Promise.all(_fontes.map(function(u, i) {
       return fetch(/^data:/.test(u) ? u : obpcImgPreview(u)).then(function(r) { return r.blob(); }).then(function(b) {
         return new File([b], 'foto-obpc-' + (i + 1) + '.jpg', { type: b.type && b.type.indexOf('image/') === 0 ? b.type : 'image/jpeg' });
       }).catch(function() { return null; });
     })).then(function(fs) {
       fs = fs.filter(Boolean);
-      if (!fs.length || window._obpcShareAtual !== _atual) return;
-      if (!navigator.canShare({ files: fs })) fs = fs.slice(0, 1);
-      if (navigator.canShare({ files: fs })) { _atual.arq = fs[0]; _atual.arqs = fs; }
+      if (window._obpcShareAtual !== _atual) return;
+      if (fs.length && !navigator.canShare({ files: fs })) fs = fs.slice(0, 1);
+      if (fs.length && navigator.canShare({ files: fs })) {
+        _atual.arq = fs[0]; _atual.arqs = fs;
+        if (_stEl) _stEl.textContent = '📷 ' + fs.length + (fs.length > 1 ? ' fotos prontas' : ' foto pronta') + ' para enviar';
+      } else if (_stEl) {
+        _stEl.textContent = '⚠️ Não consegui preparar a foto — vai só o link.';
+      }
+      _atual.prontoOk = true;
     });
   }
 
@@ -4591,7 +4604,13 @@ function obpcShareRede(rede) {
   if (rede === 'wpp') {
     // Só workerUrl — o Worker gera og:image e redireciona para a seção certa
     var wppTxt = ((st.opcoes||{}).titulo ? '*' + (st.opcoes||{}).titulo + '*\n' : '') + workerUrl;
+    if (st.pronto && !st.prontoOk) {
+      st.pronto.then(function() { obpcShareRede('wpp'); });
+      return;
+    }
     if (st.arq && navigator.share) {
+      var _d = ((st.opcoes || {}).desc || '').replace(/\s+/g, ' ').slice(0, 300);
+      if (_d) wppTxt = ((st.opcoes || {}).titulo ? '*' + (st.opcoes || {}).titulo + '*\n' : '') + _d + '\n' + workerUrl;
       // Envia a própria foto junto com o texto e o link — a imagem aparece no WhatsApp com certeza
       navigator.share({ files: st.arqs || [st.arq], text: wppTxt }).catch(function(e) {
         if (e && e.name === 'AbortError') return;
@@ -4662,12 +4681,12 @@ window.obpcCompartilharBanner = function() {
 // CULTO FOI ASSIM (por índice)
 window.obpcCompartilharCulto = function(idx, culto) {
   var c = culto || (DB.get('cultos') || [])[idx] || {};
-  var titulo = c.tit || c.titulo || 'Momento';
   var desc = c.rel || c.relato || '';
   var dtFmt = '';
-  if (c.dt) { try { var dd=new Date(c.dt+'T12:00'); dtFmt=dd.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'}); } catch(e){} }
+  if (c.dt || c.data) { try { var dd=new Date((c.dt||c.data)+'T12:00'); dtFmt=dd.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'}); } catch(e){} }
+  var titulo = c.tit || c.titulo || (dtFmt ? 'Momentos do culto — ' + dtFmt : 'Momentos OBPC');
   // Pega primeira imagem do culto como preview
-  var midia = c.midias || c.midia || [];
+  var midia = c.midias || c.midia || (c.fotos || []).map(function(f) { return { tp: 'img', src: f }; });
   var img = '';
   for (var i = 0; i < midia.length; i++) {
     var src = midia[i] && midia[i].src;
@@ -4702,6 +4721,8 @@ window.obpcCompartilharCulto = function(idx, culto) {
     id: idx,
     tituloModal: 'Compartilhar Culto',
     titulo: titulo,
+    desc: desc,
+    dt: dtFmt,
     img: img,
     imgs: imgs,
   });
