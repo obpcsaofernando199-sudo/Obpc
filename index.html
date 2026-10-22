@@ -3266,6 +3266,17 @@ function sbnCompartilhar(rede){
   var urlEnc=encodeURIComponent(txt);
   var siteEnc=encodeURIComponent(_SITE);
   if(rede==='wpp'){
+    // Envia a imagem do banner junto com o texto (a prévia do link só mostraria a logo do site)
+    if(_sbnBlob&&navigator.share&&navigator.canShare){
+      var arqW=new File([_sbnBlob],'banner-obpc.png',{type:'image/png'});
+      if(navigator.canShare({files:[arqW]})){
+        navigator.share({files:[arqW],text:txt}).catch(function(e){
+          if(e&&e.name==='AbortError')return;
+          window.open('https://wa.me/?text='+urlEnc,'_blank');
+        });
+        return;
+      }
+    }
     if(_sbnBlob&&_sbnBlobUrl){var a=document.createElement('a');a.href=_sbnBlobUrl;a.download='banner-obpc.png';document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(function(){window.open('https://wa.me/?text='+urlEnc,'_blank');},700);}
     else{window.open('https://wa.me/?text='+urlEnc,'_blank');}
     return;
@@ -4534,13 +4545,20 @@ function obpcAbrirShareModal(opcoes) {
   document.getElementById('obpc-sm-link').textContent = shareUrl.replace(/^https?:\/\//, '');
 
   // Foto como arquivo: é ela que garante a imagem no WhatsApp, mesmo quando a prévia do link falha
-  var _fonte = o._previaLocal || o.img || '';
-  if (_fonte && !/og-banner|og-radio/.test(_fonte) && navigator.canShare) {
+  var _fontes = (o.imgs && o.imgs.length) ? o.imgs : [o._previaLocal || o.img || ''];
+  _fontes = _fontes.filter(function(x) { return x && !/og-banner|og-radio/.test(x); }).slice(0, 10);
+  if (_fontes.length && navigator.canShare) {
     var _atual = window._obpcShareAtual;
-    fetch(/^data:/.test(_fonte) ? _fonte : obpcImgPreview(_fonte)).then(function(r) { return r.blob(); }).then(function(b) {
-      var f = new File([b], 'foto-obpc.jpg', { type: b.type && b.type.indexOf('image/') === 0 ? b.type : 'image/jpeg' });
-      if (navigator.canShare({ files: [f] }) && window._obpcShareAtual === _atual) _atual.arq = f;
-    }).catch(function() {});
+    Promise.all(_fontes.map(function(u, i) {
+      return fetch(/^data:/.test(u) ? u : obpcImgPreview(u)).then(function(r) { return r.blob(); }).then(function(b) {
+        return new File([b], 'foto-obpc-' + (i + 1) + '.jpg', { type: b.type && b.type.indexOf('image/') === 0 ? b.type : 'image/jpeg' });
+      }).catch(function() { return null; });
+    })).then(function(fs) {
+      fs = fs.filter(Boolean);
+      if (!fs.length || window._obpcShareAtual !== _atual) return;
+      if (!navigator.canShare({ files: fs })) fs = fs.slice(0, 1);
+      if (navigator.canShare({ files: fs })) { _atual.arq = fs[0]; _atual.arqs = fs; }
+    });
   }
 
   // Preview de imagem
@@ -4575,7 +4593,7 @@ function obpcShareRede(rede) {
     var wppTxt = ((st.opcoes||{}).titulo ? '*' + (st.opcoes||{}).titulo + '*\n' : '') + workerUrl;
     if (st.arq && navigator.share) {
       // Envia a própria foto junto com o texto e o link — a imagem aparece no WhatsApp com certeza
-      navigator.share({ files: [st.arq], text: wppTxt }).catch(function(e) {
+      navigator.share({ files: st.arqs || [st.arq], text: wppTxt }).catch(function(e) {
         if (e && e.name === 'AbortError') return;
         window.open('https://wa.me/?text=' + enc(wppTxt), '_blank');
       });
@@ -4670,12 +4688,22 @@ window.obpcCompartilharCulto = function(idx, culto) {
   }
   if (!img) img = _SITE_OBPC + 'og-banner.png';
 
+  // Todas as fotos do momento (até 10), na ordem em que aparecem no card
+  var imgs = [];
+  for (var j = 0; j < midia.length && imgs.length < 10; j++) {
+    var sj = midia[j] && midia[j].src;
+    if (!sj || /^(idb:|blob:|mem:)/.test(sj)) continue;
+    if (midia[j].tp === 'video' || sj.indexOf('/video/upload/') > -1 || /youtu/.test(sj)) continue;
+    if (/^data:image\//.test(sj) || /^https?:/.test(sj)) imgs.push(sj);
+  }
+
   obpcAbrirShareModal({
     secao: 'culto',
     id: idx,
     tituloModal: 'Compartilhar Culto',
     titulo: titulo,
     img: img,
+    imgs: imgs,
   });
 };
 
