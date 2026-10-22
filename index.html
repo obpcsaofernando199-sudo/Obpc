@@ -4533,6 +4533,16 @@ function obpcAbrirShareModal(opcoes) {
   document.getElementById('obpc-sm-desc').textContent = o.desc || '';
   document.getElementById('obpc-sm-link').textContent = shareUrl.replace(/^https?:\/\//, '');
 
+  // Foto como arquivo: é ela que garante a imagem no WhatsApp, mesmo quando a prévia do link falha
+  var _fonte = o._previaLocal || o.img || '';
+  if (_fonte && !/og-banner|og-radio/.test(_fonte) && navigator.canShare) {
+    var _atual = window._obpcShareAtual;
+    fetch(/^data:/.test(_fonte) ? _fonte : obpcImgPreview(_fonte)).then(function(r) { return r.blob(); }).then(function(b) {
+      var f = new File([b], 'foto-obpc.jpg', { type: b.type && b.type.indexOf('image/') === 0 ? b.type : 'image/jpeg' });
+      if (navigator.canShare({ files: [f] }) && window._obpcShareAtual === _atual) _atual.arq = f;
+    }).catch(function() {});
+  }
+
   // Preview de imagem
   var prev = document.getElementById('obpc-sm-preview');
   prev.innerHTML = '';
@@ -4563,6 +4573,14 @@ function obpcShareRede(rede) {
   if (rede === 'wpp') {
     // Só workerUrl — o Worker gera og:image e redireciona para a seção certa
     var wppTxt = ((st.opcoes||{}).titulo ? '*' + (st.opcoes||{}).titulo + '*\n' : '') + workerUrl;
+    if (st.arq && navigator.share) {
+      // Envia a própria foto junto com o texto e o link — a imagem aparece no WhatsApp com certeza
+      navigator.share({ files: [st.arq], text: wppTxt }).catch(function(e) {
+        if (e && e.name === 'AbortError') return;
+        window.open('https://wa.me/?text=' + enc(wppTxt), '_blank');
+      });
+      return;
+    }
     window.open('https://wa.me/?text=' + enc(wppTxt), '_blank');
   } else if (rede === 'facebook') {
     window.open('https://www.facebook.com/sharer/sharer.php?u=' + enc(workerUrl), '_blank');
