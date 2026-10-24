@@ -541,6 +541,21 @@ tfoot td{padding:9px 10px;font-size:.88rem;font-weight:600;}
 </div>
 
 <div id="tab-arquivo" class="tab">
+  <div class="box" id="box-backup">
+    <div class="bh"><h2>💾 Backup — todos os meses</h2></div>
+    <div class="bb">
+      <div id="bk-resumo" style="font-size:.78rem;line-height:1.6;color:#1e293b"></div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px">
+        <button class="btn baz" onclick="exportarJSON()">💾 Salvar JSON geral</button>
+        <button class="btn bcz" onclick="exportarPeriodoAberto()">📄 Salvar só o período aberto</button>
+        <button class="btn bvd" onclick="document.getElementById('inp-bk-imp').click()">➕ Importar JSON</button>
+        <button class="btn" style="background:#d97706;color:#fff" onclick="document.getElementById('inp-bk-rest').click()">♻ Restaurar JSON</button>
+      </div>
+      <input type="file" id="inp-bk-imp" accept=".json" style="display:none" onchange="importarJSON(this)">
+      <input type="file" id="inp-bk-rest" accept=".json" style="display:none" onchange="restaurarJSON(this)">
+      <p style="font-size:.68rem;color:#64748b;margin-top:10px;line-height:1.5"><strong>Importar</strong> junta com o que já existe e pergunta antes de substituir um período repetido. <strong>Restaurar</strong> troca tudo pelo arquivo, mantém os meses fechados como estão e baixa uma cópia de segurança antes. O salvamento fica só no navegador: uma vez por mês, clique em Salvar JSON geral e guarde o arquivo fora do aparelho.</p>
+    </div>
+  </div>
   <div class="box">
     <div class="bh"><h2>🗃 Relatórios Arquivados</h2>
       <button class="btn bcz" style="font-size:.72rem" onclick="abrirDiagnosticoPeriodos()">🔍 Ver Todos os Períodos (inclusive duplicados)</button>
@@ -718,6 +733,16 @@ function save(d){
 }
 
 var dados=load();
+var SEED_SET_2026={"_nome": "Setembro/2026", "_inicio": "2026-09-01", "_fim": "2026-09-30", "_key": "2026-09", "saldoAnterior": 6189.94, "lancamentos": [{"id": 1790000000001, "dia": 4, "nome": "Sergio Roberto", "valor": 500.0, "motivo": "Dizimo pix sede", "nrec": "", "tipoDep": "Dízimo", "tipo": "entrada", "itensSaida": [], "anexos": [], "depVinculo": "", "comprovanteArquivo": "WhatsApp Image 2026-09-04 at 05.32.00.jpeg"}, {"id": 1790000000002, "dia": 5, "nome": "ELIANA", "valor": 570.0, "motivo": "DIZIMO PIX SEDE", "nrec": "", "tipoDep": "Dízimo", "tipo": "entrada", "itensSaida": [], "anexos": [], "depVinculo": "", "comprovanteArquivo": "dz + of-irm- Eliana.pdf"}, {"id": 1790000000003, "dia": 6, "nome": "SERGIO ROBERTO", "valor": 500.0, "motivo": "DIZIMO PIX SEDE", "nrec": "", "tipoDep": "Dízimo", "tipo": "entrada", "itensSaida": [], "anexos": [], "depVinculo": "", "comprovanteArquivo": "DIZ SERGIO ROBERTO .jpeg"}, {"id": 1790000000004, "dia": 13, "nome": "ELIANA", "valor": 600.0, "motivo": "DIZIMO PIX SEDE", "nrec": "", "tipoDep": "Dízimo", "tipo": "entrada", "itensSaida": [], "anexos": [], "depVinculo": "", "comprovanteArquivo": "DIZ .600 REAIS -ELIANA.pdf"}, {"id": 1790000000005, "dia": 14, "nome": "OBPC SÃO FERNANDO", "valor": 80.0, "motivo": "", "nrec": "", "tipoDep": "Outros", "tipo": "entrada", "itensSaida": [], "anexos": [], "depVinculo": "", "comprovanteArquivo": "80.00 silvio.jpeg"}, {"id": 1790000000006, "dia": 20, "nome": "CHARLES IVAN", "valor": 250.0, "motivo": "DIZIMO PIX SEDE", "nrec": "", "tipoDep": "Dízimo", "tipo": "entrada", "itensSaida": [], "anexos": [], "depVinculo": "", "comprovanteArquivo": "DIZ PIX CHARLES.jpeg"}, {"id": 1790000000007, "dia": 20, "nome": "CHARLES IVAN", "valor": 250.0, "motivo": "DIZIMO EM PIX SEDE", "nrec": "", "tipoDep": "Dízimo", "tipo": "entrada", "itensSaida": [], "anexos": [], "depVinculo": "", "comprovanteArquivo": "DZ CHARLES 250 REAIS.jpeg"}, {"id": 1790000000008, "dia": 20, "nome": "ZILANDRA", "valor": 100.0, "motivo": "DIZIMO EM PIX SEDE", "nrec": "", "tipoDep": "Dízimo", "tipo": "entrada", "itensSaida": [], "anexos": [], "depVinculo": "", "comprovanteArquivo": "DZ ZILANDRA 100 REAIS.jpeg"}, {"id": 1790000000009, "dia": 27, "nome": "SERGIO ROBERTO", "valor": 350.0, "motivo": "PIX IGREJA SEDE", "nrec": "", "tipoDep": "Dízimo", "tipo": "entrada", "itensSaida": [], "anexos": [], "depVinculo": "", "comprovanteArquivo": "DIZ. SERGIO ROBERTO 350 REAIS.jpeg"}], "despesas": [{"id": 1790000001001, "dia": 21, "cat": "Aluguel", "desc": "LOCAÇÃO DO TEMPLO", "valor": 1850.0, "nf": "300926", "serie": "", "emissora": "CICERO VICENTE DA SILVA", "anexos": [], "nfAnexadasNoOriginal": 2}], "fechado": false};
+function semearSetembro(){
+  if(!dados._seeds)dados._seeds={};
+  if(dados._seeds.set2026)return;
+  dados._seeds.set2026=1;
+  var existe=Object.keys(dados).some(function(k){return !k.startsWith('_')&&dados[k]&&(k==='2026-09'||String(dados[k]._nome||'').trim().toLowerCase()==='setembro/2026');});
+  if(!existe){dados['2026-09']=JSON.parse(JSON.stringify(SEED_SET_2026));setTimeout(function(){notif('✅ Setembro/2026 já está no programa (9 depósitos).',6000);},600);}
+  save(dados);
+}
+semearSetembro();
 var mes='',tipo='entrada',editandoId=null,reciboAtual=null,itensSaida=[],_anx={entrada:[],saida:[],desp:[]},_dirHandle=null,mesParaExcluir=null;
 
 // ANEXOS
@@ -783,45 +808,130 @@ window.selecionarPastaSalvar=selecionarPastaSalvar;
 async function salvarArq(nome,conteudo){if(!_dirHandle){notif('⚠️ Selecione uma pasta.',4000);return false;}try{var fh=await _dirHandle.getFileHandle(nome,{create:true});var w=await fh.createWritable();await w.write(conteudo);await w.close();return true;}catch(e){notif('❌ Erro: '+e.message,4000);return false;}}
 async function salvarRelatorioNaPasta(){if(!mes){notif('⚠️ Selecione um período.',4000);return;}if(!_dirHandle)await selecionarPastaSalvar();if(!_dirHandle)return;if(await salvarArq('Relatorio_OBPC_'+periodoLabel(mes).replace(/[^a-zA-Z0-9]/g,'_')+'.html',gerarHTMLRelatorio()))notif('✅ Relatório salvo!',5000);}
 window.salvarRelatorioNaPasta=salvarRelatorioNaPasta;
+// ===== BACKUP / IMPORTAR / RESTAURAR (tudo numa caixa só, aba Arquivo) =====
+function chavesPeriodos(o){return Object.keys(o).filter(function(k){return !k.startsWith('_')&&o[k]&&typeof o[k]==='object'&&!Array.isArray(o[k]);});}
+function clonar(o){return JSON.parse(JSON.stringify(o));}
+function dataHoraArq(){var d=new Date(),p=function(n){return String(n).padStart(2,'0');};return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'_'+p(d.getHours())+'-'+p(d.getMinutes());}
+function montarBackup(chaves,comImagens){
+  var out={};
+  (chaves||chavesPeriodos(dados)).forEach(function(k){if(dados[k])out[k]=dados[k];});
+  out._meta={tipo:chaves?'periodo':'geral',versao:7,geradoEm:new Date().toISOString()};
+  if(comImagens){try{var lo=localStorage.getItem(LS_LOGO);if(lo)out._logo=lo;var as=localStorage.getItem(LS_ASS);if(as)out._assinatura=as;}catch(e){}}
+  return out;
+}
+async function baixarArquivo(nome,s){
+  if(_dirHandle){if(await salvarArq(nome,s))return true;}
+  var blob=new Blob([s],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download=nome;document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(function(){URL.revokeObjectURL(url);},1500);return true;
+}
 async function exportarJSON(){
-  var s=JSON.stringify(dados,null,2),dt=new Date().toLocaleDateString('pt-BR').replace(/\//g,'-');
-  if(_dirHandle){if(await salvarArq('OBPC_Backup_'+dt+'.json',s)){notif('✅ Backup salvo!',5000);return;}}
-  var blob=new Blob([s],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='OBPC_Backup_'+dt+'.json';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);notif('✅ Backup exportado!',4000);
+  var ch=chavesPeriodos(dados);if(!ch.length){notif('⚠️ Não há períodos para salvar.',4000);return;}
+  await baixarArquivo('OBPC_Backup_'+dataHoraArq()+'.json',JSON.stringify(montarBackup(null,true),null,2));
+  notif('✅ Backup geral salvo ('+ch.length+' período(s), com logo e assinatura).',5000);
 }
 window.exportarJSON=exportarJSON;
-function importarJSON(inp){
+async function exportarPeriodoAberto(){
+  if(!mes||!dados[mes]){notif('⚠️ Selecione um período.',4000);return;}
+  var nm=periodoLabel(mes).replace(/[^a-zA-Z0-9]/g,'_');
+  await baixarArquivo('OBPC_Periodo_'+nm+'_'+dataHoraArq()+'.json',JSON.stringify(montarBackup([mes],false),null,2));
+  notif('✅ Período "'+periodoLabel(mes)+'" salvo.',5000);
+}
+window.exportarPeriodoAberto=exportarPeriodoAberto;
+function lerArquivoJSON(inp,cb){
   if(!inp.files||!inp.files[0])return;
   var r=new FileReader();
   r.onload=function(e){
-    try{
-      var imp=JSON.parse(e.target.result);
-      if(typeof imp!=='object'||Array.isArray(imp)){notif('❌ JSON inválido.',4000);return;}
-      var ch=Object.keys(imp).filter(function(k){return !k.startsWith('_');});
-      if(!ch.length){notif('⚠️ Nenhum período encontrado.',4000);return;}
-      var novos=0,conf=0;
-      ch.forEach(function(k){if(dados[k])conf++;else{dados[k]=imp[k];novos++;}});
-      if(conf>0&&confirm(novos+' novo(s) e '+conf+' já existente(s).\nOK = sobrescrever. Cancelar = só novos.')){ch.forEach(function(k){dados[k]=imp[k];});novos+=conf;}
-      // Vem do PC pra corrigir: já chega destravado pra edição, sem precisar clicar em Reabrir
-      ch.forEach(function(k){if(dados[k]&&dados[k].fechado){dados[k].fechado=false;delete dados[k].fechadoEm;}});
-      save(dados);popularSelect();
-      // Abre um dos períodos que acabaram de ser importados (não o mais recente entre TODOS,
-      // senão um período atual criado automaticamente pode "esconder" o que acabou de importar)
-      if(ch.length)carregarMes(ch.sort(function(a,b){return (dados[b]._inicio||'').localeCompare(dados[a]._inicio||'');})[0]);
-      notif('✅ Importados: '+novos+' período(s), já aberto(s) pra edição.',5000);
-      var avail=Object.keys(dados).filter(function(k){return !k.startsWith('_');});
-      // Checar se a importação criou nomes de período duplicados (mesma label, chaves diferentes)
-      var porNome={};
-      avail.forEach(function(k){var nm=(dados[k]._nome||periodoLabel(k)||'').trim().toLowerCase();if(!porNome[nm])porNome[nm]=[];porNome[nm].push(k);});
-      var dupNomes=Object.keys(porNome).filter(function(nm){return porNome[nm].length>1;});
-      if(dupNomes.length){
-        setTimeout(function(){notif('⚠️ Atenção: existem períodos com nome repetido ('+dupNomes.join(', ')+'). Verifique no Arquivo antes de continuar editando.',9000);},1200);
-      }
-    }catch(ex){notif('❌ Erro: '+ex.message,5000);}
+    var imp;
+    try{imp=JSON.parse(e.target.result);}catch(ex){notif('❌ Arquivo inválido: '+ex.message,5000);inp.value='';return;}
+    if(!imp||typeof imp!=='object'||Array.isArray(imp)){notif('❌ JSON inválido.',4000);inp.value='';return;}
+    try{cb(imp);}catch(ex){notif('❌ Erro: '+ex.message,6000);}
     inp.value='';
   };
   r.readAsText(inp.files[0],'UTF-8');
 }
+function achaLocal(k,p){
+  if(dados[k])return k;
+  var nm=String(p._nome||'').trim().toLowerCase();if(!nm)return null;
+  var r=null;chavesPeriodos(dados).forEach(function(x){if(String(dados[x]._nome||periodoLabel(x)).trim().toLowerCase()===nm)r=x;});
+  return r;
+}
+function ajustarPeriodoImportado(k,p){
+  if(!p.lancamentos)p.lancamentos=[];if(!p.despesas)p.despesas=[];
+  if(!p._nome)p._nome=/^\d{4}-\d{2}$/.test(k)?MESES[parseInt(k.split('-')[1])-1]+'/'+k.split('-')[0]:k;
+  p._key=k;return p;
+}
+function aplicarLogoAssinatura(){
+  var lo=localStorage.getItem(LS_LOGO);if(lo)document.getElementById('logo-img').src=lo;
+  var as=localStorage.getItem(LS_ASS);
+  if(as){document.getElementById('ass-preview').innerHTML='<img src="'+as+'" style="max-height:80px;max-width:100%">';document.getElementById('btn-ass-rem').style.display='';document.getElementById('btn-ass-upload').classList.add('has');document.getElementById('btn-ass-upload').textContent='✅ Assinatura';}
+  initAssWidget();
+}
+function importarImagens(imp,sobrescrever){
+  var n=0;try{
+    if(imp._logo&&(sobrescrever||!localStorage.getItem(LS_LOGO))){localStorage.setItem(LS_LOGO,imp._logo);n++;}
+    if(imp._assinatura&&(sobrescrever||!localStorage.getItem(LS_ASS))){localStorage.setItem(LS_ASS,imp._assinatura);n++;}
+  }catch(e){notif('⚠️ Sem espaço para logo/assinatura.',5000);}
+  if(n)aplicarLogoAssinatura();return n;
+}
+function importarJSON(inp){
+  lerArquivoJSON(inp,function(imp){
+    var ch=chavesPeriodos(imp);
+    if(!ch.length){notif('⚠️ Nenhum período encontrado no arquivo.',4000);return;}
+    var novos=0,subst=0,mant=0,ultimo=null;
+    ch.forEach(function(k){
+      var p=imp[k],loc=achaLocal(k,p);
+      if(!loc){dados[k]=ajustarPeriodoImportado(k,clonar(p));novos++;ultimo=k;return;}
+      var atual=dados[loc];
+      var msg='O período "'+periodoLabel(loc)+'" já existe neste aparelho'+(atual.fechado?' (FECHADO)':'')+'.\n\nNo aparelho: '+(atual.lancamentos||[]).length+' lançamento(s), '+(atual.despesas||[]).length+' despesa(s).\nNo arquivo: '+(p.lancamentos||[]).length+' lançamento(s), '+(p.despesas||[]).length+' despesa(s).\n\nOK = SUBSTITUIR pelo do arquivo\nCancelar = MANTER o que está no aparelho';
+      if(confirm(msg)){dados[loc]=ajustarPeriodoImportado(loc,clonar(p));subst++;ultimo=loc;}else mant++;
+    });
+    importarImagens(imp,false);
+    save(dados);popularSelect();
+    if(ultimo)carregarMes(ultimo);
+    renderArquivo();
+    notif('✅ Importação: '+novos+' novo(s), '+subst+' substituído(s), '+mant+' mantido(s). Meses fechados continuam fechados.',7000);
+  });
+}
 window.importarJSON=importarJSON;
+function restaurarJSON(inp){
+  lerArquivoJSON(inp,function(imp){
+    var ch=chavesPeriodos(imp);
+    if(!ch.length){notif('⚠️ Nenhum período encontrado no arquivo.',4000);return;}
+    var fechadosLocais=chavesPeriodos(dados).filter(function(k){return dados[k].fechado;});
+    var msg='RESTAURAR substitui TUDO deste aparelho pelo conteúdo do arquivo ('+ch.length+' período(s)).\n\n• Os '+fechadosLocais.length+' mês(es) FECHADO(S) que já estão aqui serão mantidos como estão.\n• Antes, será baixada uma cópia de segurança do que existe hoje.\n\nContinuar?';
+    if(!confirm(msg))return;
+    var copia=JSON.stringify(montarBackup(null,true),null,2);
+    baixarArquivo('OBPC_CopiaSeguranca_antes_de_restaurar_'+dataHoraArq()+'.json',copia).then(function(){
+      var antigos=Object.assign({},dados),novo={},nomesFech={};
+      fechadosLocais.forEach(function(k){novo[k]=antigos[k];nomesFech[String(antigos[k]._nome||periodoLabel(k)).trim().toLowerCase()]=1;});
+      var ign=0;
+      ch.forEach(function(k){
+        var p=imp[k],nm=String(p._nome||'').trim().toLowerCase();
+        if(novo[k]||(nm&&nomesFech[nm])){ign++;return;}
+        novo[k]=ajustarPeriodoImportado(k,clonar(p));
+      });
+      Object.keys(dados).forEach(function(k){delete dados[k];});
+      Object.keys(novo).forEach(function(k){dados[k]=novo[k];});
+      if(antigos._seeds)dados._seeds=antigos._seeds;
+      importarImagens(imp,true);
+      save(dados);mes='';popularSelect();
+      var lst=chavesPeriodos(dados).sort(function(a,b){return (dados[b]._inicio||'').localeCompare(dados[a]._inicio||'');});
+      if(lst.length)carregarMes(lst[0]);
+      renderArquivo();
+      notif('♻ Restaurado: '+chavesPeriodos(dados).length+' período(s). Fechados mantidos: '+fechadosLocais.length+(ign?' (ignorados do arquivo por já estarem fechados aqui: '+ign+')':'')+'.',9000);
+    });
+  });
+}
+window.restaurarJSON=restaurarJSON;
+function renderBackupResumo(){
+  var el=document.getElementById('bk-resumo');if(!el)return;
+  var ch=chavesPeriodos(dados),f=ch.filter(function(k){return dados[k].fechado;}).length,ab=ch.length-f;
+  var n=0;try{n=(localStorage.getItem(LS_KEY)||'').length+(localStorage.getItem(LS_LOGO)||'').length+(localStorage.getItem(LS_ASS)||'').length;}catch(e){}
+  var mb=n/1048576,perto=mb>3.5;
+  el.innerHTML='<strong>'+ch.length+'</strong> período(s) neste aparelho: <strong>'+f+'</strong> fechado(s) e <strong>'+ab+'</strong> aberto(s).<br>Tamanho guardado no navegador: <strong>'+(mb<0.1?(n/1024).toFixed(0)+' KB':mb.toFixed(2)+' MB')+'</strong> de ~5 MB.'+(perto?'<div style="margin-top:6px;color:#b91c1c;font-weight:700">⚠️ Perto do limite do navegador! Salve o JSON geral agora e guarde o arquivo fora do aparelho.</div>':'');
+}
+
 
 // VÍNCULO DEPÓSITO
 function popularVinculoSelect(){
@@ -1317,6 +1427,7 @@ function confirmarReabertura(){if(!mes)return;garantir(mes);dados[mes].fechado=f
 window.confirmarReabertura=confirmarReabertura;
 
 function renderArquivo(){
+  renderBackupResumo();
   var body=document.getElementById('arquivo-body');
   var fechados=Object.keys(dados).filter(function(k){return !k.startsWith('_')&&dados[k]&&dados[k].fechado;}).sort(function(a,b){return (dados[b]._inicio||'').localeCompare(dados[a]._inicio||'');});
   if(!fechados.length){body.innerHTML='<div class="vazio"><span>🗃</span>Nenhum período fechado.</div>';return;}
