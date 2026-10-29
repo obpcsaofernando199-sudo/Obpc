@@ -1226,12 +1226,14 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible{outline:3px sol
   </div>
 
   <!-- CULTO FOI ASSIM -->
-  <div class="sec hidden" id="sec-cultos">
+  <div class="sec" id="sec-cultos">
     <div class="sec-titulo" style="justify-content:space-between;flex-wrap:wrap;gap:.5rem">
       <span>📺 TV OBPC São Fernando</span>
       
     </div>
-    <div id="cultos-lista"></div><div style="text-align:center;padding:.2rem 1rem 1rem"><a href="tv-obpc.html" style="display:inline-flex;align-items:center;gap:8px;background:#0f0f0f;color:#fff;font-weight:700;font-size:.85rem;border-radius:22px;padding:10px 20px;text-decoration:none">📺 Abrir a TV OBPC</a></div>
+    <div id="cultos-lista" style="display:none"></div>
+    <div style="padding:0 .6rem 1rem"><iframe src="tv-obpc.html?embed=1" title="TV OBPC São Fernando" loading="lazy" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen style="width:100%;max-width:560px;display:block;margin:0 auto;height:min(82vh,760px);border:2px solid #C98A2E;border-radius:16px;background:#0B1F18"></iframe>
+    <div style="text-align:center;margin-top:.7rem"><a href="tv-obpc.html" style="display:inline-flex;align-items:center;gap:8px;background:#0F4A34;color:#fff;font-weight:700;font-size:.85rem;border-radius:22px;padding:10px 20px;text-decoration:none">⛶ Abrir a TV em tela cheia</a></div></div>
   </div>
 
   <!-- PALAVRA DO PASTOR -->
@@ -1241,6 +1243,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible{outline:3px sol
       <button onclick="obpcCompartilharPalavra(0)" style="display:inline-flex;align-items:center;gap:6px;background:rgba(245,200,66,.15);border:1.5px solid rgba(245,200,66,.5);color:#E0961E;font-size:.75rem;font-weight:700;border-radius:20px;padding:6px 14px;cursor:pointer;font-family:inherit;transition:.2s">📤 Compartilhar</button>
     </div>
     <div id="palavras-lista"></div>
+    <div style="text-align:center;padding:.4rem 1rem 1rem"><a href="tv-obpc.html?f=p" style="display:inline-flex;align-items:center;gap:8px;background:#0F4A34;color:#fff;font-weight:700;font-size:.85rem;border-radius:22px;padding:10px 20px;text-decoration:none">📺 Ver a Palavra na TV OBPC</a></div>
   </div>
 
   <!-- ANIVERSARIANTES -->
@@ -2220,7 +2223,7 @@ function carregarEventos(){
   }).join('');
 }
 
-async function carregarCultos(){
+async function carregarCultos(){ return; /* os Momentos agora aparecem na TV OBPC (iframe da seção) */
   /* Sempre busca do Firebase primeiro para garantir sync entre dispositivos */
   try{
     const r=await fetch('https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com/obpc/cultos.json',{cache:'no-store'});
