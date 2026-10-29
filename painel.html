@@ -819,7 +819,7 @@ Acesse a qualquer hora, do seu celular"></textarea>
 <!-- CULTO FOI ASSIM -->
 <div id="aba-clt" class="aba">
   <h2 style="border-bottom-color:#ff0000">&#128250; TV OBPC S&#227;o Fernando</h2>
-  <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;background:#0F4A34;border-bottom:3px solid #C98A2E;border-radius:10px;padding:.7rem .9rem;margin-bottom:.8rem"><span style="background:#ff0000;color:#fff;border-radius:6px;font-size:.7rem;padding:4px 9px;font-weight:700">&#9654; AO VIVO NO SITE</span><span style="color:#fff;font-size:.82rem;flex:1;min-width:150px">Filme na hora, tire fotos e publique. Aparece na TV OBPC para todos.</span><a href="tv-obpc.html" target="_blank" style="background:#C98A2E;color:#fff;font-weight:700;font-size:.8rem;border-radius:18px;padding:.4rem .9rem;text-decoration:none">&#128250; Ver a TV</a><button type="button" onclick="var u=new URL('tv-obpc.html',location.href).href;try{navigator.clipboard.writeText(u);showToast('Link da TV copiado!');}catch(e){prompt('Link da TV:',u);}" style="background:rgba(255,255,255,.15);color:#fff;border:0;font-weight:700;font-size:.8rem;border-radius:18px;padding:.4rem .9rem;cursor:pointer">&#128279; Copiar link</button></div>
+  <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;background:#0F4A34;border-bottom:3px solid #C98A2E;border-radius:10px;padding:.7rem .9rem;margin-bottom:.8rem"><span style="background:#ff0000;color:#fff;border-radius:6px;font-size:.7rem;padding:4px 9px;font-weight:700">&#9654; AO VIVO NO SITE</span><span style="color:#fff;font-size:.82rem;flex:1;min-width:150px">Filme na hora, tire fotos e publique. Aparece na TV OBPC para todos.</span><a href="tv-obpc.html" target="_blank" style="background:#C98A2E;color:#fff;font-weight:700;font-size:.8rem;border-radius:18px;padding:.4rem .9rem;text-decoration:none">&#128250; Ver a TV</a><button type="button" onclick="var u=new URL('tv-obpc.html',location.href).href;try{navigator.clipboard.writeText(u);showToast('Link da TV copiado!');}catch(e){prompt('Link da TV:',u);}" style="background:rgba(255,255,255,.15);color:#fff;border:0;font-weight:700;font-size:.8rem;border-radius:18px;padding:.4rem .9rem;cursor:pointer">&#128279; Copiar link</button><button type="button" onclick="var u=new URL('tv-obpc.html',location.href).href;window.open('https://wa.me/?text='+encodeURIComponent('\uD83D\uDCFA TV OBPC S\u00e3o Fernando \u2014 v\u00eddeos e fotos dos nossos cultos\n'+u),'_blank');" style="background:#25D366;color:#fff;border:0;font-weight:700;font-size:.8rem;border-radius:18px;padding:.4rem .9rem;cursor:pointer">&#128228; Compartilhar a TV</button></div>
   <div class="card">
     <div class="row"><div><label>T&#237;tulo</label><input id="clt-tit" placeholder="Culto de Domingo"></div><div><label>Data</label><input type="date" id="clt-dt"></div></div>
     <label>Descri&#231;&#227;o</label><textarea id="clt-rel" rows="3"></textarea>
@@ -850,14 +850,14 @@ Acesse a qualquer hora, do seu celular"></textarea>
   <div class="card">
     <div class="row"><div><label>T&#237;tulo</label><input id="pas-tit" placeholder="Palavra de F&#233;"></div><div><label>Data</label><input type="date" id="pas-dt"></div></div>
     <label>Pastor</label><input id="pas-aut" placeholder="Pr. Sergio">
-    <label>Texto</label><textarea id="pas-txt" rows="6"></textarea>
+    <label>Texto <span style="font-weight:400">(edite no Est&#250;dio OBPC &#127916;)</span></label><textarea id="pas-txt" rows="6"></textarea>
     <label>&#128206; Foto ou V&#237;deo</label>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;margin-bottom:.5rem">
       <div class="upbox" onclick="document.getElementById('pas-f1').click()"><span>&#128193;</span><p>Arquivos</p><input type="file" id="pas-f1" accept="image/*,video/*" multiple style="display:none" onchange="upMd(this,'pas')"></div>
       <div class="upbox" onclick="document.getElementById('pas-f2').click()"><span>&#128247;</span><p>C&#226;mera Foto</p><input type="file" id="pas-f2" accept="image/*" capture="environment" style="display:none" onchange="upMd(this,'pas')"></div>
       <div class="upbox" onclick="pasAbrirWebcam()" style="cursor:pointer"><span>&#127916;</span><p>Gravar V&#237;deo</p></div>
     </div>
-    <div style="display:flex;gap:.5rem;margin-bottom:.5rem"><button type="button" class="btn bs" onclick="pasAbrirTeleprompter()" style="flex:1;background:#1E3A5F;color:#fff">&#127916; Gravar com Teleprompter</button><a href="tv-obpc.html?f=p" target="_blank" class="btn bsm" style="background:#ff0000;color:#fff;text-decoration:none;display:inline-flex;align-items:center">&#128250; Ver na TV</a></div>
+    <div style="display:flex;gap:.5rem;margin-bottom:.5rem"><button type="button" class="btn bs" onclick="pasAbrirTeleprompter()" style="flex:1;background:#1E3A5F;color:#fff">&#127916; Gravar com Teleprompter</button><a href="tv-obpc.html?f=p" target="_blank" class="btn bsm" style="background:#ff0000;color:#fff;text-decoration:none;display:inline-flex;align-items:center">&#128250; Ver na TV</a><button type="button" class="btn bsm" style="background:#64748b;color:#fff" onclick="var u=new URL('tv-obpc.html?f=p',location.href).href;try{navigator.clipboard.writeText(u);showToast('Link da aba Palavra copiado!');}catch(e){prompt('Link:',u);}">&#128279; Link da aba</button></div>
     <div class="prevw" id="pas-pv"></div>
     <div id="pas-upload-sts" style="display:none;font-size:.78rem;color:var(--azul2);padding:.3rem 0;font-weight:600"></div>
     <label>&#128279; Link YouTube</label><input id="pas-url" placeholder="https://youtu.be/...">
@@ -1316,23 +1316,53 @@ async function comprimirVideoArquivo(file,onStatus){
 var LIMITE_PULA_COMPACTACAO=10*1024*1024;
 /* ── Gravação ao vivo com limite de tempo (evita vídeo gigante desde a origem) ── */
 var GRV_LIMITE_SEG=60;
-function pasAbrirTeleprompter(){
+var _pasEdIdx=null;
+function pasAbrirTeleprompter(idx){
+  if(document.getElementById('tp-overlay'))return;
+  _pasEdIdx=(typeof idx==='number')?idx:null;
+  if(location.protocol==='file:'){_pasAbreOverlay();return;}
+  fetch('gravador-obpc.html',{method:'HEAD',cache:'no-store'}).then(function(r){
+    if(r.status===404){alert('O arquivo gravador-obpc.html n\u00e3o foi encontrado no site. Suba esse arquivo na MESMA pasta do painel.html e tente de novo.');return;}
+    _pasAbreOverlay();
+  }).catch(function(){_pasAbreOverlay();});
+}
+function _pasAbreOverlay(){
   if(document.getElementById('tp-overlay'))return;
   var ov=document.createElement('div');ov.id='tp-overlay';
   ov.style.cssText='position:fixed;inset:0;z-index:99998;background:#000;display:flex;flex-direction:column';
-  ov.innerHTML='<button type="button" onclick="pasFecharTeleprompter()" style="align-self:flex-end;margin:6px 8px;padding:.45rem .9rem;border:0;border-radius:20px;background:#e53e3e;color:#fff;font-weight:700;cursor:pointer">\u2715 Fechar</button><iframe src="gravador-obpc.html?embed=1" allow="camera; microphone; autoplay; fullscreen; display-capture" style="flex:1;border:0;width:100%;background:#000"></iframe>';
+  ov.innerHTML='<button type="button" onclick="pasFecharTeleprompter()" style="align-self:flex-start;margin:6px 8px;padding:.45rem .9rem;border:0;border-radius:20px;background:#e53e3e;color:#fff;font-weight:700;cursor:pointer">\u2715 Fechar</button><iframe id="tp-frame" src="gravador-obpc.html?embed=1&v='+Date.now()+'" allow="camera; microphone; autoplay; fullscreen; display-capture" style="flex:1;border:0;width:100%;background:#000"></iframe>';
   document.body.appendChild(ov);
 }
 function pasFecharTeleprompter(){var ov=document.getElementById('tp-overlay');if(ov&&ov.parentNode)ov.parentNode.removeChild(ov);}
+function pasTextoAtual(){var l=DB.g('palavras')||[];if(_pasEdIdx!=null&&l[_pasEdIdx])return l[_pasEdIdx].txt||'';var e=document.getElementById('pas-txt');return e?e.value:'';}
+function pasAplicaTexto(txt){
+  if(typeof txt!=='string'||!txt.trim())return;
+  if(_pasEdIdx!=null){var l=DB.g('palavras')||[];if(l[_pasEdIdx]){l[_pasEdIdx].txt=txt;DB.s('palavras',l);rndPas();}}
+  else{var e=document.getElementById('pas-txt');if(e)e.value=txt;}
+}
+function edtPasEstudio(i){pasAbrirTeleprompter(i);}
+function pasCompTV(i){var l=DB.g('palavras')||[];var p=l[i];if(!p)return;var u=new URL('tv-obpc.html',location.href).href+'#p'+(p.ts||i);window.open('https://wa.me/?text='+encodeURIComponent('\uD83C\uDFA4 '+(p.tit||'Palavra do Pastor')+' \u2014 TV OBPC S\u00e3o Fernando\n'+u),'_blank');}
 window.addEventListener('message',function(ev){
-  var d=ev.data;if(!d||d.tipo!=='obpc-gravacao'||!d.blob)return;
+  var d=ev.data;if(!d||!d.tipo)return;
   if(location.protocol!=='file:'&&ev.origin!==location.origin)return;
-  pasFecharTeleprompter();
+  if(d.tipo==='obpc-pronto'){var fr=document.getElementById('tp-frame');if(fr&&fr.contentWindow)fr.contentWindow.postMessage({tipo:'obpc-init',txt:pasTextoAtual()},location.protocol==='file:'?'*':location.origin);return;}
+  if(d.tipo==='obpc-texto'){pasAplicaTexto(d.txt);pasFecharTeleprompter();if(typeof showToast==='function')showToast(_pasEdIdx!=null?'\u2705 Texto salvo na Palavra!':'\u2705 Texto levado para o formul\u00e1rio. Clique em Publicar.');return;}
+  if(d.tipo!=='obpc-gravacao'||!d.blob)return;
+  pasFecharTeleprompter();pasAplicaTexto(d.txt);
   var ext=/mp4/.test(d.blob.type)?'mp4':'webm';
   var file=new File([d.blob],'palavra-'+Date.now()+'.'+ext,{type:d.blob.type||'video/webm'});
+  if(_pasEdIdx!=null){
+    var idx=_pasEdIdx;if(typeof showToast==='function')showToast('\u2B06\uFE0F Enviando o v\u00eddeo... aguarde.');
+    upArq(file,function(){},function(){}).then(function(m){
+      var l=DB.g('palavras')||[];
+      if(m&&!m.local&&l[idx]){if(!Array.isArray(l[idx].midias))l[idx].midias=[];l[idx].midias.push(m);DB.s('palavras',l);rndPas();if(typeof showToast==='function')showToast('\u2705 V\u00eddeo adicionado! J\u00e1 aparece no site e na TV OBPC.');}
+      else if(typeof showToast==='function')showToast('\u274C O v\u00eddeo n\u00e3o foi para a nuvem. Tente de novo.');
+    });
+    return;
+  }
   var dt=new DataTransfer();dt.items.add(file);
   var inp=document.getElementById('pas-f2');
-  if(inp){inp.files=dt.files;upMd(inp,'pas');if(typeof showToast==='function')showToast('\u2B06\uFE0F Enviando o v\u00eddeo da Palavra... aguarde a miniatura e clique em Publicar.');}
+  if(inp){inp.files=dt.files;upMd(inp,'pas');if(typeof showToast==='function')showToast('\u2B06\uFE0F Enviando o v\u00eddeo... aguarde a miniatura e clique em Publicar.');}
 });
 var _grvStream=null,_grvRec=null,_grvChunks=[],_grvTimer=null,_grvCtx='clt';
 function grvAbrir(ctx){
@@ -1668,7 +1698,7 @@ function addPas(){
   }
   var l=DB.g('palavras')||[];var url=document.getElementById('pas-url').value||'';l.unshift({tit:document.getElementById('pas-tit').value,dt:document.getElementById('pas-dt').value,aut:document.getElementById('pas-aut').value,txt:document.getElementById('pas-txt').value,url:url,midias:(_md.pas||[]).slice(),ts:Date.now()});DB.s('palavras',l).then(function(r){if(r)showToast('✅ Publicado no site!');});_md.pas=[];['pas-tit','pas-txt','pas-url'].forEach(function(id){document.getElementById(id).value='';});document.getElementById('pas-pv').innerHTML='';rndPas();
 }
-function rndPas(){var l=DB.g('palavras')||[];var c=document.getElementById('lista-pas');if(!c)return;c.innerHTML=l.map(function(p,i){return '<div class="card" style="margin-bottom:.5rem"><div style="font-weight:700;font-size:.88rem">'+p.tit+'</div><div style="font-size:.78rem;color:var(--muted);margin:.2rem 0">'+p.aut+' | '+p.dt+'</div><p style="font-size:.82rem;margin:.3rem 0">'+p.txt+'</p><div style="text-align:right;margin-top:.4rem"><button class="btn bd bsm" onclick="del(\'palavras\','+i+',rndPas)">&#128465;</button><button class="btn bsm" style="background:#1E3A5F;color:#fff" onclick="edtPas('+i+')">&#9998; Editar</button></div></div>';}).join('');}
+function rndPas(){var l=DB.g('palavras')||[];var c=document.getElementById('lista-pas');if(!c)return;c.innerHTML=l.map(function(p,i){return '<div class="card" style="margin-bottom:.5rem"><div style="font-weight:700;font-size:.88rem">'+p.tit+'</div><div style="font-size:.78rem;color:var(--muted);margin:.2rem 0">'+p.aut+' | '+p.dt+'</div><p style="font-size:.82rem;margin:.3rem 0">'+p.txt+'</p><div style="text-align:right;margin-top:.4rem"><button class="btn bd bsm" onclick="del(\'palavras\','+i+',rndPas)">&#128465;</button><button class="btn bsm" style="background:#1E3A5F;color:#fff" onclick="edtPas('+i+')">&#9998; Editar</button> <button class="btn bsm" style="background:#0F4A34;color:#fff" onclick="edtPasEstudio('+i+')">&#127916; Est&#250;dio</button> <button class="btn bsm" style="background:#25D366;color:#fff" onclick="pasCompTV('+i+')">&#128228; TV</button></div></div>';}).join('');}
 function addAnv(){var nm=(document.getElementById('anv-nm').value||'').trim();if(!nm){alert('Informe o nome.');return;}var l=DB.g('aniversariantes')||[];var gen=document.getElementById('anv-gen')?document.getElementById('anv-gen').value:'m';l.push({nm:nm,dt:document.getElementById('anv-dt').value,fn:document.getElementById('anv-fn').value,tel:document.getElementById('anv-tel').value,foto:_i['anv-foto']||'',gen:gen});DB.s('aniversariantes',l);_i['anv-foto']='';['anv-nm','anv-tel','anv-fn'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});var dtEl=document.getElementById('anv-dt');if(dtEl)dtEl.value='';document.getElementById('anv-foto-pv').innerHTML='';showToast('🎂 Cadastrado!');rndAnv();}
 function rndAnv(){var l=DB.g('aniversariantes')||[];var c=document.getElementById('lista-anv');if(!c)return;var hoje=new Date();var hM=hoje.getMonth();var hD=hoje.getDate();c.innerHTML=l.map(function(a,i){var niver='';var dt=a.dt||'';var nm=a.nm||'';if(dt){var p=dt.split('-');var dM=parseInt(p[1])-1;var dD=parseInt(p[2]);if(dM===hM&&dD===hD)niver='🎉 HOJE!';}return '<div style="background:#fff;border-radius:10px;padding:.9rem;box-shadow:0 1px 5px rgba(0,0,0,.07);text-align:center">'+(niver?'<div style="background:#fff9c4;color:#e65100;font-size:.7rem;font-weight:700;border-radius:20px;padding:2px 8px;margin-bottom:.3rem">'+niver+'</div>':'')+'<img src="'+(a.foto||'https://ui-avatars.com/api/?name='+encodeURIComponent(nm)+'&background=1E3A5F&color=fff')+'" style="width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid var(--azul2);margin-bottom:.4rem"><div style="font-weight:700;font-size:.83rem">'+nm+'</div><div style="font-size:.72rem;color:var(--azul2)">'+a.fn+'</div>'+(dt?'<div style="font-size:.7rem;color:var(--muted);margin-top:.2rem">'+dt.split('-').reverse().join('/')+'</div>':'')+'<button class="btn bd bsm" style="margin-top:.4rem" onclick="del(\'aniversariantes\','+i+',rndAnv)">&#128465;</button><button class="btn bsm" style="background:#1E3A5F;color:#fff;padding:.3rem .6rem" onclick="edtAnv('+i+')">&#9998;</button></div>';}).join('');}
 function addOb(){var l=DB.g('obreiros')||[];l.push({nm:document.getElementById('ob-nm').value,fn:document.getElementById('ob-fn').value,tel:document.getElementById('ob-tel').value,foto:_i['ob-foto']||''});DB.s('obreiros',l);_i['ob-foto']='';['ob-nm','ob-tel'].forEach(function(id){document.getElementById(id).value='';});document.getElementById('ob-foto-pv').innerHTML='';rndOb();}
