@@ -2748,9 +2748,10 @@ function carregarProximosCultos(){
     const ic      = c.ic||'⛪';
 
     // Tema automático pelo título tem PRIORIDADE sobre cor manual do painel
-    const temaT   = pcltGetTema(titulo)||temaPad;
+    const temaG   = pcltGetTema(titulo)||((c.grupo&&c.grupo!=='geral')?pcltGetTema(c.grupo==='santa_ceia'?'santa ceia':c.grupo):null);
+    const temaT   = temaG||temaPad;
     // Só usa cor manual se não houver tema reconhecido pelo título
-    const temTemaAuto = pcltGetTema(titulo)!==null;
+    const temTemaAuto = temaG!==null;
     let gradiente = temaT.g; // padrão: tema pelo título
     let bcCor     = temaT.bc;
     if(!temTemaAuto){
