@@ -1228,10 +1228,10 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible{outline:3px sol
   <!-- CULTO FOI ASSIM -->
   <div class="sec hidden" id="sec-cultos">
     <div class="sec-titulo" style="justify-content:space-between;flex-wrap:wrap;gap:.5rem">
-      <span>📸 Momentos</span>
-      <button onclick="obpcCompartilharCulto(0)" style="display:inline-flex;align-items:center;gap:6px;background:rgba(245,200,66,.15);border:1.5px solid rgba(245,200,66,.5);color:#E0961E;font-size:.75rem;font-weight:700;border-radius:20px;padding:6px 14px;cursor:pointer;font-family:inherit;transition:.2s">📤 Compartilhar</button>
+      <span>📺 TV OBPC São Fernando</span>
+      
     </div>
-    <div id="cultos-lista"></div>
+    <div id="cultos-lista"></div><div style="text-align:center;padding:.2rem 1rem 1rem"><a href="tv-obpc.html" style="display:inline-flex;align-items:center;gap:8px;background:#0f0f0f;color:#fff;font-weight:700;font-size:.85rem;border-radius:22px;padding:10px 20px;text-decoration:none">📺 Abrir a TV OBPC</a></div>
   </div>
 
   <!-- PALAVRA DO PASTOR -->
@@ -2235,10 +2235,10 @@ async function carregarCultos(){
     if(vistos.has(chave))return false;
     vistos.add(chave);return true;
   });
-  // Esconder automaticamente cultos com mais de 3 dias (fotos/vídeos somem sozinhos do site)
+  // Esconder automaticamente cultos com mais de 45 dias (mesmo prazo da limpeza do painel) (fotos/vídeos somem sozinhos do site)
   // Conta a partir do momento real da publicação (ts), e não da data escolhida no campo "Data" —
   // assim o Momento aparece por 3 dias independente de qual data foi preenchida (ou não) no painel.
-  const LIMITE_DIAS_CULTO=3;
+  const LIMITE_DIAS_CULTO=45;
   const agoraMs=Date.now();
   lista=lista.filter(function(c){
     if(!c.ts)return true; // publicação antiga sem carimbo de horário, não expira (não sabemos calcular)
@@ -2283,7 +2283,7 @@ async function carregarCultos(){
     /* 4) Rodapé: botão compartilhar */
     const body=document.createElement('div');body.className='culto-body';
     var idxC=(DB.get('cultos')||[]).indexOf(c);
-    var btnC=obpcBtnShareCulto(idxC>=0?idxC:0,c);var divC=document.createElement('div');divC.style.marginTop='.4rem';divC.appendChild(btnC);body.appendChild(divC);
+    var btnC=document.createElement('a');btnC.href='tv-obpc.html'+(c.ts?'#c'+c.ts:'');btnC.textContent='📺 Assistir na TV OBPC';btnC.style.cssText='display:inline-flex;align-items:center;gap:6px;background:#0F4A34;color:#fff;font-weight:700;font-size:.8rem;border-radius:20px;padding:8px 16px;text-decoration:none';var divC=document.createElement('div');divC.style.marginTop='.4rem';divC.appendChild(btnC);body.appendChild(divC);
     card.appendChild(body);
     if(titulo||relato||midia.length){el.appendChild(card);totalCardsAdicionados++;}
   }

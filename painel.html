@@ -241,7 +241,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.6;}
   <a onclick="ir('ev',this)">&#128197; Eventos</a>
   <a onclick="ir('inf',this)">&#128240; Informativos</a>
   <a onclick="ir('ser',this)">&#128214; Serm&#245;es</a>
-  <a onclick="ir('clt',this)">&#128248; Momentos OBPC</a>
+  <a onclick="ir('clt',this)">&#128250; TV OBPC</a>
   <a onclick="ir('pas',this)">&#127908; Palavra do Pastor</a>
   <div class="grp">Minist&#233;rio</div>
   <a onclick="ir('aniv',this)">&#127874; Aniversariantes</a>
@@ -818,10 +818,11 @@ Acesse a qualquer hora, do seu celular"></textarea>
 </div>
 <!-- CULTO FOI ASSIM -->
 <div id="aba-clt" class="aba">
-  <h2>&#128248; Momentos OBPC</h2>
+  <h2 style="border-bottom-color:#ff0000">&#128250; TV OBPC S&#227;o Fernando</h2>
+  <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;background:#0F4A34;border-bottom:3px solid #C98A2E;border-radius:10px;padding:.7rem .9rem;margin-bottom:.8rem"><span style="background:#ff0000;color:#fff;border-radius:6px;font-size:.7rem;padding:4px 9px;font-weight:700">&#9654; AO VIVO NO SITE</span><span style="color:#fff;font-size:.82rem;flex:1;min-width:150px">Filme na hora, tire fotos e publique. Aparece na TV OBPC para todos.</span><a href="tv-obpc.html" target="_blank" style="background:#C98A2E;color:#fff;font-weight:700;font-size:.8rem;border-radius:18px;padding:.4rem .9rem;text-decoration:none">&#128250; Ver a TV</a><button type="button" onclick="var u=new URL('tv-obpc.html',location.href).href;try{navigator.clipboard.writeText(u);showToast('Link da TV copiado!');}catch(e){prompt('Link da TV:',u);}" style="background:rgba(255,255,255,.15);color:#fff;border:0;font-weight:700;font-size:.8rem;border-radius:18px;padding:.4rem .9rem;cursor:pointer">&#128279; Copiar link</button></div>
   <div class="card">
     <div class="row"><div><label>T&#237;tulo</label><input id="clt-tit" placeholder="Culto de Domingo"></div><div><label>Data</label><input type="date" id="clt-dt"></div></div>
-    <label>Relato</label><textarea id="clt-rel" rows="3"></textarea>
+    <label>Descri&#231;&#227;o</label><textarea id="clt-rel" rows="3"></textarea>
     <input type="file" id="clt-f1" accept="image/*,video/*" multiple style="display:none" onchange="cltUp(this)">
     <input type="file" id="clt-f2" accept="image/*" capture="environment" style="display:none" onchange="cltUp(this)">
     <label>&#128206; Fotos/V&#237;deos</label>
@@ -835,7 +836,7 @@ Acesse a qualquer hora, do seu celular"></textarea>
     <div id="clt-pv" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:.6rem"></div>
     <label>&#128279; Ou cole links do YouTube (um por linha, opcional)</label><textarea id="clt-urls" rows="2" placeholder="https://youtu.be/..."></textarea>
     <div style="display:flex;align-items:center;gap:.6rem;margin-top:.8rem;flex-wrap:wrap">
-      <button type="button" class="btn bs" onclick="addClt()">&#128228; Publicar</button>
+      <button type="button" class="btn bs" onclick="addClt()" style="background:#ff0000">&#128228; Publicar na TV</button>
       <button type="button" class="btn bsm" style="background:#f59e0b;color:#fff" onclick="retentarTodasFalhasClt()">&#128260; Reenviar Falhas</button>
       <button type="button" class="btn bsm" style="background:#64748b;color:#fff" onclick="limClt()">&#128465; Limpar</button>
       <span id="clt-cnt" style="font-size:.78rem;color:var(--muted)"></span>
@@ -856,6 +857,7 @@ Acesse a qualquer hora, do seu celular"></textarea>
       <div class="upbox" onclick="document.getElementById('pas-f2').click()"><span>&#128247;</span><p>C&#226;mera Foto</p><input type="file" id="pas-f2" accept="image/*" capture="environment" style="display:none" onchange="upMd(this,'pas')"></div>
       <div class="upbox" onclick="pasAbrirWebcam()" style="cursor:pointer"><span>&#127916;</span><p>Gravar V&#237;deo</p></div>
     </div>
+    <button type="button" class="btn bs" onclick="pasAbrirTeleprompter()" style="width:100%;margin-bottom:.5rem;background:#1E3A5F;color:#fff">&#127916; Gravar com Teleprompter</button>
     <div class="prevw" id="pas-pv"></div>
     <div id="pas-upload-sts" style="display:none;font-size:.78rem;color:var(--azul2);padding:.3rem 0;font-weight:600"></div>
     <label>&#128279; Link YouTube</label><input id="pas-url" placeholder="https://youtu.be/...">
@@ -1314,6 +1316,24 @@ async function comprimirVideoArquivo(file,onStatus){
 var LIMITE_PULA_COMPACTACAO=10*1024*1024;
 /* ── Gravação ao vivo com limite de tempo (evita vídeo gigante desde a origem) ── */
 var GRV_LIMITE_SEG=60;
+function pasAbrirTeleprompter(){
+  if(document.getElementById('tp-overlay'))return;
+  var ov=document.createElement('div');ov.id='tp-overlay';
+  ov.style.cssText='position:fixed;inset:0;z-index:99998;background:#000;display:flex;flex-direction:column';
+  ov.innerHTML='<button type="button" onclick="pasFecharTeleprompter()" style="align-self:flex-end;margin:6px 8px;padding:.45rem .9rem;border:0;border-radius:20px;background:#e53e3e;color:#fff;font-weight:700;cursor:pointer">\u2715 Fechar</button><iframe src="gravador-obpc.html?embed=1" allow="camera; microphone; autoplay; fullscreen; display-capture" style="flex:1;border:0;width:100%;background:#000"></iframe>';
+  document.body.appendChild(ov);
+}
+function pasFecharTeleprompter(){var ov=document.getElementById('tp-overlay');if(ov&&ov.parentNode)ov.parentNode.removeChild(ov);}
+window.addEventListener('message',function(ev){
+  var d=ev.data;if(!d||d.tipo!=='obpc-gravacao'||!d.blob)return;
+  if(location.protocol!=='file:'&&ev.origin!==location.origin)return;
+  pasFecharTeleprompter();
+  var ext=/mp4/.test(d.blob.type)?'mp4':'webm';
+  var file=new File([d.blob],'palavra-'+Date.now()+'.'+ext,{type:d.blob.type||'video/webm'});
+  var dt=new DataTransfer();dt.items.add(file);
+  var inp=document.getElementById('pas-f2');
+  if(inp){inp.files=dt.files;upMd(inp,'pas');if(typeof showToast==='function')showToast('\u2B06\uFE0F Enviando o v\u00eddeo da Palavra... aguarde a miniatura e clique em Publicar.');}
+});
 var _grvStream=null,_grvRec=null,_grvChunks=[],_grvTimer=null,_grvCtx='clt';
 function grvAbrir(ctx){
   _grvCtx=ctx;

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TV OBPC São Fernando</title>
+<meta name="theme-color" content="#0F4A34">
+<meta name="description" content="Vídeos e fotos dos cultos da OBPC Jardim São Fernando">
+<meta property="og:title" content="TV OBPC São Fernando"><meta property="og:description" content="Vídeos e fotos dos nossos cultos"><meta property="og:image" content="https://obpcsaofernando199-sudo.github.io/Obpc/og-banner.png">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<script>try{var _t=localStorage.getItem('tvob_theme');if(_t)document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script>
+<style>
+:root{--sans:Roboto,'Helvetica Neue',Arial,system-ui,sans-serif;--bg:#FAF3E4;--tx:#132420;--mut:#5C6E68;--sf:#EFE6D0;--bd:rgba(20,74,58,.18);--ac:#14442E;--ouro:#C98A2E;--yt:#FF0000;--card:#fff;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0B1F18;--tx:#F4EEDD;--mut:#A9BDB4;--sf:#16352A;--bd:#24473A;--ac:#E8B84E;--ouro:#E8B84E;--card:#16352A;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0B1F18;--tx:#F4EEDD;--mut:#A9BDB4;--sf:#16352A;--bd:#24473A;--ac:#E8B84E;--ouro:#E8B84E;--card:#16352A;color-scheme:dark}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 64px);-webkit-text-size-adjust:100%}
+*{box-sizing:border-box}
+body{margin:0;max-width:100%;overflow-x:hidden;background:var(--bg);color:var(--tx);font:14px/20px var(--sans)}
+button,input{font:inherit;-webkit-tap-highlight-color:transparent}
+.hide{display:none!important}
+.top{border-bottom:3px solid var(--ouro);position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--bg);display:flex;align-items:center;gap:12px;min-height:56px;padding:0 16px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:11}
+.brand{display:flex;align-items:center;gap:8px;color:var(--tx);text-decoration:none;flex:none;cursor:pointer}
+.lg{width:32px;height:32px;border-radius:50%;background:#0F4A34 center/cover;display:grid;place-items:center;font-size:17px}
+.brand h1{margin:0;font:700 19px/1 var(--sans);letter-spacing:-.8px}
+.sr{display:flex;flex:1 1 auto;max-width:640px;min-width:0;margin:0 auto}
+.sr input{flex:1;min-width:0;height:40px;padding:0 16px;border:1px solid var(--bd);border-radius:20px;background:var(--bg);color:var(--tx);font-size:16px;outline:0;-webkit-appearance:none}
+.sr input:focus{border-color:var(--ac)}
+.ib{width:40px;height:40px;border:0;border-radius:50%;background:none;color:var(--tx);cursor:pointer;font-size:18px;flex:none}
+.ib:hover{background:var(--sf)}
+.chips{display:flex;gap:12px;overflow-x:auto;padding:8px 16px 12px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;height:32px;padding:0 12px;border:0;border-radius:8px;background:var(--sf);color:var(--tx);font-weight:500;cursor:pointer}
+.chip.on{background:var(--ac);color:var(--bg)}
+.yt{background:var(--yt);color:#fff;border-radius:6px;font-size:10px;line-height:1;padding:5px 8px 5px 9px;margin-right:-2px}
+.th{box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.th .bd.v{background:var(--yt)}
+.th::after{content:"";position:absolute;left:0;bottom:0;height:3px;width:100%;background:linear-gradient(90deg,var(--yt) 0 35%,transparent 35%)}
+.grid{display:grid;gap:24px 16px;padding:8px 16px 40px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+.card{cursor:pointer}
+.th{position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#000}
+.th img,.th video{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.bd{position:absolute;right:6px;bottom:6px;background:rgba(0,0,0,.8);color:#fff;font-size:12px;font-weight:500;padding:1px 5px;border-radius:4px}
+.ct{display:flex;gap:12px;margin-top:12px}
+.ct .lg{flex:none}
+.tt{font-weight:500;font-size:16px;line-height:22px;margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.mt{color:var(--mut);font-size:13px;margin-top:2px}
+.empty{padding:60px 16px;text-align:center;color:var(--mut)}
+.watch{max-width:1100px;margin:0 auto;padding:0 0 40px}
+.pl{background:#000;aspect-ratio:16/9;width:100%}
+.pl video,.pl iframe{width:100%;height:100%;border:0;display:block;background:#000}
+.ph{display:flex;gap:6px;overflow-x:auto;padding:8px 16px}
+.ph img,.ph video{height:64px;aspect-ratio:16/9;object-fit:cover;border-radius:8px;cursor:pointer;opacity:.6;flex:none}
+.ph .on{opacity:1;outline:2px solid var(--ac)}
+.info{padding:12px 16px}
+.info h2{margin:0 0 4px;font:700 20px/28px var(--sans)}
+.rel{white-space:pre-wrap;margin-top:12px;background:var(--sf);border-radius:12px;padding:12px}
+.act{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.b{height:36px;padding:0 16px;border:0;border-radius:18px;background:var(--sf);color:var(--tx);font-weight:500;cursor:pointer}
+.b.p{background:#25D366;color:#fff}
+.b.r{background:var(--yt);color:#fff}
+.info h2{border-left:4px solid var(--ouro);padding-left:10px}
+#msg{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#323232;color:#fff;padding:10px 16px;border-radius:8px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:20}
+#msg.on{opacity:1}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="brand" onclick="goHome()"><div class="lg" id="lg">⛪</div><span class="yt">▶</span><h1>TV OBPC</h1></a>
+  <div class="sr"><input id="q" type="search" placeholder="Pesquisar" oninput="Q=this.value;render()"></div>
+  <button class="ib" id="th" title="Tema" aria-label="Alternar tema">◐</button>
+</header>
+<main id="home"><div class="chips" id="chips"></div><div class="grid" id="grid"></div><div class="empty hide" id="empty">Nenhum vídeo ou foto por aqui ainda.</div></main>
+<main id="watch" class="watch hide"></main>
+<div id="msg"></div>
+<script>
+var FB='https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com/obpc/',SITE='https://obpcsaofernando199-sudo.github.io/Obpc/',DIAS=45;
+var ITEMS=[],Q='',CHIP='all',NOME='OBPC Jardim São Fernando';
+function $(i){return document.getElementById(i);}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function toast(m){var e=$('msg');e.textContent=m;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(function(){e.classList.remove('on');},2200);}
+function ytId(u){var m=String(u||'').match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{11})/);return m?m[1]:'';}
+function fmtData(d,ts){var x=d?new Date(d+'T12:00'):(ts?new Date(ts):null);return x&&!isNaN(x)?x.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'}):'';}
+function lerLocal(k){try{return JSON.parse(localStorage.getItem(k)||'null');}catch(e){return null;}}
+function norm(c,i){
+  var ms=(c.midias||c.midia||(c.fotos||[]).map(function(f){return {tp:'img',src:f};})).filter(function(m){var s=m&&m.src||'';return s&&!/^(idb:|blob:|mem:)/.test(s);}).map(function(m){return {k:m.tp==='video'?'v':'i',src:m.src};});
+  (c.urls||[]).forEach(function(u){var id=ytId(u);if(id)ms.push({k:'y',id:id,src:u});});
+  return {id:'c'+(c.ts||i),ts:c.ts||0,t:c.tit||c.titulo||'Momento do culto',d:c.dt||c.data||'',r:c.rel||c.relato||'',m:ms};
+}
+function carregar(){
+  var local=lerLocal('obpc_cultos');if(Array.isArray(local))set(local);
+  fetch(FB+'cultos.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(fb){
+    if(Array.isArray(fb)){set(fb);try{localStorage.setItem('obpc_cultos',JSON.stringify(fb));}catch(e){}}
+  }).catch(function(){}).then(function(){render();onHash();});
+  fetch(FB+'info.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(i){
+    if(!i)return;if(i.nome){NOME=i.nome;}var l=i.logoB64||i.logo;if(l){var e=$('lg');e.textContent='';e.style.backgroundImage='url("'+l+'")';}
+  }).catch(function(){});
+}
+function set(l){
+  var now=Date.now(),vis={};
+  ITEMS=l.filter(function(c){return c&&(!c.ts||(now-c.ts)/864e5<=DIAS);}).map(norm).filter(function(v){if(!v.m.length||vis[v.id])return false;vis[v.id]=1;return true;});
+  ITEMS.sort(function(a,b){return b.ts-a.ts;});
+  render();
+}
+function temVideo(v){return v.m.some(function(x){return x.k!=='i';});}
+function matches(v){
+  var q=Q.trim().toLowerCase();if(q&&(v.t+' '+v.r).toLowerCase().indexOf(q)<0)return false;
+  if(CHIP==='v')return temVideo(v);if(CHIP==='f')return !temVideo(v);return true;
+}
+function thumb(v){
+  var m=v.m[0],th=document.createElement('div');th.className='th';
+  if(m.k==='y')th.innerHTML='<img loading="lazy" src="https://i.ytimg.com/vi/'+m.id+'/mqdefault.jpg" alt="">';
+  else if(m.k==='v')th.innerHTML='<video preload="metadata" muted playsinline src="'+esc(m.src)+'#t=0.5"></video>';
+  else th.innerHTML='<img loading="lazy" src="'+esc(m.src)+'" alt="">';
+  var n=v.m.length,b=document.createElement('span');b.className='bd'+(temVideo(v)?' v':'');b.textContent=temVideo(v)?'▶ '+(n>1?n+' itens':'Vídeo'):'📷 '+n+(n>1?' fotos':' foto');th.appendChild(b);return th;
+}
+function renderChips(){
+  var d=[['all','Tudo'],['v','Vídeos'],['f','Fotos']],c=$('chips');c.innerHTML='';
+  d.forEach(function(x){var b=document.createElement('button');b.className='chip'+(CHIP===x[0]?' on':'');b.textContent=x[1];b.onclick=function(){CHIP=x[0];render();};c.appendChild(b);});
+}
+function render(){
+  renderChips();var g=$('grid');g.innerHTML='';var l=ITEMS.filter(matches);
+  $('empty').classList.toggle('hide',l.length>0);
+  l.forEach(function(v){
+    var c=document.createElement('div');c.className='card';c.appendChild(thumb(v));
+    var t=document.createElement('div');t.className='ct';
+    t.innerHTML='<div class="lg">⛪</div><div><h3 class="tt">'+esc(v.t)+'</h3><div class="mt">'+esc(NOME)+'</div><div class="mt">'+esc(fmtData(v.d,v.ts))+'</div></div>';
+    c.appendChild(t);c.onclick=function(){location.hash=v.id;};g.appendChild(c);
+  });
+}
+function link(v){return SITE+'tv-obpc.html#'+v.id;}
+function show(v){
+  $('home').classList.add('hide');var w=$('watch');w.classList.remove('hide');window.scrollTo(0,0);
+  w.innerHTML='<div class="pl" id="pl"></div><div class="ph" id="ph"></div><div class="info"><h2>'+esc(v.t)+'</h2><div class="mt">'+esc(NOME)+' · '+esc(fmtData(v.d,v.ts))+'</div><div class="act"><button class="b p" id="bw">✆ WhatsApp</button><button class="b r" id="bs">↗ Compartilhar</button><button class="b" id="bc">🔗 Copiar link</button><button class="b" onclick="goHome()">← Voltar</button></div>'+(v.r?'<div class="rel">'+esc(v.r)+'</div>':'')+'</div>';
+  var tx='📺 '+v.t+' — TV OBPC São Fernando',L=link(v);
+  $('bw').onclick=function(){window.open('https://wa.me/?text='+encodeURIComponent(tx+'\n'+L),'_blank');};
+  $('bs').onclick=function(){if(navigator.share)navigator.share({title:v.t,text:tx,url:L}).catch(function(){});else cp(L);};
+  $('bc').onclick=function(){cp(L);};
+  var ph=$('ph');if(v.m.length<2)ph.classList.add('hide');
+  v.m.forEach(function(m,i){
+    var e=m.k==='y'?'<img src="https://i.ytimg.com/vi/'+m.id+'/mqdefault.jpg" alt="">':m.k==='v'?'<video preload="metadata" muted playsinline src="'+esc(m.src)+'#t=0.5"></video>':'<img src="'+esc(m.src)+'" alt="">';
+    var d=document.createElement('div');d.style.display='contents';d.innerHTML=e;var n=d.firstChild;n.onclick=function(){play(v,i);};ph.appendChild(n);
+  });
+  play(v,0);
+}
+function play(v,i){
+  var m=v.m[i],p=$('pl');
+  [].forEach.call($('ph').children,function(n,j){n.classList.toggle('on',j===i);});
+  if(m.k==='y')p.innerHTML='<iframe src="https://www.youtube.com/embed/'+m.id+'?autoplay=1&rel=0" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
+  else if(m.k==='v')p.innerHTML='<video controls autoplay playsinline src="'+esc(m.src)+'"></video>';
+  else p.innerHTML='<img src="'+esc(m.src)+'" alt="" style="width:100%;height:100%;object-fit:contain">';
+}
+function cp(t){try{navigator.clipboard.writeText(t).then(function(){toast('Link copiado!');});}catch(e){toast(t);}}
+function goHome(){if(location.hash)location.hash='';else onHash();}
+function onHash(){
+  var id=(location.hash||'').slice(1),v=ITEMS.filter(function(x){return x.id===id;})[0];
+  if(v)show(v);else{$('watch').classList.add('hide');$('watch').innerHTML='';$('home').classList.remove('hide');}
+}
+window.addEventListener('hashchange',onHash);
+$('th').onclick=function(){var r=document.documentElement,d=getComputedStyle(r).colorScheme==='dark',n=d?'light':'dark';r.setAttribute('data-theme',n);try{localStorage.setItem('tvob_theme',n);}catch(e){}};
+carregar();
+</script>
+</body>
+</html>
