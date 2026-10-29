@@ -1790,6 +1790,29 @@ async function bnrUpMidia(inp){
 function bnrLimparMidia(){_bnrMidia=null;_bnrBgUrl='';var bg=document.getElementById('bnr-prev-bg');if(bg){bg.innerHTML='';bg.style.backgroundImage='';}var pv=document.getElementById('bnr-up-pv');if(pv)pv.innerHTML='';var inp=document.getElementById('bnr-bg-url');if(inp)inp.value='';}
 function bnrLimpar(){['bnr-badge','bnr-tit','bnr-sub','bnr-dt','bnr-hora','bnr-loc','bnr-cta'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});bnrLimparMidia();bnrAtualiza();}
 function _bnrStatus(ok,cod){var msg=ok?'✅ Destaque publicado no site!':'❌ NÃO publicado no site ('+cod+') — ficou salvo só neste aparelho. Tente de novo.';showToast(msg);var el=document.getElementById('bnr-ok');if(el){el.style.display='block';el.style.color=ok?'var(--verde)':'#e74c3c';el.textContent=msg;setTimeout(function(){el.style.display='none';el.style.color='var(--verde)';},ok?3500:8000);}}
+
+/* ═══ STATUS DO SITE: confirma no servidor se a Palavra / TV já estão no ar ═══ */
+var SITE_PUB='https://obpcsaofernando199-sudo.github.io/Obpc/';
+var SITE_ST={palavras:{aba:'aba-pas',nome:'Palavra do Pastor'},cultos:{aba:'aba-clt',nome:'TV OBPC'}};
+function _siteUrl(k){return k==='palavras'?SITE_PUB+'?s=palavra&v='+Date.now():SITE_PUB+'tv-obpc.html?v='+Date.now();}
+function _siteMostra(k,cor,html){var b=document.getElementById('site-status-'+k);if(!b)return;b.style.cssText='display:block;margin:0 0 .8rem;padding:.7rem .9rem;border-radius:10px;font-size:.84rem;line-height:1.5;border:1.5px solid '+cor+';background:'+cor+'18;color:#1a2535';b.innerHTML=html+'<div style="margin-top:.5rem;display:flex;gap:.5rem;flex-wrap:wrap"><button type="button" class="btn bsm bp" onclick="siteConferirAgora(\''+k+'\')">🔄 Conferir agora</button><button type="button" class="btn bsm bs" onclick="window.open(_siteUrl(\''+k+'\'),\'_blank\')">👁 Ver no site</button></div>';}
+function _siteLista(fb){return Array.isArray(fb)?fb.filter(Boolean):(fb&&typeof fb==='object'?Object.keys(fb).map(function(x){return fb[x];}):[]);}
+function siteConferir(k,enviado,esperado){
+  var nome=SITE_ST[k].nome;
+  if(enviado===false){_siteMostra(k,'#e74c3c','❌ <b>NÃO chegou ao site</b> — a mudança em "'+nome+'" ficou só neste aparelho. Verifique a internet e salve de novo.');return;}
+  _siteMostra(k,'#3B9BD6','⏳ Conferindo no servidor...');
+  fetch(FB+'/'+k+'.json?x='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(fb){
+    var l=_siteLista(fb),hh=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    var tits=l.slice(0,3).map(function(o){return '• '+(o.tit||o.titulo||'(sem título)');}).join('<br>');
+    var ok=true;if(esperado){ok=l.length===esperado.length&&(!l[0]||!esperado[0]||l[0].ts===esperado[0].ts);}
+    if(ok)_siteMostra(k,'#27ae60','✅ <b>No ar no site</b> (conferido às '+hh+') — '+l.length+' item(ns) em "'+nome+'".<br><small>Mais recentes:</small><br>'+tits+'<br><small>Se o site ainda mostrar o antigo, é o celular guardando a página: o botão abaixo já abre atualizada.</small>');
+    else _siteMostra(k,'#e67e22','⚠️ O servidor ainda não mostra a última mudança. Aguarde alguns segundos e toque em Conferir agora.');
+  }).catch(function(){_siteMostra(k,'#e67e22','⚠️ Não consegui falar com o servidor agora. Toque em Conferir agora.');});
+}
+function siteConferirAgora(k){siteConferir(k,true,null);}
+(function(){var o=DB.s;DB.s=function(k,v){var p=o.apply(DB,arguments);if(SITE_ST[k]){Promise.resolve(p).then(function(r){siteConferir(k,!!r,Array.isArray(v)?v:null);});}return p;};})();
+function siteStatusInit(){Object.keys(SITE_ST).forEach(function(k){var a=document.getElementById(SITE_ST[k].aba);if(!a||document.getElementById('site-status-'+k))return;var h=a.querySelector('h2');var d=document.createElement('div');d.id='site-status-'+k;if(h&&h.nextSibling)h.parentNode.insertBefore(d,h.nextSibling);else a.insertBefore(d,a.firstChild);_siteMostra(k,'#6b7a90','📡 <b>Site:</b> depois de salvar, aparece aqui se já está no ar. Toque em Conferir para ver o que o público vê agora.');});}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',siteStatusInit);else siteStatusInit();
 function bnrSalvar(){
   // Bloquear publicação se a mídia só existe localmente (idb:/blob:) — não vai funcionar no site
   if(_bnrBgUrl&&(_bnrBgUrl.startsWith('idb:')||_bnrBgUrl.startsWith('blob:')||_bnrBgUrl.startsWith('mem:'))){
