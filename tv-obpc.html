@@ -146,10 +146,27 @@ function render(){
   });
 }
 function link(v){return SITE+'tv-obpc.html#'+v.id;}
+/* Prévia de compartilhamento com a imagem do vídeo (em vez da logo): usa o mesmo Worker do site */
+var OGW='https://obpc-og.obpcsaofernando199.workers.dev';
+function thumb(v){
+  var i,m,s;
+  for(i=0;i<v.m.length;i++){m=v.m[i];if(m.k==='y')return 'https://i.ytimg.com/vi/'+m.id+'/hqdefault.jpg';}
+  for(i=0;i<v.m.length;i++){m=v.m[i];s=m.src||'';if(m.k==='v'&&s.indexOf('/video/upload/')>-1)return s.replace('/video/upload/','/video/upload/so_2,w_1200,q_auto/').replace(/\.(mp4|mov|webm|avi|3gp|m4v)(\?.*)?$/i,'.jpg');}
+  for(i=0;i<v.m.length;i++){m=v.m[i];s=m.src||'';if(m.k==='i'&&/^https?:/.test(s))return(s.indexOf('/image/upload/')>-1&&!/\/upload\/[^\/]*(w_\d+|f_jpg)/.test(s))?s.replace('/image/upload/','/image/upload/c_limit,w_1200,q_auto,f_jpg/'):s;}
+  return '';
+}
+function hsh(str){var h1=0xdeadbeef,h2=0x41c6ce57;for(var i=0;i<str.length;i++){var ch=str.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);}h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);return(4294967296*(2097151&h2)+(h1>>>0)).toString(36);}
+function shareLink(v){
+  var img=thumb(v),L=link(v);if(!img)return L;
+  var rec={s:'tv',id:String(v.id),t:String(v.t||'').slice(0,120),d:String(v.r||'').replace(/\s+/g,' ').slice(0,220),i:img,u:L};
+  var code=hsh(JSON.stringify(rec));
+  try{fetch(FB+'links/'+code+'.json',{method:'PUT',body:JSON.stringify(rec),keepalive:true}).catch(function(){});}catch(e){}
+  return OGW+'/'+code;
+}
 function show(v){
   $('home').classList.add('hide');var w=$('watch');w.classList.remove('hide');window.scrollTo(0,0);
   w.innerHTML='<div class="pl" id="pl"></div><div class="ph" id="ph"></div><div class="info"><h2>'+esc(v.t)+'</h2><div class="mt">'+esc(NOME)+' · '+esc(fmtData(v.d,v.ts))+'</div><div class="act"><button class="b p" id="bw">✆ WhatsApp</button><button class="b r" id="bs">↗ Compartilhar</button><button class="b" id="bc">🔗 Copiar link</button><button class="b" onclick="goHome()">← Voltar</button></div>'+(v.r?'<div class="rel">'+esc(v.r)+'</div>':'')+'</div>';
-  var tx=(v.p?'🎤 ':'📺 ')+v.t+' — TV OBPC São Fernando',L=link(v);
+  var tx=(v.p?'🎤 ':'📺 ')+v.t+' — TV OBPC São Fernando',L=shareLink(v);
   $('bw').onclick=function(){window.open('https://wa.me/?text='+encodeURIComponent(tx+'\n'+L),'_blank');};
   $('bs').onclick=function(){if(navigator.share)navigator.share({title:v.t,text:tx,url:L}).catch(function(){});else cp(L);};
   $('bc').onclick=function(){cp(L);};
