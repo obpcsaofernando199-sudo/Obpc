@@ -1318,6 +1318,7 @@ async function comprimirVideoArquivo(file,onStatus){
 var LIMITE_PULA_COMPACTACAO=10*1024*1024;
 /* ── Gravação ao vivo com limite de tempo (evita vídeo gigante desde a origem) ── */
 var GRV_LIMITE_SEG=60;
+function grvFmt(n){n=Math.max(0,n|0);return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0');}
 function pasMidiasHtml(p,i){
   var ms=p.midias||[];if(!ms.length)return '';
   return '<div style="display:flex;flex-wrap:wrap;gap:6px;margin:.4rem 0">'+ms.map(function(m,j){
@@ -1332,6 +1333,12 @@ function delMidiaPub(key,i,j){
   l[i].midias.splice(j,1);DB.s(key,l);
   if(key==='cultos'){if(typeof _rndCltPinta==='function')_rndCltPinta();}else rndPas();
   showToast('🗑️ Mídia excluída!');
+}
+function pasLimparTexto(i){
+  var l=DB.g('palavras')||[];if(!l[i])return;
+  if(!confirm('Remover o texto público desta Palavra do site? O título e o vídeo continuam. O texto fica guardado como roteiro só neste aparelho.'))return;
+  try{if(l[i].ts&&l[i].txt&&!_roteiroLer('p'+l[i].ts))_roteiroGravar('p'+l[i].ts,l[i].txt);}catch(e){}
+  l[i].txt='';DB.s('palavras',l);rndPas();showToast('🧹 Texto removido do site.');
 }
 function pasUrgente(i){
   var l=DB.g('palavras')||[];if(!l[i])return;
@@ -1414,10 +1421,10 @@ function grvAbrir(ctx){
   }
   var overlay=document.createElement('div');
   overlay.id='grv-overlay';
-  overlay.style.cssText='position:fixed;inset:0;background:#000;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;';
-  overlay.innerHTML='<video id="grv-video" autoplay muted playsinline style="width:100%;max-height:70vh;object-fit:contain;background:#111"></video>'+
-    '<div style="padding:1rem;text-align:center;width:100%;background:#000">'+
-    '<div id="grv-timer" style="color:#fff;font-size:1.6rem;font-weight:800;margin-bottom:.8rem">⏱️ 00:'+String(GRV_LIMITE_SEG).padStart(2,'0')+'</div>'+
+  overlay.style.cssText='position:fixed;inset:0;background:#000;z-index:99999;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;';
+  overlay.innerHTML='<div style="position:relative;flex:1 1 auto;min-height:0;width:100%;background:#111"><video id="grv-video" autoplay muted playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:contain;background:#111"></video>'+
+    '<div id="grv-timer" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2;pointer-events:none;color:#fff;font-size:2.4rem;font-weight:800;line-height:1;padding:.5rem 1.1rem;border-radius:50px;background:rgba(0,0,0,.45);text-shadow:0 1px 6px #000;font-variant-numeric:tabular-nums;white-space:nowrap">⏱️ '+grvFmt(GRV_LIMITE_SEG)+'</div></div>'+
+    '<div style="flex:none;padding:.8rem 1rem calc(.8rem + env(safe-area-inset-bottom,0px));text-align:center;width:100%;background:#000">'+
     '<div style="display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap">'+
     '<button id="grv-btn-start" onclick="grvIniciar()" style="padding:.8rem 1.6rem;border-radius:50px;border:none;background:#e53e3e;color:#fff;font-weight:800;font-size:1rem;cursor:pointer">🔴 Iniciar Gravação</button>'+
     '<button id="grv-btn-stop" onclick="grvParar()" style="display:none;padding:.8rem 1.6rem;border-radius:50px;border:none;background:#fff;color:#e53e3e;font-weight:800;font-size:1rem;cursor:pointer">⏹️ Parar e Usar</button>'+
@@ -1446,10 +1453,10 @@ function grvIniciar(){
   document.getElementById('grv-btn-stop').style.display='inline-block';
   var restante=GRV_LIMITE_SEG;
   var timerEl=document.getElementById('grv-timer');
-  timerEl.textContent='⏱️ 00:'+String(restante).padStart(2,'0');
+  timerEl.textContent='⏱️ '+grvFmt(restante);
   _grvTimer=setInterval(function(){
     restante--;
-    if(timerEl)timerEl.textContent='⏱️ 00:'+String(Math.max(0,restante)).padStart(2,'0');
+    if(timerEl)timerEl.textContent='⏱️ '+grvFmt(restante);
     if(restante<=0){grvParar();}
   },1000);
 }
@@ -1739,7 +1746,7 @@ function addPas(){
   }
   var _tsN=Date.now();var l=DB.g('palavras')||[];var url=document.getElementById('pas-url').value||'';l.unshift({tit:document.getElementById('pas-tit').value,dt:document.getElementById('pas-dt').value,aut:document.getElementById('pas-aut').value,txt:document.getElementById('pas-txt').value,url:url,midias:(_md.pas||[]).slice(),ts:_tsN});var _rn=_roteiroLer('novo');if(_rn){_roteiroGravar('p'+_tsN,_rn);_roteiroGravar('novo','');}DB.s('palavras',l).then(function(r){if(r)showToast('✅ Publicado no site!');});_md.pas=[];['pas-tit','pas-txt','pas-url'].forEach(function(id){document.getElementById(id).value='';});document.getElementById('pas-pv').innerHTML='';rndPas();
 }
-function rndPas(){var l=DB.g('palavras')||[];var c=document.getElementById('lista-pas');if(!c)return;c.innerHTML=l.map(function(p,i){return '<div class="card" style="margin-bottom:.5rem"><div style="font-weight:700;font-size:.88rem">'+(p.urg?'<span style="background:#e11d48;color:#fff;font-size:.65rem;font-weight:800;border-radius:4px;padding:2px 6px;margin-right:6px">🚨 URGENTE</span>':'')+p.tit+'</div><div style="font-size:.78rem;color:var(--muted);margin:.2rem 0">'+p.aut+' | '+p.dt+'</div><p style="font-size:.82rem;margin:.3rem 0">'+p.txt+'</p>'+pasMidiasHtml(p,i)+'<div style="text-align:right;margin-top:.4rem;display:flex;gap:.3rem;flex-wrap:wrap;justify-content:flex-end"><button class="btn bd bsm" onclick="del(\'palavras\','+i+',rndPas)">&#128465; Excluir</button><button class="btn bsm" style="background:'+(p.urg?'#64748b':'#e11d48')+';color:#fff" onclick="pasUrgente('+i+')">'+(p.urg?'Tirar urgente':'🚨 Urgente')+'</button><button class="btn bsm" style="background:#1E3A5F;color:#fff" onclick="edtPas('+i+')">&#9998; Editar</button> <button class="btn bsm" style="background:#0F4A34;color:#fff" onclick="edtPasEstudio('+i+')">&#127916; Est&#250;dio</button> <button class="btn bsm" style="background:#25D366;color:#fff" onclick="pasCompTV('+i+')">&#128228; TV</button></div></div>';}).join('');}
+function rndPas(){var l=DB.g('palavras')||[];var c=document.getElementById('lista-pas');if(!c)return;c.innerHTML=l.map(function(p,i){return '<div class="card" style="margin-bottom:.5rem"><div style="font-weight:700;font-size:.88rem">'+(p.urg?'<span style="background:#e11d48;color:#fff;font-size:.65rem;font-weight:800;border-radius:4px;padding:2px 6px;margin-right:6px">🚨 URGENTE</span>':'')+p.tit+'</div><div style="font-size:.78rem;color:var(--muted);margin:.2rem 0">'+p.aut+' | '+p.dt+'</div>'+(p.txt?'<div style="font-size:.68rem;font-weight:700;color:#b45309;margin-top:.3rem">🌐 Este texto aparece no site (index)</div><p style="font-size:.82rem;margin:.1rem 0 .3rem">'+p.txt+'</p>':'')+pasMidiasHtml(p,i)+'<div style="text-align:right;margin-top:.4rem;display:flex;gap:.3rem;flex-wrap:wrap;justify-content:flex-end">'+(p.txt?'<button class="btn bsm" style="background:#b45309;color:#fff" onclick="pasLimparTexto('+i+')">🧹 Limpar texto do site</button>':'')+'<button class="btn bd bsm" onclick="del(\'palavras\','+i+',rndPas)">&#128465; Excluir</button><button class="btn bsm" style="background:'+(p.urg?'#64748b':'#e11d48')+';color:#fff" onclick="pasUrgente('+i+')">'+(p.urg?'Tirar urgente':'🚨 Urgente')+'</button><button class="btn bsm" style="background:#1E3A5F;color:#fff" onclick="edtPas('+i+')">&#9998; Editar</button> <button class="btn bsm" style="background:#0F4A34;color:#fff" onclick="edtPasEstudio('+i+')">&#127916; Est&#250;dio</button> <button class="btn bsm" style="background:#25D366;color:#fff" onclick="pasCompTV('+i+')">&#128228; TV</button></div></div>';}).join('');}
 function addAnv(){var nm=(document.getElementById('anv-nm').value||'').trim();if(!nm){alert('Informe o nome.');return;}var l=DB.g('aniversariantes')||[];var gen=document.getElementById('anv-gen')?document.getElementById('anv-gen').value:'m';l.push({nm:nm,dt:document.getElementById('anv-dt').value,fn:document.getElementById('anv-fn').value,tel:document.getElementById('anv-tel').value,foto:_i['anv-foto']||'',gen:gen});DB.s('aniversariantes',l);_i['anv-foto']='';['anv-nm','anv-tel','anv-fn'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});var dtEl=document.getElementById('anv-dt');if(dtEl)dtEl.value='';document.getElementById('anv-foto-pv').innerHTML='';showToast('🎂 Cadastrado!');rndAnv();}
 function rndAnv(){var l=DB.g('aniversariantes')||[];var c=document.getElementById('lista-anv');if(!c)return;var hoje=new Date();var hM=hoje.getMonth();var hD=hoje.getDate();c.innerHTML=l.map(function(a,i){var niver='';var dt=a.dt||'';var nm=a.nm||'';if(dt){var p=dt.split('-');var dM=parseInt(p[1])-1;var dD=parseInt(p[2]);if(dM===hM&&dD===hD)niver='🎉 HOJE!';}return '<div style="background:#fff;border-radius:10px;padding:.9rem;box-shadow:0 1px 5px rgba(0,0,0,.07);text-align:center">'+(niver?'<div style="background:#fff9c4;color:#e65100;font-size:.7rem;font-weight:700;border-radius:20px;padding:2px 8px;margin-bottom:.3rem">'+niver+'</div>':'')+'<img src="'+(a.foto||'https://ui-avatars.com/api/?name='+encodeURIComponent(nm)+'&background=1E3A5F&color=fff')+'" style="width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid var(--azul2);margin-bottom:.4rem"><div style="font-weight:700;font-size:.83rem">'+nm+'</div><div style="font-size:.72rem;color:var(--azul2)">'+a.fn+'</div>'+(dt?'<div style="font-size:.7rem;color:var(--muted);margin-top:.2rem">'+dt.split('-').reverse().join('/')+'</div>':'')+'<button class="btn bd bsm" style="margin-top:.4rem" onclick="del(\'aniversariantes\','+i+',rndAnv)">&#128465;</button><button class="btn bsm" style="background:#1E3A5F;color:#fff;padding:.3rem .6rem" onclick="edtAnv('+i+')">&#9998;</button></div>';}).join('');}
 function addOb(){var l=DB.g('obreiros')||[];l.push({nm:document.getElementById('ob-nm').value,fn:document.getElementById('ob-fn').value,tel:document.getElementById('ob-tel').value,foto:_i['ob-foto']||''});DB.s('obreiros',l);_i['ob-foto']='';['ob-nm','ob-tel'].forEach(function(id){document.getElementById(id).value='';});document.getElementById('ob-foto-pv').innerHTML='';rndOb();}
