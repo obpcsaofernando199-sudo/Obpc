@@ -851,7 +851,7 @@ Acesse a qualquer hora, do seu celular"></textarea>
   <div class="card">
     <div class="row"><div><label>T&#237;tulo</label><input id="pas-tit" placeholder="Palavra de F&#233;"></div><div><label>Data</label><input type="date" id="pas-dt"></div></div>
     <label>Pastor</label><input id="pas-aut" placeholder="Pr. Sergio">
-    <label>Texto <span style="font-weight:400">(edite no Est&#250;dio OBPC &#127916;)</span></label><textarea id="pas-txt" rows="6"></textarea>
+    <label>Texto p&#250;blico <span style="font-weight:400">(opcional &#8212; aparece no site. O roteiro do Est&#250;dio &#233; particular)</span></label><textarea id="pas-txt" rows="6"></textarea>
     <label>&#128206; Foto ou V&#237;deo</label>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;margin-bottom:.5rem">
       <div class="upbox" onclick="document.getElementById('pas-f1').click()"><span>&#128193;</span><p>Arquivos</p><input type="file" id="pas-f1" accept="image/*,video/*" multiple style="display:none" onchange="upMd(this,'pas')"></div>
@@ -1375,19 +1375,19 @@ function _pasAbreOverlay(){
   document.body.appendChild(ov);
 }
 function pasFecharTeleprompter(){var ov=document.getElementById('tp-overlay');if(ov&&ov.parentNode)ov.parentNode.removeChild(ov);}
-function pasTextoAtual(){var l=DB.g('palavras')||[];if(_pasEdIdx!=null&&l[_pasEdIdx])return l[_pasEdIdx].txt||'';var e=document.getElementById('pas-txt');return e?e.value:'';}
-function pasAplicaTexto(txt){
-  if(typeof txt!=='string'||!txt.trim())return;
-  if(_pasEdIdx!=null){var l=DB.g('palavras')||[];if(l[_pasEdIdx]){l[_pasEdIdx].txt=txt;DB.s('palavras',l);rndPas();}}
-  else{var e=document.getElementById('pas-txt');if(e)e.value=txt;}
-}
+/* Roteiro do teleprompter = PARTICULAR: fica só neste aparelho (localStorage 'priv_roteiros'), nunca vai para o Firebase/site */
+function _roteiroKey(){var l=DB.g('palavras')||[];return(_pasEdIdx!=null&&l[_pasEdIdx]&&l[_pasEdIdx].ts)?'p'+l[_pasEdIdx].ts:'novo';}
+function _roteiroLer(k){try{return(JSON.parse(localStorage.getItem('priv_roteiros'))||{})[k]||'';}catch(e){return '';}}
+function _roteiroGravar(k,v){try{var o=JSON.parse(localStorage.getItem('priv_roteiros'))||{};o[k]=v;localStorage.setItem('priv_roteiros',JSON.stringify(o));}catch(e){}}
+function pasTextoAtual(){var t=_roteiroLer(_roteiroKey());if(t)return t;var l=DB.g('palavras')||[];return(_pasEdIdx!=null&&l[_pasEdIdx])?(l[_pasEdIdx].txt||''):'';}
+function pasAplicaTexto(txt){if(typeof txt!=='string'||!txt.trim())return;_roteiroGravar(_roteiroKey(),txt);}
 function edtPasEstudio(i){pasAbrirTeleprompter(i);}
 function pasCompTV(i){var l=DB.g('palavras')||[];var p=l[i];if(!p)return;var u=new URL('tv-obpc.html',location.href).href+'#p'+(p.ts||i);window.open('https://wa.me/?text='+encodeURIComponent('\uD83C\uDFA4 '+(p.tit||'Palavra do Pastor')+' \u2014 TV OBPC S\u00e3o Fernando\n'+u),'_blank');}
 window.addEventListener('message',function(ev){
   var d=ev.data;if(!d||!d.tipo)return;
   if(location.protocol!=='file:'&&ev.origin!==location.origin)return;
   if(d.tipo==='obpc-pronto'){var fr=document.getElementById('tp-frame');if(fr&&fr.contentWindow)fr.contentWindow.postMessage({tipo:'obpc-init',txt:pasTextoAtual()},location.protocol==='file:'?'*':location.origin);return;}
-  if(d.tipo==='obpc-texto'){pasAplicaTexto(d.txt);pasFecharTeleprompter();if(typeof showToast==='function')showToast(_pasEdIdx!=null?'\u2705 Texto salvo na Palavra!':'\u2705 Texto levado para o formul\u00e1rio. Clique em Publicar.');return;}
+  if(d.tipo==='obpc-texto'){pasAplicaTexto(d.txt);pasFecharTeleprompter();if(typeof showToast==='function')showToast('\uD83D\uDD12 Roteiro guardado s\u00f3 neste aparelho (n\u00e3o vai para o site)');return;}
   if(d.tipo!=='obpc-gravacao'||!d.blob)return;
   pasFecharTeleprompter();pasAplicaTexto(d.txt);
   var ext=/mp4/.test(d.blob.type)?'mp4':'webm';
@@ -1737,7 +1737,7 @@ function addPas(){
     var aviso=document.createElement('div');aviso.style.cssText='color:#e53e3e;font-size:.82rem;font-weight:700;margin-top:.5rem;background:#fff5f5;border:1px solid #fed7d7;border-radius:8px;padding:.5rem .8rem';aviso.textContent='❌ NÃO PUBLICADO — '+midiaLocal.length+' foto/vídeo não foi para a nuvem. Use um link do YouTube no campo URL, ou remova as mídias e tente novamente.';if(pv)pv.appendChild(aviso);
     return;
   }
-  var l=DB.g('palavras')||[];var url=document.getElementById('pas-url').value||'';l.unshift({tit:document.getElementById('pas-tit').value,dt:document.getElementById('pas-dt').value,aut:document.getElementById('pas-aut').value,txt:document.getElementById('pas-txt').value,url:url,midias:(_md.pas||[]).slice(),ts:Date.now()});DB.s('palavras',l).then(function(r){if(r)showToast('✅ Publicado no site!');});_md.pas=[];['pas-tit','pas-txt','pas-url'].forEach(function(id){document.getElementById(id).value='';});document.getElementById('pas-pv').innerHTML='';rndPas();
+  var _tsN=Date.now();var l=DB.g('palavras')||[];var url=document.getElementById('pas-url').value||'';l.unshift({tit:document.getElementById('pas-tit').value,dt:document.getElementById('pas-dt').value,aut:document.getElementById('pas-aut').value,txt:document.getElementById('pas-txt').value,url:url,midias:(_md.pas||[]).slice(),ts:_tsN});var _rn=_roteiroLer('novo');if(_rn){_roteiroGravar('p'+_tsN,_rn);_roteiroGravar('novo','');}DB.s('palavras',l).then(function(r){if(r)showToast('✅ Publicado no site!');});_md.pas=[];['pas-tit','pas-txt','pas-url'].forEach(function(id){document.getElementById(id).value='';});document.getElementById('pas-pv').innerHTML='';rndPas();
 }
 function rndPas(){var l=DB.g('palavras')||[];var c=document.getElementById('lista-pas');if(!c)return;c.innerHTML=l.map(function(p,i){return '<div class="card" style="margin-bottom:.5rem"><div style="font-weight:700;font-size:.88rem">'+(p.urg?'<span style="background:#e11d48;color:#fff;font-size:.65rem;font-weight:800;border-radius:4px;padding:2px 6px;margin-right:6px">🚨 URGENTE</span>':'')+p.tit+'</div><div style="font-size:.78rem;color:var(--muted);margin:.2rem 0">'+p.aut+' | '+p.dt+'</div><p style="font-size:.82rem;margin:.3rem 0">'+p.txt+'</p>'+pasMidiasHtml(p,i)+'<div style="text-align:right;margin-top:.4rem;display:flex;gap:.3rem;flex-wrap:wrap;justify-content:flex-end"><button class="btn bd bsm" onclick="del(\'palavras\','+i+',rndPas)">&#128465; Excluir</button><button class="btn bsm" style="background:'+(p.urg?'#64748b':'#e11d48')+';color:#fff" onclick="pasUrgente('+i+')">'+(p.urg?'Tirar urgente':'🚨 Urgente')+'</button><button class="btn bsm" style="background:#1E3A5F;color:#fff" onclick="edtPas('+i+')">&#9998; Editar</button> <button class="btn bsm" style="background:#0F4A34;color:#fff" onclick="edtPasEstudio('+i+')">&#127916; Est&#250;dio</button> <button class="btn bsm" style="background:#25D366;color:#fff" onclick="pasCompTV('+i+')">&#128228; TV</button></div></div>';}).join('');}
 function addAnv(){var nm=(document.getElementById('anv-nm').value||'').trim();if(!nm){alert('Informe o nome.');return;}var l=DB.g('aniversariantes')||[];var gen=document.getElementById('anv-gen')?document.getElementById('anv-gen').value:'m';l.push({nm:nm,dt:document.getElementById('anv-dt').value,fn:document.getElementById('anv-fn').value,tel:document.getElementById('anv-tel').value,foto:_i['anv-foto']||'',gen:gen});DB.s('aniversariantes',l);_i['anv-foto']='';['anv-nm','anv-tel','anv-fn'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});var dtEl=document.getElementById('anv-dt');if(dtEl)dtEl.value='';document.getElementById('anv-foto-pv').innerHTML='';showToast('🎂 Cadastrado!');rndAnv();}
@@ -3199,7 +3199,7 @@ function edtClt(i){var o=DB.g('cultos')[i]||{};abrirEdit('cultos',i,[
 ],rndClt,o.ts);}
 function edtPas(i){var o=DB.g('palavras')[i]||{};abrirEdit('palavras',i,[
   {id:'pas-tit-e',lb:'Título',val:o.tit},{id:'pas-aut-e',lb:'Autor',val:o.aut},
-  {id:'pas-dt-e',lb:'Data',val:o.dt,tp:'date'},{id:'pas-txt-e',lb:'Texto',val:o.txt,ta:true},{id:'pas-url-e',lb:'YouTube',val:o.url}
+  {id:'pas-dt-e',lb:'Data',val:o.dt,tp:'date'},{id:'pas-txt-e',lb:'Texto público (aparece no site)',val:o.txt,ta:true},{id:'pas-url-e',lb:'YouTube',val:o.url}
 ],rndPas,o.ts);}
 function edtOb(i){var o=DB.g('obreiros')[i]||{};abrirEdit('obreiros',i,[
   {id:'ob-nm-e',lb:'Nome',val:o.nm},{id:'ob-fn-e',lb:'Função',val:o.fn},{id:'ob-tel-e',lb:'Telefone',val:o.tel}
