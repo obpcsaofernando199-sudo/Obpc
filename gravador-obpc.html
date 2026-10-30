@@ -392,6 +392,16 @@ const DEF="Olá! Este é o seu roteiro. Cole aqui o texto que você quer ler enq
 try{script.value=localStorage.getItem('tp_script')||DEF}catch(e){script.value=DEF}
 function sync(){txt.textContent=script.value;try{localStorage.setItem('tp_script',script.value)}catch(e){}}
 script.addEventListener('input',sync);sync();
+// ---- integração com o painel (Palavra do Pastor) ----
+if(window.parent!==window){
+  const po=/^https?:/.test(location.protocol)?location.origin:'*';
+  window.addEventListener('message',ev=>{const d=ev.data;if(d&&d.tipo==='obpc-init'){if(typeof d.txt==='string'&&d.txt){script.value=d.txt;sync()}}});
+  const sv=document.createElement('button');sv.textContent='💾 Salvar texto';
+  sv.style.cssText='position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:8px;z-index:90;border:0;border-radius:18px;padding:8px 14px;background:#e6c45f;color:#1a1304;font-weight:700;cursor:pointer';
+  sv.onclick=()=>window.parent.postMessage({tipo:'obpc-texto',txt:script.value},po);
+  document.body.appendChild(sv);
+  try{window.parent.postMessage({tipo:'obpc-pronto'},po)}catch(e){}
+}
 
 function ui(){
   txt.style.fontSize=$('siz').value+'px';$('sizV').textContent=$('siz').value+'px';
@@ -810,7 +820,7 @@ $('bTv').onclick=()=>{
   if(!blob||outKind!=='video'){toast('Grave um vídeo primeiro.');return}
   if(window.parent===window){toast('Para publicar, abra o estúdio pelo painel (Palavra do Pastor). Aqui use Baixar vídeo.');return}
   const b=$('bTv');b.disabled=true;b.textContent='Enviando…';
-  try{window.parent.postMessage({tipo:'obpc-gravacao',blob:blob},/^https?:/.test(location.protocol)?location.origin:'*')}
+  try{window.parent.postMessage({tipo:'obpc-gravacao',blob:blob,txt:script.value},/^https?:/.test(location.protocol)?location.origin:'*')}
   catch(e){b.disabled=false;b.textContent='📤 Enviar para a Palavra do Pastor';toast('Não foi possível enviar. Use Baixar vídeo.')}
 };
 $('bShare').onclick=async()=>{
