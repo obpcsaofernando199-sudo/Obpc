@@ -559,11 +559,15 @@ document.getElementById('btnPublicar').addEventListener('click', async ()=>{
       ov1:'#0a1e35', ov2:'#1E3A5F', opac:75, ts: Date.now(),
       audioUrl: audioUrlFinal, audioLoop:true, audioVol:0.5
     };
-    await fetch('https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com/obpc/banner_culto.json', {
+    const resp2 = await fetch('https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com/obpc/banner_culto.json', {
       method:'PUT',
       body: JSON.stringify(dados),
       headers: {'Content-Type':'application/json'}
     });
+    if(!resp2.ok) throw new Error('servidor recusou ('+resp2.status+')');
+    // confere se o servidor realmente guardou
+    const conf = await (await fetch('https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com/obpc/banner_culto.json?x='+Date.now(), {cache:'no-store'})).json();
+    if(!conf || conf.ts !== dados.ts) throw new Error('o servidor não confirmou');
 
     btn.textContent = '✅ Publicado!';
     nota.style.display = 'block';
@@ -571,7 +575,7 @@ document.getElementById('btnPublicar').addEventListener('click', async ()=>{
   }catch(e){
     btn.disabled = false;
     btn.textContent = original;
-    alert('Não consegui publicar agora. Verifique a internet e tente de novo.');
+    alert('Não foi publicado: '+(e&&e.message?e.message:'sem conexão')+'. Verifique a internet e tente de novo.');
   }
 });
 

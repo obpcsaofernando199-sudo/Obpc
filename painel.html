@@ -283,185 +283,118 @@ textarea{resize:vertical;min-height:80px;line-height:1.6;}
 <!-- ═══ BANNER — aba unificada ═══ -->
 <div id="aba-bnr" class="aba">
 
-  <!-- ══ BLOCO 1: DESTAQUE VISUAL ══ -->
-  <h2>&#9999;&#65039; Destaque Visual do M&#234;s</h2>
-  <p style="font-size:.78rem;color:var(--muted);margin-bottom:.8rem;background:#f0f7ff;border-left:3px solid var(--azul2);padding:.5rem .8rem;border-radius:0 8px 8px 0">&#128161; Edite o <strong>banner principal</strong> do site — imagem de fundo, cores e texto em destaque.</p>
-  <a href="https://obpcsaofernando199-sudo.github.io/Obpc/banners_culto.html" target="_blank" style="display:flex;align-items:center;gap:.5rem;background:linear-gradient(135deg,#2c5a9a,#1E3A5F);color:#fff;padding:.6rem 1rem;border-radius:10px;text-decoration:none;font-weight:700;font-size:.82rem;margin-bottom:.8rem">&#127912; Prefere um banner pronto por estilo de culto (Fam&#237;lia, Ora&#231;&#227;o, Louvor, Santa Ceia, Jubrac...)? Abrir Gerador de Banners</a>
+  <!-- ══ 1) DESTAQUE DO MÊS ══ -->
+  <h2>⭐ Destaque do Mês</h2>
+  <p style="font-size:.78rem;color:var(--muted);margin-bottom:.6rem;background:#f0f7ff;border-left:3px solid var(--azul2);padding:.5rem .8rem;border-radius:0 8px 8px 0">É o <strong>banner grande</strong> que aparece no site. O que você publicar aqui aparece no site em poucos segundos.</p>
+  <div id="dm-status" class="card" style="font-size:.8rem;font-weight:700">⏳ Conferindo o que está no site...</div>
 
   <div style="display:flex;gap:1rem;align-items:flex-start;flex-wrap:wrap">
     <div style="flex:1;min-width:280px">
       <div class="card">
-        <label>&#127991;&#65039; Badge</label><input id="bnr-badge" placeholder="PR&#211;XIMO CULTO...">
-        <label>&#128204; T&#237;tulo</label><input id="bnr-tit" placeholder="Culto de Domingo">
-        <label>&#128221; Subt&#237;tulo</label><input id="bnr-sub" placeholder="Venha e experiencie a presen&#231;a de Deus">
+        <strong style="font-size:.82rem;color:var(--azul);display:block;margin-bottom:.5rem">🖼️ Foto ou vídeo de fundo</strong>
+        <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.4rem">
+          <button type="button" class="btn bsm" style="background:var(--azul2);color:#fff" onclick="document.getElementById('dm-f1').click()">📁 Escolher arquivo</button>
+          <button type="button" class="btn bsm" style="background:#27ae60;color:#fff" onclick="document.getElementById('dm-f2').click()">📷 Tirar foto</button>
+          <button type="button" class="btn bsm" style="background:#64748b;color:#fff" onclick="dmTirarFundo()">✖ Tirar o fundo</button>
+        </div>
+        <input type="file" id="dm-f1" accept="image/*,video/*" style="display:none" onchange="dmUpMidia(this)">
+        <input type="file" id="dm-f2" accept="image/*" capture="environment" style="display:none" onchange="dmUpMidia(this)">
+        <div id="dm-up-sts" style="font-size:.76rem;display:none;margin:.3rem 0"></div>
+        <label>Ou cole um link (foto, vídeo ou YouTube)</label>
+        <input id="dm-url" placeholder="https://..." onchange="dmSetUrl(this.value)">
+      </div>
+
+      <div class="card">
+        <label>🏷️ Selo (opcional)</label><input id="dm-badge" placeholder="PRÓXIMO CULTO" oninput="dmPrev()">
+        <label>📌 Título</label><input id="dm-tit" placeholder="Culto de Domingo" oninput="dmPrev()">
+        <label>📝 Subtítulo</label><input id="dm-sub" placeholder="Venha viver a presença de Deus" oninput="dmPrev()">
         <div class="row" style="margin-top:.4rem">
-          <div><label>&#128197; Data</label><input type="date" id="bnr-dt"></div>
-          <div><label>&#128336; Hor&#225;rio</label><input id="bnr-hora" placeholder="19:00"></div>
+          <div><label>📅 Data</label><input type="date" id="dm-dt" oninput="dmPrev()"></div>
+          <div><label>🕐 Horário</label><input id="dm-hora" placeholder="19:00" oninput="dmPrev()"></div>
         </div>
-        <label>&#128205; Local</label><input id="bnr-loc" placeholder="Rua Sen. Jos&#233; Erm&#237;rio de Moraes, 199">
-        <label>&#127919; CTA</label><input id="bnr-cta" placeholder="Esperamos por voc&#234;! &#128591;" maxlength="50">
+        <label>📍 Local</label><input id="dm-loc" placeholder="Rua Sen. José Ermírio de Moraes, 199" oninput="dmPrev()">
+        <label>🎯 Frase final (botão)</label><input id="dm-cta" placeholder="Esperamos por você! 🙏" maxlength="50" oninput="dmPrev()">
+        <label style="margin-top:.5rem">🎨 Cor do selo e do botão</label>
+        <div id="dm-cores" style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.4rem"></div>
+        <label>Escurecer o fundo: <span id="dm-opac-v">75</span>%</label>
+        <input type="range" id="dm-opac" min="0" max="95" value="75" oninput="document.getElementById('dm-opac-v').textContent=this.value;dmPrev()">
       </div>
+
       <div class="card">
-        <strong style="font-size:.82rem;color:var(--azul);display:block;margin-bottom:.6rem">&#127912; Estilo Visual</strong>
-        <label>&#128396;&#65039; Template</label>
-        <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.7rem" id="bnr-tpls"></div>
-        <label>&#127752; Cor do Badge &amp; CTA</label>
-        <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.5rem" id="bnr-cores"></div>
-        <div class="row" style="margin-top:.3rem">
-          <div><label>Overlay in&#237;cio</label><input type="color" id="bnr-ov1" value="#0a1e35"></div>
-          <div><label>Overlay fim</label><input type="color" id="bnr-ov2" value="#1E3A5F"></div>
+        <strong style="font-size:.82rem;color:var(--azul);display:block;margin-bottom:.5rem">🎵 Música (opcional)</strong>
+        <div style="display:flex;flex-wrap:wrap;gap:.4rem">
+          <button type="button" class="btn bsm" style="background:#8e44ad;color:#fff" onclick="document.getElementById('dm-aud').click()">🎵 Escolher música</button>
+          <button type="button" class="btn bsm" style="background:#64748b;color:#fff" onclick="dmTirarAudio()">✖ Tirar a música</button>
         </div>
-        <div style="margin-top:.4rem"><label>Opacidade: <span id="bnr-ov-val">75</span>%</label>
-        <input type="range" id="bnr-opac" min="30" max="95" value="75" oninput="document.getElementById('bnr-ov-val').textContent=this.value;bnrAtualiza()"></div>
+        <input type="file" id="dm-aud" accept="audio/*" style="display:none" onchange="dmUpAudio(this)">
+        <div id="dm-aud-sts" style="font-size:.76rem;margin-top:.4rem">Sem música.</div>
       </div>
-      <div class="card">
-        <strong style="font-size:.82rem;color:var(--azul);display:block;margin-bottom:.6rem">&#128444;&#65039; Fundo do Banner</strong>
-        <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.5rem">
-          <button type="button" onclick="document.getElementById('bnr-f1').click()" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:.6rem 1rem;background:#f0f7ff;border:2px dashed var(--azul2);border-radius:10px;cursor:pointer;font-family:inherit;flex:1;min-width:90px"><span style="font-size:1.3rem">&#128193;</span><span style="font-size:.73rem;font-weight:600;color:var(--azul)">Arquivo</span></button>
-          <button type="button" onclick="document.getElementById('bnr-f2').click()" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:.6rem 1rem;background:#f0fff4;border:2px dashed #27ae60;border-radius:10px;cursor:pointer;font-family:inherit;flex:1;min-width:90px"><span style="font-size:1.3rem">&#128247;</span><span style="font-size:.73rem;font-weight:600;color:#27ae60">C&#226;mera</span></button>
-          <button type="button" onclick="document.getElementById('bnr-f3').click()" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:.6rem 1rem;background:#fff8f0;border:2px dashed #e67e22;border-radius:10px;cursor:pointer;font-family:inherit;flex:1;min-width:90px"><span style="font-size:1.3rem">&#127916;</span><span style="font-size:.73rem;font-weight:600;color:#e67e22">V&#237;deo</span></button>
-        </div>
-        <input type="file" id="bnr-f1" accept="image/*,video/*" style="display:none" onchange="bnrUpMidia(this)">
-        <input type="file" id="bnr-f2" accept="image/*" capture="environment" style="display:none" onchange="bnrUpMidia(this)">
-        <input type="file" id="bnr-f3" accept="video/*" capture="environment" style="display:none" onchange="bnrUpMidia(this)">
-        <div id="bnr-up-sts" style="font-size:.75rem;color:var(--azul2);display:none;margin:.3rem 0"></div>
-        <div id="bnr-up-pv" style="margin-top:.3rem"></div>
-        <label style="margin-top:.5rem">Ou cole URL</label>
-        <input id="bnr-bg-url" placeholder="https://..." oninput="bnrSetBg(this.value)">
-        <button type="button" class="btn bsm" style="background:#64748b;color:#fff;margin-top:.4rem" onclick="bnrLimparMidia()">&#128465; Remover fundo</button>
+
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+        <button id="dm-btn-pub" class="btn bs" onclick="dmPublicar()" style="flex:1">🌐 Publicar no site</button>
+        <button class="btn bd" onclick="dmRemover()">🗑️ Tirar do site</button>
       </div>
-      <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.3rem">
-        <button class="btn bs" onclick="bnrSalvar()" style="flex:1">&#128190; Salvar &amp; Publicar no Site</button><button class="btn bd" onclick="bnrExcluir()" style="flex:none">&#128465; Excluir do site</button>
-        <button class="btn bsm" style="background:#64748b;color:#fff" onclick="bnrLimpar()">&#128465; Limpar</button>
-      </div>
-      <div id="bnr-ok" style="display:none;color:var(--verde);font-size:.78rem;margin-top:.4rem;font-weight:700">&#9989; Banner publicado!</div>
+      <div id="dm-ok" style="display:none;font-size:.8rem;margin-top:.4rem;font-weight:700"></div>
     </div>
-    <div style="display:flex;flex-direction:column;align-items:center;gap:.5rem;position:sticky;top:70px">
-      <div style="font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px">&#128241; Preview</div>
-      <div style="background:#1e293b;border-radius:12px;padding:.6rem;box-shadow:0 4px 20px rgba(0,0,0,.4)">
-        <div style="aspect-ratio:9/16;width:220px;border-radius:10px;overflow:hidden;position:relative;box-shadow:0 8px 32px rgba(0,0,0,.6)">
-          <div class="bnr-prev" id="bnr-prev" style="width:100%;height:100%;position:relative;overflow:hidden">
-            <div class="bnr-bg" id="bnr-prev-bg"></div>
-            <div class="bnr-overlay" id="bnr-prev-overlay" style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,30,53,.75) 0%,rgba(30,58,95,.75) 100%);z-index:1"></div>
-            <div style="position:absolute;inset:0;z-index:2;padding:14px 12px 14px">
-              <div class="bnr-top">
-                <div class="bnr-logo" id="bnr-prev-logo">&#9962;</div>
-                <div class="bnr-church" id="bnr-prev-church">OBPC S&#227;o Fernando</div>
-              </div>
-              <div id="bnr-prev-badge-wrap" style="display:inline-block;position:relative;z-index:10;margin-top:auto;margin-bottom:.3rem">
-                <span class="bnr-badge" id="bnr-prev-badge" style="background:#D4A843;color:#1E3A5F">PR&#211;XIMO CULTO</span>
-              </div>
-              <div id="bnr-prev-tit-wrap" style="position:relative;z-index:10">
-                <div class="bnr-titulo" id="bnr-prev-tit">Culto de Domingo</div>
-              </div>
-              <div id="bnr-prev-sub-wrap" style="position:relative;z-index:10">
-                <div class="bnr-subtit" id="bnr-prev-sub">Venha e experiencie a presen&#231;a de Deus</div>
-              </div>
-              <div id="bnr-prev-infos-wrap" style="position:relative;z-index:10">
-                <div class="bnr-infos">
-                  <div class="bnr-info"><span>&#128197;</span><span id="bnr-prev-dt-txt">&#8212;</span></div>
-                  <div class="bnr-info"><span>&#128336;</span><span id="bnr-prev-hora-txt">19:00</span></div>
-                  <div class="bnr-info"><span>&#128205;</span><span id="bnr-prev-loc-txt">Rua Sen. Jos&#233; Erm&#237;rio de Moraes, 199</span></div>
-                </div>
-              </div>
-              <div id="bnr-prev-cta-wrap" style="position:relative;z-index:10">
-                <div class="bnr-cta" id="bnr-prev-cta" style="background:#D4A843;color:#1E3A5F">Esperamos por voc&#234;! &#128591;</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div style="margin-top:.6rem;display:flex;flex-direction:column;gap:.4rem">
-          <button id="bnr-drag-toggle" onclick="bnrToggleDragMode()" style="background:var(--azul2);color:#fff;border:none;border-radius:8px;padding:6px 10px;font-size:.73rem;font-weight:700;cursor:pointer;width:100%">&#9995; Arrastar Elementos</button>
-          <div id="bnr-drag-hint" style="display:none;font-size:.63rem;color:#fac860;text-align:center;background:rgba(250,200,96,.1);border:1px solid rgba(250,200,96,.3);border-radius:6px;padding:4px 6px">&#128161; Arraste os elementos no preview acima.</div>
-          <div style="display:flex;gap:.4rem">
-            <button id="bnr-dl-btn" onclick="bnrDownloadPNG()" style="flex:1;background:#1E3A5F;color:#fff;border:none;border-radius:8px;padding:6px 8px;font-size:.73rem;font-weight:700;cursor:pointer">&#11015;&#65039; Baixar PNG</button>
-            <button onclick="bnrResetarPosicoes()" style="background:#64748b;color:#fff;border:none;border-radius:8px;padding:6px 8px;font-size:.7rem;cursor:pointer" title="Resetar posi&#231;&#245;es">&#8617;</button>
-          </div>
-        </div>
+
+    <div style="display:flex;flex-direction:column;align-items:center;gap:.4rem;position:sticky;top:70px">
+      <div style="font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px">📱 Como fica no site</div>
+      <div id="dm-prev" style="width:200px;aspect-ratio:9/16;border-radius:12px;overflow:hidden;position:relative;background:#1e1830;box-shadow:0 8px 28px rgba(0,0,0,.45)">
+        <div id="dm-prev-bg" style="position:absolute;inset:0"></div>
+        <div id="dm-prev-ov" style="position:absolute;inset:0"></div>
+        <div id="dm-prev-txt" style="position:absolute;inset:0;padding:12px;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;color:#fff"></div>
       </div>
     </div>
   </div>
 
-  <!-- ══ BLOCO 2: AGENDA DE CULTOS ══ -->
-  <h2 style="margin-top:1.5rem">📅 Agenda de Próximos Cultos</h2>
-  <p style="font-size:.78rem;color:var(--muted);margin-bottom:.8rem;background:#f0fff4;border-left:3px solid var(--verde);padding:.5rem .8rem;border-radius:0 8px 8px 0">💡 Cadastre os <strong>próximos cultos</strong> com logo do grupo, imagem, áudio e cores — aparecem no carrossel do site.</p>
+  <!-- ══ 2) PRÓXIMOS CULTOS ══ -->
+  <h2 style="margin-top:1.8rem">📅 Próximos Cultos</h2>
+  <p style="font-size:.78rem;color:var(--muted);margin-bottom:.6rem;background:#f0fff4;border-left:3px solid var(--verde);padding:.5rem .8rem;border-radius:0 8px 8px 0">São os <strong>cartões</strong> que passam de lado no site. Culto com data que já passou some sozinho do site.</p>
 
   <div style="display:flex;gap:1rem;align-items:flex-start;flex-wrap:wrap">
     <div style="flex:1;min-width:280px">
-
-      <!-- SELETOR DE GRUPO COM LOGOS -->
+      <div id="ag-modo" class="card" style="display:none;background:#fff8e1;border-left:4px solid #f0a500;font-size:.8rem;font-weight:700">✏️ Editando um culto — faça as mudanças e clique em Salvar alteração.</div>
       <div class="card">
-        <strong style="font-size:.82rem;color:var(--azul);display:block;margin-bottom:.6rem">🏷️ Tipo / Grupo do Culto</strong>
-        <div id="pclt-grupo-btns" style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.5rem"></div>
-        <input type="hidden" id="pclt-grupo-sel" value="geral">
-        <input type="hidden" id="pclt-grupo-cor" value="#3B9BD6">
+        <strong style="font-size:.82rem;color:var(--azul);display:block;margin-bottom:.5rem">🏷️ Tipo do culto</strong>
+        <div id="ag-grupos" style="display:flex;flex-wrap:wrap;gap:.4rem"></div>
       </div>
-
-      <!-- DADOS DO CULTO -->
       <div class="card">
-        <label>📌 Título do Culto</label>
-        <input id="pclt-tit" placeholder="Ex: Santa Ceia · Culto de Missões">
-        <label>📝 Subtítulo / Descrição</label>
-        <input id="pclt-sub" placeholder="Venha e experiencie a presença de Deus">
+        <label>📌 Título</label><input id="ag-tit" placeholder="Ex: Santa Ceia">
+        <label>📝 Subtítulo</label><input id="ag-sub" placeholder="Venha viver a presença de Deus">
         <div class="row" style="margin-top:.4rem">
-          <div><label>📅 Data</label><input type="date" id="pclt-dt"></div>
-          <div><label>🕐 Horário</label><input id="pclt-hora" placeholder="19:00"></div>
+          <div><label>📅 Data</label><input type="date" id="ag-dt"></div>
+          <div><label>🕐 Horário</label><input id="ag-hora" placeholder="19:00"></div>
         </div>
-        <label>📍 Local</label>
-        <input id="pclt-loc" placeholder="Rua Sen. José Ermírio de Moraes, 199">
+        <label>📍 Local</label><input id="ag-loc" placeholder="Rua Sen. José Ermírio de Moraes, 199">
       </div>
-
-      <!-- MÍDIA: IMAGEM / VÍDEO / ÁUDIO -->
       <div class="card">
-        <strong style="font-size:.82rem;color:var(--azul);display:block;margin-bottom:.6rem">🖼️ Mídia do Culto (opcional)</strong>
-
-        <!-- Imagem/Vídeo de fundo -->
-        <label style="font-size:.76rem;font-weight:600;color:var(--muted)">📷 Imagem ou Vídeo de fundo</label>
-        <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.5rem">
-          <button type="button" onclick="document.getElementById('pclt-img-f1').click()" style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:.5rem .9rem;background:#f0f7ff;border:2px dashed var(--azul2);border-radius:9px;cursor:pointer;font-family:inherit;flex:1;min-width:80px"><span style="font-size:1.2rem">📁</span><span style="font-size:.72rem;font-weight:600;color:var(--azul)">Arquivo</span></button>
-          <button type="button" onclick="document.getElementById('pclt-img-f2').click()" style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:.5rem .9rem;background:#f0fff4;border:2px dashed #27ae60;border-radius:9px;cursor:pointer;font-family:inherit;flex:1;min-width:80px"><span style="font-size:1.2rem">📸</span><span style="font-size:.72rem;font-weight:600;color:#27ae60">Câmera</span></button>
-          <button type="button" onclick="document.getElementById('pclt-img-f3').click()" style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:.5rem .9rem;background:#fff8f0;border:2px dashed #e67e22;border-radius:9px;cursor:pointer;font-family:inherit;flex:1;min-width:80px"><span style="font-size:1.2rem">🎬</span><span style="font-size:.72rem;font-weight:600;color:#e67e22">Vídeo</span></button>
+        <strong style="font-size:.82rem;color:var(--azul);display:block;margin-bottom:.5rem">🖼️ Foto/vídeo e música (opcional)</strong>
+        <div style="display:flex;flex-wrap:wrap;gap:.4rem">
+          <button type="button" class="btn bsm" style="background:var(--azul2);color:#fff" onclick="document.getElementById('ag-f1').click()">📁 Foto ou vídeo</button>
+          <button type="button" class="btn bsm" style="background:#27ae60;color:#fff" onclick="document.getElementById('ag-f2').click()">📷 Tirar foto</button>
+          <button type="button" class="btn bsm" style="background:#8e44ad;color:#fff" onclick="document.getElementById('ag-a1').click()">🎵 Música</button>
         </div>
-        <input type="file" id="pclt-img-f1" accept="image/*,video/*" style="display:none" onchange="pcltUpImg(this)">
-        <input type="file" id="pclt-img-f2" accept="image/*" capture="environment" style="display:none" onchange="pcltUpImg(this)">
-        <input type="file" id="pclt-img-f3" accept="video/*" capture="environment" style="display:none" onchange="pcltUpImg(this)">
-        <div id="pclt-img-sts" style="font-size:.74rem;color:var(--azul2);display:none;margin-bottom:.3rem"></div>
-        <div id="pclt-img-pv" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:.4rem"></div>
-
-        <!-- Áudio -->
-        <label style="font-size:.76rem;font-weight:600;color:var(--muted);margin-top:.4rem">🎵 Áudio (MP3, WAV)</label>
-        <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.5rem">
-          <button type="button" onclick="document.getElementById('pclt-aud-f1').click()" style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:.5rem .9rem;background:#f5f0ff;border:2px dashed #8e44ad;border-radius:9px;cursor:pointer;font-family:inherit;flex:1;min-width:80px"><span style="font-size:1.2rem">📁</span><span style="font-size:.72rem;font-weight:600;color:#8e44ad">Arquivo</span></button>
-          <button type="button" onclick="document.getElementById('pclt-aud-f2').click()" style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:.5rem .9rem;background:#f5f0ff;border:2px dashed #8e44ad;border-radius:9px;cursor:pointer;font-family:inherit;flex:1;min-width:80px"><span style="font-size:1.2rem">🎤</span><span style="font-size:.72rem;font-weight:600;color:#8e44ad">Gravar</span></button>
-        </div>
-        <input type="file" id="pclt-aud-f1" accept="audio/*" style="display:none" onchange="pcltUpAud(this)">
-        <input type="file" id="pclt-aud-f2" accept="audio/*" capture="microphone" style="display:none" onchange="pcltUpAud(this)">
-        <div id="pclt-aud-sts" style="font-size:.74rem;color:#8e44ad;display:none;margin-bottom:.3rem"></div>
-        <div id="pclt-aud-pv" style="margin-bottom:.4rem"></div>
-
-        <!-- Cor de fundo manual -->
-        <label style="font-size:.76rem;font-weight:600;color:var(--muted);margin-top:.3rem">🎨 Cor de fundo (opcional)</label>
-        <div style="display:flex;gap:.4rem;align-items:center;flex-wrap:wrap;margin-bottom:.2rem">
-          <input type="color" id="pclt-bg-cor1" value="#1a237e" title="Cor principal" style="width:36px;height:32px;border:none;border-radius:6px;cursor:pointer;padding:0">
-          <input type="color" id="pclt-bg-cor2" value="#283593" title="Cor secundária" style="width:36px;height:32px;border:none;border-radius:6px;cursor:pointer;padding:0">
-          <span style="font-size:.72rem;color:var(--muted)">gradiente do card</span>
-          <button type="button" onclick="pcltResetCores()" style="padding:3px 9px;border-radius:6px;border:1px solid var(--borda);background:#fff;font-size:.72rem;cursor:pointer;color:var(--muted)">↩ Reset</button>
+        <input type="file" id="ag-f1" accept="image/*,video/*" style="display:none" onchange="agUpMidia(this)">
+        <input type="file" id="ag-f2" accept="image/*" capture="environment" style="display:none" onchange="agUpMidia(this)">
+        <input type="file" id="ag-a1" accept="audio/*" style="display:none" onchange="agUpAudio(this)">
+        <div id="ag-up-sts" style="font-size:.76rem;margin-top:.4rem;display:none"></div>
+        <div id="ag-midia-info" style="font-size:.76rem;margin-top:.4rem;color:var(--muted)">Sem foto/vídeo e sem música.</div>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.4rem">
+          <button type="button" class="btn bsm" style="background:#64748b;color:#fff" onclick="agTirarMidia()">✖ Tirar foto/vídeo</button>
+          <button type="button" class="btn bsm" style="background:#64748b;color:#fff" onclick="agTirarAudio()">✖ Tirar música</button>
         </div>
       </div>
-
-      <!-- BOTÕES DE AÇÃO -->
       <div style="display:flex;gap:.6rem;flex-wrap:wrap">
-        <button class="btn bs" onclick="pcltSalvar()" style="flex:1">💾 Publicar no Site</button>
-        <button class="btn bsm" style="background:#64748b;color:#fff" onclick="pcltLimpar()">🗑️ Limpar</button>
+        <button id="ag-btn-pub" class="btn bs" onclick="agSalvar()" style="flex:1">🌐 Publicar no site</button>
+        <button id="ag-btn-cancel" class="btn bsm" style="background:#64748b;color:#fff;display:none" onclick="agLimpar()">Cancelar edição</button>
       </div>
-      <div id="pclt-ok" style="display:none;color:var(--verde);font-size:.78rem;margin-top:.4rem;font-weight:700">✅ Culto publicado na agenda!</div>
+      <div id="ag-ok" style="display:none;font-size:.8rem;margin-top:.4rem;font-weight:700"></div>
     </div>
 
-    <!-- LISTA CADASTRADOS -->
     <div style="flex:1;min-width:260px">
       <div class="card">
-        <strong style="font-size:.82rem;color:var(--azul);display:block;margin-bottom:.5rem">📋 Cultos Cadastrados</strong>
-        <div id="pclt-lista"><p style="color:var(--muted);font-size:.82rem">Nenhum culto cadastrado.</p></div>
+        <strong style="font-size:.82rem;color:var(--azul);display:block;margin-bottom:.5rem">📋 Cultos cadastrados</strong>
+        <div id="ag-lista"><p style="color:var(--muted);font-size:.82rem">⏳ Carregando...</p></div>
       </div>
     </div>
   </div>
@@ -1348,13 +1281,6 @@ function pasUrgente(i){
   showToast(nova?'🚨 Marcada como URGENTE no site!':'Urgente removido.');
 }
 function edtVid(i){var o=(DB.g('videos')||[])[i]||{};abrirEdit('videos',i,[{id:'vid-tit-e',lb:'Título',val:o.tit},{id:'vid-cat-e',lb:'Categoria',val:o.cat},{id:'vid-dsc-e',lb:'Descrição',val:o.dsc,ta:true}],rndVid);}
-function bnrExcluir(){
-  if(!confirm('Remover o banner Destaque do site?'))return;
-  DB.s('banner_culto',{});
-  fetch('https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com/obpc/banner_culto.json',{method:'DELETE'}).catch(function(){});
-  try{bnrLimpar();}catch(e){}
-  showToast('🗑️ Banner removido do site!');
-}
 (function(){var o=window.addPas;if(typeof o!=='function')return;
   window.addPas=function(){
     var u=document.getElementById('pas-urg'),quer=u&&u.checked,n0=(DB.g('palavras')||[]).length,t0=0;
@@ -1780,221 +1706,297 @@ function expDados(){var cs=['info','horarios','avisos','eventos','informativos',
 function impDados(inp){var f=inp.files[0];if(!f)return;var ok=document.getElementById('imp-ok');var r=new FileReader();r.onload=function(e){try{var json=JSON.parse(e.target.result);var dados=json.obpc||json;var cnt=0;Object.keys(dados).forEach(function(k){try{localStorage.setItem('obpc_'+k,JSON.stringify(dados[k]));cnt++;}catch(e){}});if(ok){ok.style.display='block';ok.style.color='var(--verde)';ok.textContent='✅ '+cnt+' itens importados! Recarregando...';setTimeout(function(){location.reload();},1500);}}catch(e){if(ok){ok.style.display='block';ok.style.color='var(--verm)';ok.textContent='❌ Arquivo inválido.';}}};r.readAsText(f);}
 function del(key,i,fn){if(!confirm('Excluir este item? Ele também sai do site e da TV OBPC.'))return;var l=DB.g(key)||[];l.splice(i,1);DB.s(key,l);if(typeof fn==='function')fn();}
 (function tick(){var h=document.getElementById('hhor');if(h)h.textContent=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});setTimeout(tick,30000);})();
-/* ═══ BANNER DESTAQUE VISUAL DO MÊS ═══ */
-var _bnrMidia=null;var _bnrBgUrl='';var _bnrCor='#D4A843';var _bnrElemPos={};
-var BNR_TPLS=[{id:'escuro',nm:'Escuro Clássico',ov1:'#0a1e35',ov2:'#1E3A5F',opac:80},{id:'roxo',nm:'Roxo Profético',ov1:'#1a0533',ov2:'#4c1d95',opac:82},{id:'vinho',nm:'Vinho Majestoso',ov1:'#1a0a0a',ov2:'#7f1d1d',opac:80},{id:'verde',nm:'Verde Esperança',ov1:'#052e16',ov2:'#14532d',opac:78},{id:'azul',nm:'Azul Céu',ov1:'#0c1445',ov2:'#1e40af',opac:78},{id:'preto',nm:'Preto Total',ov1:'#000000',ov2:'#111827',opac:88}];
-var BNR_CORES=['#D4A843','#3B9BD6','#e74c3c','#27ae60','#7c3aed','#e67e22','#fff','#f0c040'];
-var _bnrTplSel='escuro';
-function rndBnr(){var tpCont=document.getElementById('bnr-tpls');if(tpCont)tpCont.innerHTML=BNR_TPLS.map(function(t){return '<button class="tpl-btn'+(t.id===_bnrTplSel?' sel':'')+'" onclick="bnrSetTpl(\''+t.id+'\')" data-tpl="'+t.id+'">'+t.nm+'</button>';}).join('');var corCont=document.getElementById('bnr-cores');if(corCont)corCont.innerHTML=BNR_CORES.map(function(c){return '<div onclick="bnrSetCor(\''+c+'\')" style="width:28px;height:28px;border-radius:50%;background:'+c+';cursor:pointer;border:3px solid '+(c===_bnrCor?'#1E3A5F':'transparent')+';box-shadow:0 1px 4px rgba(0,0,0,.2)"></div>';}).join('');fetch('https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com/obpc/banner_culto.json').then(function(r){return r.ok?r.json():null;}).then(function(fb){if(fb&&fb.ts){var local=DB.g('banner_culto');if(!local||!local.ts||fb.ts>local.ts){localStorage.setItem('obpc_banner_culto',JSON.stringify(fb));}}}).catch(function(){}).finally(function(){_bnrPreencherCampos();});}
-function _bnrPreencherCampos(){var d=DB.g('banner_culto')||{};if(d.badge)document.getElementById('bnr-badge').value=d.badge;if(d.titulo)document.getElementById('bnr-tit').value=d.titulo;if(d.subtit)document.getElementById('bnr-sub').value=d.subtit;if(d.dt)document.getElementById('bnr-dt').value=d.dt;if(d.hora)document.getElementById('bnr-hora').value=d.hora;if(d.local)document.getElementById('bnr-loc').value=d.local;if(d.cta)document.getElementById('bnr-cta').value=d.cta;if(d.cor){_bnrCor=d.cor;}if(d.tpl){_bnrTplSel=d.tpl;}if(d.bgUrl){_bnrBgUrl=d.bgUrl;var bgUrlEl=document.getElementById('bnr-bg-url');if(bgUrlEl)bgUrlEl.value=d.bgUrl;bnrAplBg(d.bgUrl,d.bgTp||'img');}if(d.ov1){var e1=document.getElementById('bnr-ov1');if(e1)e1.value=d.ov1;}if(d.ov2){var e2=document.getElementById('bnr-ov2');if(e2)e2.value=d.ov2;}if(d.opac){var ep=document.getElementById('bnr-opac');if(ep)ep.value=d.opac;var ev=document.getElementById('bnr-ov-val');if(ev)ev.textContent=d.opac;}var info=DB.g('info')||{};var el=document.getElementById('bnr-prev-church');if(el)el.textContent=info.nome||'OBPC São Fernando';var logo=document.getElementById('bnr-prev-logo');if(logo&&info.logoB64){logo.innerHTML='';var img=document.createElement('img');img.src=info.logoB64;img.style.cssText='width:36px;height:36px;border-radius:50%;object-fit:cover';logo.appendChild(img);}bnrBindInputs();if(d.elemPos&&typeof d.elemPos==='object'){_bnrElemPos=d.elemPos;}else{_bnrElemPos={};}bnrAtualiza();if(d.tpl){document.querySelectorAll('[data-tpl]').forEach(function(b){b.classList.toggle('sel',b.getAttribute('data-tpl')===_bnrTplSel);});}if(d.cor)bnrSetCor(d.cor);}
-function bnrBindInputs(){['bnr-badge','bnr-tit','bnr-sub','bnr-dt','bnr-hora','bnr-loc','bnr-cta','bnr-ov1','bnr-ov2'].forEach(function(id){var el=document.getElementById(id);if(el)el.oninput=bnrAtualiza;});}
-function bnrAtualiza(){var badge=(document.getElementById('bnr-badge')||{}).value||'PRÓXIMO CULTO';var el=document.getElementById('bnr-prev-badge');if(el){el.textContent=badge;el.style.background=_bnrCor;el.style.color=bnrContraste(_bnrCor);}var tit=(document.getElementById('bnr-tit')||{}).value||'Culto de Domingo';var et=document.getElementById('bnr-prev-tit');if(et)et.textContent=tit;var sub=(document.getElementById('bnr-sub')||{}).value||'';var es=document.getElementById('bnr-prev-sub');if(es)es.textContent=sub;var dt=(document.getElementById('bnr-dt')||{}).value||'';var dtTxt='';if(dt){var p=dt.split('-');var d=new Date(dt+'T12:00');var dias=['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];dtTxt=dias[d.getDay()]+', '+p[2]+'/'+p[1]+'/'+p[0];}var eDt=document.getElementById('bnr-prev-dt-txt');if(eDt)eDt.textContent=dtTxt||'—';var hora=(document.getElementById('bnr-hora')||{}).value||'—';var eH=document.getElementById('bnr-prev-hora-txt');if(eH)eH.textContent=hora;var loc=(document.getElementById('bnr-loc')||{}).value||'—';var eL=document.getElementById('bnr-prev-loc-txt');if(eL)eL.textContent=loc;var cta=(document.getElementById('bnr-cta')||{}).value||'Esperamos por você! 🙏';var eCta=document.getElementById('bnr-prev-cta');if(eCta){eCta.textContent=cta;eCta.style.background=_bnrCor;eCta.style.color=bnrContraste(_bnrCor);}var ov1=(document.getElementById('bnr-ov1')||{}).value||'#0a1e35';var ov2=(document.getElementById('bnr-ov2')||{}).value||'#1E3A5F';var opac=(document.getElementById('bnr-opac')||{}).value||75;var op=(Math.round(opac)/100).toFixed(2);function hex2rgb(h){h=(h||'#000000').replace('#','');if(h.length===3)h=h[0]+h[0]+h[1]+h[1]+h[2]+h[2];var n=parseInt(h,16);return[(n>>16)&255,(n>>8)&255,n&255];}var r1=hex2rgb(ov1),r2=hex2rgb(ov2);var eOv=document.getElementById('bnr-prev-overlay');if(eOv)eOv.style.background='linear-gradient(180deg,rgba('+r1[0]+','+r1[1]+','+r1[2]+','+op+') 0%,rgba('+r2[0]+','+r2[1]+','+r2[2]+','+op+') 100%)';bnrAplicarPosicoesSalvas();}
-var _bnrDragEl=null;var _bnrDragKey=null;var _bnrDragStartX=0;var _bnrDragStartY=0;var _bnrDragOrigX=0;var _bnrDragOrigY=0;var _bnrDragMode=false;
-function bnrToggleDragMode(){_bnrDragMode=!_bnrDragMode;var btn=document.getElementById('bnr-drag-toggle');var hint=document.getElementById('bnr-drag-hint');if(_bnrDragMode){if(btn){btn.style.background='#e74c3c';btn.textContent='🔒 Travar Posições';}if(hint)hint.style.display='block';bnrHabilitarDrag();}else{if(btn){btn.style.background='var(--azul2)';btn.textContent='✋ Arrastar Elementos';}if(hint)hint.style.display='none';}}
-function bnrHabilitarDrag(){var mapa={'bnr-prev-badge-wrap':'badge','bnr-prev-tit-wrap':'titulo','bnr-prev-sub-wrap':'subtit','bnr-prev-infos-wrap':'infos','bnr-prev-cta-wrap':'cta'};Object.keys(mapa).forEach(function(wid){var wrap=document.getElementById(wid);if(!wrap)return;var key=mapa[wid];wrap.style.cursor='grab';wrap.onmousedown=function(e){bnrStartDrag(e,wrap,key);};wrap.ontouchstart=function(e){bnrStartDrag(e.touches[0],wrap,key);};});}
-function bnrStartDrag(e,el,key){if(!_bnrDragMode)return;_bnrDragEl=el;_bnrDragKey=key;var prev=document.getElementById('bnr-prev');var rect=prev.getBoundingClientRect();var curX=parseFloat(el.style.left)||0;var curY=parseFloat(el.style.top)||0;_bnrDragOrigX=curX*rect.width/100;_bnrDragOrigY=curY*rect.height/100;_bnrDragStartX=e.clientX;_bnrDragStartY=e.clientY;el.style.cursor='grabbing';document.onmousemove=bnrDragMove;document.ontouchmove=function(ev){bnrDragMove(ev.touches[0]);};document.onmouseup=bnrEndDrag;document.ontouchend=bnrEndDrag;e.preventDefault();}
-function bnrDragMove(e){if(!_bnrDragEl)return;var prev=document.getElementById('bnr-prev');if(!prev)return;var rect=prev.getBoundingClientRect();var dx=e.clientX-_bnrDragStartX;var dy=e.clientY-_bnrDragStartY;var newPxX=_bnrDragOrigX+dx;var newPxY=_bnrDragOrigY+dy;var pctX=Math.max(0,Math.min(90,(newPxX/rect.width)*100));var pctY=Math.max(0,Math.min(90,(newPxY/rect.height)*100));_bnrDragEl.style.position='absolute';_bnrDragEl.style.left=pctX.toFixed(2)+'%';_bnrDragEl.style.top=pctY.toFixed(2)+'%';_bnrElemPos[_bnrDragKey]={x:parseFloat(pctX.toFixed(2)),y:parseFloat(pctY.toFixed(2))};}
-function bnrEndDrag(){if(_bnrDragEl)_bnrDragEl.style.cursor='grab';_bnrDragEl=null;_bnrDragKey=null;document.onmousemove=null;document.ontouchmove=null;document.onmouseup=null;document.ontouchend=null;}
-function bnrAplicarPosicoesSalvas(){if(!_bnrElemPos||!Object.keys(_bnrElemPos).length)return;var mapa={badge:'bnr-prev-badge-wrap',titulo:'bnr-prev-tit-wrap',subtit:'bnr-prev-sub-wrap',infos:'bnr-prev-infos-wrap',cta:'bnr-prev-cta-wrap'};Object.keys(_bnrElemPos).forEach(function(key){var pos=_bnrElemPos[key];var el=document.getElementById(mapa[key]);if(el&&pos){el.style.position='absolute';el.style.left=pos.x+'%';el.style.top=pos.y+'%';el.style.margin='0';}});}
-function bnrResetarPosicoes(){_bnrElemPos={};['bnr-prev-badge-wrap','bnr-prev-tit-wrap','bnr-prev-sub-wrap','bnr-prev-infos-wrap','bnr-prev-cta-wrap'].forEach(function(id){var el=document.getElementById(id);if(el){el.style.position='';el.style.left='';el.style.top='';el.style.margin='';}});showToast('↩️ Posições resetadas');}
-function bnrDownloadPNG(){var alvo=document.getElementById('bnr-prev');if(!alvo){alert('Preview não encontrado');return;}var btn=document.getElementById('bnr-dl-btn');if(btn){btn.textContent='⏳...';btn.disabled=true;}function reset(){if(btn){btn.textContent='⬇️ Baixar PNG';btn.disabled=false;}}var s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';s.onload=function(){html2canvas(alvo,{useCORS:true,allowTaint:true,backgroundColor:'#1e1830',scale:3,logging:false}).then(function(canvas){var url=canvas.toDataURL('image/png',1.0);var a=document.createElement('a');a.href=url;a.download='destaque-mes-'+Date.now()+'.png';a.click();reset();}).catch(function(){reset();});};s.onerror=reset;if(window.html2canvas){s.onload();}else{document.head.appendChild(s);}}
-function bnrContraste(hex){var r=parseInt((hex||'#ffffff').slice(1,3),16);var g=parseInt((hex||'#ffffff').slice(3,5),16);var b=parseInt((hex||'#ffffff').slice(5,7),16);return(r*299+g*587+b*114)/1000>140?'#1E3A5F':'#ffffff';}
-function bnrSetTpl(id){_bnrTplSel=id;var tpl=BNR_TPLS.filter(function(t){return t.id===id;})[0];if(!tpl)return;document.getElementById('bnr-ov1').value=tpl.ov1;document.getElementById('bnr-ov2').value=tpl.ov2;document.getElementById('bnr-opac').value=tpl.opac;document.getElementById('bnr-ov-val').textContent=tpl.opac;document.querySelectorAll('[data-tpl]').forEach(function(b){b.classList.toggle('sel',b.getAttribute('data-tpl')===id);});bnrAtualiza();}
-function bnrSetCor(c){_bnrCor=c;var corCont=document.getElementById('bnr-cores');if(corCont)corCont.innerHTML=BNR_CORES.map(function(cor){return '<div onclick="bnrSetCor(\''+cor+'\')" style="width:28px;height:28px;border-radius:50%;background:'+cor+';cursor:pointer;border:3px solid '+(cor===_bnrCor?'#1E3A5F':'transparent')+';box-shadow:0 1px 4px rgba(0,0,0,.2)"></div>';}).join('');bnrAtualiza();}
-function bnrSetBg(url){if(!url)return;_bnrBgUrl=url;bnrAplBg(url,url.match(/\.(mp4|webm|mov)/i)?'video':'img');}
-function bnrAplBg(src,tp){var bg=document.getElementById('bnr-prev-bg');if(!bg)return;bg.innerHTML='';bg.style.backgroundImage='';if(tp==='video'){var v=document.createElement('video');v.src=src;v.autoplay=true;v.muted=true;v.loop=true;v.playsInline=true;v.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover';bg.appendChild(v);}else{bg.style.backgroundImage='url('+src+')';}}
-async function bnrUpMidia(inp){
-  var f=inp.files[0];if(!f)return;
-  var isV=f.type.startsWith('video/');
-  var sts=document.getElementById('bnr-up-sts');
-  var pv=document.getElementById('bnr-up-pv');
-  if(sts){sts.style.display='block';sts.style.color='var(--azul2)';sts.textContent='⬆️ Enviando...';}
-  var locUrl=URL.createObjectURL(f);
-  bnrAplBg(locUrl,isV?'video':'img');
-  try{
-    var m=await upArq(f,function(pct){if(sts)sts.textContent='⬆️ '+pct+'%';});
-    _bnrMidia=m;_bnrBgUrl=m.src;
-    if(m.local){
-      // upArq caiu no fallback local (idb:) — NÃO foi para a nuvem, não vai aparecer no site
-      var ultErr=window._cloudErrLog&&window._cloudErrLog.length?window._cloudErrLog[window._cloudErrLog.length-1]:null;
-      var detalhe=ultErr?(' Motivo: '+ultErr.msg+(ultErr.status?(' (HTTP '+ultErr.status+')'):'')):'';
-      if(sts){sts.style.color='#e53e3e';sts.textContent='❌ NÃO foi para a nuvem — esse vídeo/foto só existe neste aparelho e NÃO vai aparecer no site.'+detalhe+' Tente novamente com internet melhor, ou use um arquivo menor.';}
-      showToast('❌ Vídeo não enviado para a nuvem — não vai publicar. Tente de novo.');
-    }else if(sts){
-      sts.style.color='var(--azul2)';sts.textContent='✅ Pronto!';setTimeout(function(){sts.style.display='none';},3000);
-    }
-  }catch(e){
-    _bnrBgUrl=locUrl;
-    if(sts){sts.style.color='#e53e3e';sts.textContent='❌ Falha no envio — salvo só neste aparelho, NÃO vai aparecer no site.';}
-  }
-  try{inp.value='';}catch(e){}
-  bnrAtualiza();
-}
-function bnrLimparMidia(){_bnrMidia=null;_bnrBgUrl='';var bg=document.getElementById('bnr-prev-bg');if(bg){bg.innerHTML='';bg.style.backgroundImage='';}var pv=document.getElementById('bnr-up-pv');if(pv)pv.innerHTML='';var inp=document.getElementById('bnr-bg-url');if(inp)inp.value='';}
-function bnrLimpar(){['bnr-badge','bnr-tit','bnr-sub','bnr-dt','bnr-hora','bnr-loc','bnr-cta'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});bnrLimparMidia();bnrAtualiza();}
-function bnrSalvar(){
-  // Bloquear publicação se a mídia só existe localmente (idb:/blob:) — não vai funcionar no site
-  if(_bnrBgUrl&&(_bnrBgUrl.startsWith('idb:')||_bnrBgUrl.startsWith('blob:')||_bnrBgUrl.startsWith('mem:'))){
-    var okEl=document.getElementById('bnr-ok');
-    if(okEl){okEl.style.display='block';okEl.style.color='#e74c3c';okEl.textContent='❌ NÃO PUBLICADO — o vídeo/foto não foi enviado para a nuvem (só existe neste aparelho). Suba o arquivo de novo com internet melhor, ou remova e use um link do YouTube.';setTimeout(function(){okEl.style.display='none';okEl.style.color='var(--verde)';},7000);}
-    showToast('❌ Não publicado — mídia só está neste aparelho.');
-    return;
-  }
-  var _bgUrlAtual=_bnrBgUrl||'';
-  var _ehVideoPeloLink=/\.(mp4|webm|mov|m4v|3gp|ogv)(\?|$)/i.test(_bgUrlAtual)||_bgUrlAtual.includes('/video/upload/')||_bgUrlAtual.startsWith('data:video');
-  var _bgTpFinal=_ehVideoPeloLink?'video':(_bnrMidia?_bnrMidia.tp:'img');
-  var dados={badge:(document.getElementById('bnr-badge')||{}).value||'',titulo:(document.getElementById('bnr-tit')||{}).value||'',subtit:(document.getElementById('bnr-sub')||{}).value||'',dt:(document.getElementById('bnr-dt')||{}).value||'',hora:(document.getElementById('bnr-hora')||{}).value||'',local:(document.getElementById('bnr-loc')||{}).value||'',cta:(document.getElementById('bnr-cta')||{}).value||'',cor:_bnrCor,tpl:_bnrTplSel,bgUrl:_bnrBgUrl||'',bgTp:_bgTpFinal,ov1:(document.getElementById('bnr-ov1')||{}).value||'#0a1e35',ov2:(document.getElementById('bnr-ov2')||{}).value||'#1E3A5F',opac:(document.getElementById('bnr-opac')||{}).value||75,ts:Date.now()};if(_bnrElemPos&&Object.keys(_bnrElemPos).length)dados.elemPos=_bnrElemPos;localStorage.setItem('obpc_banner_culto',JSON.stringify(dados));fetch('https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com/obpc/banner_culto.json',{method:'PUT',body:JSON.stringify(dados),headers:{'Content-Type':'application/json'}}).then(function(){showToast('✅ Destaque Visual publicado no site!');}).catch(function(){showToast('⚠️ Salvo local (sem conexão)');});var ok=document.getElementById('bnr-ok');if(ok){ok.style.display='block';ok.style.color='var(--verde)';ok.textContent='✅ Banner publicado!';setTimeout(function(){ok.style.display='none';},3500);}}
-/* ═══ AGENDA DE CULTOS ═══ */
-var _pcltImgUrl='';var _pcltAudUrl='';var _pcltImgLocal=false;var _pcltAudLocal=false;
-var PCLT_GRUPOS=[
-  {id:'geral',   nm:'Geral',    ic:'⛪', cor:'#3B9BD6', g:'linear-gradient(160deg,#1a4a7a,#0a1e35)'},
-  {id:'santa_ceia', nm:'Santa Ceia', ic:'🍷', cor:'#e74c3c', g:'linear-gradient(160deg,#7c0a02,#3d0000)'},
-  {id:'primicias', nm:'Primícias', ic:'✨', cor:'#d4a843', g:'linear-gradient(160deg,#b8860b,#5c4000)'},
-  {id:'missoes',  nm:'Missões',  ic:'🌍', cor:'#2980b9', g:'linear-gradient(160deg,#1a4a7a,#0a1e35)'},
-  {id:'familia',  nm:'Família',  ic:'👨‍👩‍👧‍👦', cor:'#27ae60', g:'linear-gradient(160deg,#1a5c3a,#0a2a1a)'},
-  {id:'ufebrac',  nm:'UFEBRAC',  ic:'🌸', cor:'#e91e8c', g:'linear-gradient(160deg,#880e4f,#3a0a2a)'},
-  {id:'umasbrac', nm:'UMASBRAC', ic:'💪', cor:'#1565C0', g:'linear-gradient(160deg,#0d47a1,#1565C0)'},
-  {id:'jubrac',   nm:'JUBRAC',   ic:'🔥', cor:'#5c6bc0', g:'linear-gradient(160deg,#1a237e,#283593)'},
-  {id:'menibrac', nm:'MENIBRAC', ic:'🌟', cor:'#ffa000', g:'linear-gradient(160deg,#e65100,#ff8f00 60%,#388e3c)'},
-  {id:'louvor',   nm:'Louvor',   ic:'🎶', cor:'#8e44ad', g:'linear-gradient(160deg,#3a1a5c,#1a0a2d)'},
-];
-var _pcltGrupoSel='geral';
+/* ═══════════════════════════════════════════════════════════════
+   DESTAQUE DO MÊS + PRÓXIMOS CULTOS — versão simples
+   Regra de ouro: tudo é lido e gravado DIRETO no servidor (Firebase).
+   Nada depende da memória do aparelho, então celular e computador
+   sempre veem a mesma coisa, e só aparece "Publicado" quando o
+   servidor confirmou de verdade.
+   ═══════════════════════════════════════════════════════════════ */
+function sgEsc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function sgTentar(fn,n){n=n||1;return fn().catch(function(e){if(n<3)return new Promise(function(r){setTimeout(r,1200*n);}).then(function(){return sgTentar(fn,n+1);});throw e;});}
+function sgGet(k){return sgTentar(function(){return fetchComLimite(FB+'/'+k+'.json?x='+Date.now(),{cache:'no-store'},15000).then(function(r){if(!r.ok)throw new Error('erro '+r.status);return r.json();});});}
+function sgPut(k,v){return sgTentar(function(){return fetchComLimite(FB+'/'+k+'.json',{method:'PUT',body:JSON.stringify(v),headers:{'Content-Type':'application/json'}},20000).then(function(r){if(!r.ok)throw new Error('erro '+r.status);return r;});});}
+function sgDel(k){return sgTentar(function(){return fetchComLimite(FB+'/'+k+'.json',{method:'DELETE'},15000).then(function(r){if(!r.ok)throw new Error('erro '+r.status);return r;});});}
+function sgCache(k,v){try{if(v==null)localStorage.removeItem('obpc_'+k);else localStorage.setItem('obpc_'+k,JSON.stringify(v));}catch(e){}}
+function sgMsg(id,txt,ok){var el=document.getElementById(id);if(!el)return;el.style.display='block';el.style.color=ok?'var(--verde)':'#e74c3c';el.textContent=txt;clearTimeout(el._t);el._t=setTimeout(function(){el.style.display='none';},ok?5000:12000);}
+function sgV(id){var e=document.getElementById(id);return e?e.value:'';}
+function sgSet(id,v){var e=document.getElementById(id);if(e)e.value=v==null?'':v;}
+function sgHoje(){var h=new Date();return h.getFullYear()+'-'+String(h.getMonth()+1).padStart(2,'0')+'-'+String(h.getDate()).padStart(2,'0');}
+function sgTipo(u){return (/\.(mp4|webm|mov|m4v|3gp|ogv)(\?|$)/i.test(u)||u.indexOf('/video/upload/')>-1||u.indexOf('data:video')===0)?'video':'img';}
+function sgYT(u){var m=(u||'').match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/|v\/))([a-zA-Z0-9_-]{11})/);return m?m[1]:null;}
+function sgDataFmt(dt){return dt?dt.split('-').reverse().join('/'):'';}
+function sgQuando(ts){if(!ts)return '';var d=new Date(ts);return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})+' às '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});}
+function sgLocal(u){return /^(idb:|blob:|mem:)/.test(u||'');}
 
-function rndPcltGrupos(){
-  var c=document.getElementById('pclt-grupo-btns');if(!c)return;
-  c.innerHTML=PCLT_GRUPOS.map(function(g){
-    var sel=g.id===_pcltGrupoSel;
-    return '<button type="button" onclick="pcltSelGrupo(\''+g.id+'\',this)" style="display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:20px;border:2px solid '+(sel?g.cor:'var(--borda)')+';background:'+(sel?g.cor+'22':'#fff')+';cursor:pointer;font-family:inherit;font-size:.75rem;font-weight:700;color:'+(sel?g.cor:'var(--muted)')+';transition:all .15s" data-gid="'+g.id+'"><span>'+g.ic+'</span>'+g.nm+'</button>';
-  }).join('');
+/* ───────────── 1) DESTAQUE DO MÊS (banner_culto) ───────────── */
+var DM_CORES=['#D4A843','#3B9BD6','#e74c3c','#27ae60','#7c3aed','#e67e22','#ffffff','#f0c040'];
+var _dm={bgUrl:'',bgTp:'img',cor:'#D4A843',audioUrl:'',audioLoop:true,audioVol:0.5,pv:null};
+
+function rndBnr(){
+  dmCores();
+  var st=document.getElementById('dm-status');
+  if(st){st.style.color='var(--muted)';st.textContent='⏳ Conferindo o que está no site...';}
+  sgGet('banner_culto').then(function(d){dmPreencher(d||{});dmStatus(d||{});})
+  .catch(function(e){if(st){st.style.color='#e74c3c';st.textContent='⚠️ Não consegui ver o que está no site agora ('+e.message+'). Confira a internet — você ainda pode preencher e publicar.';}dmPrev();});
 }
-function pcltSelGrupo(id,btn){
-  _pcltGrupoSel=id;
-  var grp=PCLT_GRUPOS.filter(function(g){return g.id===id;})[0]||PCLT_GRUPOS[0];
-  document.getElementById('pclt-grupo-sel').value=id;
-  document.getElementById('pclt-grupo-cor').value=grp.cor;
-  // Preencher título automático se estiver vazio
-  var titEl=document.getElementById('pclt-tit');
-  if(titEl&&!titEl.value.trim()){titEl.value=grp.nm==='Geral'?'Culto Geral':grp.nm;}
-  rndPcltGrupos();
+function dmCores(){var c=document.getElementById('dm-cores');if(!c)return;c.innerHTML=DM_CORES.map(function(x){return '<div onclick="dmSetCor(\''+x+'\')" style="width:28px;height:28px;border-radius:50%;background:'+x+';cursor:pointer;border:3px solid '+(x===_dm.cor?'#1E3A5F':'#ccc')+'"></div>';}).join('');}
+function dmSetCor(c){_dm.cor=c;dmCores();dmPrev();}
+function dmTemConteudo(d){return !!(d&&(d.bgUrl||d.titulo||d.subtit||d.badge||d.dt||d.hora||d.local||d.cta||d.imgUrl));}
+function dmStatus(d){
+  var st=document.getElementById('dm-status');if(!st)return;
+  if(dmTemConteudo(d)){
+    var nome=d.titulo||d.badge||(d.bgUrl?'(só foto/vídeo)':'(sem título)');
+    var aviso=(d.dt&&d.dt<sgHoje())?' — a data '+sgDataFmt(d.dt)+' já passou, então o site não mostra mais a data.':'';
+    st.style.color='var(--verde)';st.textContent='✅ No site agora: “'+nome+'”'+(d.ts?' · publicado em '+sgQuando(d.ts):'')+aviso;
+  }else{st.style.color='var(--muted)';st.textContent='Nenhum destaque no site no momento.';}
 }
-function rndPclt(){
-  rndPcltGrupos();
-  rndPcltLista();
-  // Sync Firebase
-  fetch('https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com/obpc/proximos_cultos.json').then(function(r){return r.ok?r.json():null;}).then(function(fb){if(fb&&Array.isArray(fb.lista)&&fb.lista.length){localStorage.setItem('obpc_proximos_cultos',JSON.stringify(fb));}rndPcltLista();}).catch(function(){});
+function dmPreencher(d){
+  _dm.bgUrl=d.bgUrl||d.imgUrl||'';if(sgLocal(_dm.bgUrl))_dm.bgUrl='';
+  _dm.bgTp=d.bgTp||(_dm.bgUrl?sgTipo(_dm.bgUrl):'img');
+  _dm.cor=d.cor||'#D4A843';
+  _dm.audioUrl=d.audioUrl||'';_dm.audioLoop=d.audioLoop!==false;_dm.audioVol=d.audioVol!=null?d.audioVol:0.5;
+  sgSet('dm-badge',d.badge);sgSet('dm-tit',d.titulo);sgSet('dm-sub',d.subtit);
+  sgSet('dm-dt',d.dt);sgSet('dm-hora',d.hora);sgSet('dm-loc',d.local);sgSet('dm-cta',d.cta);
+  sgSet('dm-url',_dm.bgUrl);
+  var op=parseInt(d.opac,10);if(isNaN(op))op=75;sgSet('dm-opac',op);var ov=document.getElementById('dm-opac-v');if(ov)ov.textContent=op;
+  dmCores();dmAudioInfo();_dm.pv=null;dmPrev();
 }
-function rndPcltLista(){
-  var d=DB.g('proximos_cultos')||{lista:[]};
-  var lista=(d.lista||[]).slice().sort(function(a,b){var da=a.dt||'9999';var db=b.dt||'9999';return da<db?-1:da>db?1:0;});
-  var c=document.getElementById('pclt-lista');if(!c)return;
-  if(!lista.length){c.innerHTML='<p style="color:var(--muted);font-size:.82rem;padding:.5rem 0">Nenhum culto cadastrado.</p>';return;}
-  c.innerHTML=lista.map(function(it,i){
-    var dtFmt=it.dt?it.dt.split('-').reverse().join('/'):'—';
-    var grp=PCLT_GRUPOS.filter(function(g){return g.id===it.grupo;})[0]||PCLT_GRUPOS[0];
-    var ic=grp.ic;var cor=it.bgCor1||grp.cor;
-    return '<div class="li" style="flex-wrap:wrap;gap:.3rem;border-left:4px solid '+cor+'">'
-      +'<div style="flex:1;min-width:180px">'
-      +'<div style="display:flex;align-items:center;gap:.4rem;margin-bottom:.2rem"><span style="font-size:1rem">'+ic+'</span><strong style="font-size:.83rem">'+it.titulo+'</strong></div>'
-      +'<div style="font-size:.72rem;color:var(--muted)">📅 '+dtFmt+' — ⏰ '+(it.hora||'—')+(it.local?' — 📍 '+it.local:'')+'</div>'
-      +(it.subtit?'<div style="font-size:.72rem;color:var(--azul2)">'+it.subtit+'</div>':'')
-      +(it.imgUrl?'<div style="font-size:.68rem;color:var(--verde)">🖼️ Com imagem</div>':'')
-      +(it.audioUrl?'<div style="font-size:.68rem;color:#8e44ad">🎵 Com áudio</div>':'')
-      +'</div>'
-      +'<div style="display:flex;gap:.3rem"><button class="btn bsm" style="background:#1E3A5F;color:#fff" onclick="pcltEditar('+i+')">✏️</button><button class="btn bd bsm" onclick="pcltDel('+i+')">🗑️</button></div></div>';
-  }).join('');
-}
-async function pcltUpImg(inp){
-  var f=inp.files[0];if(!f)return;
-  var sts=document.getElementById('pclt-img-sts');var pv=document.getElementById('pclt-img-pv');
-  if(sts){sts.style.display='block';sts.textContent='⬆️ Enviando...';}
-  var loc=URL.createObjectURL(f);
-  var isV=f.type.startsWith('video/');
-  if(pv){pv.innerHTML=isV?'<video src="'+loc+'" controls style="max-width:120px;height:auto;border-radius:6px;background:#000"></video>':'<img src="'+loc+'" style="max-width:120px;height:auto;border-radius:6px">';}
-  try{
-    var m=await upArq(f);
-    _pcltImgUrl=m.src;
-    _pcltImgLocal=!!m.local;
-    if(_pcltImgLocal){
-      if(sts){sts.style.color='#e53e3e';sts.textContent='❌ NÃO foi para a nuvem — só existe neste aparelho. Tente de novo com internet melhor.';}
-    }else{
-      if(sts){sts.style.color='var(--azul2)';sts.textContent='✅ Pronto!';setTimeout(function(){sts.style.display='none';},3000);}
+function dmPrev(){
+  var bg=document.getElementById('dm-prev-bg');if(!bg)return;
+  var url=_dm.bgUrl||'';
+  if(_dm.pv!==url){
+    _dm.pv=url;bg.innerHTML='';bg.style.backgroundImage='';bg.style.backgroundSize='cover';bg.style.backgroundPosition='center';
+    if(url){
+      var yt=sgYT(url);
+      if(yt){bg.style.backgroundImage='url(https://img.youtube.com/vi/'+yt+'/hqdefault.jpg)';}
+      else if(_dm.bgTp==='video'||sgTipo(url)==='video'){var v=document.createElement('video');v.src=url;v.muted=true;v.autoplay=true;v.loop=true;v.playsInline=true;v.setAttribute('playsinline','');v.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover';bg.appendChild(v);v.play().catch(function(){});}
+      else{bg.style.backgroundImage='url("'+url.replace(/"/g,'%22')+'")';}
     }
-  }catch(e){_pcltImgUrl=loc;_pcltImgLocal=true;if(sts){sts.style.color='#e53e3e';sts.textContent='❌ Falhou — só salvo neste aparelho.';}}
-  try{inp.value='';}catch(e){}
-}
-async function pcltUpAud(inp){
-  var f=inp.files[0];if(!f)return;
-  var sts=document.getElementById('pclt-aud-sts');var pv=document.getElementById('pclt-aud-pv');
-  if(sts){sts.style.display='block';sts.textContent='⬆️ Enviando áudio...';}
-  var loc=URL.createObjectURL(f);
-  if(pv)pv.innerHTML='<audio src="'+loc+'" controls style="width:100%;height:32px"></audio>';
-  try{
-    var key=localStorage.getItem('obpc_imgbb_key')||'882bf38d3bf05650732a78da66c23568';
-    if(key&&key.length>10){
-      var b64=await new Promise(function(res,rej){var r=new FileReader();r.onload=function(e){res(e.target.result.split(',')[1]);};r.onerror=rej;r.readAsDataURL(f);});
-      var fd=new FormData();fd.append('image',b64);fd.append('name',f.name||'audio_'+Date.now());
-      var resp=await fetch('https://api.imgbb.com/1/upload?key='+key,{method:'POST',body:fd});
-      var data=await resp.json();
-      if(data.success){_pcltAudUrl=data.data.url;_pcltAudLocal=false;}else{_pcltAudUrl=loc;_pcltAudLocal=true;}
-    }else{_pcltAudUrl=loc;_pcltAudLocal=true;}
-    if(_pcltAudLocal){
-      if(sts){sts.style.color='#e53e3e';sts.textContent='❌ NÃO foi para a nuvem — só existe neste aparelho.';}
-    }else{
-      if(sts){sts.style.color='var(--azul2)';sts.textContent='✅ Áudio pronto!';setTimeout(function(){sts.style.display='none';},3000);}
-    }
-  }catch(e){_pcltAudUrl=loc;_pcltAudLocal=true;if(sts){sts.style.color='#e53e3e';sts.textContent='❌ Falhou — só salvo neste aparelho.';}}
-  try{inp.value='';}catch(e){}
-}
-function pcltResetCores(){
-  var grp=PCLT_GRUPOS.filter(function(g){return g.id===_pcltGrupoSel;})[0]||PCLT_GRUPOS[0];
-  var c1=document.getElementById('pclt-bg-cor1');var c2=document.getElementById('pclt-bg-cor2');
-  if(c1)c1.value='#1a237e';if(c2)c2.value='#283593';
-}
-function pcltSalvar(){
-  var titulo=(document.getElementById('pclt-tit')||{}).value||'';
-  var subtit=(document.getElementById('pclt-sub')||{}).value||'';
-  var dt=(document.getElementById('pclt-dt')||{}).value||'';
-  var hora=(document.getElementById('pclt-hora')||{}).value||'';
-  var local=(document.getElementById('pclt-loc')||{}).value||'';
-  var cor1=(document.getElementById('pclt-bg-cor1')||{}).value||'#1a237e';
-  var cor2=(document.getElementById('pclt-bg-cor2')||{}).value||'#283593';
-  var grp=PCLT_GRUPOS.filter(function(g){return g.id===_pcltGrupoSel;})[0]||PCLT_GRUPOS[0];
-  if(!titulo){showToast('⚠️ Informe o título do culto.');return;}
-  if(_pcltImgLocal||_pcltAudLocal){
-    showToast('❌ NÃO PUBLICADO — a foto/áudio não foi para a nuvem (só está neste aparelho). Suba de novo com internet melhor ou remova o arquivo.');
-    var okBloq=document.getElementById('pclt-ok');
-    if(okBloq){okBloq.style.display='block';okBloq.style.color='#e74c3c';okBloq.textContent='❌ NÃO PUBLICADO — mídia só existe neste aparelho.';setTimeout(function(){okBloq.style.display='none';okBloq.style.color='var(--verde)';},7000);}
-    return;
   }
-  var d=DB.g('proximos_cultos')||{lista:[]};
-  d.lista=d.lista||[];
-  d.lista.unshift({
-    titulo:titulo,
-    subtit:subtit,
-    dt:dt,hora:hora,local:local,
-    grupo:_pcltGrupoSel,
-    ic:grp.ic,
-    bgCor1:cor1,bgCor2:cor2,
-    gradiente:'linear-gradient(160deg,'+cor1+','+cor2+')',
-    imgUrl:_pcltImgUrl||'',
-    audioUrl:_pcltAudUrl||'',
-    ts:Date.now()
-  });
-  d.lista.sort(function(a,b){var da=a.dt||'9999';var db=b.dt||'9999';return da<db?-1:da>db?1:0;});
-  DB.s('proximos_cultos',d);
-  _pcltImgUrl='';_pcltAudUrl='';_pcltImgLocal=false;_pcltAudLocal=false;
-  rndPcltLista();
-  showToast('✅ Culto publicado na agenda!');
-  var ok=document.getElementById('pclt-ok');if(ok){ok.style.display='block';setTimeout(function(){ok.style.display='none';},3000);}
+  var badge=sgV('dm-badge'),tit=sgV('dm-tit'),sub=sgV('dm-sub'),dt=sgV('dm-dt'),hora=sgV('dm-hora'),loc=sgV('dm-loc'),cta=sgV('dm-cta');
+  var op=parseInt(sgV('dm-opac'),10);if(isNaN(op))op=75;
+  var temTexto=!!(badge||tit||sub||dt||hora||loc||cta);
+  var ov=document.getElementById('dm-prev-ov');
+  if(ov)ov.style.background=temTexto?('linear-gradient(180deg,rgba(10,30,53,'+(op/100*0.8).toFixed(2)+') 0%,transparent 40%,transparent 50%,rgba(30,58,95,'+Math.min(1,op/100+0.15).toFixed(2)+') 100%)'):'';
+  var h='';
+  var txtCor=function(c){var r=parseInt(c.slice(1,3),16),g=parseInt(c.slice(3,5),16),b=parseInt(c.slice(5,7),16);return (r*299+g*587+b*114)/1000>140?'#1E3A5F':'#fff';};
+  if(badge)h+='<div style="align-self:flex-start;font-size:.45rem;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;padding:2px 8px;border-radius:20px;background:'+_dm.cor+';color:'+txtCor(_dm.cor)+'">'+sgEsc(badge)+'</div>';
+  if(tit)h+='<div style="font-size:1.05rem;font-weight:800;line-height:1.1;text-transform:uppercase;text-shadow:0 2px 8px rgba(0,0,0,.7)">'+sgEsc(tit)+'</div>';
+  if(sub)h+='<div style="font-size:.6rem;font-style:italic;opacity:.92;text-shadow:0 1px 4px rgba(0,0,0,.6)">'+sgEsc(sub)+'</div>';
+  var ch='';
+  if(dt)ch+='<div>📅 '+sgDataFmt(dt)+'</div>';
+  if(hora)ch+='<div>🕐 '+sgEsc(hora)+'</div>';
+  if(loc)ch+='<div>📍 '+sgEsc(loc)+'</div>';
+  if(ch)h+='<div style="font-size:.55rem;display:flex;flex-direction:column;gap:2px;text-shadow:0 1px 3px rgba(0,0,0,.6)">'+ch+'</div>';
+  if(cta)h+='<div style="align-self:flex-start;font-size:.55rem;font-weight:800;padding:4px 10px;border-radius:20px;background:'+_dm.cor+';color:'+txtCor(_dm.cor)+'">'+sgEsc(cta)+'</div>';
+  var t=document.getElementById('dm-prev-txt');if(t)t.innerHTML=h;
 }
-function pcltLimpar(){
-  ['pclt-tit','pclt-sub','pclt-dt','pclt-hora','pclt-loc'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
-  _pcltImgUrl='';_pcltAudUrl='';_pcltImgLocal=false;_pcltAudLocal=false;
-  var pv1=document.getElementById('pclt-img-pv');if(pv1)pv1.innerHTML='';
-  var pv2=document.getElementById('pclt-aud-pv');if(pv2)pv2.innerHTML='';
-  _pcltGrupoSel='geral';rndPcltGrupos();
+function dmSetUrl(u){u=(u||'').trim();_dm.bgUrl=u;_dm.bgTp=u?sgTipo(u):'img';dmPrev();}
+function dmTirarFundo(){_dm.bgUrl='';_dm.bgTp='img';sgSet('dm-url','');dmPrev();}
+async function dmUpMidia(inp){
+  var f=inp.files[0];if(!f)return;
+  var sts=document.getElementById('dm-up-sts');
+  var say=function(t,cor){if(sts){sts.style.display='block';sts.style.color=cor||'var(--azul2)';sts.textContent=t;}};
+  say('⬆️ Enviando... não saia desta tela.');
+  try{
+    var m=await upArq(f,function(p){say('⬆️ Enviando '+p+'%...');},function(s){say(s);});
+    if(!m||m.local||!m.src||sgLocal(m.src)){
+      var er=window._cloudErrLog&&window._cloudErrLog.length?window._cloudErrLog[window._cloudErrLog.length-1]:null;
+      say('❌ O arquivo NÃO foi para a internet, então não apareceria no site.'+(er?' Motivo: '+er.msg:'')+' Tente de novo com sinal melhor ou use um arquivo menor.','#e74c3c');
+    }else{
+      _dm.bgUrl=m.src;_dm.bgTp=m.tp==='video'?'video':'img';sgSet('dm-url',m.src);
+      say('✅ Pronto! Agora clique em Publicar no site.','var(--verde)');setTimeout(function(){if(sts)sts.style.display='none';},5000);
+      dmPrev();
+    }
+  }catch(e){say('❌ Falha no envio: '+(e&&e.message?e.message:'tente de novo'),'#e74c3c');}
+  try{inp.value='';}catch(e){}
 }
-function pcltDel(i){var d=DB.g('proximos_cultos')||{lista:[]};d.lista=d.lista||[];d.lista.splice(i,1);DB.s('proximos_cultos',d);rndPcltLista();}
+function dmAudioInfo(){
+  var el=document.getElementById('dm-aud-sts');if(!el)return;
+  if(_dm.audioUrl){el.innerHTML='✅ Música pronta<br><audio src="'+sgEsc(_dm.audioUrl)+'" controls preload="none" style="width:100%;height:32px;margin-top:4px"></audio>';}
+  else el.textContent='Sem música.';
+}
+async function dmUpAudio(inp){
+  var f=inp.files[0];if(!f)return;
+  var el=document.getElementById('dm-aud-sts');if(el){el.style.color='var(--azul2)';el.textContent='⬆️ Enviando música...';}
+  try{
+    var u=await upCloud(f,function(p){if(el)el.textContent='⬆️ Enviando música '+p+'%...';},function(){});
+    if(u){_dm.audioUrl=u;dmAudioInfo();}
+    else if(el){el.style.color='#e74c3c';el.textContent='❌ A música não foi para a internet. Tente de novo.';}
+  }catch(e){if(el){el.style.color='#e74c3c';el.textContent='❌ Falha no envio da música.';}}
+  try{inp.value='';}catch(e){}
+}
+function dmTirarAudio(){_dm.audioUrl='';dmAudioInfo();}
+function dmPublicar(){
+  var d={badge:sgV('dm-badge').trim(),titulo:sgV('dm-tit').trim(),subtit:sgV('dm-sub').trim(),dt:sgV('dm-dt'),hora:sgV('dm-hora').trim(),local:sgV('dm-loc').trim(),cta:sgV('dm-cta').trim()};
+  if(sgLocal(_dm.bgUrl)){sgMsg('dm-ok','❌ A foto/vídeo só existe neste aparelho. Envie de novo.',false);return;}
+  if(!_dm.bgUrl&&!d.titulo&&!d.subtit&&!d.badge){sgMsg('dm-ok','Coloque pelo menos uma foto/vídeo ou um título.',false);return;}
+  var op=parseInt(sgV('dm-opac'),10);if(isNaN(op))op=75;
+  var dados={badge:d.badge,titulo:d.titulo,subtit:d.subtit,dt:d.dt,hora:d.hora,local:d.local,cta:d.cta,cor:_dm.cor,bgUrl:_dm.bgUrl||'',bgTp:_dm.bgUrl?(_dm.bgTp||sgTipo(_dm.bgUrl)):'img',ov1:'#0a1e35',ov2:'#1E3A5F',opac:op,ts:Date.now()};
+  if(_dm.audioUrl){dados.audioUrl=_dm.audioUrl;dados.audioLoop=_dm.audioLoop;dados.audioVol=_dm.audioVol;}
+  var btn=document.getElementById('dm-btn-pub');if(btn){btn.disabled=true;btn.textContent='⏳ Publicando...';}
+  sgPut('banner_culto',dados).then(function(){return sgGet('banner_culto');}).then(function(v){
+    if(!v||v.ts!==dados.ts)throw new Error('o servidor não confirmou a gravação');
+    sgCache('banner_culto',dados);dmStatus(v);
+    sgMsg('dm-ok','✅ Publicado e conferido no servidor! Já está no site.',true);showToast('✅ Destaque publicado no site!');
+  }).catch(function(e){sgMsg('dm-ok','❌ NÃO foi publicado ('+e.message+'). Confira a internet e clique em Publicar de novo.',false);})
+  .then(function(){if(btn){btn.disabled=false;btn.textContent='🌐 Publicar no site';}});
+}
+function dmRemover(){
+  if(!confirm('Tirar o Destaque do Mês do site?'))return;
+  sgDel('banner_culto').then(function(){return sgGet('banner_culto');}).then(function(v){
+    if(v)throw new Error('o servidor não confirmou');
+    sgCache('banner_culto',null);
+    _dm.bgUrl='';_dm.bgTp='img';_dm.audioUrl='';_dm.pv=null;
+    ['dm-badge','dm-tit','dm-sub','dm-dt','dm-hora','dm-loc','dm-cta','dm-url'].forEach(function(i){sgSet(i,'');});
+    dmAudioInfo();dmPrev();dmStatus({});
+    sgMsg('dm-ok','🗑️ Destaque tirado do site.',true);showToast('🗑️ Destaque removido do site');
+  }).catch(function(e){sgMsg('dm-ok','❌ Não consegui remover ('+e.message+'). Tente de novo.',false);});
+}
+
+/* ───────────── 2) PRÓXIMOS CULTOS (proximos_cultos.lista) ───────────── */
+var AG_GRUPOS=[
+  {id:'geral',nm:'Geral',ic:'⛪',cor:'#3B9BD6',g:'linear-gradient(160deg,#1a4a7a,#0a1e35)'},
+  {id:'santa_ceia',nm:'Santa Ceia',ic:'🍷',cor:'#e74c3c',g:'linear-gradient(160deg,#7c0a02,#3d0000)'},
+  {id:'primicias',nm:'Primícias',ic:'✨',cor:'#d4a843',g:'linear-gradient(160deg,#b8860b,#5c4000)'},
+  {id:'missoes',nm:'Missões',ic:'🌍',cor:'#2980b9',g:'linear-gradient(160deg,#1a4a7a,#0a1e35)'},
+  {id:'familia',nm:'Família',ic:'👨‍👩‍👧‍👦',cor:'#27ae60',g:'linear-gradient(160deg,#1a5c3a,#0a2a1a)'},
+  {id:'ufebrac',nm:'UFEBRAC',ic:'🌸',cor:'#e91e8c',g:'linear-gradient(160deg,#880e4f,#3a0a2a)'},
+  {id:'umasbrac',nm:'UMASBRAC',ic:'💪',cor:'#1565C0',g:'linear-gradient(160deg,#0d47a1,#1565C0)'},
+  {id:'jubrac',nm:'JUBRAC',ic:'🔥',cor:'#5c6bc0',g:'linear-gradient(160deg,#1a237e,#283593)'},
+  {id:'menibrac',nm:'MENIBRAC',ic:'🌟',cor:'#ffa000',g:'linear-gradient(160deg,#e65100,#ff8f00 60%,#388e3c)'},
+  {id:'louvor',nm:'Louvor',ic:'🎶',cor:'#8e44ad',g:'linear-gradient(160deg,#3a1a5c,#1a0a2d)'}
+];
+var _ag={lista:[],sel:'geral',editKey:null,imgUrl:'',audioUrl:''};
+function agGrupo(id){return AG_GRUPOS.filter(function(g){return g.id===id;})[0]||AG_GRUPOS[0];}
+function agKey(it){return String(it.ts||'')+'|'+(it.titulo||'')+'|'+(it.dt||'')+'|'+(it.hora||'');}
+function agNorm(d){
+  var l=d&&d.lista;if(!l)return [];
+  if(!Array.isArray(l))l=Object.keys(l).map(function(k){return l[k];});
+  return l.filter(function(x){return x&&typeof x==='object';});
+}
+function agOrdena(l){return l.slice().sort(function(a,b){var x=a.dt||'9999-99-99',y=b.dt||'9999-99-99';return x<y?-1:x>y?1:0;});}
+function rndPclt(){agChips();agCarregar();}
+function agChips(){
+  var c=document.getElementById('ag-grupos');if(!c)return;
+  c.innerHTML=AG_GRUPOS.map(function(g){var s=g.id===_ag.sel;return '<button type="button" onclick="agSel(\''+g.id+'\')" style="display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:20px;border:2px solid '+(s?g.cor:'var(--borda)')+';background:'+(s?g.cor+'22':'#fff')+';cursor:pointer;font-family:inherit;font-size:.75rem;font-weight:700;color:'+(s?g.cor:'var(--muted)')+'"><span>'+g.ic+'</span>'+g.nm+'</button>';}).join('');
+}
+function agSel(id){
+  _ag.sel=id;var g=agGrupo(id);
+  if(!sgV('ag-tit').trim())sgSet('ag-tit',g.id==='geral'?'Culto Geral':g.nm);
+  agChips();
+}
+function agCarregar(){
+  var box=document.getElementById('ag-lista');
+  sgGet('proximos_cultos').then(function(d){_ag.lista=agOrdena(agNorm(d));agLista();})
+  .catch(function(e){if(box)box.innerHTML='<p style="color:#e74c3c;font-size:.82rem">⚠️ Não consegui ler a lista do servidor ('+sgEsc(e.message)+'). <a href="#" onclick="agCarregar();return false">Tentar de novo</a></p>';});
+}
+function agLista(){
+  var c=document.getElementById('ag-lista');if(!c)return;
+  var lista=_ag.lista,hoje=sgHoje();
+  if(!lista.length){c.innerHTML='<p style="color:var(--muted);font-size:.82rem">Nenhum culto cadastrado.</p>';return;}
+  c.innerHTML=lista.map(function(it,i){
+    var g=agGrupo(it.grupo),passou=it.dt&&it.dt<hoje,hojeIt=it.dt===hoje;
+    var linha=[];if(it.dt)linha.push('📅 '+sgDataFmt(it.dt));if(it.hora)linha.push('🕐 '+sgEsc(it.hora));if(it.local)linha.push('📍 '+sgEsc(it.local));
+    var tags='';if(it.imgUrl)tags+=' · 🖼️ foto/vídeo';if(it.audioUrl)tags+=' · 🎵 música';
+    return '<div class="li" style="flex-wrap:wrap;gap:.4rem;border-left:4px solid '+(it.bgCor1||g.cor)+';'+(passou?'opacity:.55':'')+'">'
+      +'<div style="flex:1;min-width:170px"><div style="font-size:.84rem;font-weight:700">'+(it.ic||g.ic)+' '+sgEsc(it.titulo||'(sem título)')+(hojeIt?' <span style="background:#e0961e;color:#fff;border-radius:10px;padding:1px 7px;font-size:.62rem">HOJE</span>':'')+'</div>'
+      +'<div style="font-size:.72rem;color:var(--muted)">'+(linha.join(' — ')||'sem data')+tags+'</div>'
+      +(passou?'<div style="font-size:.7rem;color:#c0392b">⏳ Data já passou — não aparece mais no site</div>':'')+'</div>'
+      +'<div style="display:flex;gap:.3rem"><button class="btn bsm" style="background:var(--azul2);color:#fff" onclick="agEditar('+i+')">✏️ Editar</button><button class="btn bsm" style="background:#e74c3c;color:#fff" onclick="agExcluir('+i+')">🗑️ Excluir</button></div></div>';
+  }).join('');
+}
+function agInfo(){
+  var el=document.getElementById('ag-midia-info');if(!el)return;
+  var t=[];t.push(_ag.imgUrl?'🖼️ Foto/vídeo pronto ✅':'Sem foto/vídeo');t.push(_ag.audioUrl?'🎵 Música pronta ✅':'sem música');
+  el.textContent=t.join(' · ');
+}
+function agLimpar(){
+  _ag.editKey=null;_ag.imgUrl='';_ag.audioUrl='';_ag.sel='geral';
+  ['ag-tit','ag-sub','ag-dt','ag-hora','ag-loc'].forEach(function(i){sgSet(i,'');});
+  var m=document.getElementById('ag-modo');if(m)m.style.display='none';
+  var b=document.getElementById('ag-btn-pub');if(b)b.textContent='🌐 Publicar no site';
+  var c=document.getElementById('ag-btn-cancel');if(c)c.style.display='none';
+  agChips();agInfo();
+}
+function agEditar(i){
+  var it=_ag.lista[i];if(!it)return;
+  _ag.editKey=agKey(it);_ag.sel=it.grupo||'geral';_ag.imgUrl=sgLocal(it.imgUrl)?'':(it.imgUrl||'');_ag.audioUrl=sgLocal(it.audioUrl)?'':(it.audioUrl||'');
+  sgSet('ag-tit',it.titulo);sgSet('ag-sub',it.subtit);sgSet('ag-dt',it.dt);sgSet('ag-hora',it.hora);sgSet('ag-loc',it.local);
+  var m=document.getElementById('ag-modo');if(m)m.style.display='block';
+  var b=document.getElementById('ag-btn-pub');if(b)b.textContent='💾 Salvar alteração';
+  var c=document.getElementById('ag-btn-cancel');if(c)c.style.display='';
+  agChips();agInfo();
+  var t=document.getElementById('ag-tit');if(t&&t.scrollIntoView)t.scrollIntoView({behavior:'smooth',block:'center'});
+}
+function agSalvar(){
+  var tit=sgV('ag-tit').trim();
+  if(!tit){sgMsg('ag-ok','Informe o título do culto.',false);return;}
+  if(sgLocal(_ag.imgUrl)||sgLocal(_ag.audioUrl)){sgMsg('ag-ok','❌ A foto/música só existe neste aparelho. Envie de novo.',false);return;}
+  var g=agGrupo(_ag.sel);
+  var campos={titulo:tit,subtit:sgV('ag-sub').trim(),dt:sgV('ag-dt'),hora:sgV('ag-hora').trim(),local:sgV('ag-loc').trim(),grupo:g.id,ic:g.ic,bgCor1:g.cor,gradiente:g.g,imgUrl:_ag.imgUrl||'',audioUrl:_ag.audioUrl||''};
+  var key=_ag.editKey;
+  var btn=document.getElementById('ag-btn-pub');var txt=btn?btn.textContent:'';if(btn){btn.disabled=true;btn.textContent='⏳ Publicando...';}
+  sgGet('proximos_cultos').then(function(d){
+    var lista=agNorm(d),achou=false;
+    if(key){lista=lista.map(function(it){
+      if(!achou&&agKey(it)===key){achou=true;var n={},k;for(k in it)n[k]=it[k];delete n.bgCor2;for(k in campos)n[k]=campos[k];n.ts=it.ts||Date.now();return n;}
+      return it;});}
+    if(!key||!achou){campos.ts=Date.now();lista.push(campos);}
+    lista=agOrdena(lista);
+    return sgPut('proximos_cultos',{lista:lista,ts:Date.now()}).then(function(){return sgGet('proximos_cultos');}).then(function(v){
+      var l2=agNorm(v);if(l2.length!==lista.length)throw new Error('o servidor não confirmou a gravação');
+      sgCache('proximos_cultos',v);_ag.lista=agOrdena(l2);
+    });
+  }).then(function(){
+    agLista();var editou=!!key;agLimpar();
+    sgMsg('ag-ok',editou?'✅ Alteração salva e conferida no servidor!':'✅ Culto publicado e conferido no servidor! Já está no site.',true);showToast('✅ Agenda atualizada no site!');
+  }).catch(function(e){sgMsg('ag-ok','❌ NÃO foi publicado ('+e.message+'). Confira a internet e tente de novo.',false);if(btn)btn.textContent=txt;})
+  .then(function(){if(btn)btn.disabled=false;});
+}
+function agExcluir(i){
+  var it=_ag.lista[i];if(!it)return;
+  if(!confirm('Excluir o culto “'+(it.titulo||'')+'”? Ele sai do site.'))return;
+  var key=agKey(it);
+  sgGet('proximos_cultos').then(function(d){
+    var lista=agNorm(d),out=[],tirou=false;
+    lista.forEach(function(x){if(!tirou&&agKey(x)===key){tirou=true;}else out.push(x);});
+    return sgPut('proximos_cultos',{lista:out,ts:Date.now()}).then(function(){return sgGet('proximos_cultos');}).then(function(v){
+      var l2=agNorm(v);if(l2.length!==out.length)throw new Error('o servidor não confirmou');
+      sgCache('proximos_cultos',v);_ag.lista=agOrdena(l2);
+    });
+  }).then(function(){
+    if(_ag.editKey===key)agLimpar();
+    agLista();sgMsg('ag-ok','🗑️ Culto excluído do site.',true);showToast('🗑️ Culto excluído');
+  }).catch(function(e){sgMsg('ag-ok','❌ Não consegui excluir ('+e.message+'). Tente de novo.',false);});
+}
+async function agUpMidia(inp){
+  var f=inp.files[0];if(!f)return;
+  var sts=document.getElementById('ag-up-sts');
+  var say=function(t,cor){if(sts){sts.style.display='block';sts.style.color=cor||'var(--azul2)';sts.textContent=t;}};
+  say('⬆️ Enviando... não saia desta tela.');
+  try{
+    var m=await upArq(f,function(p){say('⬆️ Enviando '+p+'%...');},function(s){say(s);});
+    if(!m||m.local||!m.src||sgLocal(m.src)){say('❌ O arquivo NÃO foi para a internet. Tente de novo com sinal melhor ou use um arquivo menor.','#e74c3c');}
+    else{_ag.imgUrl=m.src;agInfo();say('✅ Pronto! Agora clique em Publicar.','var(--verde)');setTimeout(function(){if(sts)sts.style.display='none';},4000);}
+  }catch(e){say('❌ Falha no envio: '+(e&&e.message?e.message:'tente de novo'),'#e74c3c');}
+  try{inp.value='';}catch(e){}
+}
+async function agUpAudio(inp){
+  var f=inp.files[0];if(!f)return;
+  var sts=document.getElementById('ag-up-sts');
+  var say=function(t,cor){if(sts){sts.style.display='block';sts.style.color=cor||'var(--azul2)';sts.textContent=t;}};
+  say('⬆️ Enviando música...');
+  try{
+    var u=await upCloud(f,function(p){say('⬆️ Enviando música '+p+'%...');},function(){});
+    if(u){_ag.audioUrl=u;agInfo();say('✅ Música pronta! Agora clique em Publicar.','var(--verde)');setTimeout(function(){if(sts)sts.style.display='none';},4000);}
+    else say('❌ A música NÃO foi para a internet. Tente de novo.','#e74c3c');
+  }catch(e){say('❌ Falha no envio da música.','#e74c3c');}
+  try{inp.value='';}catch(e){}
+}
+function agTirarMidia(){_ag.imgUrl='';agInfo();}
+function agTirarAudio(){_ag.audioUrl='';agInfo();}
 
 /* ═══ BANNER ANIVERSARIANTE ═══ */
 var _anvTema='m';var _anvFotoB64='';
@@ -3220,30 +3222,6 @@ function edtHor(i){var o=DB.g('horarios')[i]||{};abrirEdit('horarios',i,[
 function edtInf(i){var o=DB.g('informativos')[i]||{};abrirEdit('informativos',i,[
   {id:'inf-tit-e',lb:'Título',val:o.tit},{id:'inf-cat-e',lb:'Categoria',val:o.cat},{id:'inf-txt-e',lb:'Conteúdo',val:o.txt,ta:true}
 ],rndInf,o.ts);}
-/* pclt editar - preenche formulário */
-function pcltEditar(i){
-  var d=DB.g('proximos_cultos')||{lista:[]};
-  var it=(d.lista||[])[i];if(!it)return;
-  ['pclt-tit','pclt-sub','pclt-dt','pclt-hora','pclt-loc'].forEach(function(id){
-    var el=document.getElementById(id);if(!el)return;
-    var k=id.replace('pclt-','');
-    var m={tit:'titulo',sub:'subtit',dt:'dt',hora:'hora',loc:'local'};
-    el.value=it[m[k]||k]||'';
-  });
-  _pcltEditIdx=i;
-  var el=document.getElementById('pclt-tit');if(el)el.scrollIntoView({behavior:'smooth',block:'center'});
-  showToast('\u270F\uFE0F Edite e clique em Publicar');
-}
-var _pcltEditIdx=-1;
-var _pcltSalvarBase=pcltSalvar;
-pcltSalvar=function(){
-  if(_pcltEditIdx>=0){
-    var d=DB.g('proximos_cultos')||{lista:[]};
-    d.lista=d.lista||[];d.lista.splice(_pcltEditIdx,1);
-    _pcltEditIdx=-1;DB.s('proximos_cultos',d);
-  }
-  _pcltSalvarBase();
-};
 
 function anvBnrExcluir(){
   if(!confirm('Remover o banner de aniversariante do site?'))return;
