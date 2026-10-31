@@ -177,7 +177,7 @@ function play(v,i){
   [].forEach.call($('ph').children,function(n,j){n.classList.toggle('on',j===i);});
   if(m.k==='y')p.innerHTML='<iframe src="https://www.youtube.com/embed/'+m.id+'?autoplay=1&rel=0" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
   else if(m.k==='v'){var pj=poster(m.src);p.innerHTML='<video controls autoplay playsinline preload="auto"'+(pj?' poster="'+esc(pj)+'"':'')+' src="'+esc(m.src)+'"></video>';
-    var vd=p.querySelector('video');if(vd)vd.onerror=function(){p.innerHTML='<div style="height:100%;display:grid;place-items:center;color:#fff;padding:16px;text-align:center">⚠️ Não foi possível carregar este vídeo agora. Tente outro item ou abra a TV em tela cheia.</div>';};}
+    var vd=p.querySelector('video');if(vd){var pr=vd.play();if(pr&&pr.catch)pr.catch(function(){vd.muted=true;var p2=vd.play();if(p2&&p2.catch)p2.catch(function(){});toast('Toque no vídeo para ativar o som');});}if(vd)vd.onerror=function(){p.innerHTML='<div style="height:100%;display:grid;place-items:center;color:#fff;padding:16px;text-align:center">⚠️ Não foi possível carregar este vídeo agora. Tente outro item ou abra a TV em tela cheia.</div>';};}
   else p.innerHTML='<img src="'+esc(m.src)+'" alt="" style="width:100%;height:100%;object-fit:contain">';
 }
 function cp(t){try{navigator.clipboard.writeText(t).then(function(){toast('Link copiado!');});}catch(e){toast(t);}}
