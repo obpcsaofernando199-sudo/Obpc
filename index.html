@@ -3167,7 +3167,7 @@ function abrirShareBanner(){
     loadH2C().then(function(){return html2canvas(alvo,{useCORS:true,allowTaint:true,backgroundColor:'#1e1830',scale:2,logging:false,width:alvo.offsetWidth,height:alvo.offsetHeight});})
     .then(function(canvas){return new Promise(function(ok){canvas.toBlob(function(b){ok(b);},'image/png',0.95);});})
     .then(function(blob){
-      _sbnBlob=blob;_sbnBlobUrl=URL.createObjectURL(blob);
+      _sbnBlob=blob;_sbnBlobUrl=URL.createObjectURL(blob);window._sbnLink='';try{var _fr=new FileReader();_fr.onload=function(){obpcSubirImgShare(_fr.result).then(function(u){if(u)window._sbnLink=obpcShareUrl('banner',{titulo:tit,img:u});});};_fr.readAsDataURL(blob);}catch(e){}
       if(wrap){wrap.innerHTML='';var img=document.createElement('img');img.src=_sbnBlobUrl;img.className='sbn-preview-img';wrap.appendChild(img);}
     }).catch(function(){if(wrap)wrap.innerHTML='<div style="font-size:.8rem;color:var(--texto3);text-align:center;padding:.5rem">Prévia indisponível</div>';});
   }
@@ -3221,8 +3221,8 @@ function sbnCompartilhar(rede){
     else{window.open('https://wa.me/?text='+urlEnc,'_blank');}
     return;
   }
-  if(rede==='facebook'){window.open('https://www.facebook.com/sharer/sharer.php?u='+siteEnc,'_blank');return;}
-  if(rede==='telegram'){window.open('https://t.me/share/url?url='+siteEnc+'&text='+urlEnc,'_blank');return;}
+  if(rede==='facebook'){window.open('https://www.facebook.com/sharer/sharer.php?u='+(window._sbnLink?encodeURIComponent(window._sbnLink):siteEnc),'_blank');return;}
+  if(rede==='telegram'){window.open('https://t.me/share/url?url='+(window._sbnLink?encodeURIComponent(window._sbnLink):siteEnc)+'&text='+urlEnc,'_blank');return;}
   if(rede==='nativo'){
     if(navigator.share){
       if(_sbnBlob&&navigator.canShare){var file=new File([_sbnBlob],'banner-obpc.png',{type:'image/png'});if(navigator.canShare({files:[file]})){navigator.share({files:[file],text:txt,url:_SITE}).then(sbnFechar).catch(function(){navigator.share({text:txt,url:_SITE}).catch(function(){});});return;}}
@@ -5766,6 +5766,16 @@ body{background:radial-gradient(700px 380px at 6% 0%,rgba(15,74,52,.09),transpar
   }
   window.tvCompartilhar=function(){
     var x='📺 TV OBPC São Fernando — vídeos e fotos dos nossos cultos e a Palavra do Pastor';
+    /* imagem do item em destaque: quadro do vídeo, capa do YouTube ou a própria foto */
+    var f=CUR,img='';
+    if(f&&f.m&&f.m.length){
+      var mv=f.m.filter(function(m){return m.k==='v'&&poster(m.src);})[0],my=f.m.filter(function(m){return m.k==='y';})[0],mi=f.m.filter(function(m){return m.k==='i';})[0];
+      img=mv?poster(mv.src).replace('w_480','w_1200'):my?'https://img.youtube.com/vi/'+my.id+'/hqdefault.jpg':mi?mi.src:'';
+    }
+    if(img&&typeof obpcAbrirShareModal==='function'){
+      obpcAbrirShareModal({secao:'tv',id:f.id,destino:TV_URL+'#'+f.id,tituloModal:'Compartilhar TV OBPC',titulo:f.t,desc:'📺 TV OBPC São Fernando — '+f.t,img:img});
+      return;
+    }
     if(navigator.share){navigator.share({title:'TV OBPC São Fernando',text:x,url:TV_URL}).catch(function(){});}
     else{window.open('https://wa.me/?text='+encodeURIComponent(x+'\n'+TV_URL),'_blank');}
   };
