@@ -6,9 +6,10 @@
 <title>Estúdio de Mídia — OBPC</title>
 <meta name="theme-color" content="#0F4A34">
 <link rel="manifest" href="manifest-midia.json">
-<link rel="apple-touch-icon" href="og-banner.png">
+<link rel="apple-touch-icon" href="icone-midia-180.png">
+<link rel="icon" type="image/png" href="icone-midia-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Estúdio de Mídia">
+<meta name="apple-mobile-web-app-title" content="OBPC São Fernando">
 <meta name="mobile-web-app-capable" content="yes">
 <style>
 :root{--verde:#0F4A34;--verde2:#14573C;--ouro:#F5C842;--ouro2:#E0961E;--bg:#F3F6F4;--card:#fff;--ink:#14221C;--muted:#5B6B62;--line:#D6E0DA;--ok:#1E8E4E;--erro:#C0392B;--rec:#E02424;
@@ -305,6 +306,12 @@ nav button{font-size:13px;min-height:64px}nav button.on{color:var(--rosa);box-sh
     <button class="rede" data-r="tele"><span>✈️</span>Telegram</button>
     <button class="rede" data-r="insta"><span>📸</span>Instagram</button>
   </div>
+  <p class="note" style="margin:6px 0"><b>Redes oficiais da OBPC</b></p>
+  <div class="redes" style="grid-template-columns:repeat(3,1fr)">
+    <button class="rede" data-r="o-face"><span>📘</span>Página OBPC<small>Facebook</small></button>
+    <button class="rede" data-r="o-insta"><span>📸</span>Instagram OBPC<small>@obpc.saofernando</small></button>
+    <button class="rede" data-r="o-grupo"><span>💬</span>Grupo OBPC<small>WhatsApp</small></button>
+  </div>
   <div class="row">
     <button class="btn" data-r="copiar">📋 Copiar link</button>
     <button class="btn" data-r="arquivo">📎 Enviar o arquivo</button>
@@ -328,6 +335,8 @@ var CFG={
   /* Worker que apaga do Cloudinary o que saiu do site (cloudinary-apagar-worker.js). Vazio = não apaga. */
   apagar:'https://obpc-apagar.obpcsaofernando199.workers.dev',
   site:'https://obpcsaofernando199-sudo.github.io/Obpc/',
+  /* REDES OFICIAIS DA OBPC — confira/preencha aqui. grupo = link de convite do grupo de WhatsApp (https://chat.whatsapp.com/XXXX). Vazio = o WhatsApp abre a lista para escolher o grupo. */
+  redes:{face:'https://www.facebook.com/share/1CUnTyavtD/',insta:'https://www.instagram.com/obpc.saofernando/',grupo:''},
   /* LIMITES DO SITE (iguais aos do index.html): passou disso, as publicações mais antigas saem do site. */
   lim:{galeria:30,videos:12},
   pin:'1020', /* senha do painel do pastor: TROQUE por outra */
@@ -813,6 +822,7 @@ function linkCurto(it){
 
 /* ---------- compartilhar ---------- */
 var sh=null;
+function copiaTxt(t){return (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).catch(function(){var x=document.createElement('textarea');x.value=t;document.body.appendChild(x);x.select();try{document.execCommand('copy')}catch(e){}x.remove()})}
 function posPublicacao(){
   var n=ultimaLimpeza.length;ultimaLimpeza=[];
   atualizaCap().then(function(){if(n)toast('🧹 '+n+' publicação(ões) antiga(s) saiu(ram) do site para não pesar.',5000)});
@@ -829,8 +839,14 @@ function arquivoDe(it){return new File([it.blob],(it.titulo||'obpc').replace(/[^
 function baixa(it){var a=document.createElement('a');a.href=URL.createObjectURL(it.blob);a.download=arquivoDe(it).name;document.body.appendChild(a);a.click();setTimeout(function(){a.remove()},500)}
 $$('#f-share [data-r]').forEach(function(b){b.onclick=function(){
   if(!sh)return;var it=sh.it,l=sh.link,r=b.dataset.r,enc=encodeURIComponent;
+  if(r==='o-insta'){ /* Instagram não aceita postar por link: copia a legenda e abre o menu do celular com o arquivo */
+    copiaTxt(it.titulo+(l?'\n'+l:''));
+    toast('Legenda copiada. No Instagram, escolha a conta da OBPC (@obpc.saofernando) e cole a legenda.',7000);r='insta';
+  }
   if(!l&&r!=='arquivo'&&r!=='insta')return toast('Aguarde o link ficar pronto.');
   var txt='*'+it.titulo+'*\n'+l;
+  if(r==='o-face'){window.open('https://www.facebook.com/sharer/sharer.php?u='+enc(l),'_blank');toast('No Facebook, toque em “Compartilhar em uma Página que você administra” e escolha a página da OBPC.',7000);return}
+  if(r==='o-grupo'){if(CFG.redes.grupo){copiaTxt(txt);window.open(CFG.redes.grupo,'_blank');toast('Texto copiado. Cole no grupo da OBPC.',6000)}else{window.open('https://wa.me/?text='+enc(txt),'_blank');toast('No WhatsApp, escolha o grupo da OBPC.',5000)}return}
   if(r==='wpp')window.open('https://wa.me/?text='+enc(txt),'_blank');
   else if(r==='face')window.open('https://www.facebook.com/sharer/sharer.php?u='+enc(l),'_blank');
   else if(r==='tele')window.open('https://t.me/share/url?url='+enc(l)+'&text='+enc(it.titulo),'_blank');

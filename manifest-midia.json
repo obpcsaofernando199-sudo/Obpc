@@ -1,0 +1,43 @@
+{
+  "id": "./midia-estudio.html",
+  "name": "Estúdio de Mídia — OBPC São Fernando",
+  "short_name": "OBPC São Fernando",
+  "description": "Estúdio de Mídia da OBPC São Fernando (Jardim São Fernando): grave, publique e compartilhe fotos e vídeos da igreja.",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "start_url": "./midia-estudio.html",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
+  "orientation": "any",
+  "background_color": "#0F4A34",
+  "theme_color": "#0F4A34",
+  "categories": [
+    "productivity",
+    "social",
+    "photo"
+  ],
+  "icons": [
+    {
+      "src": "icone-midia-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icone-midia-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icone-midia-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
