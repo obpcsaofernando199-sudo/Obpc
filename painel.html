@@ -1082,6 +1082,12 @@ Acesse a qualquer hora, do seu celular"></textarea>
     <div><b>iPhone:</b> abrir o link no Safari &#8594; bot&#227;o Compartilhar &#8594; <b>Adicionar &#224; Tela de In&#237;cio</b>.</div>
     <div style="margin-top:.4rem;color:var(--muted)">Se abrir por dentro do WhatsApp, toque nos tr&#234;s pontinhos e escolha &#8220;Abrir no navegador&#8221;.</div>
   </div>
+  <div class="card" style="border:1px solid #fecaca">
+    <strong>&#128465; Apagar tudo o que a M&#237;dia publicou</strong>
+    <div style="font-size:.82rem;color:var(--muted);margin:.3rem 0 .7rem">Remove do site e da TV OBPC todas as fotos, v&#237;deos e &#225;udios publicados pelo App da M&#237;dia e apaga os arquivos do Cloudinary. N&#227;o mexe no que foi publicado por este painel. <b>N&#227;o d&#225; para desfazer.</b></div>
+    <button type="button" class="btn bd" id="mapp-apg-btn" onclick="mappApagarTudo()">&#128465; Apagar tudo da M&#237;dia (site + Cloudinary)</button>
+    <div id="mapp-apg-st" style="display:none;margin-top:.6rem;font-size:.82rem;line-height:1.5"></div>
+  </div>
 </div>
 <!-- DIVULGAR -->
 <div id="aba-div" class="aba">
@@ -1199,6 +1205,42 @@ function mappInit(){var u=mappUrl();var l=document.getElementById('mapp-link');i
 function mappTexto(){return 'Instale o Estúdio de Mídia no seu celular: '+mappUrl()+'\n\nAndroid: abra no Chrome > três pontinhos > Instalar aplicativo.\niPhone: abra no Safari > Compartilhar > Adicionar à Tela de Início.';}
 function mappConvite(){var txt=mappTexto();if(navigator.share){navigator.share({title:'Estúdio de Mídia — OBPC',text:txt}).catch(function(){});}else{window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank');}}
 function mappCopiar(){var u=mappUrl();function fb(){var t=document.createElement('textarea');t.value=u;t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();try{document.execCommand('copy');showToast('✅ Link copiado!');}catch(e){showToast('Não foi possível copiar');}document.body.removeChild(t);}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(function(){showToast('✅ Link copiado!');},fb);}else fb();}
+/* ---- App da Mídia: apagar tudo (site + Cloudinary) ---- */
+var MAPP_APAGAR='https://obpc-apagar.obpcsaofernando199.workers.dev';
+function mappEhDaMidia(x){return !!x&&(x.autor!==undefined||x.plat==='OBPC'||/\/obpc_midia\//.test(x.url||''));}
+function mappTitulo(x){return String((x&&(x.titulo||x.tit))||'').replace(/\*\*/g,'').slice(0,120);}
+function mappLer(k){return fetch(FB+'/'+k+'.json',{headers:{'X-Firebase-ETag':'true'},cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('leitura '+k+' '+r.status);var et=r.headers.get('ETag');return r.json().then(function(d){var a=!d?[]:Array.isArray(d)?d.filter(Boolean):Object.keys(d).map(function(i){return d[i];}).filter(Boolean);return {arr:a,et:et};});});}
+async function mappTira(k){for(var n=0;n<4;n++){var o=await mappLer(k);var rem=o.arr.filter(mappEhDaMidia);if(!rem.length)return rem;var keep=o.arr.filter(function(x){return !mappEhDaMidia(x);});var h={'Content-Type':'application/json'};if(o.et)h['if-match']=o.et;var w=await fetch(FB+'/'+k+'.json',{method:'PUT',headers:h,body:JSON.stringify(keep)});if(w.ok){try{localStorage.setItem('obpc_'+k,JSON.stringify(keep));}catch(e){}return rem;}if(w.status!==412)throw new Error('gravação '+k+' '+w.status);}throw new Error('conflito ao gravar '+k+' (tente de novo)');}
+async function mappApagaCloud(urls){var falhas=[];for(var i=0;i<urls.length;i+=15){var lote=urls.slice(i,i+15);try{var r=await fetch(MAPP_APAGAR,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({urls:lote})});if(!r.ok)falhas=falhas.concat(lote);}catch(e){falhas=falhas.concat(lote);}}return falhas;}
+async function mappApagarTudo(){
+  var st=document.getElementById('mapp-apg-st'),bt=document.getElementById('mapp-apg-btn');
+  function msg(t,c){if(st){st.style.display='block';st.style.color=c||'var(--muted)';st.textContent=t;}}
+  var pend=[];try{pend=JSON.parse(localStorage.getItem('obpc_mapp_cloud_pend')||'[]')||[];}catch(e){}
+  if(bt)bt.disabled=true;
+  try{
+    msg('Procurando o que a Mídia publicou…');
+    var g=await mappLer('galeria'),v=await mappLer('videos');
+    var nG=g.arr.filter(mappEhDaMidia).length,nV=v.arr.filter(mappEhDaMidia).length;
+    if(!nG&&!nV&&!pend.length){msg('✅ Não há nada da Mídia no site.','#16a34a');return;}
+    var t='APAGAR TUDO DA MÍDIA?\n\n📷 Fotos: '+nG+'\n🎥 Vídeos e áudios: '+nV+(pend.length?'\n☁️ Arquivos que ficaram pendentes no Cloudinary: '+pend.length:'')+'\n\nSai do site, da TV OBPC e do Cloudinary. NÃO dá para desfazer.';
+    if(!confirm(t)){msg('Cancelado. Nada foi apagado.');return;}
+    if((prompt('Para confirmar, digite APAGAR')||'').trim().toUpperCase()!=='APAGAR'){msg('Cancelado. Nada foi apagado.');return;}
+    msg('Apagando do site…');
+    var remG=await mappTira('galeria'),remV=await mappTira('videos'),rem=remG.concat(remV);
+    var urls=pend.slice();rem.forEach(function(x){if(x.url&&urls.indexOf(x.url)<0)urls.push(x.url);});
+    /* links curtos de compartilhamento criados pela Mídia */
+    var nL=0;try{var lr=await fetch(FB+'/links.json',{cache:'no-store'});if(lr.ok){var ld=await lr.json()||{};var tits=rem.map(mappTitulo).filter(Boolean);var del={};Object.keys(ld).forEach(function(c){var l=ld[c]||{};if(/\/obpc_midia\//.test(l.i||'')||((l.s==='galeria'||l.s==='video')&&tits.indexOf(String(l.t||''))>-1)){del[c]=null;nL++;}});if(nL)await fetch(FB+'/links.json',{method:'PATCH',body:JSON.stringify(del)});}}catch(e){}
+    msg('Apagando do Cloudinary… ('+urls.length+' arquivo(s))');
+    var falhas=await mappApagaCloud(urls);
+    try{if(falhas.length)localStorage.setItem('obpc_mapp_cloud_pend',JSON.stringify(falhas));else localStorage.removeItem('obpc_mapp_cloud_pend');}catch(e){}
+    if(typeof rndGal==='function')rndGal();if(typeof rndVid==='function')rndVid();
+    var r='Apagado do site: '+remG.length+' foto(s) e '+remV.length+' vídeo(s)/áudio(s)'+(nL?' e '+nL+' link(s) curto(s)':'')+'. Cloudinary: '+(urls.length-falhas.length)+' arquivo(s) enviado(s) para exclusão.';
+    if(falhas.length)msg('⚠️ '+r+' '+falhas.length+' arquivo(s) NÃO foram apagados do Cloudinary (sem conexão com o apagador). Toque no botão de novo para tentar outra vez.','#b45309');
+    else msg('✅ '+r,'#16a34a');
+    showToast('✅ Mídia apagada.');
+  }catch(e){msg('❌ Não consegui concluir: '+(e&&e.message||e)+'. Confira a internet e tente de novo.','#dc2626');}
+  finally{if(bt)bt.disabled=false;}
+}
 function showToast(msg){var t=document.getElementById('toast-gbl');if(!t)return;t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2800);}
 var FB='https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com/obpc';
 var _dbUltimaGravacaoLocal={};
