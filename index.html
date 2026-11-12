@@ -1243,8 +1243,8 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible{outline:3px sol
         <button type="button" class="tvx-snd hidden" id="tv-snd" aria-label="Ativar som">🔇 Ativar som</button>
       </div>
       <div class="tvx-info"><div class="tvx-t" id="tv-t">TV OBPC São Fernando</div><div class="tvx-m" id="tv-m">Vídeos e fotos dos nossos cultos e a Palavra do Pastor</div></div>
-      <div class="tvx-act"><a class="tvx-go" id="tv-go" href="tv-obpc.html"><span class="tvx-yt">▶</span> Ir para a TV OBPC</a><button type="button" class="tvx-sh" onclick="tvCompartilhar()">📤 Compartilhar</button></div>
-      <div class="tvx-strip hidden" id="tv-strip"></div>
+      <div class="tvx-act"><a class="tvx-go" id="tv-go" href="tv-obpc.html"><span class="tvx-yt">▶</span> Ir para a TV OBPC</a><button type="button" class="tvx-sh" onclick="tvCompartilhar()">📤 Compartilhar</button><button type="button" class="tvx-sh" id="tv-lt">🕒 Assistir depois</button></div>
+      <div class="tvx-tabs hidden" id="tv-tabs"></div><div class="tvx-strip hidden" id="tv-strip"></div>
     </div>
   </div>
   </div>
@@ -5659,12 +5659,40 @@ body{background:radial-gradient(700px 380px at 6% 0%,rgba(15,74,52,.09),transpar
 .tvx-strip a{flex:none;width:136px;color:#F4EEDD;text-decoration:none}
 .tvx-strip .th{position:relative;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:#14442E;display:grid;place-items:center;font-size:22px;border:1px solid rgba(201,138,46,.45)}
 .tvx-strip .th img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tvx-tabs{display:flex;gap:8px;padding:0 14px 10px;overflow-x:auto;scrollbar-width:none}
+.tvx-tabs::-webkit-scrollbar{display:none}
+.tvx-tabs button{flex:none;height:30px;padding:0 12px;border:0;border-radius:8px;background:rgba(244,238,221,.12);color:#F4EEDD;font-weight:700;font-size:.78rem;cursor:pointer;font-family:inherit;white-space:nowrap}
+.tvx-tabs button.on{background:#C98A2E;color:#0B1F18}
+.tvx-strip .lt{position:absolute;top:4px;right:4px;width:28px;height:28px;border:0;border-radius:50%;background:rgba(0,0,0,.7);color:#fff;font-size:12px;cursor:pointer;z-index:2;display:grid;place-items:center;padding:0}
+.tvx-strip .lt.on{background:#C98A2E;color:#000}
+.tvx-strip .pg{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.35)}
+.tvx-strip .pg i{display:block;height:100%;background:#f00}
+.tvx-empty{color:rgba(244,238,221,.75);font-size:.8rem;line-height:1.3;padding:2px 2px 8px;white-space:normal}
 .tvx-strip .tn{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:.72rem;line-height:1.25;margin-top:5px}
 </style>
 <script id="obpc-tv-facade">
 (function(){
   var FBU='https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com/obpc/',TV_URL='https://obpcsaofernando199-sudo.github.io/Obpc/tv-obpc.html',DIAS=45;
   var RC=[],RP=[],SIG='',CUR=null,VIS=false,SND=false,io=null,el=null;
+  var TAB='r',LATER=[],PROG={};
+  function mem(){LATER=lerLocal('tvob_later');if(!Array.isArray(LATER))LATER=[];PROG=lerLocal('tvob_prog');if(!PROG||typeof PROG!=='object'||Array.isArray(PROG))PROG={};}
+  function pct(v){var p=PROG[v.id];return p&&p.d?Math.min(100,Math.round(p.t/p.d*100)):0;}
+  function cont(v){var p=pct(v);return p>=3&&p<92;}
+  function alterna(id){mem();var i=LATER.indexOf(id);if(i>=0)LATER.splice(i,1);else LATER.push(id);try{localStorage.setItem('tvob_later',JSON.stringify(LATER));}catch(e){}render();}
+  function abas(l){
+    var nl=l.filter(function(v){return LATER.indexOf(v.id)>=0;}).length,nc=l.filter(cont).length;
+    if(TAB==='c'&&!nc)TAB='r';
+    var d=[['r','Mais recentes'],['l','🕒 Assistir depois'+(nl?' ('+nl+')':'')]];
+    if(nc)d.push(['c','▶ Continuar ('+nc+')']);
+    var t=$('tv-tabs');t.innerHTML='';
+    d.forEach(function(x){var b=document.createElement('button');b.type='button';b.className=TAB===x[0]?'on':'';b.textContent=x[1];b.onclick=function(){TAB=x[0];render();};t.appendChild(b);});
+    t.classList.remove('hidden');
+  }
+  function lista(l,f){
+    if(TAB==='l')return LATER.slice().reverse().map(function(id){return l.filter(function(v){return v.id===id;})[0];}).filter(Boolean);
+    if(TAB==='c')return l.filter(cont);
+    return l.filter(function(v){return v.id!==f.id;}).slice(0,8);
+  }
   function $(i){return document.getElementById(i);}
   function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
   function ytId(u){var m=String(u||'').match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{11})/);return m?m[1]:'';}
@@ -5730,24 +5758,28 @@ body{background:radial-gradient(700px 380px at 6% 0%,rgba(15,74,52,.09),transpar
     if(m.k==='y')im='<img loading="lazy" src="https://i.ytimg.com/vi/'+m.id+'/mqdefault.jpg" alt="">';
     else if(m.k==='v'){var pj=poster(m.src);im=(pj?'<img loading="lazy" src="'+esc(pj)+'" alt="" onerror="this.remove()">':'');im='<span>▶</span>'+im;}
     else if(m.k==='i')im='<img loading="lazy" src="'+esc(m.src)+'" alt="">';
-    return '<a href="tv-obpc.html#'+esc(v.id)+'"><div class="th">'+im+'</div><div class="tn">'+esc(v.t)+'</div></a>';
+    var on=LATER.indexOf(v.id)>=0,pc=pct(v);
+    return '<a href="tv-obpc.html#'+esc(v.id)+'"><div class="th">'+im+(pc>0?'<div class="pg"><i style="width:'+pc+'%"></i></div>':'')+'<button type="button" class="lt'+(on?' on':'')+'" data-id="'+esc(v.id)+'" aria-label="Assistir depois" title="Assistir depois">'+(on?'✔':'🕒')+'</button></div><div class="tn">'+esc(v.t)+'</div></a>';
   }
   function render(){
-    var l=itens(),box=$('tv-box');if(!box)return;
+    mem();var l=itens(),box=$('tv-box');if(!box)return;
     var f=l.filter(temVid)[0]||l[0];
-    var sig=l.map(function(v){return v.id+':'+v.m.length;}).join(',')+'|'+(f?f.id:'');
+    var sig=l.map(function(v){return v.id+':'+v.m.length+':'+pct(v);}).join(',')+'|'+(f?f.id:'')+'|'+TAB+'|'+LATER.join('.');
     if(sig===SIG)return;SIG=sig;
     if(!f){
       $('tv-media').innerHTML='';$('tv-load').classList.remove('hidden');$('tv-load').innerHTML='📺<br>Em breve, novos vídeos e fotos dos cultos.';
-      $('tv-tag').classList.add('hidden');$('tv-snd').classList.add('hidden');$('tv-strip').classList.add('hidden');return;
+      $('tv-tag').classList.add('hidden');$('tv-snd').classList.add('hidden');$('tv-strip').classList.add('hidden');$('tv-tabs').classList.add('hidden');return;
     }
     var mudou=!CUR||CUR.id!==f.id||JSON.stringify(CUR.m)!==JSON.stringify(f.m);
     CUR=f;
     if(mudou)montaPlayer(f);
     var tg=$('tv-tag');tg.textContent=f.u?'🚨 URGENTE':f.p?'🎤 Palavra do Pastor':'▶ Mais recente';tg.classList.remove('hidden');
     $('tv-t').textContent=f.t;$('tv-m').textContent='OBPC Jardim São Fernando'+(fmt(f.d,f.ts)?' · '+fmt(f.d,f.ts):'');
-    var rest=l.filter(function(v){return v.id!==f.id;}).slice(0,8),st=$('tv-strip');
-    st.innerHTML=rest.map(thumbHtml).join('');st.classList.toggle('hidden',!rest.length);
+    var bl=$('tv-lt');if(bl)bl.textContent=LATER.indexOf(f.id)>=0?'✔ Salvo para depois':'🕒 Assistir depois';
+    abas(l);
+    var rest=lista(l,f),st=$('tv-strip');
+    st.innerHTML=rest.length?rest.map(thumbHtml).join(''):(TAB==='l'?'<div class="tvx-empty">Nada guardado ainda. Toque no 🕒 de um vídeo para assistir depois.</div>':TAB==='c'?'<div class="tvx-empty">Nada para continuar por enquanto.</div>':'');
+    st.classList.toggle('hidden',!rest.length&&TAB==='r');
   }
   function carregar(){
     var a=lerLocal('obpc_cultos'),b=lerLocal('obpc_palavras');
@@ -5758,6 +5790,8 @@ body{background:radial-gradient(700px 380px at 6% 0%,rgba(15,74,52,.09),transpar
   function iniciar(){
     el=$('tv-pl');if(!el)return;
     $('tv-snd').onclick=function(){setSnd(!SND);if(SND)tocar();};
+    $('tv-strip').addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.lt');if(b){e.preventDefault();e.stopPropagation();alterna(b.getAttribute('data-id'));}});
+    var bl=$('tv-lt');if(bl)bl.onclick=function(){if(CUR)alterna(CUR.id);};
     if('IntersectionObserver' in window){
       io=new IntersectionObserver(function(es){es.forEach(function(e){VIS=e.isIntersecting&&e.intersectionRatio>=.4;if(VIS)tocar();else pausar();});},{threshold:[0,.4,.7]});
       io.observe(el);

@@ -16,62 +16,102 @@
 html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 64px);-webkit-text-size-adjust:100%}
 *{box-sizing:border-box}
 body{margin:0;max-width:100%;overflow-x:hidden;background:var(--bg);color:var(--tx);font:14px/20px var(--sans)}
-button,input{font:inherit;-webkit-tap-highlight-color:transparent}
+button,input,select{font:inherit;-webkit-tap-highlight-color:transparent}
+button:focus-visible,input:focus-visible,select:focus-visible,.card:focus-visible,.rw:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
 .hide{display:none!important}
+
+/* topo */
 .top{border-bottom:3px solid var(--ouro);position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--bg);display:flex;align-items:center;gap:12px;min-height:56px;padding:0 16px}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:11}
 .brand{display:flex;align-items:center;gap:8px;color:var(--tx);text-decoration:none;flex:none;cursor:pointer}
-.lg{width:32px;height:32px;border-radius:50%;background:#0F4A34 center/cover;display:grid;place-items:center;font-size:17px}
+.lg{width:32px;height:32px;border-radius:50%;background:#0F4A34 center/cover;display:grid;place-items:center;font-size:17px;flex:none}
 .brand h1{margin:0;font:700 19px/1 var(--sans);letter-spacing:-.8px}
+.yt{background:var(--yt);color:#fff;border-radius:6px;font-size:10px;line-height:1;padding:5px 8px 5px 9px;margin-right:-2px}
 .sr{display:flex;flex:1 1 auto;max-width:640px;min-width:0;margin:0 auto}
 .sr input{flex:1;min-width:0;height:40px;padding:0 16px;border:1px solid var(--bd);border-radius:20px;background:var(--bg);color:var(--tx);font-size:16px;outline:0;-webkit-appearance:none}
 .sr input:focus{border-color:var(--ac)}
-.ib{width:40px;height:40px;border:0;border-radius:50%;background:none;color:var(--tx);cursor:pointer;font-size:18px;flex:none}
+.ib{width:40px;height:40px;border:0;border-radius:50%;background:none;color:var(--tx);cursor:pointer;font-size:18px;flex:none;position:relative}
 .ib:hover{background:var(--sf)}
+
+/* filtros */
 .chips{display:flex;gap:12px;overflow-x:auto;padding:8px 16px 12px;scrollbar-width:none}
 .chips::-webkit-scrollbar{display:none}
-.chip{flex:none;height:32px;padding:0 12px;border:0;border-radius:8px;background:var(--sf);color:var(--tx);font-weight:500;cursor:pointer}
+.chip{flex:none;height:32px;padding:0 12px;border:0;border-radius:8px;background:var(--sf);color:var(--tx);font-weight:500;cursor:pointer;white-space:nowrap}
 .chip.on{background:var(--ac);color:var(--bg)}
-.yt{background:var(--yt);color:#fff;border-radius:6px;font-size:10px;line-height:1;padding:5px 8px 5px 9px;margin-right:-2px}
-.th{box-shadow:0 1px 4px rgba(0,0,0,.15)}
-.th .bd.v{background:var(--yt)}
-.th::after{content:"";position:absolute;left:0;bottom:0;height:3px;width:100%;background:linear-gradient(90deg,var(--yt) 0 35%,transparent 35%)}
+
+/* grade e cartões */
 .grid{display:grid;gap:24px 16px;padding:8px 16px 40px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
 .card{cursor:pointer}
-.th{position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#000}
+.th{position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#000;box-shadow:0 1px 4px rgba(0,0,0,.15)}
 .th img,.th video{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
-.bd{position:absolute;right:6px;bottom:6px;background:rgba(0,0,0,.8);color:#fff;font-size:12px;font-weight:500;padding:1px 5px;border-radius:4px}
+.th img{position:absolute;left:0;top:0}
+.th .ph0{position:absolute;top:0;left:0;right:0;bottom:0;display:grid;place-items:center;font-size:42px;color:#fff;background:linear-gradient(135deg,#0F4A34,#14442E)}
+.bd{position:absolute;right:6px;bottom:9px;background:rgba(0,0,0,.8);color:#fff;font-size:12px;font-weight:500;padding:1px 5px;border-radius:4px}
+.th .bd.v{background:rgba(0,0,0,.8)}
+.pg{position:absolute;left:0;right:0;bottom:0;height:4px;background:rgba(255,255,255,.35)}
+.pg i{display:block;height:100%;background:var(--yt)}
+.lt{position:absolute;top:6px;right:6px;width:34px;height:34px;border-radius:50%;border:0;background:rgba(0,0,0,.7);color:#fff;font-size:15px;cursor:pointer;z-index:2;display:grid;place-items:center;padding:0}
+.lt.on{background:var(--ouro);color:#000}
 .ct{display:flex;gap:12px;margin-top:12px}
-.ct .lg{flex:none}
 .tt{font-weight:500;font-size:16px;line-height:22px;margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .mt{color:var(--mut);font-size:13px;margin-top:2px}
-.empty{padding:60px 16px;text-align:center;color:var(--mut)}
-.watch{max-width:1100px;margin:0 auto;padding:0 0 40px}
-.pl{background:#000;aspect-ratio:16/9;width:100%}
+.seen{color:var(--ouro);font-weight:500}
+.empty{padding:60px 16px;text-align:center;color:var(--mut);font-size:15px;line-height:22px}
+
+/* esqueleto de carregamento */
+.sk .th{background:var(--sf);box-shadow:none;animation:pulse 1.2s ease-in-out infinite}
+.sk .l1,.sk .l2{height:14px;border-radius:7px;background:var(--sf);margin-top:8px;animation:pulse 1.2s ease-in-out infinite}
+.sk .l2{width:60%}
+@keyframes pulse{50%{opacity:.5}}
+
+/* tela de assistir */
+.watch{max-width:1320px;margin:0 auto;padding:0 0 40px}
+.pl{position:relative;background:#000;aspect-ratio:16/9;width:100%}
 .pl video,.pl iframe{width:100%;height:100%;border:0;display:block;background:#000}
+.nv{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border:0;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;font-size:28px;line-height:1;cursor:pointer;z-index:2;padding:0 0 4px}
+.nv.l{left:8px}.nv.r{right:8px}
+.cnt{position:absolute;left:8px;bottom:8px;background:rgba(0,0,0,.65);color:#fff;font-size:12px;padding:2px 8px;border-radius:10px;z-index:2}
 .ph{display:flex;gap:6px;overflow-x:auto;padding:8px 16px}
 .ph img,.ph video{height:64px;aspect-ratio:16/9;object-fit:cover;border-radius:8px;cursor:pointer;opacity:.6;flex:none}
 .ph .on{opacity:1;outline:2px solid var(--ac)}
+.ph .ph0s{height:64px;aspect-ratio:16/9;display:grid;place-items:center;border-radius:8px;background:#0F4A34;color:#fff;cursor:pointer;opacity:.6;flex:none}
+.ph .ph0s.on{opacity:1;outline:2px solid var(--ac)}
 .info{padding:12px 16px}
-.info h2{margin:0 0 4px;font:700 20px/28px var(--sans)}
+.info h2{margin:0 0 4px;font:700 20px/28px var(--sans);border-left:4px solid var(--ouro);padding-left:10px}
 .rel{white-space:pre-wrap;margin-top:12px;background:var(--sf);border-radius:12px;padding:12px}
 .act{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .b{height:36px;padding:0 16px;border:0;border-radius:18px;background:var(--sf);color:var(--tx);font-weight:500;cursor:pointer}
 .b.p{background:#25D366;color:#fff}
 .b.r{background:var(--yt);color:#fff}
-.info h2{border-left:4px solid var(--ouro);padding-left:10px}
+.b.l.on{background:var(--ouro);color:#000}
+.ctl{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:12px;color:var(--mut)}
+.ctl label{display:flex;align-items:center;gap:6px;cursor:pointer}
+.ctl input{accent-color:var(--ac);width:18px;height:18px}
+.ctl select{height:32px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);padding:0 6px}
+.side{padding:4px 16px 0}
+.side h3{margin:12px 0 8px;font:700 16px/22px var(--sans)}
+.rw{display:flex;gap:10px;margin-bottom:12px;cursor:pointer}
+.rw .th{width:168px;flex:none}
+.rw .lt{width:28px;height:28px;font-size:12px;top:4px;right:4px}
+.rw .tt{font-size:14px;line-height:19px}
+@media (min-width:1000px){
+  .wl{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:24px;padding:16px 24px 0;align-items:start}
+  .pl{border-radius:12px;overflow:hidden}
+  .ph,.info{padding-left:0;padding-right:0}
+  .side{padding:0}
+  .side h3{margin-top:0}
+  .emb .wl{display:block;padding:0}
+}
+
+/* compartilhar */
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:30;display:flex;align-items:flex-end;justify-content:center}
 .sheet{background:var(--bg);color:var(--tx);width:100%;max-width:480px;border-radius:16px 16px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));border-top:3px solid var(--ouro)}
 .sheet h3{margin:0 0 4px;font:700 18px/24px var(--sans)}.sheet p{margin:0 0 12px;color:var(--mut)}
 .sheet .opts{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
 .sheet .opts button,.sheet .opts a{height:44px;border:0;border-radius:22px;color:#fff;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;text-decoration:none}
 .sheet .x{display:block;margin:12px auto 0;background:none;border:0;color:var(--mut);cursor:pointer}
-#msg{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#323232;color:#fff;padding:10px 16px;border-radius:8px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:20}
+#msg{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#323232;color:#fff;padding:10px 16px;border-radius:8px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:40;max-width:90%;text-align:center}
 #msg.on{opacity:1}
-.th img{position:absolute;left:0;top:0}
-.th .ph0{position:absolute;top:0;left:0;right:0;bottom:0;display:grid;place-items:center;font-size:42px;color:#fff;background:linear-gradient(135deg,#0F4A34,#14442E)}
-.ph .ph0s{height:64px;aspect-ratio:16/9;display:grid;place-items:center;border-radius:8px;background:#0F4A34;color:#fff;cursor:pointer;opacity:.6;flex:none}
-.ph .ph0s.on{opacity:1;outline:2px solid var(--ac)}
 .emb .grid{grid-template-columns:1fr;gap:16px;padding:8px 12px 24px}
 .emb .watch{padding-bottom:16px}
 </style>
@@ -79,135 +119,298 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 <body>
 <header class="top">
   <a class="brand" onclick="goHome()"><div class="lg" id="lg">⛪</div><span class="yt">▶</span><h1>TV OBPC</h1></a>
-  <div class="sr"><input id="q" type="search" placeholder="Pesquisar" oninput="Q=this.value;render()"></div>
+  <div class="sr"><input id="q" type="search" placeholder="Pesquisar" aria-label="Pesquisar" oninput="Q=this.value;render()"></div>
   <button class="ib" id="sh" title="Compartilhar a TV" aria-label="Compartilhar a TV OBPC">↗</button><button class="ib" id="th" title="Tema" aria-label="Alternar tema">◐</button>
 </header>
 <main id="home"><div class="chips" id="chips"></div><div class="grid" id="grid"></div><div class="empty hide" id="empty">Nenhum vídeo ou foto por aqui ainda.</div></main>
 <main id="watch" class="watch hide"></main>
-<div id="msg"></div>
+<div id="msg" role="status" aria-live="polite"></div>
 <script>
-var FB='https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com/obpc/',SITE='https://obpcsaofernando199-sudo.github.io/Obpc/',DIAS=45;
-var SHOWN='',_RS='',ITEMS=[],RC=[],RP=[],Q='',CHIP=/[?&]f=p/.test(location.search)?'p':'all',NOME='OBPC Jardim São Fernando';
-function $(i){return document.getElementById(i);}
+const FB='https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com/obpc/',SITE='https://obpcsaofernando199-sudo.github.io/Obpc/',DIAS=45;
+const $=i=>document.getElementById(i);
+let SHOWN='',_RS='',ITEMS=[],RC=[],RP=[],Q='',NOME='OBPC Jardim São Fernando',LOADED=false,CUR=null,CURI=0,LASTY=0,_pt=0;
+let CHIP=/[?&]f=p/.test(location.search)?'p':(/[?&]f=l/.test(location.search)?'l':'all');
 if(/[?&]embed=1/.test(location.search))document.body.classList.add('emb');
-/* miniatura JPG de vídeo do Cloudinary (sem baixar o vídeo); outros hosts usam só o ícone ▶ */
-function poster(src){var m=String(src||'').match(/^(https?:\/\/res\.cloudinary\.com\/[^\/]+\/video\/upload\/)(.+)$/);return m?m[1]+'so_1,w_480,q_auto,f_jpg/'+m[2].replace(/\.[a-z0-9]+(\?.*)?$/i,'.jpg'):'';}
-function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
-function toast(m){var e=$('msg');e.textContent=m;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(function(){e.classList.remove('on');},2200);}
-function ytId(u){var m=String(u||'').match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{11})/);return m?m[1]:'';}
-function fmtData(d,ts){var x=d?new Date(d+'T12:00'):(ts?new Date(ts):null);return x&&!isNaN(x)?x.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'}):'';}
+
+/* ---------- memória do aparelho (cada pessoa tem a sua) ---------- */
 function lerLocal(k){try{return JSON.parse(localStorage.getItem(k)||'null');}catch(e){return null;}}
+function store(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+let LATER=lerLocal('tvob_later');if(!Array.isArray(LATER))LATER=[];
+let PROG=lerLocal('tvob_prog');if(!PROG||typeof PROG!=='object'||Array.isArray(PROG))PROG={};
+let AUTO=lerLocal('tvob_auto')!==false;
+let SPEED=+lerLocal('tvob_speed')||1;
+
+/* ---------- utilidades ---------- */
+function poster(src){const m=String(src||'').match(/^(https?:\/\/res\.cloudinary\.com\/[^\/]+\/video\/upload\/)(.+)$/);return m?m[1]+'so_1,w_480,q_auto,f_jpg/'+m[2].replace(/\.[a-z0-9]+(\?.*)?$/i,'.jpg'):'';}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function toast(m){const e=$('msg');e.textContent=m;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),2400);}
+function ytId(u){const m=String(u||'').match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{11})/);return m?m[1]:'';}
+function dataObj(d,ts){const x=d?new Date(d+'T12:00'):(ts?new Date(ts):null);return x&&!isNaN(x)?x:null;}
+function fmtData(d,ts){const x=dataObj(d,ts);return x?x.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'}):'';}
+function ago(d,ts){
+  const x=dataObj(d,ts);if(!x)return '';
+  const n=Math.floor((Date.now()-x.getTime())/864e5);
+  if(n<=0)return 'hoje';if(n===1)return 'ontem';if(n<7)return 'há '+n+' dias';
+  if(n<30){const w=Math.floor(n/7);return 'há '+w+(w>1?' semanas':' semana');}
+  return fmtData(d,ts);
+}
+function fmtDur(s){s=Math.round(s||0);const h=Math.floor(s/3600),m=Math.floor(s%3600/60),r=s%60;return (h?h+':'+String(m).padStart(2,'0'):m)+':'+String(r).padStart(2,'0');}
+function pct(v){const p=PROG[v.id];return p&&p.d?Math.min(100,Math.round(p.t/p.d*100)):0;}
+function isLater(id){return LATER.indexOf(id)>=0;}
+function temVideo(v){return v.m.some(x=>x.k!=='i');}
+function continuando(v){const p=pct(v);return p>=3&&p<92;}
+
+/* ---------- dados ---------- */
 function norm(c,i){
-  var ms=(c.midias||c.midia||(c.fotos||[]).map(function(f){return {tp:'img',src:f};})).filter(function(m){var s=m&&m.src||'';return s&&!/^(idb:|blob:|mem:)/.test(s);}).map(function(m){return {k:m.tp==='video'?'v':'i',src:m.src};});
-  (c.urls||[]).forEach(function(u){var id=ytId(u);if(id)ms.push({k:'y',id:id,src:u});});
+  const ms=(c.midias||c.midia||(c.fotos||[]).map(f=>({tp:'img',src:f}))).filter(m=>{const s=m&&m.src||'';return s&&!/^(idb:|blob:|mem:)/.test(s);}).map(m=>({k:m.tp==='video'?'v':'i',src:m.src}));
+  (c.urls||[]).forEach(u=>{const id=ytId(u);if(id)ms.push({k:'y',id:id,src:u});});
   return {id:'c'+(c.ts||i),ts:c.ts||0,t:c.tit||c.titulo||'Momento do culto',d:c.dt||c.data||'',r:c.rel||c.relato||'',m:ms};
 }
 function normP(p,i){
-  var ms=(p.midias||p.midia||[]).filter(function(m){var s=m&&m.src||'';return s&&!/^(idb:|blob:|mem:)/.test(s);}).map(function(m){return {k:m.tp==='video'?'v':'i',src:m.src};});
-  var id=ytId(p.url);if(id)ms.push({k:'y',id:id,src:p.url});
+  const ms=(p.midias||p.midia||[]).filter(m=>{const s=m&&m.src||'';return s&&!/^(idb:|blob:|mem:)/.test(s);}).map(m=>({k:m.tp==='video'?'v':'i',src:m.src}));
+  const id=ytId(p.url);if(id)ms.push({k:'y',id:id,src:p.url});
   return {id:'p'+(p.ts||i),ts:p.ts||0,t:p.tit||p.titulo||'Palavra do Pastor',d:p.dt||p.data||'',r:p.txt||p.texto||'',a:p.aut||p.autor||'',m:ms,p:1,u:!!p.urg};
 }
 function carregar(silent){
-  var local=lerLocal('obpc_cultos');if(Array.isArray(local)){RC=local;set();}var lp=lerLocal('obpc_palavras');if(Array.isArray(lp)){RP=lp;set();}
-  fetch(FB+'cultos.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(fb){
-    if(Array.isArray(fb)){RC=fb;set();try{localStorage.setItem('obpc_cultos',JSON.stringify(fb));}catch(e){}}
-  }).catch(function(){}).then(function(){render();if(!silent||!location.hash)onHash();});
-  fetch(FB+'palavras.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(fb){
-    if(Array.isArray(fb)){RP=fb;set();try{localStorage.setItem('obpc_palavras',JSON.stringify(fb));}catch(e){}}
-  }).catch(function(){}).then(function(){render();if(!silent||!location.hash)onHash();});
-  fetch(FB+'info.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(i){
-    if(!i)return;if(i.nome){NOME=i.nome;}var l=i.logoB64||i.logo;if(l){var e=$('lg');e.textContent='';e.style.backgroundImage='url("'+l+'")';}
-  }).catch(function(){});
+  const local=lerLocal('obpc_cultos');if(Array.isArray(local)){RC=local;set();LOADED=true;}
+  const lp=lerLocal('obpc_palavras');if(Array.isArray(lp)){RP=lp;set();LOADED=true;}
+  fetch(FB+'cultos.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(fb=>{
+    if(Array.isArray(fb)){RC=fb;set();store('obpc_cultos',fb);}
+  }).catch(()=>{}).then(()=>{LOADED=true;render();if(!silent||!location.hash)onHash();});
+  fetch(FB+'palavras.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(fb=>{
+    if(Array.isArray(fb)){RP=fb;set();store('obpc_palavras',fb);}
+  }).catch(()=>{}).then(()=>{LOADED=true;render();if(!silent||!location.hash)onHash();});
+  fetch(FB+'info.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(i=>{
+    if(!i)return;if(i.nome)NOME=i.nome;const l=i.logoB64||i.logo;if(l){const e=$('lg');e.textContent='';e.style.backgroundImage='url("'+l+'")';}
+  }).catch(()=>{});
 }
 function set(){
-  var now=Date.now(),vis={};
-  var c=RC.filter(function(x){return x&&(!x.ts||(now-x.ts)/864e5<=DIAS);}).map(norm).filter(function(v){return v.m.length;});
-  var p=RP.filter(Boolean).map(normP).filter(function(v){return v.m.length||v.r;});
-  ITEMS=c.concat(p).filter(function(v){if(vis[v.id])return false;vis[v.id]=1;return true;});
-  ITEMS.sort(function(a,b){return (b.u?1:0)-(a.u?1:0)||b.ts-a.ts;});
+  const now=Date.now(),vis={};
+  const c=RC.filter(x=>x&&(!x.ts||(now-x.ts)/864e5<=DIAS)).map(norm).filter(v=>v.m.length);
+  const p=RP.filter(Boolean).map(normP).filter(v=>v.m.length||v.r);
+  ITEMS=c.concat(p).filter(v=>{if(vis[v.id])return false;vis[v.id]=1;return true;});
+  ITEMS.sort((a,b)=>(b.u?1:0)-(a.u?1:0)||b.ts-a.ts);
   render();
 }
-function temVideo(v){return v.m.some(function(x){return x.k!=='i';});}
+function porId(id){return ITEMS.filter(x=>x.id===id)[0];}
+/* fila "A seguir": primeiro o que a pessoa guardou, depois o resto */
+function upNext(v){
+  const q=LATER.map(porId).filter(x=>x&&x.id!==v.id&&x.m.length);
+  const rest=ITEMS.filter(x=>x.id!==v.id&&x.m.length&&!isLater(x.id));
+  return q.concat(rest);
+}
+
+/* ---------- assistir depois ---------- */
+function toggleLater(id){
+  const i=LATER.indexOf(id);
+  if(i>=0){LATER.splice(i,1);toast('Removido de Assistir depois');}
+  else{LATER.push(id);toast('Salvo em Assistir depois 🕒');}
+  store('tvob_later',LATER);
+  _RS='';render();
+  if(CUR&&!$('watch').classList.contains('hide')){updateBL();renderSide(CUR);}
+}
+function updateBL(){
+  const b=$('bl');if(!b||!CUR)return;const on=isLater(CUR.id);
+  b.classList.toggle('on',on);b.textContent=on?'✔ Salvo para depois':'🕒 Assistir depois';
+}
+
+/* ---------- vitrine ---------- */
 function matches(v){
-  var q=Q.trim().toLowerCase();if(q&&(v.t+' '+v.r).toLowerCase().indexOf(q)<0)return false;
-  if(CHIP==='p')return !!v.p;if(CHIP==='v')return temVideo(v);if(CHIP==='f')return !temVideo(v)&&!v.p;return true;
+  const q=Q.trim().toLowerCase();if(q&&(v.t+' '+v.r+' '+(v.a||'')).toLowerCase().indexOf(q)<0)return false;
+  if(CHIP==='p')return !!v.p;if(CHIP==='v')return temVideo(v);if(CHIP==='f')return !temVideo(v)&&!v.p;
+  if(CHIP==='l')return isLater(v.id);if(CHIP==='c')return continuando(v);
+  return true;
 }
 function thumb(v){
-  var m=v.m[0]||{k:'t'},th=document.createElement('div');th.className='th';
+  const m=v.m[0]||{k:'t'},th=document.createElement('div');th.className='th';
   if(m.k==='t')th.innerHTML='<div style="width:100%;height:100%;display:grid;place-items:center;font-size:48px;background:linear-gradient(135deg,#0F4A34,#14442E)">🎤</div>';
   else if(m.k==='y')th.innerHTML='<img loading="lazy" src="https://i.ytimg.com/vi/'+m.id+'/mqdefault.jpg" alt="">';
-  else if(m.k==='v'){var pj=poster(m.src);th.innerHTML='<div class="ph0">▶</div>'+(pj?'<img loading="lazy" src="'+esc(pj)+'" alt="" onerror="this.remove()">':'');}
+  else if(m.k==='v'){const pj=poster(m.src);th.innerHTML='<div class="ph0">▶</div>'+(pj?'<img loading="lazy" src="'+esc(pj)+'" alt="" onerror="this.remove()">':'');}
   else th.innerHTML='<img loading="lazy" src="'+esc(m.src)+'" alt="">';
-  var n=v.m.length,b=document.createElement('span');b.className='bd'+(temVideo(v)?' v':'');if(v.u){b.style.background='#e11d48';b.textContent='🚨 URGENTE';th.appendChild(b);return th;}b.textContent=!n?'🎤 Palavra':temVideo(v)?'▶ '+(n>1?n+' itens':'Vídeo'):'📷 '+n+(n>1?' fotos':' foto');th.appendChild(b);return th;
+  const n=v.m.length,p=PROG[v.id],pc=pct(v),b=document.createElement('span');
+  b.className='bd'+(temVideo(v)?' v':'');
+  if(v.u){b.style.background='#e11d48';b.textContent='🚨 URGENTE';}
+  else if(!n)b.textContent='🎤 Palavra';
+  else if(temVideo(v))b.textContent=(n===1&&p&&p.d)?fmtDur(p.d):'▶ '+(n>1?n+' itens':'Vídeo');
+  else b.textContent='📷 '+n+(n>1?' fotos':' foto');
+  th.appendChild(b);
+  if(pc>0){const pb=document.createElement('div');pb.className='pg';pb.innerHTML='<i style="width:'+pc+'%"></i>';th.appendChild(pb);}
+  const on=isLater(v.id),lt=document.createElement('button');
+  lt.type='button';lt.className='lt'+(on?' on':'');lt.textContent=on?'✔':'🕒';
+  lt.title=on?'Remover de Assistir depois':'Assistir depois';lt.setAttribute('aria-label',lt.title);
+  lt.onclick=ev=>{ev.stopPropagation();toggleLater(v.id);};
+  th.appendChild(lt);
+  return th;
 }
 function renderChips(){
-  var d=[['all','Tudo'],['v','Vídeos'],['f','Fotos'],['p','🎤 Palavra do Pastor']],c=$('chips');c.innerHTML='';
-  d.forEach(function(x){var b=document.createElement('button');b.className='chip'+(CHIP===x[0]?' on':'');b.textContent=x[1];b.onclick=function(){CHIP=x[0];render();};c.appendChild(b);});
+  const nl=ITEMS.filter(v=>isLater(v.id)).length,nc=ITEMS.filter(continuando).length;
+  const d=[['all','Tudo'],['v','Vídeos'],['f','Fotos'],['p','🎤 Palavra do Pastor'],['l','🕒 Assistir depois'+(nl?' ('+nl+')':'')]];
+  if(nc)d.push(['c','▶ Continuar assistindo ('+nc+')']);
+  const c=$('chips');c.innerHTML='';
+  d.forEach(x=>{const b=document.createElement('button');b.className='chip'+(CHIP===x[0]?' on':'');b.textContent=x[1];b.onclick=()=>{CHIP=x[0];render();};c.appendChild(b);});
 }
+const VAZIO={all:'Nenhum vídeo ou foto por aqui ainda.',v:'Nenhum vídeo por aqui ainda.',f:'Nenhuma foto por aqui ainda.',p:'Nenhuma Palavra do Pastor por aqui ainda.',l:'Você ainda não guardou nada.\nToque no 🕒 de qualquer vídeo para assistir depois.',c:'Nada para continuar por enquanto.'};
 function render(){
-  var sig=CHIP+'|'+Q+'|'+NOME+'|'+ITEMS.map(function(v){var m=v.m[0]||{};return v.id+':'+v.t+':'+v.m.length+':'+(m.src||m.id||'')+':'+(v.u?1:0);}).join(',');
+  const sig=[CHIP,Q,NOME,LOADED,LATER.join('.'),ITEMS.map(v=>{const m=v.m[0]||{};return v.id+':'+v.t+':'+v.m.length+':'+(m.src||m.id||'')+':'+(v.u?1:0)+':'+pct(v);}).join(',')].join('|');
   if(sig===_RS&&$('grid').firstChild)return;_RS=sig;
-  renderChips();var g=$('grid');g.innerHTML='';var l=ITEMS.filter(matches);
-  $('empty').classList.toggle('hide',l.length>0);
-  l.forEach(function(v){
-    var c=document.createElement('div');c.className='card';c.appendChild(thumb(v));
-    var t=document.createElement('div');t.className='ct';
-    t.innerHTML='<div class="lg">⛪</div><div><h3 class="tt">'+esc(v.t)+'</h3><div class="mt">'+esc(v.p?(v.a||'Palavra do Pastor'):NOME)+'</div><div class="mt">'+esc(fmtData(v.d,v.ts))+'</div></div>';
-    c.appendChild(t);c.onclick=function(){location.hash=v.id;};g.appendChild(c);
+  renderChips();const g=$('grid');g.innerHTML='';
+  if(!LOADED&&!ITEMS.length){
+    $('empty').classList.add('hide');
+    for(let i=0;i<6;i++){const s=document.createElement('div');s.className='sk';s.innerHTML='<div class="th"></div><div class="l1"></div><div class="l2"></div>';g.appendChild(s);}
+    return;
+  }
+  let l=ITEMS.filter(matches);
+  if(CHIP==='l')l=LATER.slice().reverse().map(id=>l.filter(x=>x.id===id)[0]).filter(Boolean);
+  const em=$('empty');em.textContent=(Q.trim()&&!l.length)?'Nada encontrado para "'+Q.trim()+'".':(VAZIO[CHIP]||VAZIO.all);
+  em.style.whiteSpace='pre-line';em.classList.toggle('hide',l.length>0);
+  l.forEach(v=>{
+    const c=document.createElement('div');c.className='card';c.tabIndex=0;c.appendChild(thumb(v));
+    const seen=pct(v)>=92?' · <span class="seen">Visto</span>':'';
+    const t=document.createElement('div');t.className='ct';
+    t.innerHTML='<div class="lg">⛪</div><div><h3 class="tt">'+esc(v.t)+'</h3><div class="mt">'+esc(v.p?(v.a||'Palavra do Pastor'):NOME)+'</div><div class="mt">'+esc(ago(v.d,v.ts))+seen+'</div></div>';
+    c.appendChild(t);c.onclick=()=>{location.hash=v.id;};
+    c.onkeydown=ev=>{if(ev.key==='Enter')location.hash=v.id;};
+    g.appendChild(c);
   });
 }
-function frameFile(items,cb){var m=null;for(var i=0;i<items.length&&!m;i++){m=items[i].m.filter(function(x){return x.k==='v'&&poster(x.src);})[0];}
+
+/* ---------- compartilhar ---------- */
+function frameFile(items,cb){let m=null;for(let i=0;i<items.length&&!m;i++){m=items[i].m.filter(x=>x.k==='v'&&poster(x.src))[0];}
   if(!m||!window.fetch)return cb(null);
-  fetch(poster(m.src).replace('w_480','w_1080')).then(function(r){return r.ok?r.blob():null;}).then(function(b){cb(b?new File([b],'video.jpg',{type:'image/jpeg'}):null);}).catch(function(){cb(null);});}
-function shareWith(d,f){if(f&&navigator.canShare&&navigator.canShare({files:[f]}))d.files=[f];navigator.share(d).catch(function(){});}
+  fetch(poster(m.src).replace('w_480','w_1080')).then(r=>r.ok?r.blob():null).then(b=>{cb(b?new File([b],'video.jpg',{type:'image/jpeg'}):null);}).catch(()=>cb(null));}
+function shareWith(d,f){if(f&&navigator.canShare&&navigator.canShare({files:[f]}))d.files=[f];navigator.share(d).catch(()=>{});}
 function link(v){return SITE+'tv-obpc.html#'+v.id;}
-function show(v){
-  $('home').classList.add('hide');var w=$('watch');w.classList.remove('hide');window.scrollTo(0,0);
-  w.innerHTML='<div class="pl" id="pl"></div><div class="ph" id="ph"></div><div class="info"><h2>'+esc(v.t)+'</h2><div class="mt">'+esc(NOME)+' · '+esc(fmtData(v.d,v.ts))+'</div><div class="act"><button class="b p" id="bw">✆ WhatsApp</button><button class="b r" id="bs">↗ Compartilhar</button><button class="b" id="bc">🔗 Copiar link</button><button class="b" onclick="goHome()">← Voltar</button></div>'+(v.r?'<div class="rel">'+esc(v.r)+'</div>':'')+'</div>';
-  var tx=(v.p?'🎤 ':'📺 ')+v.t+' — TV OBPC São Fernando',L=link(v);
-  var PB=null;frameFile([v],function(f){PB=f;});
-  $('bw').onclick=function(){if(PB&&navigator.share&&navigator.canShare&&navigator.canShare({files:[PB]}))shareWith({title:v.t,text:tx+'\n'+L},PB);else window.open('https://wa.me/?text='+encodeURIComponent(tx+'\n'+L),'_blank');};
-  $('bs').onclick=function(){if(navigator.share)shareWith({title:v.t,text:tx+'\n'+L},PB);else cp(L);};
-  $('bc').onclick=function(){cp(L);};
-  var ph=$('ph');if(v.m.length<2)ph.classList.add('hide');
-  v.m.forEach(function(m,i){
-    var e=m.k==='y'?'<img src="https://i.ytimg.com/vi/'+m.id+'/mqdefault.jpg" alt="">':m.k==='v'?(poster(m.src)?'<img src="'+esc(poster(m.src))+'" alt="" onerror="this.outerHTML=\'<div class=ph0s>▶</div>\'">':'<div class="ph0s">▶</div>'):'<img src="'+esc(m.src)+'" alt="">';
-    var d=document.createElement('div');d.style.display='contents';d.innerHTML=e;var n=d.firstChild;n.onclick=function(){play(v,i);};ph.appendChild(n);
+function cp(t){try{navigator.clipboard.writeText(t).then(()=>toast('Link copiado!'));}catch(e){toast(t);}}
+
+/* ---------- tela de assistir ---------- */
+function renderSide(v){
+  const s=$('side');if(!s)return;
+  const l=upNext(v).slice(0,15);s.innerHTML='';
+  if(!l.length)return;
+  const h=document.createElement('h3');h.textContent='A seguir';s.appendChild(h);
+  l.forEach(x=>{
+    const r=document.createElement('div');r.className='rw';r.tabIndex=0;r.appendChild(thumb(x));
+    const t=document.createElement('div');
+    t.innerHTML='<h3 class="tt">'+esc(x.t)+'</h3><div class="mt">'+esc(x.p?(x.a||'Palavra do Pastor'):NOME)+'</div><div class="mt">'+esc(ago(x.d,x.ts))+'</div>';
+    r.appendChild(t);r.onclick=()=>{location.hash=x.id;};r.onkeydown=ev=>{if(ev.key==='Enter')location.hash=x.id;};
+    s.appendChild(r);
   });
-  play(v,0);
+}
+function show(v){
+  CUR=v;$('home').classList.add('hide');const w=$('watch');w.classList.remove('hide');window.scrollTo(0,0);
+  document.title=v.t+' · TV OBPC';
+  const opSp=[0.75,1,1.25,1.5,2].map(s=>'<option value="'+s+'"'+(s===SPEED?' selected':'')+'>'+String(s).replace('.',',')+'×</option>').join('');
+  w.innerHTML='<div class="wl"><div><div class="pl" id="pl"></div><div class="ph" id="ph"></div><div class="info"><h2>'+esc(v.t)+'</h2><div class="mt">'+esc(NOME)+' · '+esc(fmtData(v.d,v.ts))+'</div>'
+    +'<div class="act"><button class="b l" id="bl"></button><button class="b p" id="bw">✆ WhatsApp</button><button class="b r" id="bs">↗ Compartilhar</button><button class="b" id="bc">🔗 Copiar link</button><button class="b" onclick="goHome()">← Voltar</button></div>'
+    +'<div class="ctl">'+(temVideo(v)?'<label>Velocidade <select id="sp" aria-label="Velocidade">'+opSp+'</select></label>':'')+'<label><input type="checkbox" id="au"'+(AUTO?' checked':'')+'> Reprodução automática</label></div>'
+    +(v.r?'<div class="rel">'+esc(v.r)+'</div>':'')+'</div></div><aside class="side" id="side"></aside></div>';
+  const tx=(v.p?'🎤 ':'📺 ')+v.t+' — TV OBPC São Fernando',L=link(v);
+  let PB=null;frameFile([v],f=>{PB=f;});
+  $('bw').onclick=()=>{if(PB&&navigator.share&&navigator.canShare&&navigator.canShare({files:[PB]}))shareWith({title:v.t,text:tx+'\n'+L},PB);else window.open('https://wa.me/?text='+encodeURIComponent(tx+'\n'+L),'_blank');};
+  $('bs').onclick=()=>{if(navigator.share)shareWith({title:v.t,text:tx+'\n'+L},PB);else cp(L);};
+  $('bc').onclick=()=>cp(L);
+  $('bl').onclick=()=>toggleLater(v.id);
+  $('au').onchange=ev=>{AUTO=ev.target.checked;store('tvob_auto',AUTO);};
+  const sp=$('sp');if(sp)sp.onchange=ev=>{SPEED=+ev.target.value;store('tvob_speed',SPEED);const vd=$('pl').querySelector('video');if(vd)vd.playbackRate=SPEED;};
+  updateBL();
+  const ph=$('ph');if(v.m.length<2)ph.classList.add('hide');
+  v.m.forEach((m,i)=>{
+    const e=m.k==='y'?'<img src="https://i.ytimg.com/vi/'+m.id+'/mqdefault.jpg" alt="">':m.k==='v'?(poster(m.src)?'<img src="'+esc(poster(m.src))+'" alt="" onerror="this.outerHTML=\'<div class=ph0s>▶</div>\'">':'<div class="ph0s">▶</div>'):'<img src="'+esc(m.src)+'" alt="">';
+    const d=document.createElement('div');d.style.display='contents';d.innerHTML=e;const n=d.firstChild;n.onclick=()=>play(v,i);ph.appendChild(n);
+  });
+  /* deslizar o dedo para trocar de foto */
+  const pl=$('pl');let sx=0;
+  pl.addEventListener('touchstart',ev=>{sx=ev.touches[0].clientX;},{passive:true});
+  pl.addEventListener('touchend',ev=>{
+    const m=v.m[CURI];if(!m||m.k!=='i'||v.m.length<2)return;
+    const dx=ev.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)play(v,(CURI+(dx<0?1:-1)+v.m.length)%v.m.length);
+  },{passive:true});
+  renderSide(v);
+  const s=PROG[v.id];play(v,s&&s.i<v.m.length?s.i:0);
+}
+function saveProg(){
+  const pl=$('pl'),vd=CUR&&pl&&pl.querySelector('video');
+  if(!vd||!vd.duration||!isFinite(vd.duration)||vd.currentTime<1)return;
+  PROG[CUR.id]={t:vd.currentTime,d:vd.duration,i:CURI,ts:Date.now()};
+  const ks=Object.keys(PROG);
+  if(ks.length>200)ks.sort((a,b)=>PROG[a].ts-PROG[b].ts).slice(0,ks.length-200).forEach(k=>{delete PROG[k];});
+  store('tvob_prog',PROG);
 }
 function play(v,i){
-  var m=v.m[i],p=$('pl');
+  saveProg();CURI=i;
+  const m=v.m[i],p=$('pl');
   if(!m){p.innerHTML='<div style="height:100%;display:grid;place-items:center;font-size:64px;background:linear-gradient(135deg,#0F4A34,#14442E)">🎤</div>';return;}
-  [].forEach.call($('ph').children,function(n,j){n.classList.toggle('on',j===i);});
+  [].forEach.call($('ph').children,(n,j)=>n.classList.toggle('on',j===i));
   if(m.k==='y')p.innerHTML='<iframe src="https://www.youtube.com/embed/'+m.id+'?autoplay=1&rel=0" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
-  else if(m.k==='v'){var pj=poster(m.src);p.innerHTML='<video controls autoplay playsinline preload="auto"'+(pj?' poster="'+esc(pj)+'"':'')+' src="'+esc(m.src)+'"></video>';
-    var vd=p.querySelector('video');if(vd){var pr=vd.play();if(pr&&pr.catch)pr.catch(function(){vd.muted=true;var p2=vd.play();if(p2&&p2.catch)p2.catch(function(){});toast('Toque no vídeo para ativar o som');});}if(vd)vd.onerror=function(){p.innerHTML='<div style="height:100%;display:grid;place-items:center;color:#fff;padding:16px;text-align:center">⚠️ Não foi possível carregar este vídeo agora. Tente outro item ou abra a TV em tela cheia.</div>';};}
-  else p.innerHTML='<img src="'+esc(m.src)+'" alt="" style="width:100%;height:100%;object-fit:contain">';
+  else if(m.k==='v'){
+    const pj=poster(m.src);
+    p.innerHTML='<video controls autoplay playsinline preload="auto"'+(pj?' poster="'+esc(pj)+'"':'')+' src="'+esc(m.src)+'"></video>';
+    const vd=p.querySelector('video');
+    vd.addEventListener('loadedmetadata',()=>{
+      vd.playbackRate=SPEED;
+      const s=PROG[v.id];
+      if(s&&s.i===i&&s.t>5&&s.d&&s.t<s.d-8&&isFinite(vd.duration)){vd.currentTime=s.t;toast('Continuando de onde você parou');}
+    });
+    vd.addEventListener('timeupdate',()=>{const n=Date.now();if(n-_pt>3000){_pt=n;saveProg();}});
+    vd.addEventListener('pause',saveProg);
+    vd.addEventListener('ended',()=>{
+      if(isFinite(vd.duration)){PROG[v.id]={t:vd.duration,d:vd.duration,i:i,ts:Date.now()};store('tvob_prog',PROG);}
+      if(i+1<v.m.length&&v.m[i+1].k!=='i'){play(v,i+1);return;}
+      const nx=upNext(v)[0];if(AUTO&&nx){toast('A seguir: '+nx.t);location.hash=nx.id;}
+    });
+    vd.onerror=()=>{p.innerHTML='<div style="height:100%;display:grid;place-items:center;color:#fff;padding:16px;text-align:center">⚠️ Não foi possível carregar este vídeo agora. Tente outro item ou abra a TV em tela cheia.</div>';};
+    const pr=vd.play();if(pr&&pr.catch)pr.catch(()=>{vd.muted=true;const p2=vd.play();if(p2&&p2.catch)p2.catch(()=>{});toast('Toque no vídeo para ativar o som');});
+  }else{
+    const n=v.m.length;
+    p.innerHTML='<img src="'+esc(m.src)+'" alt="" style="width:100%;height:100%;object-fit:contain">'
+      +(n>1?'<button class="nv l" aria-label="Foto anterior">‹</button><button class="nv r" aria-label="Próxima foto">›</button><span class="cnt">'+(i+1)+' / '+n+'</span>':'');
+    if(n>1){p.querySelector('.l').onclick=()=>play(v,(i-1+n)%n);p.querySelector('.r').onclick=()=>play(v,(i+1)%n);}
+  }
 }
-function cp(t){try{navigator.clipboard.writeText(t).then(function(){toast('Link copiado!');});}catch(e){toast(t);}}
+
+/* ---------- navegação ---------- */
 function goHome(){if(location.hash)location.hash='';else onHash();}
 function onHash(){
-  var id=(location.hash||'').slice(1),v=ITEMS.filter(function(x){return x.id===id;})[0];
-  if(v){if(SHOWN===v.id)return;SHOWN=v.id;show(v);}else{SHOWN='';$('watch').classList.add('hide');$('watch').innerHTML='';$('home').classList.remove('hide');}
+  saveProg();
+  const id=(location.hash||'').slice(1),v=porId(id);
+  if(v){
+    if(SHOWN===v.id)return;
+    if(!$('home').classList.contains('hide'))LASTY=window.scrollY;
+    SHOWN=v.id;show(v);
+  }else{
+    const vinha=!!SHOWN;SHOWN='';CUR=null;
+    $('watch').classList.add('hide');$('watch').innerHTML='';$('home').classList.remove('hide');
+    document.title='TV OBPC São Fernando';
+    _RS='';render();
+    if(vinha)window.scrollTo(0,LASTY);
+  }
 }
 function shareTV(){
-  var L=SITE+'tv-obpc.html',tx='📺 TV OBPC São Fernando — vídeos e fotos dos nossos cultos e a Palavra do Pastor',e=encodeURIComponent;
-  var ov=document.createElement('div');ov.className='ov';
+  const L=SITE+'tv-obpc.html',tx='📺 TV OBPC São Fernando — vídeos e fotos dos nossos cultos e a Palavra do Pastor',e=encodeURIComponent;
+  const ov=document.createElement('div');ov.className='ov';
   ov.innerHTML='<div class="sheet"><h3>Compartilhar a TV OBPC</h3><p>Envie o link da TV para quem você quiser.</p><div class="opts"><a style="background:#25D366" target="_blank" rel="noopener" href="https://wa.me/?text='+e(tx+'\n'+L)+'">✆ WhatsApp</a><a style="background:#1877F2" target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u='+e(L)+'">f Facebook</a><a style="background:#2AABEE" target="_blank" rel="noopener" href="https://t.me/share/url?url='+e(L)+'&text='+e(tx)+'">➤ Telegram</a><button id="shc" style="background:var(--ac);color:var(--bg)">🔗 Copiar link</button>'+(navigator.share?'<button id="shm" style="background:#FF0000;grid-column:1/3">⋯ Mais apps</button>':'')+'</div><button class="x" id="shx">Fechar</button></div>';
-  var TF=null;frameFile(ITEMS,function(f){TF=f;});document.body.appendChild(ov);
-  var wa=ov.querySelector('a');if(wa)wa.onclick=function(ev){if(TF&&navigator.share&&navigator.canShare&&navigator.canShare({files:[TF]})){ev.preventDefault();shareWith({title:'TV OBPC São Fernando',text:tx+'\n'+L},TF);fecha();}};
-  function fecha(){if(ov.parentNode)ov.parentNode.removeChild(ov);}
-  ov.onclick=function(ev){if(ev.target===ov)fecha();};
+  let TF=null;frameFile(ITEMS,f=>{TF=f;});document.body.appendChild(ov);
+  const fecha=()=>{if(ov.parentNode)ov.parentNode.removeChild(ov);};
+  const wa=ov.querySelector('a');if(wa)wa.onclick=ev=>{if(TF&&navigator.share&&navigator.canShare&&navigator.canShare({files:[TF]})){ev.preventDefault();shareWith({title:'TV OBPC São Fernando',text:tx+'\n'+L},TF);fecha();}};
+  ov.onclick=ev=>{if(ev.target===ov)fecha();};
   ov.querySelector('#shx').onclick=fecha;
-  ov.querySelector('#shc').onclick=function(){cp(L);fecha();};
-  var m=ov.querySelector('#shm');if(m)m.onclick=function(){shareWith({title:'TV OBPC São Fernando',text:tx+'\n'+L},TF);fecha();};
+  ov.querySelector('#shc').onclick=()=>{cp(L);fecha();};
+  const m=ov.querySelector('#shm');if(m)m.onclick=()=>{shareWith({title:'TV OBPC São Fernando',text:tx+'\n'+L},TF);fecha();};
 }
 $('sh').onclick=shareTV;
 window.addEventListener('hashchange',onHash);
-$('th').onclick=function(){var r=document.documentElement,d=getComputedStyle(r).colorScheme==='dark',n=d?'light':'dark';r.setAttribute('data-theme',n);try{localStorage.setItem('tvob_theme',n);}catch(e){}};
+window.addEventListener('pagehide',saveProg);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)saveProg();});
+document.addEventListener('keydown',ev=>{
+  if($('watch').classList.contains('hide')||/INPUT|SELECT|TEXTAREA/.test((ev.target||{}).tagName||''))return;
+  if(ev.key==='Escape')goHome();
+  const m=CUR&&CUR.m[CURI];
+  if(m&&m.k==='i'&&CUR.m.length>1){const n=CUR.m.length;if(ev.key==='ArrowRight')play(CUR,(CURI+1)%n);if(ev.key==='ArrowLeft')play(CUR,(CURI-1+n)%n);}
+});
+$('th').onclick=()=>{const r=document.documentElement,d=getComputedStyle(r).colorScheme==='dark',n=d?'light':'dark';r.setAttribute('data-theme',n);try{localStorage.setItem('tvob_theme',n);}catch(e){}};
+render();
 carregar();
-setInterval(function(){carregar(true);},90000);
+setInterval(()=>carregar(true),90000);
 </script>
 </body>
 </html>
