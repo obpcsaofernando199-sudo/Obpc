@@ -253,6 +253,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.6;}
   <a onclick="ir('ofe',this)">&#128140; Agradecimento de Oferta</a>
   <div class="grp">M&#237;dia</div>
   <a onclick="ir('vid',this)">&#9654;&#65039; V&#237;deos</a>
+  <a onclick="ir('mapp',this)">&#128241; App da M&#237;dia (instalar)</a>
   <div class="grp">Divulga&#231;&#227;o</div>
   <a onclick="ir('div',this)">&#128227; Compartilhar Site</a>
   <div class="grp">Ferramentas</div>
@@ -276,6 +277,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.6;}
     <div class="dc"><div class="num" id="cnt-lid">0</div><div class="lbl">L&#237;deres</div></div>
   </div>
   <div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:.6rem;flex-wrap:wrap"><div><strong>&#128248; Galeria de Fotos</strong><div style="font-size:.78rem;color:var(--muted)">Enviar e excluir fotos da galeria p&#250;blica</div></div><button type="button" class="btn" style="background:var(--azul2);color:#fff" onclick="ir('galf',document.querySelector('nav a[onclick*=galf]'))">Abrir editor</button></div>
+  <div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:.6rem;flex-wrap:wrap"><div><strong>&#128241; App da M&#237;dia</strong><div style="font-size:.78rem;color:var(--muted)">Instalar no celular e enviar o convite para a equipe</div></div><button type="button" class="btn" style="background:#25d366;color:#fff" onclick="ir('mapp',document.querySelector('nav a[onclick*=mapp]'))">Instalar / Compartilhar</button></div>
   <div class="card"><strong>Culto de Hoje:</strong><div id="dh-hj" style="margin-top:.4rem;font-size:.85rem;color:var(--azul2)">&#8212;</div></div>
   <div class="card"><strong>Semana</strong><div id="dh-sem" style="display:grid;grid-template-columns:repeat(7,1fr);gap:.4rem;margin-top:.7rem"></div></div>
 </div>
@@ -1061,6 +1063,26 @@ Acesse a qualquer hora, do seu celular"></textarea>
   </div>
   <div id="lista-vid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.7rem;margin-top:.7rem"></div>
 </div>
+<!-- APP DA MIDIA -->
+<div id="aba-mapp" class="aba">
+  <h2>&#128241; App da M&#237;dia</h2>
+  <div class="card">
+    <strong>Est&#250;dio de M&#237;dia &#8212; OBPC</strong>
+    <div style="font-size:.82rem;color:var(--muted);margin:.3rem 0 .7rem">Aplicativo para gravar v&#237;deos e tirar fotos no celular e publicar no site. Envie o convite para quem vai usar.</div>
+    <div class="dh" style="margin-bottom:.7rem"><div class="dhl">&#127760; Link do app</div><div class="dhv" id="mapp-link" style="word-break:break-all"></div></div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+      <button type="button" class="btn" style="background:#25d366;color:#fff" onclick="mappConvite()">&#128242; Compartilhar convite</button>
+      <button type="button" class="btn bp" onclick="mappCopiar()">&#128203; Copiar link</button>
+      <a class="btn bs" id="mapp-abrir" href="#" target="_blank" rel="noopener" style="text-decoration:none">&#128241; Abrir / instalar neste aparelho</a>
+    </div>
+  </div>
+  <div class="card" style="font-size:.84rem;line-height:1.55">
+    <strong>Como instalar</strong>
+    <div style="margin-top:.4rem"><b>Android:</b> abrir o link no Chrome &#8594; tr&#234;s pontinhos &#8594; <b>Instalar aplicativo</b>.</div>
+    <div><b>iPhone:</b> abrir o link no Safari &#8594; bot&#227;o Compartilhar &#8594; <b>Adicionar &#224; Tela de In&#237;cio</b>.</div>
+    <div style="margin-top:.4rem;color:var(--muted)">Se abrir por dentro do WhatsApp, toque nos tr&#234;s pontinhos e escolha &#8220;Abrir no navegador&#8221;.</div>
+  </div>
+</div>
 <!-- DIVULGAR -->
 <div id="aba-div" class="aba">
   <h2>&#128227; Compartilhar Site</h2>
@@ -1169,8 +1191,14 @@ window.addEventListener('unhandledrejection',function(ev){
 });
 </script>
 <script>
-function ir(id,el){document.querySelectorAll('.aba').forEach(function(a){a.classList.remove('on');});var aba=document.getElementById('aba-'+id);if(aba)aba.classList.add('on');document.querySelectorAll('nav a').forEach(function(a){a.classList.remove('on');});if(el)el.classList.add('on');var nav=document.getElementById('snav');var nov=document.getElementById('nov');if(nav)nav.classList.remove('open');if(nov)nov.classList.remove('open');if(id==='dash')rndDash();else if(id==='info')carregaInfo();else if(id==='hor')rndHor();else if(id==='av')rndAv();else if(id==='or')rndOr();else if(id==='ev')rndEv();else if(id==='inf')rndInf();else if(id==='ser')rndSer();else if(id==='clt')rndClt();else if(id==='pas')rndPas();else if(id==='aniv')rndAnv();else if(id==='ob')rndOb();else if(id==='lid')rndLid();else if(id==='ofe')ofeInit();else if(id==='gal')rndGal();else if(id==='vid')rndVid();else if(id==='div')rndDiv();else if(id==='bnr'){rndBnr();rndPclt();}else if(id==='mig')rndMig();else if(id==='galf')galfInit();}
+function ir(id,el){document.querySelectorAll('.aba').forEach(function(a){a.classList.remove('on');});var aba=document.getElementById('aba-'+id);if(aba)aba.classList.add('on');document.querySelectorAll('nav a').forEach(function(a){a.classList.remove('on');});if(el)el.classList.add('on');var nav=document.getElementById('snav');var nov=document.getElementById('nov');if(nav)nav.classList.remove('open');if(nov)nov.classList.remove('open');if(id==='dash')rndDash();else if(id==='info')carregaInfo();else if(id==='hor')rndHor();else if(id==='av')rndAv();else if(id==='or')rndOr();else if(id==='ev')rndEv();else if(id==='inf')rndInf();else if(id==='ser')rndSer();else if(id==='clt')rndClt();else if(id==='pas')rndPas();else if(id==='aniv')rndAnv();else if(id==='ob')rndOb();else if(id==='lid')rndLid();else if(id==='ofe')ofeInit();else if(id==='gal')rndGal();else if(id==='vid')rndVid();else if(id==='div')rndDiv();else if(id==='bnr'){rndBnr();rndPclt();}else if(id==='mig')rndMig();else if(id==='galf')galfInit();else if(id==='mapp')mappInit();}
 function tnav(){var nav=document.getElementById('snav');var nov=document.getElementById('nov');if(nav)nav.classList.toggle('open');if(nov)nov.classList.toggle('open');}
+/* ---- App da Mídia: link, convite e cópia ---- */
+function mappUrl(){try{if(/^https?:$/.test(location.protocol))return new URL('midia-estudio.html',location.href).href;}catch(e){}return 'https://obpcsaofernando199-sudo.github.io/Obpc/midia-estudio.html';}
+function mappInit(){var u=mappUrl();var l=document.getElementById('mapp-link');if(l)l.textContent=u;var a=document.getElementById('mapp-abrir');if(a)a.href=u;}
+function mappTexto(){return 'Instale o Estúdio de Mídia no seu celular: '+mappUrl()+'\n\nAndroid: abra no Chrome > três pontinhos > Instalar aplicativo.\niPhone: abra no Safari > Compartilhar > Adicionar à Tela de Início.';}
+function mappConvite(){var txt=mappTexto();if(navigator.share){navigator.share({title:'Estúdio de Mídia — OBPC',text:txt}).catch(function(){});}else{window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank');}}
+function mappCopiar(){var u=mappUrl();function fb(){var t=document.createElement('textarea');t.value=u;t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();try{document.execCommand('copy');showToast('✅ Link copiado!');}catch(e){showToast('Não foi possível copiar');}document.body.removeChild(t);}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(function(){showToast('✅ Link copiado!');},fb);}else fb();}
 function showToast(msg){var t=document.getElementById('toast-gbl');if(!t)return;t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2800);}
 var FB='https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com/obpc';
 var _dbUltimaGravacaoLocal={};
