@@ -2456,8 +2456,12 @@ function carregarHorarios(){
 
 function carregarDizMsgExtra(){const msg=DB.get('diz-msg')||'';const el=document.getElementById('diz-msg-extra');if(el&&msg)el.textContent=msg;}
 
+/* LIMITE DE PUBLICAÇÕES NO SITE (mesmos valores do midia-estudio.html, CFG.lim).
+   O Estúdio apaga as mais antigas do Firebase; aqui o site também só mostra as mais novas, para nunca pesar. */
+const OBPC_LIM_FOTOS=30, OBPC_LIM_VIDEOS=12;
+
 async function carregarGaleria(){
-  const lista=DB.get('galeria')||[];if(!lista.length)return;show('sec-galeria');
+  const lista=(DB.get('galeria')||[]).filter(Boolean).slice(0,OBPC_LIM_FOTOS);if(!lista.length)return;show('sec-galeria');
   const el=document.getElementById('galeria-lista');el.innerHTML='';
   /* Resolver todas as URLs primeiro */
   const resolvidos=[];
@@ -2585,13 +2589,21 @@ window.obpcCompartilharGaleriaFamilia=function(){
 };
 
 function carregarVideos(){
-  const lista=DB.get('videos')||[];if(!lista.length)return;show('sec-videos');
+  const lista=(DB.get('videos')||[]).filter(Boolean).slice(0,OBPC_LIM_VIDEOS);if(!lista.length)return;show('sec-videos');
   const el=document.getElementById('videos-lista');
   el.innerHTML='';
   lista.forEach(function(v){
     const url=v.url||'';const tit=v.titulo||v.tit||'';const cat=v.cat||'';
     const vid=ytId(url);
     const plat=v.plat||'';
+
+    /* Podcast / áudio: toca dentro do site */
+    if(/\.mp3(\?|$)/i.test(url)){
+      const cardA=document.createElement('div');cardA.className='vid-card';
+      cardA.innerHTML='<div style="padding:1rem .9rem .4rem;background:linear-gradient(135deg,#0F4A34,#14573C);text-align:center"><div style="font-size:2rem;line-height:1">🎙️</div></div><div style="padding:.5rem .7rem"><audio controls preload="none" src="'+url+'" style="width:100%"></audio></div><div class="vid-body"><div class="vid-titulo">'+tit+'</div><div class="vid-cat">'+cat+'</div></div>';
+      el.appendChild(cardA);
+      return;
+    }
 
     /* Thumb: YouTube > Cloudinary > placeholder colorido por plataforma */
     let thumbHtml='';
@@ -2635,6 +2647,15 @@ function carregarVideos(){
     const card=document.createElement('div');card.className='vid-card';
     card.innerHTML='<a href="'+url+'" target="_blank"><div class="vid-thumb">'+thumbHtml+'<div class="vid-play">▶</div></div></a><div class="vid-body"><div class="vid-titulo">'+tit+'</div><div class="vid-cat">'+cat+'</div></div>';
     el.appendChild(card);
+  });
+  /* Botão compartilhar em cada vídeo/podcast */
+  el.querySelectorAll('.vid-card').forEach(function(c,i){
+    if(c.querySelector('.vid-share'))return;
+    var b=document.createElement('button');b.type='button';b.className='vid-share';
+    b.textContent='📤 Compartilhar';
+    b.style.cssText='display:flex;align-items:center;justify-content:center;gap:6px;width:calc(100% - 1.4rem);margin:.2rem .7rem .7rem;background:rgba(245,200,66,.15);border:1.5px solid rgba(245,200,66,.5);color:#E0961E;font-size:.75rem;font-weight:700;border-radius:20px;padding:6px 12px;cursor:pointer;font-family:inherit';
+    b.onclick=function(ev){ev.stopPropagation();obpcCompartilharVideoItem(i);};
+    c.appendChild(b);
   });
 }
 
@@ -3802,6 +3823,7 @@ function pcltGerarPNG(){
 <!-- LIGHTBOX MÍDIA -->
 <div id="lbx-overlay" onclick="lbxFechar(event)">
   <button id="lbx-close" onclick="lbxFechar()">✕</button>
+  <button id="lbx-share" onclick="obpcCompartilharLbx();event.stopPropagation()" style="position:fixed;top:16px;left:18px;background:rgba(37,211,102,.25);border:1.5px solid rgba(37,211,102,.6);color:#fff;border-radius:22px;height:42px;padding:0 16px;font-size:.82rem;font-weight:700;cursor:pointer;z-index:100000;font-family:inherit;backdrop-filter:blur(6px)">📤 Compartilhar</button>
   <button id="lbx-prev" onclick="lbxNav(-1);event.stopPropagation()" style="display:none;position:fixed;left:10px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.35);color:#fff;border-radius:50%;width:46px;height:46px;font-size:1.8rem;cursor:pointer;z-index:100001;align-items:center;justify-content:center;backdrop-filter:blur(6px);">&#8249;</button>
   <button id="lbx-next" onclick="lbxNav(1);event.stopPropagation()" style="display:none;position:fixed;right:10px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.35);color:#fff;border-radius:50%;width:46px;height:46px;font-size:1.8rem;cursor:pointer;z-index:100001;align-items:center;justify-content:center;backdrop-filter:blur(6px);">&#8250;</button>
   <div id="lbx-count" style="position:fixed;top:18px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.7);font-size:.82rem;z-index:100001;pointer-events:none;"></div>
@@ -4975,7 +4997,14 @@ function _obpcAbrirSecao(s, idx) {
 
   } else if (s === 'video') {
     var secV = document.getElementById('sec-videos');
-    if (secV) { secV.classList.remove('hidden'); secV.scrollIntoView({behavior:'smooth', block:'start'}); _obpcPulsar(secV); }
+    if (secV) {
+      secV.classList.remove('hidden'); secV.scrollIntoView({behavior:'smooth', block:'start'}); _obpcPulsar(secV);
+      setTimeout(function(){
+        var cv = secV.querySelectorAll('.vid-card');
+        if (idx && cv[idx]) { cv[idx].scrollIntoView({behavior:'smooth', block:'center'}); _obpcPulsar(cv[idx]); }
+        else if (cv[0] && id !== null) { _obpcPulsar(cv[0]); }
+      }, 500);
+    }
 
   } else if (s === 'radio') {
     var secR = document.getElementById('sec-radio');
@@ -5149,6 +5178,44 @@ window.obpcCompartilharGaleria = function() {
     titulo: 'Galeria de Fotos',
     desc: 'Veja os momentos especiais da nossa igreja!',
     img: ehValida ? primeira : (_SITE_OBPC + 'og-banner.png'),
+  });
+};
+
+// VÍDEO / PODCAST — um item só (botão em cada cartão da seção Vídeos)
+window.obpcCompartilharVideoItem = function(idx) {
+  var v = (DB.get('videos') || [])[idx] || {};
+  var u = v.url || '';
+  var capa = '';
+  var ym = u.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/))([a-zA-Z0-9_-]{11})/);
+  if (ym) capa = 'https://img.youtube.com/vi/' + ym[1] + '/hqdefault.jpg';
+  else if (u.indexOf('res.cloudinary.com') > -1 && u.indexOf('/video/upload/') > -1 && !/\.mp3(\?|$)/i.test(u)) {
+    capa = u.replace(/\/video\/upload\/(?:f_mp4,vc_h264\/)?/, '/video/upload/so_2,w_1200,q_auto/').replace(/\.(mp4|mov|webm|avi|3gp|m4v)(\?.*)?$/i, '.jpg');
+  }
+  obpcAbrirShareModal({
+    secao: 'video',
+    id: idx,
+    tituloModal: 'Compartilhar',
+    titulo: v.titulo || v.tit || 'Vídeo da OBPC',
+    desc: v.cat ? v.cat + ' — OBPC Jardim São Fernando' : 'Assista na OBPC Jardim São Fernando',
+    img: capa || (_SITE_OBPC + 'og-banner.png'),
+  });
+};
+
+// FOTO / VÍDEO aberto na tela cheia (lightbox da galeria)
+window.obpcCompartilharLbx = function() {
+  var m = (_lbxLista || [])[_lbxIdx] || {};
+  var src = m.src || '';
+  var img = src;
+  if (/\/video\/upload\//.test(src)) {
+    img = src.replace(/\/video\/upload\/(?:f_mp4,vc_h264\/)?/, '/video/upload/so_2,w_1200,q_auto/').replace(/\.(mp4|mov|webm|avi|3gp|m4v)(\?.*)?$/i, '.jpg');
+  }
+  if (!/^https?:\/\//.test(img)) img = _SITE_OBPC + 'og-banner.png';
+  obpcAbrirShareModal({
+    secao: 'galeria',
+    tituloModal: 'Compartilhar',
+    titulo: 'Momento da OBPC',
+    desc: 'Veja os momentos da nossa igreja!',
+    img: img,
   });
 };
 

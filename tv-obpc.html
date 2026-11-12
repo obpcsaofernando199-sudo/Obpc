@@ -128,7 +128,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 <script>
 const FB='https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com/obpc/',SITE='https://obpcsaofernando199-sudo.github.io/Obpc/',DIAS=45;
 const $=i=>document.getElementById(i);
-let SHOWN='',_RS='',ITEMS=[],RC=[],RP=[],Q='',NOME='OBPC Jardim São Fernando',LOADED=false,CUR=null,CURI=0,LASTY=0,_pt=0;
+let SHOWN='',_RS='',ITEMS=[],RC=[],RP=[],RV=[],RG=[],Q='',NOME='OBPC Jardim São Fernando',LOADED=false,CUR=null,CURI=0,LASTY=0,_pt=0;
 let CHIP=/[?&]f=p/.test(location.search)?'p':(/[?&]f=l/.test(location.search)?'l':'all');
 if(/[?&]embed=1/.test(location.search))document.body.classList.add('emb');
 
@@ -171,6 +171,20 @@ function normP(p,i){
   const id=ytId(p.url);if(id)ms.push({k:'y',id:id,src:p.url});
   return {id:'p'+(p.ts||i),ts:p.ts||0,t:p.tit||p.titulo||'Palavra do Pastor',d:p.dt||p.data||'',r:p.txt||p.texto||'',a:p.aut||p.autor||'',m:ms,p:1,u:!!p.urg};
 }
+/* Postagens do Estúdio de Mídia (Firebase: videos e galeria) */
+function lista(d){return !d?[]:Array.isArray(d)?d.filter(Boolean):Object.keys(d).map(k=>d[k]).filter(Boolean);}
+function hid(s){let h=5381;s=String(s);for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return (h>>>0).toString(36);}
+function tsDe(x,i){const t=x.data?Date.parse(x.data+'T12:00'):0;return (isNaN(t)?0:t)-i*1000;}
+function normE(){
+  const out=[],gr={};
+  RV.forEach((x,i)=>{if(!x.url||/^(idb:|blob:|mem:)/.test(x.url))return;
+    out.push({id:'e'+hid(x.url),ts:tsDe(x,i),t:x.titulo||x.tit||'Vídeo OBPC',d:x.data||'',r:[x.desc,x.entrevistado?'Entrevistado: '+x.entrevistado:''].filter(Boolean).join('\n'),a:x.autor||'',m:[{k:'v',src:x.url}]});});
+  RG.forEach((x,i)=>{if(!x.url||/^(idb:|blob:|mem:)/.test(x.url))return;
+    const t=x.titulo||x.tit||'Momento OBPC',k=t+'|'+(x.data||'')+'|'+(x.autor||'');
+    if(!gr[k]){gr[k]={id:'e'+hid(k),ts:tsDe(x,i),t:t,d:x.data||'',r:'',a:x.autor||'',m:[]};out.push(gr[k]);}
+    gr[k].m.push({k:'i',src:x.url});});
+  return out;
+}
 function carregar(silent){
   const local=lerLocal('obpc_cultos');if(Array.isArray(local)){RC=local;set();LOADED=true;}
   const lp=lerLocal('obpc_palavras');if(Array.isArray(lp)){RP=lp;set();LOADED=true;}
@@ -180,6 +194,8 @@ function carregar(silent){
   fetch(FB+'palavras.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(fb=>{
     if(Array.isArray(fb)){RP=fb;set();store('obpc_palavras',fb);}
   }).catch(()=>{}).then(()=>{LOADED=true;render();if(!silent||!location.hash)onHash();});
+  fetch(FB+'videos.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(fb=>{if(fb!==null){RV=lista(fb);set();}}).catch(()=>{}).then(()=>{render();if(!silent||!location.hash)onHash();});
+  fetch(FB+'galeria.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(fb=>{if(fb!==null){RG=lista(fb);set();}}).catch(()=>{}).then(()=>{render();if(!silent||!location.hash)onHash();});
   fetch(FB+'info.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(i=>{
     if(!i)return;if(i.nome)NOME=i.nome;const l=i.logoB64||i.logo;if(l){const e=$('lg');e.textContent='';e.style.backgroundImage='url("'+l+'")';}
   }).catch(()=>{});
@@ -188,7 +204,7 @@ function set(){
   const now=Date.now(),vis={};
   const c=RC.filter(x=>x&&(!x.ts||(now-x.ts)/864e5<=DIAS)).map(norm).filter(v=>v.m.length);
   const p=RP.filter(Boolean).map(normP).filter(v=>v.m.length||v.r);
-  ITEMS=c.concat(p).filter(v=>{if(vis[v.id])return false;vis[v.id]=1;return true;});
+  ITEMS=c.concat(p).concat(normE()).filter(v=>{if(vis[v.id])return false;vis[v.id]=1;return true;});
   ITEMS.sort((a,b)=>(b.u?1:0)-(a.u?1:0)||b.ts-a.ts);
   render();
 }
