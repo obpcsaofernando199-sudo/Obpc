@@ -95,6 +95,10 @@ nav button span{font-size:22px;line-height:1}nav button.on{color:var(--verde);bo
 .prev{display:flex;gap:10px;align-items:center;background:#F3F6F4;border:1px solid var(--line);border-radius:12px;padding:8px;margin-bottom:12px}
 .prev img{width:96px;height:64px;object-fit:cover;border-radius:8px;background:#ddd}
 .prev b{display:block;font-size:14px}.prev small{color:var(--verde2);word-break:break-all;font-weight:700}
+.prevg{position:relative;border-radius:16px;overflow:hidden;background:linear-gradient(135deg,#06281C,#14573C);margin-bottom:12px;aspect-ratio:16/9;box-shadow:0 8px 22px rgba(6,40,28,.25)}
+.prevg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.prevg-t{position:absolute;left:0;right:0;bottom:0;padding:30px 12px 10px;background:linear-gradient(transparent,rgba(0,0,0,.75));color:#fff}
+.prevg-t b{display:block;font-size:14px;line-height:1.25}.prevg-t small{font-size:11px;opacity:.85}
 .redes{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
 .rede{border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:10px 2px;font:inherit;font-size:11px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer}
 .rede span{font-size:24px}
@@ -299,7 +303,7 @@ nav button{font-size:13px;min-height:64px}nav button.on{color:var(--rosa);box-sh
 <!-- folha: compartilhar -->
 <div class="folha-bg" id="f-share"><div class="folha">
   <div class="al"></div><h3>📤 Compartilhar</h3>
-  <div class="prev"><img id="sh-img" alt=""><div><b id="sh-tit"></b><small id="sh-link"></small></div></div>
+  <div class="prevg"><img id="sh-img" alt=""><div class="prevg-t"><b id="sh-tit"></b><small id="sh-st"></small></div></div>
   <div class="redes">
     <button class="rede" data-r="wpp"><span>💬</span>WhatsApp</button>
     <button class="rede" data-r="face"><span>📘</span>Facebook</button>
@@ -317,7 +321,7 @@ nav button{font-size:13px;min-height:64px}nav button.on{color:var(--rosa);box-sh
     <button class="btn" data-r="arquivo">📎 Enviar o arquivo</button>
     <button class="btn" data-r="mais">⬆️ Mais opções</button>
   </div>
-  <p class="note" style="margin-top:10px">No WhatsApp, escolha o grupo da igreja. A foto e o link curto aparecem na mensagem.</p>
+  <p class="note" style="margin-top:10px">No WhatsApp, escolha o grupo da igreja. A foto do vídeo ou da foto vai junto com a mensagem.</p>
   <button class="btn" id="sh-fechar" style="width:100%;margin-top:10px">Fechar</button>
 </div></div>
 
@@ -775,7 +779,7 @@ function urlSite(it,u){
 }
 function imgPrevia(it,u){
   if(it.tipo==='foto')return u.replace('/image/upload/','/image/upload/c_limit,w_1200,q_auto,f_jpg/');
-  if(it.audio)return CFG.site+'og-banner.png';
+  if(it.audio)return it.capaUrl||CFG.site+'og-banner.png';
   return u.replace('/video/upload/','/video/upload/so_2,w_1200,q_auto/').replace(/\.[a-z0-9]+(\?.*)?$/i,'.jpg');
 }
 function publicar(it,onp){
@@ -791,11 +795,65 @@ function publicar(it,onp){
           :fbLista('videos',{url:u,titulo:it.titulo,tit:it.titulo,cat:it.tipo==='culto'?'Culto':it.tipo==='podcast'?'Podcast':'Entrevista',plat:'OBPC',desc:it.desc||'',entrevistado:it.ent||'',data:dataISO,autor:it.quem||''}));
         return jaPub.then(function(){
           it.siteOk=true;it.status='publicado';it.urlSite=u;it.previa=imgPrevia(it,it.urlCloud);
-          return putItem(it);
+          return garantePrevia(it).then(function(){return putItem(it)});
         }).then(function(){onp(1,'Pronto!');return it});
       });
     });
   });
+}
+
+/* ---------- cartão do áudio (imagem bonita para compartilhar) ---------- */
+function cartaoAudioCanvas(titulo,rotulo,ent){
+  var W=1200,H=630,c=document.createElement('canvas');c.width=W;c.height=H;var g=c.getContext('2d');
+  var FN='system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif';
+  function rr(x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath()}
+  var f=g.createLinearGradient(0,0,W,H);f.addColorStop(0,'#06281C');f.addColorStop(.55,'#0F4A34');f.addColorStop(1,'#1E7A52');
+  g.fillStyle=f;g.fillRect(0,0,W,H);
+  var r=g.createRadialGradient(W*.84,H*.12,10,W*.84,H*.12,560);r.addColorStop(0,'rgba(245,200,66,.40)');r.addColorStop(1,'rgba(245,200,66,0)');
+  g.fillStyle=r;g.fillRect(0,0,W,H);
+  g.strokeStyle='rgba(245,200,66,.15)';g.lineWidth=2;
+  [170,250,330,410].forEach(function(R){g.beginPath();g.arc(W*.86,H*.18,R,0,Math.PI*2);g.stroke()});
+  /* ondas de som na base */
+  var s=7;String(titulo).split('').forEach(function(ch){s=(s*31+ch.charCodeAt(0))%9973});
+  function rnd(){s=(s*9301+49297)%233280;return s/233280}
+  for(var i=0;i<60;i++){var h=14+Math.pow(rnd(),1.4)*86,x=i*20+4;
+    var bg=g.createLinearGradient(0,H-h,0,H);bg.addColorStop(0,'rgba(245,200,66,.75)');bg.addColorStop(1,'rgba(245,200,66,.12)');
+    g.fillStyle=bg;rr(x,H-h,12,h,6);g.fill()}
+  /* selo do tipo */
+  var rot=String(rotulo||'Podcast').toUpperCase();
+  g.font='bold 26px '+FN;var tw=g.measureText(rot).width+56;
+  g.fillStyle='#F5C842';rr(70,56,tw,50,25);g.fill();
+  g.fillStyle='#14221C';g.textBaseline='middle';g.fillText(rot,98,82);
+  /* microfone */
+  var cx=150,cy=300;
+  g.fillStyle='rgba(245,200,66,.14)';g.beginPath();g.arc(cx,cy,82,0,Math.PI*2);g.fill();
+  g.strokeStyle='#F5C842';g.lineWidth=4;g.beginPath();g.arc(cx,cy,82,0,Math.PI*2);g.stroke();
+  g.fillStyle='#F5C842';rr(cx-17,cy-48,34,60,17);g.fill();
+  g.lineWidth=7;g.lineCap='round';g.beginPath();g.arc(cx,cy-2,31,0.05*Math.PI,0.95*Math.PI);g.stroke();
+  g.beginPath();g.moveTo(cx,cy+29);g.lineTo(cx,cy+52);g.moveTo(cx-19,cy+52);g.lineTo(cx+19,cy+52);g.stroke();
+  /* título */
+  var texto=String(titulo||'OBPC').replace(/\s+/g,' ').trim(),tam=64,linhas;
+  function quebra(max,n){var w=texto.split(' '),l=[],cur='';w.forEach(function(p){var x=cur?cur+' '+p:p;if(g.measureText(x).width>max&&cur){l.push(cur);cur=p}else cur=x});if(cur)l.push(cur);if(l.length>n){l=l.slice(0,n);l[n-1]=l[n-1].replace(/\s*\S*$/,'')+'…'}return l}
+  for(;;){g.font='bold '+tam+'px '+FN;linhas=quebra(840,3);if(linhas.length<=3&&linhas.join(' ').indexOf('…')<0||tam<=44)break;tam-=8}
+  var lh=Math.round(tam*1.16),bloco=linhas.length*lh,y0=300-bloco/2+lh/2-(ent?18:0);
+  g.fillStyle='#fff';g.textBaseline='middle';
+  linhas.forEach(function(t,i){g.fillText(t,270,y0+i*lh)});
+  if(ent){g.font='bold 34px '+FN;g.fillStyle='#F5C842';g.fillText('com '+String(ent).slice(0,40),270,y0+linhas.length*lh+8)}
+  /* rodapé */
+  g.font='bold 28px '+FN;g.fillStyle='rgba(255,255,255,.82)';g.fillText('OBPC Jardim São Fernando',70,H-132);
+  var o='Ouça agora';g.font='bold 26px '+FN;var ow=g.measureText(o).width+88;
+  g.fillStyle='rgba(255,255,255,.14)';rr(W-70-ow,H-160,ow,56,28);g.fill();
+  g.fillStyle='#F5C842';g.beginPath();g.moveTo(W-70-ow+24,H-146);g.lineTo(W-70-ow+24,H-118);g.lineTo(W-70-ow+46,H-132);g.closePath();g.fill();
+  g.fillStyle='#fff';g.fillText(o,W-70-ow+58,H-131);
+  return c;
+}
+function semCapa(it){return !it.previa||it.previa.indexOf('og-banner')>-1}
+/* áudio não tem imagem: desenha o cartão, sobe para o Cloudinary e usa como prévia (a logo não é mais usada) */
+function garantePrevia(it){
+  if(!it.audio||!semCapa(it))return Promise.resolve(it);
+  return new Promise(function(ok){cartaoAudioCanvas(it.titulo,TIPOS[it.tipo]||'Podcast',it.tipo==='entrevista'?it.ent:'').toBlob(ok,'image/jpeg',.88)})
+    .then(function(b){return cloudinary(b,{id:'capa-'+it.id,tipo:'capas'},function(){})})
+    .then(function(j){it.capaUrl=j.secure_url.replace('/image/upload/','/image/upload/c_limit,w_1200,q_auto,f_jpg/');it.previa=it.capaUrl;it.link='';return it},function(){return it});
 }
 
 /* ---------- link curto (igual ao do site) ---------- */
@@ -827,12 +885,33 @@ function posPublicacao(){
   var n=ultimaLimpeza.length;ultimaLimpeza=[];
   atualizaCap().then(function(){if(n)toast('🧹 '+n+' publicação(ões) antiga(s) saiu(ram) do site para não pesar.',5000)});
 }
+function fotoPronta(it){
+  if(!it.previa||semCapa(it))return Promise.resolve(null);
+  return fetch(it.previa).then(function(r){return r.blob()}).then(function(b){
+    var f=new File([b],'foto-obpc.jpg',{type:b.type&&b.type.indexOf('image/')===0?b.type:'image/jpeg'});
+    return navigator.canShare&&navigator.canShare({files:[f]})?f:null;
+  }).catch(function(){return null});
+}
 function abrirShare(it){
-  sh={it:it,link:''};
-  $('#sh-tit').textContent=it.titulo;$('#sh-link').textContent='Gerando link curto…';
-  $('#sh-img').src=it.previa||CFG.site+'og-banner.png';
+  var meu=sh={it:it,link:'',arq:null,prontoOk:false};
+  $('#sh-tit').textContent=it.titulo;$('#sh-st').textContent='Preparando a foto…';
+  $('#sh-img').removeAttribute('src');
   $('#f-share').classList.add('show');
-  linkCurto(it).then(function(l){sh.link=l;$('#sh-link').textContent=l.replace(/^https?:\/\//,'')}).catch(function(){$('#sh-link').textContent='Não foi possível criar o link. Veja sua internet.'});
+  meu.pronto=garantePrevia(it).then(function(){return putItem(it)}).then(function(){
+    if(sh!==meu)return;
+    if(it.previa)$('#sh-img').src=it.previa;
+    return linkCurto(it).then(function(l){meu.link=l;return fotoPronta(it)}).then(function(f){
+      meu.arq=f;meu.prontoOk=true;
+      if(sh===meu)$('#sh-st').textContent=f?'📷 Foto pronta para enviar':'Este aparelho envia só o link';
+    });
+  }).catch(function(){meu.prontoOk=true;if(sh===meu)$('#sh-st').textContent='Não foi possível preparar. Veja sua internet.'});
+}
+/* manda a foto + título + link pelo menu do celular (igual ao Index); sem suporte, cai no plano B */
+function enviaFoto(it,txt,plano){
+  var f=sh&&sh.arq;
+  if(f&&navigator.share&&navigator.canShare&&navigator.canShare({files:[f]})){
+    navigator.share({files:[f],text:txt}).catch(function(e){if(e&&e.name==='AbortError')return;plano()});
+  }else plano();
 }
 $('#sh-fechar').onclick=function(){$('#f-share').classList.remove('show');desenhaLista()};
 function arquivoDe(it){return new File([it.blob],(it.titulo||'obpc').replace(/[^\w\- ]+/g,'').slice(0,40).trim()+'.'+ext(it.mime),{type:it.mime})}
@@ -844,14 +923,15 @@ $$('#f-share [data-r]').forEach(function(b){b.onclick=function(){
     toast('Legenda copiada. No Instagram, escolha a conta da OBPC (@obpc.saofernando) e cole a legenda.',7000);r='insta';
   }
   if(!l&&r!=='arquivo'&&r!=='insta')return toast('Aguarde o link ficar pronto.');
-  var txt='*'+it.titulo+'*\n'+l;
+  if(sh.pronto&&!sh.prontoOk&&(r==='wpp'||r==='mais'||r==='o-grupo')){var rr0=r;sh.pronto.then(function(){var bt=document.querySelector('#f-share [data-r="'+rr0+'"]');if(bt)bt.click()});return}
+  var txt='*'+it.titulo+'*\n'+(it.desc&&it.tipo!=='foto'?String(it.desc).replace(/\s+/g,' ').slice(0,300)+'\n':'')+l;
   if(r==='o-face'){window.open('https://www.facebook.com/sharer/sharer.php?u='+enc(l),'_blank');toast('No Facebook, toque em “Compartilhar em uma Página que você administra” e escolha a página da OBPC.',7000);return}
-  if(r==='o-grupo'){if(CFG.redes.grupo){copiaTxt(txt);window.open(CFG.redes.grupo,'_blank');toast('Texto copiado. Cole no grupo da OBPC.',6000)}else{window.open('https://wa.me/?text='+enc(txt),'_blank');toast('No WhatsApp, escolha o grupo da OBPC.',5000)}return}
-  if(r==='wpp')window.open('https://wa.me/?text='+enc(txt),'_blank');
+  if(r==='o-grupo'){if(CFG.redes.grupo){copiaTxt(txt);window.open(CFG.redes.grupo,'_blank');toast('Texto copiado. Cole no grupo da OBPC.',6000)}else{enviaFoto(it,txt,function(){window.open('https://wa.me/?text='+enc(txt),'_blank')});toast('No WhatsApp, escolha o grupo da OBPC.',5000)}return}
+  if(r==='wpp')enviaFoto(it,txt,function(){window.open('https://wa.me/?text='+enc(txt),'_blank')});
   else if(r==='face')window.open('https://www.facebook.com/sharer/sharer.php?u='+enc(l),'_blank');
   else if(r==='tele')window.open('https://t.me/share/url?url='+enc(l)+'&text='+enc(it.titulo),'_blank');
   else if(r==='copiar'){(navigator.clipboard?navigator.clipboard.writeText(l):Promise.reject()).then(function(){toast('Link copiado!')}).catch(function(){var t=document.createElement('textarea');t.value=l;document.body.appendChild(t);t.select();try{document.execCommand('copy');toast('Link copiado!')}catch(e){}t.remove()})}
-  else if(r==='mais'){if(navigator.share)navigator.share({title:it.titulo,text:it.titulo,url:l}).catch(function(){});else toast('Use o botão Copiar link.')}
+  else if(r==='mais'){if(navigator.share)enviaFoto(it,txt,function(){navigator.share({title:it.titulo,text:it.titulo,url:l}).catch(function(){})});else toast('Use o botão Copiar link.')}
   else{ /* arquivo / instagram: manda o arquivo pelo menu do celular */
     if(!it.blob){toast('O arquivo não está mais neste celular. Use o link.');return}
     var f=arquivoDe(it);
@@ -870,7 +950,7 @@ function desenhaLista(){
     if(!l.length){box.innerHTML='<div class="card"><p class="note">Nada gravado ainda neste celular.</p></div>';return}
     box.innerHTML=l.map(function(it){
       var st=it.removido?'<span class="tag err">Saiu do site (limite)</span>':it.status==='publicado'?'<span class="tag ok">No site</span>':it.status==='enviado'?'<span class="tag pend">Enviado, falta publicar</span>':'<span class="tag pend">Só no celular</span>';
-      var th=it.tipo==='foto'&&it.blob?(function(){var u=URL.createObjectURL(it.blob);urlsTmp.push(u);return '<img src="'+u+'" alt="">'})():(it.tipo==='foto'&&it.previa?'<img src="'+esc(it.previa)+'" alt="">':(it.audio?'🎙️':'🎥'));
+      var th=it.tipo==='foto'&&it.blob?(function(){var u=URL.createObjectURL(it.blob);urlsTmp.push(u);return '<img src="'+u+'" alt="">'})():(it.previa&&!semCapa(it)?'<img src="'+esc(it.previa)+'" alt="">':(it.audio?'🎙️':'🎥'));
       var info=[TIPOS[it.tipo]||'Foto',it.dur?fmt(it.dur):'',mb(it.tam||0),it.quem||'',new Date(it.criado).toLocaleDateString('pt-BR')].filter(Boolean).join(' · ');
       return '<div class="card" data-id="'+it.id+'"><div class="item"><div class="mini-img">'+th+'</div><div style="min-width:0"><div class="t">'+esc(it.titulo)+'</div><div class="m">'+esc(info)+'</div><div>'+st+(it.blob?'':'<span class="tag">Arquivo liberado</span>')+'</div></div></div>'+
       '<div class="acoes">'+((it.status!=='publicado'||it.removido)&&it.blob?'<button class="btn pri" data-a="pub">'+(it.removido?'Publicar de novo':'Publicar')+'</button>':'')+
