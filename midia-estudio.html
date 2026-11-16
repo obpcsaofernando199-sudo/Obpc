@@ -132,13 +132,41 @@ h2{font-size:18px}.note{font-size:14px}
 nav button{font-size:13px;min-height:64px}nav button.on{color:var(--rosa);box-shadow:inset 0 3px 0 var(--rosa)}
 .rec{width:88px;height:88px}
 /* contador no centro */
-.visor .tempo{top:50%;left:50%;transform:translate(-50%,-50%);font-size:46px;padding:8px 26px;background:rgba(0,0,0,.35);border-radius:40px;text-shadow:0 2px 6px rgba(0,0,0,.6)}
+.visor .tempo{top:50%;left:50%;transform:translate(-50%,-50%);font-size:34px;white-space:nowrap;padding:8px 26px;background:rgba(0,0,0,.35);border-radius:40px;text-shadow:0 2px 6px rgba(0,0,0,.6)}
 .visor .tempo .dot{width:16px;height:16px}
 .minuto{height:8px;width:180px;border-radius:6px;background:rgba(255,255,255,.3);overflow:hidden}
 .minuto i{display:block;height:100%;width:0;background:var(--ouro)}
 .visor .minuto{position:absolute;left:50%;top:calc(50% + 48px);transform:translateX(-50%)}
-.audio .minuto{margin:0 auto 14px}.audio .tempo{font-size:56px}
+.audio .minuto{margin:0 auto 14px}.audio .tempo{font-size:38px}
 .conta{position:fixed;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;background:rgba(15,74,52,.8);color:#fff;font-size:160px;font-weight:900}
+
+/* ===== Acabamento elegante (2026-11-15d): só aparência, nenhuma função mexida ===== */
+:root{--sombra:0 1px 2px rgba(15,74,52,.06),0 10px 28px rgba(15,74,52,.09)}
+body{background:radial-gradient(900px 320px at 50% -100px,#DCEBE2,transparent 70%),var(--bg)}
+header{background:linear-gradient(135deg,#0A3526,#14573C 60%,#1B6B4B);padding:20px 18px 18px;border-bottom:3px solid var(--ouro2);box-shadow:0 8px 24px rgba(10,53,38,.28)}
+header .e{color:var(--ouro);opacity:1;letter-spacing:.2em}
+header h1{font-family:Georgia,"Times New Roman",serif;font-size:25px;letter-spacing:.01em}
+.card{border-radius:20px;border-color:rgba(15,74,52,.10);box-shadow:var(--sombra)}
+h2{font-family:Georgia,"Times New Roman",serif;font-size:17px}
+.chip{transition:background .15s,color .15s,transform .1s}.chip:active{transform:scale(.96)}
+.chip.on{background:linear-gradient(135deg,var(--verde),var(--verde2));box-shadow:0 4px 12px rgba(15,74,52,.25)}
+.big{border-radius:20px;border-color:rgba(15,74,52,.10);box-shadow:var(--sombra);transition:transform .12s,box-shadow .15s}
+.big:active{transform:scale(.97);background:#EAF3EE}
+.big .i{filter:drop-shadow(0 3px 4px rgba(15,74,52,.18))}
+.btn{border-radius:14px;transition:transform .1s,box-shadow .15s}.btn:active{transform:scale(.98)}
+.btn.pri{background:linear-gradient(135deg,var(--verde),var(--verde2));box-shadow:0 5px 14px rgba(15,74,52,.28)}
+.btn.ouro{background:linear-gradient(135deg,#F8D860,#E8A92A);border-color:#D9962A;box-shadow:0 5px 14px rgba(224,150,30,.30)}
+input[type=text],textarea,select{border-radius:12px;background:#FBFDFC}
+.audio,.visor{box-shadow:0 10px 28px rgba(10,53,38,.22)}
+.thumb,.item .mini-img{border-radius:12px}
+.tag{border-radius:12px;padding:3px 9px}
+nav{background:rgba(255,255,255,.9);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid rgba(15,74,52,.12);box-shadow:0 -8px 24px rgba(15,74,52,.08)}
+nav button.on{background:linear-gradient(#F3F8F5,transparent)}
+.folha-bg{-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.folha{border-radius:26px 26px 0 0;box-shadow:0 -12px 40px rgba(0,0,0,.25)}
+.folha h3{font-family:Georgia,"Times New Roman",serif}
+.rede{border-radius:14px;transition:transform .1s,background .15s}.rede:active{transform:scale(.95);background:#EAF3EE}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
@@ -178,6 +206,7 @@ nav button{font-size:13px;min-height:64px}nav button.on{color:var(--rosa);box-sh
     </div>
     <div class="aviso" id="aviso-recup" hidden></div>
     <p class="note">Tudo o que você grava fica salvo no seu celular primeiro. Se faltar internet, é só enviar depois, na aba <b>Minhas</b>.</p>
+    <p class="note" id="nota-regra" style="font-weight:700;color:var(--verde)"></p>
   </div>
 
   <!-- gravação de vídeo/áudio -->
@@ -269,6 +298,12 @@ nav button{font-size:13px;min-height:64px}nav button.on{color:var(--rosa);box-sh
     <p class="note">Depois disso, o Estúdio abre como um aplicativo e funciona mesmo com internet fraca. Na primeira vez, aceite o uso da câmera e do microfone.</p>
   </div>
   <div class="card stack">
+    <h2>Se algo não funcionar</h2>
+    <p class="note">Toque em enviar e mande o relatório para quem cuida do site: ele mostra a versão, o navegador e os últimos problemas deste celular.</p>
+    <pre id="diag" style="margin:0;white-space:pre-wrap;word-break:break-word;font-size:12px;background:#F3F6F4;border:1px solid var(--line);border-radius:10px;padding:10px"></pre>
+    <div class="row"><button class="btn" id="b-diag-copiar">📋 Copiar relatório</button><button class="btn" id="b-diag-wpp">📤 Enviar (WhatsApp)</button></div>
+  </div>
+  <div class="card stack">
     <h2>Espaço no celular</h2>
     <p class="note" id="espaco">Calculando…</p>
     <button class="btn" id="b-liberar">Apagar do celular o que já foi publicado</button>
@@ -293,6 +328,7 @@ nav button{font-size:13px;min-height:64px}nav button.on{color:var(--rosa);box-sh
     <label class="f">Descrição (opcional)<textarea id="rev-desc"></textarea></label>
     <label class="f" id="rev-ent-l" hidden>Entrevistado<input type="text" id="rev-ent"></label>
     <label class="f" id="rev-cons-l" hidden style="flex-direction:row;gap:10px;align-items:flex-start;font-weight:600;color:var(--ink)"><input type="checkbox" id="rev-cons" style="width:22px;height:22px;margin-top:2px"><span>O entrevistado autorizou a publicação (e o responsável, se for menor de idade).</span></label>
+    <p class="note" id="rev-valid" style="text-align:center"></p>
     <div id="rev-prog" hidden><div class="bar"><i id="rev-bar"></i></div><p class="note" id="rev-st" style="margin-top:6px;text-align:center"></p></div>
     <button class="btn ouro" id="rev-pub">Enviar e publicar no site</button>
     <button class="btn" id="rev-guardar">Guardar no celular e decidir depois</button>
@@ -343,10 +379,16 @@ var CFG={
   redes:{face:'https://www.facebook.com/share/1CUnTyavtD/',insta:'https://www.instagram.com/obpc.saofernando/',grupo:''},
   /* LIMITES DO SITE (iguais aos do index.html): passou disso, as publicações mais antigas saem do site. */
   lim:{galeria:30,videos:12},
+  /* TEMPO MÁXIMO de cada gravação, em segundos (a gravação para sozinha). Culto = momentos curtos. 0 = sem limite. */
+  maxSeg:{culto:60,video:300,audio:1800},
+  /* QUANTAS HORAS o que for publicado fica no site/nuvem/celular antes de apagar sozinho. 0 = nunca apaga. */
+  validadeH:24,
+  limiteMB:100, /* maior vídeo que o Cloudinary GRATUITO aceita (acima disso o envio falha). Se o plano for pago, aumente. */
   pin:'1020', /* senha do painel do pastor: TROQUE por outra */
   aviso:3 /* alerta amarelo quando restarem este tanto de vagas ou menos */
 };
-var EQUIPE=['Julia','Giovana','Elisa'];
+var EQUIPE=['Julia','Giovana','Eliza'];
+var VERSAO='2026-11-15d';
 var PERGUNTAS=['Qual é o seu nome e há quanto tempo você congrega aqui?','O que Deus tem feito na sua vida?','Qual versículo marcou você?','Que recado você deixa para quem está nos assistindo?'];
 var $=function(s,r){return (r||document).querySelector(s)};
 var $$=function(s,r){return [].slice.call((r||document).querySelectorAll(s))};
@@ -360,6 +402,24 @@ function diaSemana(){return new Date().toLocaleDateString('pt-BR',{weekday:'long
 function mb(b){return b>1e9?(b/1e9).toFixed(1)+' GB':(b/1e6).toFixed(b>1e7?0:1)+' MB'}
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+/* ---------- registro de problemas (ajuda a descobrir o que falhou em cada celular) ---------- */
+function logErr(onde,e){
+  try{
+    var l=JSON.parse(localStorage.getItem('midia_log')||'[]');
+    l.push({t:new Date().toISOString(),onde:onde,msg:String(e&&(e.name?e.name+': ':'')+((e&&e.message)||(typeof e==='string'?e:''))||'?').slice(0,300)});
+    localStorage.setItem('midia_log',JSON.stringify(l.slice(-40)));
+  }catch(x){}
+}
+function msgErro(e){return String((e&&e.message)||e||'erro desconhecido').slice(0,200)}
+function explicaErro(e){
+  var m=msgErro(e);
+  if(/too large|Maximum is|file size/i.test(m))return 'o arquivo é maior do que o Cloudinary aceita (plano gratuito: 100 MB por vídeo).';
+  if(/sem rede|Failed to fetch|NetworkError|Load failed/i.test(m))return 'sem internet, ou internet muito fraca.';
+  if(/(gravação|leitura) 40[13]/i.test(m))return 'o site recusou a gravação (regras do banco de dados). Avise quem cuida do site.';
+  return m;
+}
+window.addEventListener('error',function(ev){logErr('js',ev.error||ev.message)});
+window.addEventListener('unhandledrejection',function(ev){logErr('promessa',ev.reason)});
 function ext(mime){mime=mime||'';if(/mp4/.test(mime))return /^audio/.test(mime)?'m4a':'mp4';if(/webm/.test(mime))return 'webm';if(/ogg/.test(mime))return 'ogg';if(/jpeg|jpg/.test(mime))return 'jpg';if(/png/.test(mime))return 'png';if(/quicktime/.test(mime))return 'mov';return 'bin'}
 
 /* ---------- banco local (IndexedDB) ---------- */
@@ -386,6 +446,8 @@ function limparPedacos(rid){return db().then(function(d){return new Promise(func
 
 /* ---------- quem grava ---------- */
 var quem=localStorage.getItem('midia_quem')||'';
+if(quem==='Elisa'){quem='Eliza';try{localStorage.setItem('midia_quem',quem)}catch(e){}} /* nome corrigido: troca o que já estava salvo no celular */
+(function(){var he=document.querySelector('header .e');if(he)he.textContent+=' · v'+VERSAO})();
 function desenhaQuem(){passo();
   $('#quem').innerHTML=EQUIPE.map(function(n){return '<button class="chip'+(quem===n?' on':'')+'" data-q="'+n+'">'+n+'</button>'}).join('');
   $$('#quem .chip').forEach(function(b){b.onclick=function(){quem=b.dataset.q;localStorage.setItem('midia_quem',quem);desenhaQuem()}});
@@ -405,7 +467,7 @@ passo();
 function aba(n){
   ['gravar','minhas','instalar','pastor'].forEach(function(a){$('#aba-'+a).hidden=a!==n});
   $$('nav button').forEach(function(b){b.classList.toggle('on',b.dataset.aba===n)});
-  if(n==='minhas')desenhaLista();if(n==='instalar')espaco();if(n==='pastor')painel();
+  if(n==='minhas')desenhaLista();if(n==='instalar'){espaco();desenhaDiag()}if(n==='pastor')painel();
   window.scrollTo(0,0);
 }
 $$('nav button').forEach(function(b){b.onclick=function(){if(rec&&rec.estado!=='parado'){toast('Termine a gravação antes de sair desta tela.');return}aba(b.dataset.aba)}});
@@ -450,23 +512,49 @@ function fechaCamera(){
   cancelAnimationFrame(raf);if(actx){try{actx.close()}catch(e){}actx=null}
   $('#cam').srcObject=null;
 }
+function emAppInterno(){return /FBAN|FBAV|Instagram|WhatsApp|Line\/|TikTok|; wv\)/i.test(navigator.userAgent||'')}
+function textoErroMidia(e,audio){
+  var alvo=audio?'o microfone':'a câmera ou o microfone',n=(e&&e.name)||'',t;
+  if(n==='NotAllowedError'||n==='SecurityError')t='O celular bloqueou '+alvo+'. Toque no cadeado ao lado do endereço do site, permita câmera e microfone e abra o Estúdio de novo.';
+  else if(n==='NotFoundError'||n==='OverconstrainedError')t='Este celular não encontrou '+alvo+'.';
+  else if(n==='NotReadableError'||n==='AbortError')t='Outro aplicativo está usando '+alvo+'. Feche os outros aplicativos (câmera, WhatsApp, chamadas) e tente de novo.';
+  else t='Não consegui abrir '+alvo+(n?' ('+n+')':'')+'.';
+  if(emAppInterno())t+=' Você abriu por dentro de outro aplicativo (WhatsApp, Instagram, Facebook): toque nos três pontinhos e escolha “Abrir no navegador”.';
+  return t;
+}
+/* abre câmera/microfone; se o pedido completo falhar (celulares antigos), tenta o pedido mais simples */
+function abreMidia(audio){
+  return navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true},video:audio?false:{facingMode:facing,width:{ideal:1280},height:{ideal:720}}}).catch(function(e){
+    logErr('getUserMedia',e);
+    if(e&&(e.name==='NotAllowedError'||e.name==='SecurityError'))throw e;
+    return navigator.mediaDevices.getUserMedia({audio:true,video:!audio});
+  });
+}
+function avisoRec(m){var d=$('#rec-dica');d.textContent=m;d.style.color='#C0392B';d.style.fontWeight='800';toast(m,8000)}
+var tentaMidia=0;
 function preparaMidia(){
   fechaCamera();
-  var audio=soAudio();
+  var audio=soAudio(),minha=++tentaMidia,dica=$('#rec-dica');
+  dica.style.color='';dica.style.fontWeight='';
   $('#visor').hidden=audio;$('#painel-audio').hidden=!audio;$('#ctl').hidden=true;
-  $('#rec-dica').textContent='Abrindo '+(audio?'o microfone':'a câmera')+'…';
+  dica.textContent='Abrindo '+(audio?'o microfone':'a câmera')+'…';
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder){
-    $('#rec-dica').textContent='Este celular não permite gravar por aqui.';
+    var porque=!window.isSecureContext?'A página precisa abrir pelo endereço seguro (https).':!window.MediaRecorder?'O navegador deste celular é antigo e não grava por aqui (atualize o navegador).':'Este celular não deixa o navegador usar a câmera.';
+    logErr('sem-suporte',porque);
+    dica.textContent=porque+(emAppInterno()?' Você abriu por dentro de outro aplicativo: toque nos três pontinhos e escolha “Abrir no navegador”.':'');
     $('#nativo-wrap').hidden=audio;if(audio)toast('Use um celular com navegador mais novo para gravar áudio.');return;
   }
-  navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true},video:audio?false:{facingMode:facing,width:{ideal:1280},height:{ideal:720}}}).then(function(s){
+  abreMidia(audio).then(function(s){
+    if(minha!==tentaMidia||telaAtual!=='rec'){s.getTracks().forEach(function(t){t.stop()});return} /* saiu da tela antes de abrir: não deixa a câmera ligada */
     stream=s;
     if(!audio){var v=$('#cam');v.srcObject=s;v.play().catch(function(){})}
     else medidor(s);
     $('#ctl').hidden=false;$('#b-pausa').hidden=true;
-    $('#rec-dica').textContent='Toque no botão vermelho para começar.';
+    dica.textContent='Toque no botão vermelho para começar.';
   }).catch(function(e){
-    $('#rec-dica').textContent='Não consegui abrir '+(audio?'o microfone':'a câmera')+'. Autorize o uso nas configurações do navegador e tente de novo.';
+    if(minha!==tentaMidia)return;
+    logErr('abrir-midia',e);
+    dica.textContent=textoErroMidia(e,audio);
     $('#nativo-wrap').hidden=audio;
   });
 }
@@ -479,9 +567,15 @@ function medidor(s){
     (function tick(){an.getByteFrequencyData(d);for(var i=0;i<nv.children.length;i++){nv.children[i].style.height=Math.max(6,d[i%d.length]/255*44)+'px'}raf=requestAnimationFrame(tick)})();
   }catch(e){}
 }
+/* tempo máximo (ms) de uma gravação: culto = CFG.maxSeg.culto; outros vídeos = .video; áudio = .audio. 0 = sem limite */
+function limiteMs(tipo,audio){var m=CFG.maxSeg||{},s=tipo==='culto'?m.culto:audio?m.audio:m.video;return (s||0)*1000}
+function textoDuracao(s){return s%60===0?(s/60)+(s===60?' minuto':' minutos'):s+' segundos'}
 function tempoTick(){
-  if(!rec)return;var ms=rec.ms+(rec.estado==='gravando'?Date.now()-rec.t0:0),t=fmt(ms);$$('.minuto i').forEach(function(b){b.style.width=(ms/1000%60/60*100)+'%'});
+  if(!rec)return;
+  var ms=rec.ms+(rec.estado==='gravando'?Date.now()-rec.t0:0),lim=rec.lim||0,t=fmt(ms)+(lim?' / '+fmt(lim):'');
+  $$('.minuto i').forEach(function(b){b.style.width=(lim?Math.min(100,ms/lim*100):(ms/1000%60/60*100))+'%'});
   $('#t-video').textContent=t;$('#t-audio').textContent=t;
+  if(lim&&ms>=lim&&rec.estado!=='parado'){toast('Chegou ao tempo máximo ('+textoDuracao(lim/1000)+'). Gravação salva!',5000);parar()}
 }
 /* contagem 3-2-1 no centro antes de gravar */
 var contando=false;
@@ -500,18 +594,40 @@ function comecar(){
   var audio=soAudio(),mime=escolheMime(audio),id='r'+uid(),opt={};
   if(mime)opt.mimeType=mime;if(!audio)opt.videoBitsPerSecond=1500000;opt.audioBitsPerSecond=128000;
   var mr;try{mr=new MediaRecorder(stream,opt)}catch(e){try{mr=new MediaRecorder(stream);mime=mr.mimeType||mime}catch(e2){toast('Não foi possível iniciar a gravação.');return}}
-  rec={id:id,mr:mr,mime:mr.mimeType||mime||(audio?'audio/webm':'video/webm'),audio:audio,t0:Date.now(),ms:0,estado:'gravando',tipo:modo,tam:0,fila:Promise.resolve()};
-  localStorage.setItem('midia_rec_atual',JSON.stringify({id:id,tipo:modo,mime:rec.mime,audio:audio,quem:quem,ent:$('#ent-nome').value||'',ini:Date.now()}));
-  mr.ondataavailable=function(e){if(e.data&&e.data.size){rec.tam+=e.data.size;rec.fila=rec.fila.then(function(){return addPedaco(id,e.data)}).catch(function(){})}};
-  mr.onstop=function(){rec.fila.then(function(){return finaliza(rec)})};
-  mr.onerror=function(){toast('A gravação teve um problema. O que já foi gravado está guardado.')};
+  rec={id:id,mr:mr,mime:mr.mimeType||mime||(audio?'audio/webm':'video/webm'),audio:audio,t0:Date.now(),ms:0,estado:'gravando',tipo:modo,tam:0,falhas:0,escondida:false,lim:limiteMs(modo,audio),fila:Promise.resolve()};
+  try{localStorage.setItem('midia_rec_atual',JSON.stringify({id:id,tipo:modo,mime:rec.mime,audio:audio,quem:quem,ent:$('#ent-nome').value||'',ini:Date.now()}))}catch(e){}
+  var r0=rec;
+  mr.ondataavailable=function(e){if(e.data&&e.data.size){r0.tam+=e.data.size;r0.fila=r0.fila.then(function(){return addPedaco(id,e.data)}).catch(function(err){
+    /* antes isto era engolido em silêncio: se o celular ficasse sem espaço, a gravação seguia "normal" mas perdia pedaços */
+    r0.falhas++;logErr('salvar-pedaco',err);
+    if(rec===r0)avisoRec('⚠ O celular não conseguiu guardar um pedaço da gravação (pouco espaço livre?). Toque no quadrado para terminar agora e libere espaço.');
+  })}};
+  mr.onstop=function(){
+    if(rec!==r0)return;
+    if(r0.estado!=='parado'){ /* parou sozinha: outro app tomou a câmera, tela bloqueou, ligação… */
+      if(r0.estado==='gravando')r0.ms+=Date.now()-r0.t0;
+      r0.estado='parado';clearInterval(r0.timer);
+      if(wake){try{wake.release()}catch(e){}wake=null}
+      $('#b-rec').classList.remove('on');$('#visor').classList.remove('gravando');$('#b-pausa').hidden=true;
+      logErr('parou-sozinha','a gravação foi interrompida pelo celular');
+      toast('A gravação parou sozinha (outro aplicativo usou a câmera ou a tela bloqueou). O que foi gravado está guardado.',9000);
+    }
+    r0.fila.then(function(){return finaliza(r0)});
+  };
+  mr.onerror=function(ev){logErr('mediarecorder',ev&&ev.error);toast('A gravação teve um problema. O que já foi gravado está guardado.',6000)};
+  stream.getTracks().forEach(function(t){t.addEventListener('ended',function(){if(rec===r0&&r0.estado!=='parado')avisoRec('⚠ A câmera ou o microfone foi interrompido pelo celular. Toque no quadrado para terminar e guardar o que foi gravado.')})});
   mr.start(4000);
   $('#b-rec').classList.add('on');$('#b-pausa').hidden=false;$('#b-pausa').textContent='⏸';
-  $('#visor').classList.add('gravando');$('#rec-dica').textContent='Gravando… toque no quadrado para terminar.';
+  $('#visor').classList.add('gravando');$('#rec-dica').textContent='Gravando… toque no quadrado para terminar'+(rec.lim?' (para sozinho em '+textoDuracao(rec.lim/1000)+').':'.');
   rec.timer=setInterval(tempoTick,500);tempoTick();
   if(navigator.wakeLock){navigator.wakeLock.request('screen').then(function(w){wake=w}).catch(function(){})}
 }
-document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible'&&rec&&rec.estado!=='parado'&&navigator.wakeLock){navigator.wakeLock.request('screen').then(function(w){wake=w}).catch(function(){})}});
+document.addEventListener('visibilitychange',function(){
+  if(!rec||rec.estado==='parado')return;
+  if(document.visibilityState==='hidden'){rec.escondida=true;return}
+  if(navigator.wakeLock){navigator.wakeLock.request('screen').then(function(w){wake=w}).catch(function(){})}
+  if(rec.escondida){rec.escondida=false;logErr('tela-saiu','o Estúdio saiu da tela durante a gravação');avisoRec('⚠ O Estúdio saiu da tela durante a gravação. No celular isso pode ter parado a imagem. Mantenha a tela ligada nesta página até terminar.')}
+});
 window.addEventListener('beforeunload',function(e){if(rec&&rec.estado!=='parado'){e.preventDefault();e.returnValue=''}});
 function parar(){
   if(!rec)return;
@@ -522,9 +638,15 @@ function parar(){
   $('#b-rec').classList.remove('on');$('#visor').classList.remove('gravando');$('#b-pausa').hidden=true;
   $('#rec-dica').textContent='Salvando…';
 }
+function falhaSalvar(err){
+  logErr('finaliza',err);
+  var d=$('#rec-dica');d.style.color='#C0392B';d.style.fontWeight='800';
+  d.textContent='⚠ Não consegui salvar no celular ('+msgErro(err)+'). Os pedaços da gravação ficaram guardados: feche e abra o Estúdio de novo que eu recupero.';
+  toast('Não consegui salvar no celular. Verifique o espaço livre.',9000);
+}
 function finaliza(r){
   return pedacosDe(r.id).then(function(parts){
-    if(!parts.length){toast('Nada foi gravado.');return}
+    if(!parts.length){toast('Nada foi gravado.');$('#rec-dica').textContent='Nada foi gravado. Toque no botão vermelho para tentar de novo.';return}
     var blob=new Blob(parts,{type:r.mime});
     var meta={};try{meta=JSON.parse(localStorage.getItem('midia_rec_atual')||'{}')}catch(e){}
     var it={id:r.id,tipo:r.tipo,audio:r.audio,mime:r.mime,blob:blob,tam:blob.size,dur:r.ms,
@@ -534,7 +656,7 @@ function finaliza(r){
       localStorage.removeItem('midia_rec_atual');
       rec=null;fechaCamera();tela('inicio');abrirRevisao(it);cont();
     });
-  }).catch(function(){toast('Não consegui salvar no celular. Verifique o espaço livre.')});
+  }).catch(falhaSalvar);
 }
 function tituloPadrao(t){
   var d=hojeBR();
@@ -545,17 +667,25 @@ function tituloPadrao(t){
 }
 /* recupera gravação interrompida (celular travou, bateria acabou, etc.) */
 function recupera(){
+  /* procura TODAS as gravações que ficaram pela metade (antes só achava a última) */
   var m=null;try{m=JSON.parse(localStorage.getItem('midia_rec_atual')||'null')}catch(e){}
-  if(!m)return;
-  pedacosDe(m.id).then(function(parts){
-    if(!parts.length){localStorage.removeItem('midia_rec_atual');return}
-    var blob=new Blob(parts,{type:m.mime});
-    var it={id:m.id,tipo:m.tipo,audio:m.audio,mime:m.mime,blob:blob,tam:blob.size,dur:0,titulo:tituloPadrao(m.tipo)+' (recuperado)',desc:'',ent:m.ent||'',quem:m.quem||'',status:'local',criado:m.ini||Date.now()};
-    putItem(it).then(function(){return limparPedacos(m.id)}).then(function(){
+  Promise.all([tx('pedacos','readonly',function(s){return s.getAll()}),allItens()]).then(function(r){
+    var por={},ordem=[],tem={};
+    (r[0]||[]).forEach(function(p){if(!por[p.rid]){por[p.rid]=[];ordem.push(p.rid)}por[p.rid].push(p.blob)});
+    (r[1]||[]).forEach(function(i){tem[i.id]=1});
+    ordem.filter(function(id){return tem[id]}).forEach(function(id){limparPedacos(id)}); /* sobras de gravações que já viraram item */
+    var novos=ordem.filter(function(id){return !tem[id]&&!(rec&&rec.id===id)});
+    if(!novos.length){localStorage.removeItem('midia_rec_atual');return}
+    return novos.reduce(function(p,id){return p.then(function(){
+      var parts=por[id],mm=(m&&m.id===id)?m:{},mime=mm.mime||(parts[0]&&parts[0].type)||'video/webm',blob=new Blob(parts,{type:mime});
+      var audio=mm.audio!==undefined?mm.audio:/^audio/.test(mime),tipo=mm.tipo||'culto';
+      var it={id:id,tipo:tipo,audio:audio,mime:mime,blob:blob,tam:blob.size,dur:0,titulo:tituloPadrao(tipo)+' (recuperado)',desc:'',ent:mm.ent||'',quem:mm.quem||'',status:'local',criado:mm.ini||Date.now()};
+      return putItem(it).then(function(){return limparPedacos(id)});
+    })},Promise.resolve()).then(function(){
       localStorage.removeItem('midia_rec_atual');cont();
-      var a=$('#aviso-recup');a.hidden=false;a.innerHTML='Uma gravação foi interrompida e eu guardei o que deu. Veja na aba <b>Minhas</b>.';
+      var a=$('#aviso-recup');a.hidden=false;a.innerHTML='Encontrei '+novos.length+' gravação(ões) que ficou(ficaram) pela metade e guardei o que deu. Veja na aba <b>Minhas</b>.';
     });
-  }).catch(function(){});
+  }).catch(function(e){logErr('recupera',e)});
 }
 
 /* ---------- câmera nativa (reserva) ---------- */
@@ -605,16 +735,16 @@ $('#foto-enviar').onclick=function(){
    if(!vai){btn.disabled=false;toast('Envio cancelado. As fotos continuam aqui.');return}
    fotosParaItens().then(function(itens){
     fotos=[];desenhaFotos();$('#foto-leg').value='';cont();
-    var ok=0,falhou=0,ultimo=null,i=0;
+    var ok=0,falhou=0,ultimo=null,i=0,motivo='';
     function prox(){
       if(i>=itens.length){
         btn.disabled=false;tela('inicio');
         if(ultimo)abrirShare(ultimo);
-        toast(ok+' foto(s) no site'+(falhou?' · '+falhou+' falharam (veja em Minhas)':''),4000);
+        toast(ok+' foto(s) no site'+(falhou?' · '+falhou+' falharam ('+motivo+'). Estão em Minhas.':''),falhou?9000:4000);
         setTimeout(posPublicacao,4200);return;
       }
       var it=itens[i++];btn.textContent='Enviando foto '+i+' de '+itens.length+'…';
-      publicar(it,function(){}).then(function(r){ok++;ultimo=r}).catch(function(){falhou++}).then(prox);
+      publicar(it,function(){}).then(function(r){ok++;ultimo=r}).catch(function(e){falhou++;motivo=explicaErro(e);logErr('foto',e)}).then(prox);
     }
     prox();
    });
@@ -627,7 +757,9 @@ function abrirRevisao(it){
   atual=it;
   $('#rev-h').textContent=(TIPOS[it.tipo]||'Gravação')+' pronto';
   var url=URL.createObjectURL(it.blob);
-  $('#rev-pv').innerHTML=it.audio?'<audio class="pv" controls src="'+url+'"></audio>':'<video class="pv" controls playsinline src="'+url+'" style="max-height:34vh"></video>';
+  $('#rev-pv').innerHTML=(it.audio?'<audio class="pv" controls src="'+url+'"></audio>':'<video class="pv" controls playsinline src="'+url+'" style="max-height:34vh"></video>')+'<p class="note" style="margin-top:6px;text-align:center">'+mb(it.tam||(it.blob&&it.blob.size)||0)+(it.dur?' · '+fmt(it.dur):'')+'</p>';
+  $('#rev-pub').textContent='Enviar e publicar no site';
+  $('#rev-valid').textContent=CFG.validadeH?'Depois de publicado, fica no site por '+(CFG.validadeH===24?'1 dia':CFG.validadeH+' horas')+' e some sozinho.':'';
   $('#rev-tit').value=it.titulo;$('#rev-desc').value=it.desc||'';
   var ent=it.tipo==='entrevista';
   $('#rev-ent-l').hidden=!ent;$('#rev-cons-l').hidden=!ent;$('#rev-ent').value=it.ent||'';$('#rev-cons').checked=false;
@@ -647,6 +779,8 @@ $('#rev-pub').onclick=function(){
   if(atual.tipo==='entrevista'&&!$('#rev-cons').checked){toast('Marque que o entrevistado autorizou a publicação.');return}
   var it=atual;
   var jaNoSite=it.siteOk;
+  /* arquivo maior que o limite do Cloudinary: avisa ANTES, em vez de falhar depois de minutos de envio */
+  if(it.blob&&!it.urlCloud&&it.blob.size>CFG.limiteMB*1e6&&!confirm('Este arquivo tem '+mb(it.blob.size)+'. O Cloudinary gratuito só aceita até '+CFG.limiteMB+' MB por vídeo, então o envio provavelmente vai falhar.\n\nEnviar mesmo assim?\n\n(Se cancelar, ele continua guardado no celular. Na aba Minhas, toque em “Salvar no celular” para pegar o arquivo.)'))return;
   (jaNoSite?Promise.resolve(true):confirmaLimite(LISTA_DE(it),1)).then(function(vai){
    if(!vai){toast('Publicação cancelada. Continua guardada no celular.');return}
    lerForm().then(function(){
@@ -656,7 +790,8 @@ $('#rev-pub').onclick=function(){
       fechaRevisao();abrirShare(r);posPublicacao();
     }).catch(function(e){
       ['rev-pub','rev-guardar','rev-desc-btn'].forEach(function(i){$('#'+i).disabled=false});
-      $('#rev-st').textContent='Não deu para enviar agora. Está guardado no celular; tente de novo com internet melhor.';
+      logErr('publicar',e);
+      $('#rev-st').textContent='Não deu para enviar: '+explicaErro(e)+' O vídeo continua guardado no celular (aba Minhas).';
       $('#rev-pub').textContent='Tentar enviar de novo';
     });
    });
@@ -763,7 +898,17 @@ function fbLista(nome,novo){
         var removidos=arr.slice(lim);arr=arr.slice(0,lim); /* só as mais novas ficam; as antigas saem */
         var h={'Content-Type':'application/json'};if(etag)h['if-match']=etag;
         return fetch(u,{method:'PUT',headers:h,body:JSON.stringify(arr)}).then(function(w){
-          if(w.ok){ultimaLimpeza=ultimaLimpeza.concat(removidos);apagarCloud(removidos);return marcaRemovidos(removidos)}
+          if(w.ok){
+            var fim=function(){ultimaLimpeza=ultimaLimpeza.concat(removidos);apagarCloud(removidos);return marcaRemovidos(removidos)};
+            if(etag)return fim();
+            /* sem ETag o servidor não avisa se duas pessoas gravarem juntas: confere se a nossa entrada ficou e, se outra gravação a atropelou, refaz */
+            return fetch(u,{cache:'no-store'}).then(function(v){return v.json()}).then(function(d2){
+              var existe=normLista(d2).some(function(x){return x&&x.url===novo.url});
+              if(existe||n>=3)return fim();
+              logErr('publicacao-atropelada','refazendo a gravacao na lista');
+              return tenta(n+1);
+            },function(){return fim()});
+          }
           if(w.status===412&&n<3)return tenta(n+1);throw new Error('gravação '+w.status);
         });
       });
@@ -790,9 +935,10 @@ function publicar(it,onp){
       it.urlCloud=j.secure_url;it.status='enviado';return putItem(it).then(function(){
         onp(0.92,'Publicando no site…');
         var u=urlSite(it,it.urlCloud),dataISO=new Date().toISOString().slice(0,10);
+        if(!it.siteOk)it.expira=CFG.validadeH?Date.now()+CFG.validadeH*36e5:0; /* hora em que some sozinho do site, da nuvem e do celular */
         var jaPub=it.siteOk?Promise.resolve():(it.tipo==='foto'
-          ?fbLista('galeria',{url:u,tp:'img',tit:it.titulo,titulo:it.titulo,data:dataISO,autor:it.quem||''})
-          :fbLista('videos',{url:u,titulo:it.titulo,tit:it.titulo,cat:it.tipo==='culto'?'Culto':it.tipo==='podcast'?'Podcast':'Entrevista',plat:'OBPC',desc:it.desc||'',entrevistado:it.ent||'',data:dataISO,autor:it.quem||''}));
+          ?fbLista('galeria',{url:u,tp:'img',tit:it.titulo,titulo:it.titulo,data:dataISO,autor:it.quem||'',expira:it.expira||null})
+          :fbLista('videos',{url:u,titulo:it.titulo,tit:it.titulo,cat:it.tipo==='culto'?'Culto':it.tipo==='podcast'?'Podcast':'Entrevista',plat:'OBPC',desc:it.desc||'',entrevistado:it.ent||'',data:dataISO,autor:it.quem||'',expira:it.expira||null}));
         return jaPub.then(function(){
           it.siteOk=true;it.status='publicado';it.urlSite=u;it.previa=imgPrevia(it,it.urlCloud);
           return garantePrevia(it).then(function(){return putItem(it)});
@@ -952,7 +1098,8 @@ function desenhaLista(){
       var st=it.removido?'<span class="tag err">Saiu do site (limite)</span>':it.status==='publicado'?'<span class="tag ok">No site</span>':it.status==='enviado'?'<span class="tag pend">Enviado, falta publicar</span>':'<span class="tag pend">Só no celular</span>';
       var th=it.tipo==='foto'&&it.blob?(function(){var u=URL.createObjectURL(it.blob);urlsTmp.push(u);return '<img src="'+u+'" alt="">'})():(it.previa&&!semCapa(it)?'<img src="'+esc(it.previa)+'" alt="">':(it.audio?'🎙️':'🎥'));
       var info=[TIPOS[it.tipo]||'Foto',it.dur?fmt(it.dur):'',mb(it.tam||0),it.quem||'',new Date(it.criado).toLocaleDateString('pt-BR')].filter(Boolean).join(' · ');
-      return '<div class="card" data-id="'+it.id+'"><div class="item"><div class="mini-img">'+th+'</div><div style="min-width:0"><div class="t">'+esc(it.titulo)+'</div><div class="m">'+esc(info)+'</div><div>'+st+(it.blob?'':'<span class="tag">Arquivo liberado</span>')+'</div></div></div>'+
+      var ex=(it.expira&&it.status==='publicado'&&!it.removido)?'<span class="tag">Some '+restaTxt(it.expira)+'</span>':'';
+      return '<div class="card" data-id="'+it.id+'"><div class="item"><div class="mini-img">'+th+'</div><div style="min-width:0"><div class="t">'+esc(it.titulo)+'</div><div class="m">'+esc(info)+'</div><div>'+st+ex+(it.blob?'':'<span class="tag">Arquivo liberado</span>')+'</div></div></div>'+
       '<div class="acoes">'+((it.status!=='publicado'||it.removido)&&it.blob?'<button class="btn pri" data-a="pub">'+(it.removido?'Publicar de novo':'Publicar')+'</button>':'')+
       (it.status==='publicado'&&!it.removido?'<button class="btn ouro" data-a="share">📤 Compartilhar</button>':'')+
       (it.blob?'<button class="btn" data-a="ver">Ver</button><button class="btn" data-a="baixar">Salvar no celular</button>':'')+
@@ -971,6 +1118,22 @@ function desenhaLista(){
     }});
   });
 }
+function relatorio(){
+  var l=[];try{l=JSON.parse(localStorage.getItem('midia_log')||'[]')}catch(e){}
+  var s=['Estúdio de Mídia v'+VERSAO,'Quem: '+(quem||'-'),'Navegador: '+(navigator.userAgent||'?'),
+    'Endereço seguro (https): '+(window.isSecureContext?'sim':'NÃO'),
+    'Câmera/microfone: '+((navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)?'sim':'NÃO'),
+    'Gravador: '+(window.MediaRecorder?'sim':'NÃO'),
+    'Formato de vídeo: '+(escolheMime(false)||'(nenhum)'),'Formato de áudio: '+(escolheMime(true)||'(nenhum)'),
+    'Aberto dentro de outro app: '+(emAppInterno()?'SIM':'não'),
+    'Problemas recentes:'];
+  if(!l.length)s.push('  (nenhum)');
+  l.slice(-15).forEach(function(x){s.push('  '+x.t.slice(5,16).replace('T',' ')+' · '+x.onde+' · '+x.msg)});
+  return s.join('\n');
+}
+function desenhaDiag(){var d=$('#diag');if(d)d.textContent=relatorio()}
+$('#b-diag-copiar').onclick=function(){copiaTxt(relatorio());toast('Relatório copiado.')};
+$('#b-diag-wpp').onclick=function(){window.open('https://wa.me/?text='+encodeURIComponent(relatorio()),'_blank')};
 function espaco(){
   var el=$('#espaco');
   if(navigator.storage&&navigator.storage.estimate){navigator.storage.estimate().then(function(e){el.textContent='Usado pelo Estúdio: '+mb(e.usage||0)+(e.quota?' de cerca de '+mb(e.quota)+' disponíveis.':'.')})}
@@ -1005,7 +1168,7 @@ function pDesenha(){
   var l=pDados[pFiltro];
   $('#p-lista').innerHTML=l.length?l.map(function(x,i){
     var th=pFiltro==='galeria'&&x.url?'<img src="'+esc(x.url.replace('/image/upload/','/image/upload/c_fill,w_160,h_160,q_auto,f_jpg/'))+'" alt="">':(/\.mp3(\?|$)/i.test(x.url||'')?'🎙️':'🎥');
-    var info=[x.cat||'',x.autor||'',x.data||'',x.entrevistado?'com '+x.entrevistado:''].filter(Boolean).join(' · ');
+    var info=[x.cat||'',x.autor||'',x.data||'',x.entrevistado?'com '+x.entrevistado:'',x.expira?'some '+restaTxt(x.expira):''].filter(Boolean).join(' · ');
     return '<div class="card"><div class="item"><div class="mini-img">'+th+'</div><div style="min-width:0"><div class="t">'+esc(tituloItem(x))+'</div><div class="m">'+esc(info)+'</div></div></div><div class="acoes">'+(x.url?'<a class="btn" style="text-align:center;line-height:40px;text-decoration:none" href="'+esc(x.url)+'" target="_blank" rel="noopener">Abrir</a>':'')+'<button class="btn perigo" data-i="'+i+'">🗑 Retirar do site</button></div></div>';
   }).join(''):'<div class="card"><p class="note">Nada publicado nesta lista.</p></div>';
   $$('#p-lista [data-i]').forEach(function(b){b.onclick=function(){pRetirar(pFiltro,+b.dataset.i)}});
@@ -1055,9 +1218,60 @@ $('#b-instalar').onclick=function(){if(!evInst)return;evInst.prompt();evInst.use
 if('serviceWorker' in navigator){try{navigator.serviceWorker.register('sw-midia.js').catch(function(){})}catch(e){}}
 if(navigator.storage&&navigator.storage.persist){navigator.storage.persist().catch(function(){})}
 
-cont();recupera();atualizaCap();
-window.addEventListener('online',atualizaCap);
-document.addEventListener('visibilitychange',function(){if(!document.hidden)atualizaCap()});
+/* ---------- apagar sozinho depois de CFG.validadeH horas ---------- */
+function restaTxt(t){var m=Math.max(0,Math.round((t-Date.now())/60000));return m<60?'em '+m+' min':'em '+Math.round(m/60)+' h'}
+var limpando=false;
+/* tira do site (e manda apagar do Cloudinary) só o que tem "expira" vencido; o que não tem fica como está */
+function varrer(nome,agora){
+  var u=CFG.fb+'/'+nome+'.json';
+  function tenta(n){
+    return fetch(u,{headers:{'X-Firebase-ETag':'true'},cache:'no-store'}).catch(function(){return fetch(u,{cache:'no-store'})}).then(function(r){
+      if(!r.ok)throw new Error('leitura '+r.status);
+      var et=r.headers.get('ETag');
+      return r.json().then(function(d){
+        var arr=normLista(d),venc=arr.filter(function(x){return x&&x.expira&&x.expira<=agora});
+        if(!venc.length)return 0;
+        var resto=arr.filter(function(x){return !(x&&x.expira&&x.expira<=agora)});
+        var h={'Content-Type':'application/json'};if(et)h['if-match']=et;
+        return fetch(u,{method:'PUT',headers:h,body:JSON.stringify(resto)}).then(function(w){
+          if(w.ok){apagarCloud(venc);return venc.length}
+          if(w.status===412&&n<3)return tenta(n+1);
+          throw new Error('gravação '+w.status);
+        });
+      });
+    });
+  }
+  return tenta(0);
+}
+/* no celular: só apaga o que JÁ foi publicado e venceu; gravação ainda não publicada nunca é apagada sozinha */
+function limpaCelular(agora){
+  return allItens().then(function(l){
+    var venc=l.filter(function(i){return i.expira&&i.expira<=agora&&(i.status==='publicado'||i.removido)});
+    if(!venc.length)return 0;
+    apagarCloud(venc.filter(function(i){return i.capaUrl}).map(function(i){return {url:i.capaUrl}}));
+    return Promise.all(venc.map(function(i){return delItem(i.id)})).then(function(){return venc.length});
+  });
+}
+function limpaSite(){
+  if(!CFG.validadeH||limpando||(rec&&rec.estado!=='parado'))return Promise.resolve();
+  limpando=true;var agora=Date.now();
+  return Promise.all([varrer('videos',agora),varrer('galeria',agora)]).catch(function(e){logErr('limpeza-site',e);return [0,0]})
+    .then(function(r){return limpaCelular(agora).then(function(m){return [r[0]+r[1],m]},function(e){logErr('limpeza-celular',e);return [r[0]+r[1],0]})})
+    .then(function(x){
+      if(x[0]||x[1]){toast('🧹 Passou de 1 dia: '+(x[0]?x[0]+' saiu do site. ':'')+(x[1]?x[1]+' liberado(s) do celular.':''),6000);cont();atualizaCap();if(!$('#aba-minhas').hidden)desenhaLista()}
+    }).then(function(){limpando=false},function(){limpando=false});
+}
+(function(){
+  var p=$('#nota-regra');if(!p)return;var s=[];
+  if(CFG.maxSeg&&CFG.maxSeg.culto)s.push('Cada vídeo do culto grava até '+textoDuracao(CFG.maxSeg.culto)+'.');
+  if(CFG.validadeH)s.push('O que for publicado some do site, da nuvem e do celular depois de '+(CFG.validadeH===24?'1 dia':CFG.validadeH+' horas')+'.');
+  p.textContent=s.join(' ');
+})();
+
+cont();recupera();atualizaCap();limpaSite();
+setInterval(limpaSite,10*60*1000);
+window.addEventListener('online',function(){atualizaCap();limpaSite()});
+document.addEventListener('visibilitychange',function(){if(!document.hidden){atualizaCap();limpaSite()}});
 })();
 </script>
 </body>

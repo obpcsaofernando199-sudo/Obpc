@@ -2489,8 +2489,12 @@ function carregarDizMsgExtra(){const msg=DB.get('diz-msg')||'';const el=document
    O Estúdio apaga as mais antigas do Firebase; aqui o site também só mostra as mais novas, para nunca pesar. */
 const OBPC_LIM_FOTOS=30, OBPC_LIM_VIDEOS=12;
 
+/* Listas que o site mostra: sem o que já venceu e no limite do Estúdio. Vale também para o botão Compartilhar (mesmos números de posição). */
+function obpcListaVideos(){return (DB.get('videos')||[]).filter(function(v){return v&&!(v.expira&&v.expira<=Date.now())}).slice(0,OBPC_LIM_VIDEOS);}
+function obpcListaGaleria(){return (DB.get('galeria')||[]).filter(function(f){return f&&!(f.expira&&f.expira<=Date.now())}).slice(0,OBPC_LIM_FOTOS);}
+
 async function carregarGaleria(){
-  const lista=(DB.get('galeria')||[]).filter(Boolean).slice(0,OBPC_LIM_FOTOS);if(!lista.length)return;show('sec-galeria');
+  const lista=obpcListaGaleria();if(!lista.length)return;show('sec-galeria');
   const el=document.getElementById('galeria-lista');el.innerHTML='';
   /* Resolver todas as URLs primeiro */
   const resolvidos=[];
@@ -2696,7 +2700,7 @@ function obpcCardMidia(v,vid){
 }
 
 function carregarVideos(){
-  const lista=(DB.get('videos')||[]).filter(Boolean).slice(0,OBPC_LIM_VIDEOS);if(!lista.length)return;show('sec-videos');
+  const lista=obpcListaVideos();if(!lista.length)return;show('sec-videos');
   const el=document.getElementById('videos-lista');
   el.innerHTML='';
   lista.forEach(function(v){
@@ -5279,7 +5283,7 @@ window.obpcCompartilharHorarios = function() {
 
 // GALERIA — usa a primeira foto válida da galeria, se houver
 window.obpcCompartilharGaleria = function() {
-  var lista = DB.get('galeria') || [];
+  var lista = obpcListaGaleria();
   var primeira = (lista[0] && lista[0].url) || '';
   var ehValida = primeira && !primeira.startsWith('idb:') && !primeira.startsWith('blob:') && !primeira.startsWith('mem:');
   obpcAbrirShareModal({
@@ -5293,7 +5297,7 @@ window.obpcCompartilharGaleria = function() {
 
 // VÍDEO / PODCAST — um item só (botão em cada cartão da seção Vídeos)
 window.obpcCompartilharVideoItem = function(idx) {
-  var v = (DB.get('videos') || [])[idx] || {};
+  var v = obpcListaVideos()[idx] || {};
   var u = v.url || '';
   var capa = '';
   var ym = u.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/))([a-zA-Z0-9_-]{11})/);
@@ -5333,7 +5337,7 @@ window.obpcCompartilharLbx = function() {
 
 // VÍDEOS
 window.obpcCompartilharVideos = function() {
-  var capa = '', lv = DB.get('videos') || [];
+  var capa = '', lv = obpcListaVideos();
   for (var i = 0; i < lv.length && !capa; i++) {
     var u = (lv[i] && lv[i].url) || '';
     var ym = u.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/))([a-zA-Z0-9_-]{11})/);
