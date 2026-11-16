@@ -1784,6 +1784,7 @@ const DB={
         if(d[k]!==null&&d[k]!==undefined)
           try{localStorage.setItem('obpc_'+k,JSON.stringify(d[k]));}catch{}
       });
+      ['galeria','videos'].forEach(k=>{if(d[k]===null||d[k]===undefined){try{localStorage.removeItem('obpc_'+k);}catch{}}});
       return d;
     }catch{return null;}
   },
@@ -1811,6 +1812,17 @@ const DB={
       galeria:()=>carregarGaleria(),
       videos:()=>carregarVideos()
     };
+    // Busca de novo uma chave (usado quando algo foi apagado ou alterado dentro dela)
+    const _refrescar=async k=>{
+      if(_DB_PESADOS[k])return;
+      try{
+        const r=await fetch(FB_URL+'/'+k+'.json',{cache:'no-store'});if(!r.ok)return;
+        const v=await r.json();
+        if(v===null||v===undefined){try{localStorage.removeItem('obpc_'+k);}catch{}delete _dbCache[k];}
+        else{try{localStorage.setItem('obpc_'+k,JSON.stringify(v));}catch{}_dbCache[k]=_dbSig(v);}
+        const fn=_fnMap[k];if(fn)fn();
+      }catch(er){}
+    };
 
     // ── SSE (tempo real quando disponível) ──
     let sseAtivo=false;
@@ -1819,9 +1831,9 @@ const DB={
       es.addEventListener('put',e=>{
         try{
           const d=JSON.parse(e.data);
-          if(!d||!d.data)return;
+          if(!d)return;
           sseAtivo=true;
-          if(d.path==='/'&&typeof d.data==='object'){
+          if(d.path==='/'&&d.data&&typeof d.data==='object'){
             Object.keys(d.data).forEach(k=>{
               if(_DB_PESADOS[k]){delete d.data[k];return;}
               if(d.data[k]!==null){
@@ -1835,6 +1847,8 @@ const DB={
           }else if(d.path&&d.path.length>1){
             const k=d.path.replace(/^\//,'');
             if(_DB_PESADOS[k.split('/')[0]])return;
+            // Apagado ou alterado dentro de uma lista: busca a chave inteira de novo
+            if(d.data===null||k.indexOf('/')>-1){_refrescar(k.split('/')[0]);return;}
             if(d.data!==null){
               try{localStorage.setItem('obpc_'+k,JSON.stringify(d.data));}catch{}
               _dbCache[k]=_dbSig(d.data);
@@ -1867,6 +1881,14 @@ const DB={
             if(fn)try{fn();}catch(er){}
           }
         });
+        // Apagado no Estúdio: sumiu do Firebase, então limpa do aparelho e da tela
+        ['galeria','videos'].forEach(k=>{
+          if((d[k]===null||d[k]===undefined)&&localStorage.getItem('obpc_'+k)!==null){
+            try{localStorage.removeItem('obpc_'+k);}catch{}
+            delete _dbCache[k];
+            const fn=_fnMap[k];if(fn)try{fn();}catch(er){}
+          }
+        });
       }catch{}
     };
     setInterval(()=>_pollOnce(false),30000);
@@ -1877,6 +1899,7 @@ const DB={
 
 function ytId(u){const m=(u||'').match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/|v\/))([a-zA-Z0-9_-]{11})/);return m?m[1]:null;}
 function serPlayYT(el,vid){if(!el||!vid||el.querySelector('iframe'))return;el.onclick=null;el.removeAttribute('role');el.style.cursor='default';el.innerHTML='<iframe src="https://www.youtube.com/embed/'+vid+'?autoplay=1&rel=0&playsinline=1&modestbranding=1" title="Sermão OBPC" style="position:absolute;inset:0;width:100%;height:100%;border:0;z-index:3" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>';}
+function _secVazia(sec,lista){const e=document.getElementById(sec),l=document.getElementById(lista);if(l)l.innerHTML='';if(e)e.classList.add('hidden');}
 function show(id){const el=document.getElementById(id);if(el)el.classList.remove('hidden');}
 function compartilhar(txt){window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank');}
 
@@ -2497,7 +2520,7 @@ function obpcListaVideos(){return (DB.get('videos')||[]).filter(function(v){retu
 function obpcListaGaleria(){return (DB.get('galeria')||[]).filter(function(f){return f&&!(f.expira&&f.expira<=Date.now())}).slice(0,OBPC_LIM_FOTOS);}
 
 async function carregarGaleria(){
-  const lista=obpcListaGaleria();if(!lista.length)return;show('sec-galeria');
+  const lista=obpcListaGaleria();if(!lista.length){_secVazia('sec-galeria','galeria-lista');return;}show('sec-galeria');
   const el=document.getElementById('galeria-lista');el.innerHTML='';
   /* Resolver todas as URLs primeiro */
   const resolvidos=[];
@@ -2506,7 +2529,7 @@ async function carregarGaleria(){
     if(url.startsWith('idb:'))url=await IDB.resolverSrc(url);if(!url)continue;
     resolvidos.push(Object.assign({},f,{url:url}));
   }
-  if(!resolvidos.length)return;
+  if(!resolvidos.length){_secVazia('sec-galeria','galeria-lista');return;}
 
   /* Grade estilo Facebook */
   const total=resolvidos.length;
@@ -2703,7 +2726,7 @@ function obpcCardMidia(v,vid){
 }
 
 function carregarVideos(){
-  const lista=obpcListaVideos();if(!lista.length)return;show('sec-videos');
+  const lista=obpcListaVideos();if(!lista.length){_secVazia('sec-videos','videos-lista');return;}show('sec-videos');
   const el=document.getElementById('videos-lista');
   el.innerHTML='';
   lista.forEach(function(v){
