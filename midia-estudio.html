@@ -316,6 +316,7 @@ video.pv,audio.pv{border-radius:14px;box-shadow:0 0 0 2px #cfdcd4}
       </div>
     </div>
     <a class="btn ouro" id="b-ver-site" href="https://obpcsaofernando199-sudo.github.io/Obpc/" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;text-align:center"><svg viewBox="0 0 24 24" width="1.2em" height="1.2em" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>Ver no site</a>
+    <button type="button" class="btn perigo" id="b-apagar-site" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%">🗑 Apagar no site</button>
     <div class="aviso" id="aviso-recup" hidden></div>
     <p class="note">Tudo o que você grava fica salvo no seu celular primeiro. Se faltar internet, é só enviar depois, na aba <b>Minhas</b>.</p>
     <p class="note" id="nota-regra" style="font-weight:700;color:var(--verde)"></p>
@@ -384,6 +385,7 @@ video.pv,audio.pv{border-radius:14px;box-shadow:0 0 0 2px #cfdcd4}
 <section id="aba-minhas" class="stack" hidden>
   <div class="card"><h2>Minhas gravações</h2><p class="note">O que foi gravado neste celular. Toque em Publicar para mandar para o site.</p></div>
   <div id="lista" class="stack"></div>
+  <div id="lista-site" class="stack"></div>
 </section>
 
 <!-- ============ ABA INSTALAR ============ -->
@@ -491,7 +493,7 @@ var CFG={
   fb:'https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com/obpc',
   worker:'https://obpc-og.obpcsaofernando199.workers.dev',
   /* Worker que apaga do Cloudinary o que saiu do site (cloudinary-apagar-worker.js). Vazio = não apaga. */
-  apagar:'https://obpc-apagar.obpcsaofernando199.workers.dev',
+  apagar:'https://obpc-apagar.corretorfcosta.workers.dev',
   site:'https://obpcsaofernando199-sudo.github.io/Obpc/',
   /* REDES OFICIAIS DA OBPC — confira/preencha aqui. grupo = link de convite do grupo de WhatsApp (https://chat.whatsapp.com/XXXX). Vazio = o WhatsApp abre a lista para escolher o grupo. */
   redes:{face:'https://www.facebook.com/share/1CUnTyavtD/',insta:'https://www.instagram.com/obpc.saofernando/',grupo:''},
@@ -502,11 +504,11 @@ var CFG={
   /* QUANTAS HORAS o que for publicado fica no site/nuvem/celular antes de apagar sozinho. 0 = nunca apaga. */
   validadeH:24,
   limiteMB:100, /* maior vídeo que o Cloudinary GRATUITO aceita (acima disso o envio falha). Se o plano for pago, aumente. */
-  pin:'1020', /* senha do painel do pastor: TROQUE por outra */
+  pin:'102030', /* senha do painel do pastor: TROQUE por outra */
   aviso:3 /* alerta amarelo quando restarem este tanto de vagas ou menos */
 };
 var EQUIPE=['Julia','Giovana','Eliza'];
-var VERSAO='2026-11-16i';
+var VERSAO='2026-11-16m';
 /* perguntas da entrevista: escritas pela equipe, sem perguntas padrão. Ficam guardadas neste celular. */
 var PERGUNTAS=[];
 try{var _p=JSON.parse(localStorage.getItem('midia_perguntas')||'[]');if(Array.isArray(_p))PERGUNTAS=_p.filter(function(x){return typeof x==='string'&&x.trim()}).slice(0,30)}catch(e){}
@@ -1259,6 +1261,7 @@ $$('#f-share [data-r]').forEach(function(b){b.onclick=function(){
 var urlsTmp=[];
 function cont(){allItens().then(function(l){var p=l.filter(function(i){return i.status!=='publicado'}).length;$('#cont').textContent=p?'('+p+')':''})}
 function desenhaLista(){
+  desenhaSite();
   urlsTmp.forEach(function(u){URL.revokeObjectURL(u)});urlsTmp=[];
   allItens().then(function(l){
     var box=$('#lista');
@@ -1282,7 +1285,7 @@ function desenhaLista(){
         else if(a==='share')abrirShare(it);
         else if(a==='baixar')baixa(it);
         else if(a==='ver')abrirRevisao(it);
-        else if(a==='del'){if(!confirm('Apagar do celular?'+(it.status==='publicado'?' (Ele continua no site.)':' Ele ainda não foi publicado.')))return;delItem(id).then(function(){desenhaLista();cont()})}
+        else if(a==='del'){var noSite=it.status==='publicado'&&!it.removido&&it.urlSite;if(!confirm('Apagar esta gravação?\n\n'+(noSite?'Ela vai sair do site e do celular. Não dá para desfazer.':'Ela vai sair do celular. Não dá para desfazer.')))return;if(noSite){retirarSite(it.tipo==='foto'?'galeria':'videos',{url:it.urlSite},function(){delItem(id).then(function(){desenhaLista();cont()})},true)}else{var sob=[];if(it.urlCloud)sob.push({url:it.urlCloud});if(it.capaUrl)sob.push({url:it.capaUrl});apagaLink(it);apagarCloud(sob);delItem(id).then(function(){desenhaLista();cont()})}}
       });
     }});
   });
@@ -1342,10 +1345,12 @@ function pDesenha(){
   }).join(''):'<div class="card"><p class="note">Nada publicado nesta lista.</p></div>';
   $$('#p-lista [data-i]').forEach(function(b){b.onclick=function(){pRetirar(pFiltro,+b.dataset.i)}});
 }
-function pRetirar(k,i){
-  var x=pDados[k][i];if(!x)return;
+function pRetirar(k,i){retirarSite(k,pDados[k][i],function(){pCarrega()})}
+/* retira do site (Firebase) e manda apagar do Cloudinary; usado pelo painel do pastor e por cada pessoa da equipe */
+function retirarSite(k,x,depois,sem){
+  if(!x)return;
   if(!x.url){toast('Este item não tem link; retire pelo painel do site.');return}
-  if(!confirm('Retirar do site?\n\n'+tituloItem(x)+'\n\nO arquivo também será apagado do Cloudinary. Não dá para desfazer.'))return;
+  if(!sem&&!confirm('Retirar do site?\n\n'+tituloItem(x)+'\n\nO arquivo também será apagado do Cloudinary. Não dá para desfazer.'))return;
   var u=CFG.fb+'/'+k+'.json';
   (function tenta(n){
     fetch(u,{headers:{'X-Firebase-ETag':'true'},cache:'no-store'}).then(function(r){
@@ -1354,12 +1359,43 @@ function pRetirar(k,i){
         var arr=normLista(d).filter(function(y){return y.url!==x.url});
         var h={'Content-Type':'application/json'};if(et)h['if-match']=et;
         return fetch(u,{method:'PUT',headers:h,body:JSON.stringify(arr)}).then(function(w){
-          if(w.ok){apagarCloud([x]);marcaRemovidos([x]);toast('Retirado do site.');pCarrega();atualizaCap();return}
+          if(w.ok){var lr=limpaRastros(x);toast('Retirado do site.');atualizaCap();if(depois)Promise.resolve(lr).then(depois,depois);return}
           if(w.status===412&&n<3)return tenta(n+1);throw new Error('gravação');
         });
       });
     }).catch(function(){toast('Não consegui retirar agora. Tente de novo.')});
   })(0);
+}
+/* apaga tudo o que sobra de uma publicação: arquivo e capa no Cloudinary, link curto no Firebase e marca no celular */
+function apagaLink(it){
+  if(!it||!it.link)return;
+  var code=String(it.link).split('/').pop();
+  if(code)fetch(CFG.fb+'/links/'+code+'.json',{method:'DELETE'}).catch(function(){});
+}
+function limpaRastros(x){
+  return allItens().then(function(l){
+    var it=l.filter(function(i){return i.urlSite===x.url})[0],lista=[x];
+    if(it&&it.capaUrl)lista.push({url:it.capaUrl});
+    apagaLink(it);apagarCloud(lista);
+    return marcaRemovidos([x]);
+  },function(){apagarCloud([x])});
+}
+/* aba Minhas: o que a pessoa publicou no site, com botão para retirar (some do site e do Cloudinary) */
+function desenhaSite(){
+  var box=$('#lista-site');if(!box)return;
+  if(!quem){box.innerHTML='';return}
+  Promise.all([fbLer('videos'),fbLer('galeria')]).then(function(r){
+    var its=[];
+    r[0].forEach(function(x){if(x&&x.autor===quem)its.push({k:'videos',x:x})});
+    r[1].forEach(function(x){if(x&&x.autor===quem)its.push({k:'galeria',x:x})});
+    if(!its.length){box.innerHTML='';return}
+    box.innerHTML='<div class="card"><h2>Minhas publicações no site</h2><p class="note">Se não gostar de alguma, toque em Retirar do site. Ela some do site e do Cloudinary.</p></div>'+its.map(function(o,i){
+      var x=o.x,th=o.k==='galeria'&&x.url?'<img src="'+esc(x.url.replace('/image/upload/','/image/upload/c_fill,w_160,h_160,q_auto,f_jpg/'))+'" alt="">':(/\.mp3(\?|$)/i.test(x.url||'')?'ÁUDIO':'VÍDEO');
+      var info=[x.cat||'',x.data||'',x.expira?'some '+restaTxt(x.expira):''].filter(Boolean).join(' · ');
+      return '<div class="card"><div class="item"><div class="mini-img">'+th+'</div><div style="min-width:0"><div class="t">'+esc(tituloItem(x))+'</div><div class="m">'+esc(info)+'</div></div></div><div class="acoes"><button class="btn perigo" data-s="'+i+'">Retirar do site</button></div></div>';
+    }).join('');
+    $$('#lista-site [data-s]').forEach(function(b){b.onclick=function(){var o=its[+b.dataset.s];retirarSite(o.k,o.x,function(){desenhaSite();desenhaLista()})}});
+  },function(){box.innerHTML=''});
 }
 
 /* ---------- instalar ---------- */
@@ -1417,7 +1453,7 @@ function limpaCelular(agora){
   return allItens().then(function(l){
     var venc=l.filter(function(i){return i.expira&&i.expira<=agora&&(i.status==='publicado'||i.removido)});
     if(!venc.length)return 0;
-    apagarCloud(venc.filter(function(i){return i.capaUrl}).map(function(i){return {url:i.capaUrl}}));
+    venc.forEach(apagaLink);apagarCloud(venc.filter(function(i){return i.capaUrl}).map(function(i){return {url:i.capaUrl}}));
     return Promise.all(venc.map(function(i){return delItem(i.id)})).then(function(){return venc.length});
   });
 }
@@ -1437,6 +1473,7 @@ function limpaSite(){
   p.textContent=s.join(' ');
 })();
 
+$('#b-apagar-site').onclick=function(){aba('minhas');setTimeout(function(){var e=$('#lista-site');if(e&&e.children.length)e.scrollIntoView({behavior:'smooth',block:'start'});else toast('Você não tem nada publicado no site agora.')},700)};
 (function(){var a=$('#b-ver-site');if(a&&CFG.site)a.href=CFG.site})();
 cont();recupera();atualizaCap();limpaSite();
 setInterval(limpaSite,10*60*1000);
