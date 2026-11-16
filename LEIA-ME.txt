@@ -1,0 +1,36 @@
+ESTÚDIO DE MÍDIA — OBPC SÃO FERNANDO
+Instalação em qualquer PC ou celular (sem setup.exe)
+
+ARQUIVOS (todos na MESMA pasta do site):
+  midia-estudio.html
+  manifest-midia.json
+  sw-midia.js
+  icone-midia-180.png
+  icone-midia-192.png
+  icone-midia-512.png
+  icone-midia-maskable-512.png
+
+JÁ EXISTEM NO SEU SITE (não precisa enviar de novo):
+  og-banner.png  (usado na prévia de compartilhamento de áudios)
+
+PASSO 1 — PUBLICAR (uma vez só)
+  1. Abra o repositório do GitHub: Obpc
+  2. Add file > Upload files
+  3. Arraste os 7 arquivos acima > Commit changes
+  4. Espere 1 a 2 minutos. O app abre em:
+     https://obpcsaofernando199-sudo.github.io/Obpc/midia-estudio.html
+
+PASSO 2 — INSTALAR (cada pessoa)
+  Android ........ Chrome > abrir o link > "Instalar agora"
+                   (ou menu ⋮ > Instalar aplicativo)
+  iPhone/iPad .... Safari > abrir o link > Compartilhar > Adicionar à Tela de Início
+  Windows/Mac/Linux  Chrome ou Edge > abrir o link > ícone de instalar na barra de endereço
+  Se abriu pelo WhatsApp/Instagram: toque nos três pontinhos > "Abrir no navegador".
+
+ATUALIZAR O APP DEPOIS
+  Envie o novo midia-estudio.html para o GitHub (substitua o antigo).
+  Para forçar atualização em todos, mude 'midia-v1' para 'midia-v2' em sw-midia.js.
+
+PROBLEMAS COMUNS
+  Não aparece "Instalar": o endereço precisa ser https:// e os 7 arquivos precisam estar na mesma pasta.
+  Câmera/microfone não abrem: permita nas configurações do navegador (só funciona em https).
