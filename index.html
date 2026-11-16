@@ -4533,7 +4533,7 @@ async function obpcSubirImgShare(dataUrl) {
     var blob = await (await fetch(dataUrl)).blob();
     var fd = new FormData();
     fd.append('file', blob, 'compartilhar.jpg'); fd.append('upload_preset', 'obpc_media'); fd.append('folder', 'obpc_compartilhar');
-    var rs = await (await fetch('https://api.cloudinary.com/v1_1/dvvxiri22/image/upload', { method: 'POST', body: fd })).json();
+    var rs = await (await fetch('https://api.cloudinary.com/v1_1/dm0egn0ks/image/upload', { method: 'POST', body: fd })).json();
     if (rs.secure_url) {
       var ks = Object.keys(cache); if (ks.length > 30) delete cache[ks[0]];
       cache[chave] = rs.secure_url;
@@ -4838,7 +4838,7 @@ window.obpcCompartilharAniversario = async function() {
       else {
         var blob = await (await fetch(d.pngB64)).blob(), fd = new FormData();
         fd.append('file', blob, 'aniversariantes.png'); fd.append('upload_preset', 'obpc_media'); fd.append('folder', 'obpc_aniversario');
-        var rs = await (await fetch('https://api.cloudinary.com/v1_1/dvvxiri22/image/upload', { method: 'POST', body: fd })).json();
+        var rs = await (await fetch('https://api.cloudinary.com/v1_1/dm0egn0ks/image/upload', { method: 'POST', body: fd })).json();
         if (rs.secure_url) { img = rs.secure_url; localStorage.setItem('obpc_aniv_og', JSON.stringify({ k: chave, u: img })); }
       }
     } catch (e) { console.warn('Banner de aniversário não enviado:', e); }
@@ -4932,7 +4932,7 @@ window.obpcGerarImagemComunicado = async function(idx) {
     fd.append('file', blob, 'comunicado.png');
     fd.append('upload_preset', 'obpc_media');
     fd.append('folder', 'obpc_comunicados');
-    var resp = await fetch('https://api.cloudinary.com/v1_1/dvvxiri22/auto/upload', { method: 'POST', body: fd });
+    var resp = await fetch('https://api.cloudinary.com/v1_1/dm0egn0ks/auto/upload', { method: 'POST', body: fd });
     var data = await resp.json();
     var url = data.secure_url || '';
     if (!url) return '';
@@ -5488,7 +5488,7 @@ window.dizimoEnviarComprovante = function() {
   }
 
   // 2) Sem suporte a compartilhar arquivo (ex: computador): sobe pro Cloudinary e manda o link
-  var CLD_CLOUD  = 'dvvxiri22';
+  var CLD_CLOUD  = 'dm0egn0ks';
   var CLD_PRESET = 'obpc_media';
   var resourceType = (f.type === 'application/pdf' || /\.pdf$/i.test(f.name)) ? 'raw' : 'auto';
 
