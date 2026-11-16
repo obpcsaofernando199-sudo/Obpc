@@ -650,10 +650,13 @@ main{max-width:700px;margin:0 auto;padding:1rem 0 4rem;overflow-x:hidden;}
 .epr-scroll-dica{display:none;font-size:.85rem;color:var(--roxo);font-weight:700;text-align:center;padding:2.5rem 1rem;background:var(--surface2);border-radius:12px;}
 .epr-scroll-dica .epr-rotate-icone{font-size:2.4rem;display:block;margin-bottom:.6rem;animation:eprGirar 1.8s ease-in-out infinite;}
 @keyframes eprGirar{0%,100%{transform:rotate(0deg);}50%{transform:rotate(90deg);}}
-@media(max-width:700px) and (orientation:portrait){
-  .epr-scroll-dica{display:block;}
-  #esc-pro-sheet{display:none;}
-}
+/* Celular em pé: mostra a tabela com rolagem lateral (antes ela era escondida) */
+.epr-scroll-dica{display:none!important;}
+#esc-pro-sheet table{min-width:720px;}
+.agenda-nav{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.6rem;}
+.agenda-nav-btn{background:var(--roxo);color:#fff;border:none;border-radius:20px;padding:6px 14px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit;}
+.agenda-nav-mes{font-weight:800;font-size:.9rem;color:var(--roxo);text-align:center;flex:1;}
+.agenda-nav-vazio{min-width:80px;}
 
 /* ── ESCALA PRO (mantida igual — impressão) ── */
 #esc-pro-sheet{background:#fff;color:#000;border-radius:0;overflow:visible;box-shadow:none;}
