@@ -460,22 +460,11 @@ video.pv,audio.pv{border-radius:14px;box-shadow:0 0 0 2px #cfdcd4}
 <div class="folha-bg" id="f-share"><div class="folha">
   <div class="al"></div><h3>Compartilhar</h3>
   <div class="prevg"><img id="sh-img" alt=""><div class="prevg-t"><b id="sh-tit"></b><small id="sh-st"></small></div></div>
-  <div class="redes">
-    <button class="rede" data-r="wpp"><span class="lg">WA</span>WhatsApp</button>
-    <button class="rede" data-r="face"><span class="lg">FB</span>Facebook</button>
-    <button class="rede" data-r="tele"><span class="lg">TG</span>Telegram</button>
-    <button class="rede" data-r="insta"><span class="lg">IG</span>Instagram</button>
-  </div>
   <p class="note" style="margin:6px 0"><b>Redes oficiais da OBPC</b></p>
   <div class="redes" style="grid-template-columns:repeat(3,1fr)">
     <button class="rede" data-r="o-face"><span class="lg">FB</span>Página OBPC<small>Facebook</small></button>
     <button class="rede" data-r="o-insta"><span class="lg">IG</span>Instagram OBPC<small>@obpc.saofernando</small></button>
     <button class="rede" data-r="o-grupo"><span class="lg">WA</span>Grupo OBPC<small>WhatsApp</small></button>
-  </div>
-  <div class="row">
-    <button class="btn" data-r="copiar">Copiar link</button>
-    <button class="btn" data-r="arquivo">Enviar o arquivo</button>
-    <button class="btn" data-r="mais">Mais opções</button>
   </div>
   <p class="note" style="margin-top:10px">No WhatsApp, escolha o grupo da igreja. A foto do vídeo ou da foto vai junto com a mensagem.</p>
   <button class="btn" id="sh-fechar" style="width:100%;margin-top:10px">Fechar</button>
@@ -496,7 +485,7 @@ var CFG={
   apagar:'https://obpc-apagar.corretorfcosta.workers.dev',
   site:'https://obpcsaofernando199-sudo.github.io/Obpc/',
   /* REDES OFICIAIS DA OBPC — confira/preencha aqui. grupo = link de convite do grupo de WhatsApp (https://chat.whatsapp.com/XXXX). Vazio = o WhatsApp abre a lista para escolher o grupo. */
-  redes:{face:'https://www.facebook.com/share/1CUnTyavtD/',insta:'https://www.instagram.com/obpc.saofernando/',grupo:''},
+  redes:{face:'https://www.facebook.com/profile.php?id=61561313550152',insta:'https://www.instagram.com/obpc.saofernando/',grupo:''},
   /* LIMITES DO SITE (iguais aos do index.html): passou disso, as publicações mais antigas saem do site. */
   lim:{galeria:30,videos:12},
   /* TEMPO MÁXIMO de cada gravação, em segundos (a gravação para sozinha). Culto = momentos curtos. 0 = sem limite. */
@@ -941,7 +930,7 @@ function abrirRevisao(it){
 function fechaRevisao(){$('#f-rev').classList.remove('show');$('#rev-pv').innerHTML='';atual=null}
 function lerForm(){
   atual.titulo=$('#rev-tit').value.trim()||tituloPadrao(atual.tipo);atual.desc=$('#rev-desc').value.trim();
-  if(atual.tipo==='entrevista'){atual.ent=$('#rev-ent').value.trim();atual.titulo=atual.titulo}
+  if(atual.tipo==='entrevista'){atual.ent=$('#rev-ent').value.trim()}
   return putItem(atual);
 }
 $('#rev-guardar').onclick=function(){lerForm().then(function(){toast('Guardado no celular. Envie quando quiser, na aba Minhas.');fechaRevisao()})};
@@ -1235,14 +1224,29 @@ function arquivoDe(it){return new File([it.blob],(it.titulo||'obpc').replace(/[^
 function baixa(it){var a=document.createElement('a');a.href=URL.createObjectURL(it.blob);a.download=arquivoDe(it).name;document.body.appendChild(a);a.click();setTimeout(function(){a.remove()},500)}
 $$('#f-share [data-r]').forEach(function(b){b.onclick=function(){
   if(!sh)return;var it=sh.it,l=sh.link,r=b.dataset.r,enc=encodeURIComponent;
-  if(r==='o-insta'){ /* Instagram não aceita postar por link: copia a legenda e abre o menu do celular com o arquivo */
-    copiaTxt(it.titulo+(l?'\n'+l:''));
-    toast('Legenda copiada. No Instagram, escolha a conta da OBPC (@obpc.saofernando) e cole a legenda.',7000);r='insta';
-  }
-  if(!l&&r!=='arquivo'&&r!=='insta')return toast('Aguarde o link ficar pronto.');
-  if(sh.pronto&&!sh.prontoOk&&(r==='wpp'||r==='mais'||r==='o-grupo')){var rr0=r;sh.pronto.then(function(){var bt=document.querySelector('#f-share [data-r="'+rr0+'"]');if(bt)bt.click()});return}
+  if(!l&&r!=='o-insta')return toast('Aguarde o link ficar pronto.');
+  if(sh.pronto&&!sh.prontoOk&&(r==='wpp'||r==='mais'||r==='o-grupo'||r==='o-face'||r==='o-insta')){var rr0=r;sh.pronto.then(function(){var bt=document.querySelector('#f-share [data-r="'+rr0+'"]');if(bt)bt.click()});return}
   var txt='*'+it.titulo+'*\n'+(it.desc&&it.tipo!=='foto'?String(it.desc).replace(/\s+/g,' ').slice(0,300)+'\n':'')+l;
-  if(r==='o-face'){window.open('https://www.facebook.com/sharer/sharer.php?u='+enc(l),'_blank');toast('No Facebook, toque em “Compartilhar em uma Página que você administra” e escolha a página da OBPC.',7000);return}
+  if(r==='o-face'){ /* Facebook: manda a foto pelo menu do celular (como o WhatsApp); sem suporte, cai no link */
+    copiaTxt(txt);
+    var ff=sh.arq;
+    if(ff&&navigator.share&&navigator.canShare&&navigator.canShare({files:[ff]})){
+      navigator.share({files:[ff]}).catch(function(e){if(e&&e.name==='AbortError')return;window.open('https://www.facebook.com/sharer/sharer.php?u='+enc(l),'_blank')});
+      toast('Legenda copiada. No Facebook, escolha a Página da OBPC e cole a legenda.',7000);
+    }else{
+      window.open('https://www.facebook.com/sharer/sharer.php?u='+enc(l),'_blank');
+      toast('No Facebook, toque em “Compartilhar em uma Página que você administra” e escolha a página da OBPC.',7000);
+    }
+    return}
+  if(r==='o-insta'){ /* Instagram: foto (ou o vídeo) pelo menu do celular; áudio usa o cartão em imagem */
+    copiaTxt(it.titulo+(l?'\n'+l:''));
+    var fi=(!it.audio&&it.tipo!=='foto'&&it.blob)?arquivoDe(it):sh.arq;
+    if(fi&&navigator.share&&navigator.canShare&&navigator.canShare({files:[fi]})){
+      navigator.share({files:[fi]}).catch(function(e){if(e&&e.name!=='AbortError')toast('Não deu para abrir o menu de envio.')});
+      toast('Legenda copiada. No Instagram, escolha a conta da OBPC (@obpc.saofernando) e cole a legenda.',7000);
+    }else if(it.blob&&!it.audio){baixa(it);toast('Arquivo salvo no celular. Abra o Instagram (@obpc.saofernando), escolha da galeria e cole a legenda.',7000)}
+    else toast('Este aparelho não envia a foto direto. Legenda copiada; abra o Instagram da OBPC e poste a foto.',7000);
+    return}
   if(r==='o-grupo'){if(CFG.redes.grupo){copiaTxt(txt);window.open(CFG.redes.grupo,'_blank');toast('Texto copiado. Cole no grupo da OBPC.',6000)}else{enviaFoto(it,txt,function(){window.open('https://wa.me/?text='+enc(txt),'_blank')});toast('No WhatsApp, escolha o grupo da OBPC.',5000)}return}
   if(r==='wpp')enviaFoto(it,txt,function(){window.open('https://wa.me/?text='+enc(txt),'_blank')});
   else if(r==='face')window.open('https://www.facebook.com/sharer/sharer.php?u='+enc(l),'_blank');
