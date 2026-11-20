@@ -77,7 +77,7 @@ button{font-family:inherit;color:inherit}
 @keyframes gira{to{transform:translate(-50%,-50%) rotate(360deg)}}
 .halo{position:absolute;left:50%;top:34%;width:520px;height:520px;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(255,226,154,.42),rgba(242,193,78,.12) 40%,transparent 70%);filter:blur(6px);pointer-events:none;animation:respira 6s ease-in-out infinite}
 @keyframes respira{50%{opacity:.7;transform:translate(-50%,-50%) scale(1.06)}}
-.hero-biblia{position:relative;display:block;width:min(340px,82vw);height:auto;margin:0 auto .6rem;filter:drop-shadow(0 26px 40px rgba(0,0,0,.55));animation:flutua 7s ease-in-out infinite}
+.hero-biblia{position:relative;display:block;width:min(480px,92vw);height:auto;margin:0 auto .6rem;filter:drop-shadow(0 26px 40px rgba(0,0,0,.55));animation:flutua 7s ease-in-out infinite}
 @keyframes flutua{50%{transform:translateY(-8px)}}
 .hero-tag{position:relative;display:inline-flex;align-items:center;gap:8px;color:var(--ouro2);font-size:.7rem;font-weight:800;letter-spacing:.26em;text-transform:uppercase;padding:.4rem 1rem;border:1px solid rgba(242,193,78,.35);border-radius:999px;background:rgba(7,11,24,.45)}
 .hero h1{position:relative;font-family:var(--serif);font-weight:600;font-size:clamp(2.3rem,8vw,4.4rem);line-height:1.02;letter-spacing:-.5px;margin-top:.8rem}
@@ -301,20 +301,7 @@ body.com-mini .wpp-flutua{bottom:84px}
     <linearGradient id="gPag" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFDF6"/><stop offset="1" stop-color="#EBDAB4"/></linearGradient>
     <linearGradient id="gCapa" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8E2430"/><stop offset="1" stop-color="#5A1219"/></linearGradient>
   </defs>
-  <symbol id="biblia-aberta" viewBox="0 0 320 220">
-    <path d="M14 96 Q90 72 160 100 Q230 72 306 96 L306 200 Q230 178 160 204 Q90 178 14 200 Z" fill="url(#gCapa)"/>
-    <path d="M14 96 Q90 72 160 100 Q230 72 306 96 L306 200 Q230 178 160 204 Q90 178 14 200 Z" fill="none" stroke="url(#gOuro)" stroke-width="3"/>
-    <path d="M26 88 Q92 64 160 92 L160 194 Q92 170 26 190 Z" fill="url(#gPag)"/>
-    <path d="M294 88 Q228 64 160 92 L160 194 Q228 170 294 190 Z" fill="url(#gPag)"/>
-    <path d="M26 88 Q92 64 160 92 L160 194 Q92 170 26 190 Z" fill="none" stroke="#D8C39A" stroke-width="1.2"/>
-    <path d="M294 88 Q228 64 160 92 L160 194 Q228 170 294 190 Z" fill="none" stroke="#D8C39A" stroke-width="1.2"/>
-    <g fill="none" stroke="#B5A07A" stroke-width="2" stroke-linecap="round" opacity=".8">
-      <path d="M46 102 Q96 86 146 104"/><path d="M46 114 Q96 98 146 116"/><path d="M46 126 Q96 110 146 128"/><path d="M46 138 Q96 122 146 140"/><path d="M46 150 Q96 134 146 152"/><path d="M46 162 Q96 146 120 156"/>
-      <path d="M174 104 Q224 86 274 102"/><path d="M174 116 Q224 98 274 114"/><path d="M174 128 Q224 110 274 126"/><path d="M174 140 Q224 122 274 138"/><path d="M174 152 Q224 134 274 150"/><path d="M200 156 Q224 146 274 162"/>
-    </g>
-    <path d="M160 92 L160 194" stroke="#CDB68A" stroke-width="2"/>
-    <path d="M154 100 L154 218 L160 210 L166 218 L166 100 Z" fill="#F2C14E"/>
-  </symbol>
+  
   <symbol id="biblia-icone" viewBox="0 0 48 48">
     <path d="M13 5h24a3 3 0 0 1 3 3v31H15a3 3 0 0 0 0 6h25v1H15a5 5 0 0 1-5-5V8a3 3 0 0 1 3-3z" fill="url(#gCapa)"/>
     <path d="M15 39h25v6H15a3 3 0 0 1 0-6z" fill="#FFF6DF" stroke="#D9C49A" stroke-width=".8"/>
@@ -342,7 +329,188 @@ body.com-mini .wpp-flutua{bottom:84px}
   <canvas id="estrelas"></canvas>
   <div class="raios"></div>
   <div class="halo"></div>
-  <svg class="hero-biblia" viewBox="0 0 320 220" role="img" aria-label="Bíblia aberta"><use href="#biblia-aberta"/></svg>
+  <svg class="hero-biblia" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 800 560" role="img" aria-label="Bíblia Sagrada aberta">
+<defs>
+<radialGradient id="bLuz" cx=".5" cy=".42" r=".6"><stop offset="0" stop-color="#FFF4D6" stop-opacity=".55"/><stop offset=".45" stop-color="#F2C14E" stop-opacity=".12"/><stop offset="1" stop-color="#F2C14E" stop-opacity="0"/></radialGradient>
+<linearGradient id="bCouro" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A1016"/><stop offset=".5" stop-color="#3A0B10"/><stop offset="1" stop-color="#22060A"/></linearGradient>
+<linearGradient id="bOuroE" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE8A8"/><stop offset=".5" stop-color="#D9A441"/><stop offset="1" stop-color="#8E6420"/></linearGradient>
+<linearGradient id="bPagL" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#F3E6C8"/><stop offset=".55" stop-color="#FBF4E2"/><stop offset=".86" stop-color="#F4E8CB"/><stop offset="1" stop-color="#B9A174"/></linearGradient>
+<linearGradient id="bPagR" x1="1" y1="0" x2="0" y2="0"><stop offset="0" stop-color="#F6EBD0"/><stop offset=".55" stop-color="#FFF9EA"/><stop offset=".86" stop-color="#F5EAD0"/><stop offset="1" stop-color="#B9A174"/></linearGradient>
+<linearGradient id="bTopo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset=".25" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#7a5a2a" stop-opacity=".12"/></linearGradient>
+<filter id="bGrao" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="4"/><feColorMatrix values="0 0 0 0 .45  0 0 0 0 .35  0 0 0 0 .2  0 0 0 .09 0"/><feComposite in2="SourceGraphic" operator="in"/></filter>
+<filter id="bCouroT" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="1.6" numOctaves="3" seed="9"/><feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .35 0"/><feComposite in2="SourceGraphic" operator="in"/></filter>
+<filter id="bSombra" x="-20%" y="-20%" width="140%" height="160%"><feGaussianBlur stdDeviation="14"/></filter>
+<filter id="bSuave"><feGaussianBlur stdDeviation="1.2"/></filter>
+
+<path id="tL03" d="M95.0,197.8 Q155.0,196.1 215.0,201.6"/>
+<path id="tL04" d="M95.0,212.0 Q155.0,210.3 215.0,215.8"/>
+<path id="tL05" d="M95.0,226.2 Q155.0,224.5 215.0,230.0"/>
+<path id="tL06" d="M95.0,240.4 Q155.0,238.7 215.0,244.2"/>
+<path id="tL07" d="M95.0,254.6 Q155.0,252.9 215.0,258.4"/>
+<path id="tL08" d="M95.0,268.8 Q155.0,267.1 215.0,272.6"/>
+<path id="tL09" d="M95.0,283.0 Q155.0,281.3 215.0,286.8"/>
+<path id="tL010" d="M95.0,297.2 Q155.0,295.5 215.0,301.0"/>
+<path id="tL011" d="M95.0,311.4 Q155.0,309.7 215.0,315.2"/>
+<path id="tL012" d="M95.0,325.6 Q155.0,323.9 215.0,329.4"/>
+<path id="tL013" d="M95.0,339.8 Q155.0,338.1 215.0,343.6"/>
+<path id="tL014" d="M95.0,354.0 Q155.0,352.3 215.0,357.8"/>
+<path id="tL015" d="M95.0,368.2 Q155.0,366.5 215.0,372.0"/>
+<path id="tL016" d="M95.0,382.4 Q155.0,380.7 215.0,386.2"/>
+<path id="tL10" d="M225.0,159.8 Q286.5,165.4 348.0,182.0"/>
+<path id="tL11" d="M225.0,174.0 Q286.5,179.6 348.0,196.2"/>
+<path id="tL12" d="M225.0,188.2 Q286.5,193.8 348.0,210.4"/>
+<path id="tL13" d="M225.0,202.4 Q286.5,208.0 348.0,224.6"/>
+<path id="tL14" d="M225.0,216.6 Q286.5,222.2 348.0,238.8"/>
+<path id="tL15" d="M225.0,230.8 Q286.5,236.4 348.0,253.0"/>
+<path id="tL16" d="M225.0,245.0 Q286.5,250.6 348.0,267.2"/>
+<path id="tL17" d="M225.0,259.2 Q286.5,264.8 348.0,281.4"/>
+<path id="tL18" d="M225.0,273.4 Q286.5,279.0 348.0,295.6"/>
+<path id="tL19" d="M225.0,287.6 Q286.5,293.2 348.0,309.8"/>
+<path id="tL110" d="M225.0,301.8 Q286.5,307.4 348.0,324.0"/>
+<path id="tL111" d="M225.0,316.0 Q286.5,321.6 348.0,338.2"/>
+<path id="tL112" d="M225.0,330.2 Q286.5,335.8 348.0,352.4"/>
+<path id="tL113" d="M225.0,344.4 Q286.5,350.0 348.0,366.6"/>
+<path id="tL114" d="M225.0,358.6 Q286.5,364.2 348.0,380.8"/>
+<path id="tL115" d="M225.0,372.8 Q286.5,378.4 348.0,395.0"/>
+<path id="tL116" d="M225.0,387.0 Q286.5,392.6 348.0,409.2"/>
+<path id="tR03" d="M452.0,224.6 Q513.5,208.0 575.0,202.4"/>
+<path id="tR04" d="M452.0,238.8 Q513.5,222.2 575.0,216.6"/>
+<path id="tR05" d="M452.0,253.0 Q513.5,236.4 575.0,230.8"/>
+<path id="tR06" d="M452.0,267.2 Q513.5,250.6 575.0,245.0"/>
+<path id="tR07" d="M452.0,281.4 Q513.5,264.8 575.0,259.2"/>
+<path id="tR08" d="M452.0,295.6 Q513.5,279.0 575.0,273.4"/>
+<path id="tR09" d="M452.0,309.8 Q513.5,293.2 575.0,287.6"/>
+<path id="tR010" d="M452.0,324.0 Q513.5,307.4 575.0,301.8"/>
+<path id="tR011" d="M452.0,338.2 Q513.5,321.6 575.0,316.0"/>
+<path id="tR012" d="M452.0,352.4 Q513.5,335.8 575.0,330.2"/>
+<path id="tR013" d="M452.0,366.6 Q513.5,350.0 575.0,344.4"/>
+<path id="tR014" d="M452.0,380.8 Q513.5,364.2 575.0,358.6"/>
+<path id="tR015" d="M452.0,395.0 Q513.5,378.4 575.0,372.8"/>
+<path id="tR016" d="M452.0,409.2 Q513.5,392.6 575.0,387.0"/>
+<path id="tR10" d="M585.0,159.0 Q645.0,153.5 705.0,155.2"/>
+<path id="tR11" d="M585.0,173.2 Q645.0,167.7 705.0,169.4"/>
+<path id="tR12" d="M585.0,187.4 Q645.0,181.9 705.0,183.6"/>
+<path id="tR13" d="M585.0,201.6 Q645.0,196.1 705.0,197.8"/>
+<path id="tR14" d="M585.0,215.8 Q645.0,210.3 705.0,212.0"/>
+<path id="tR15" d="M585.0,230.0 Q645.0,224.5 705.0,226.2"/>
+<path id="tR16" d="M585.0,244.2 Q645.0,238.7 705.0,240.4"/>
+<path id="tR17" d="M585.0,258.4 Q645.0,252.9 705.0,254.6"/>
+<path id="tR18" d="M585.0,272.6 Q645.0,267.1 705.0,268.8"/>
+<path id="tR19" d="M585.0,286.8 Q645.0,281.3 705.0,283.0"/>
+<path id="tR110" d="M585.0,301.0 Q645.0,295.5 705.0,297.2"/>
+<path id="tR111" d="M585.0,315.2 Q645.0,309.7 705.0,311.4"/>
+<path id="tR112" d="M585.0,329.4 Q645.0,323.9 705.0,325.6"/>
+<path id="tR113" d="M585.0,343.6 Q645.0,338.1 705.0,339.8"/>
+<path id="tR114" d="M585.0,357.8 Q645.0,352.3 705.0,354.0"/>
+<path id="tR115" d="M585.0,372.0 Q645.0,366.5 705.0,368.2"/>
+<path id="tR116" d="M585.0,386.2 Q645.0,380.7 705.0,382.4"/>
+</defs>
+<ellipse cx="400" cy="505" rx="330" ry="26" fill="#000" opacity=".55" filter="url(#bSombra)"/>
+<path d="M400,200 C470,150 640,140 744,170 L748,478 C640,452 470,456 400,512 C330,456 160,452 52,478 L56,170 C160,140 330,150 400,200 Z" fill="url(#bCouro)"/>
+<path d="M400,200 C470,150 640,140 744,170 L748,478 C640,452 470,456 400,512 C330,456 160,452 52,478 L56,170 C160,140 330,150 400,200 Z" fill="#000" filter="url(#bCouroT)"/>
+<path d="M400,200 C470,150 640,140 744,170 L748,478 C640,452 470,456 400,512 C330,456 160,452 52,478 L56,170 C160,140 330,150 400,200 Z" fill="none" stroke="#6B1A22" stroke-width="2"/>
+<path d="M400,196.9 C330,136.9 170,130.9 75.39999999999998,168.9 L75.39999999999998,470.9 C170,436.9 330,442.9 400,504.9 Z" fill="url(#bOuroE)" stroke="#8E6420" stroke-opacity="0.25" stroke-width=".6"/>
+<path d="M400,196.9 C470,136.9 630,130.9 724.6,168.9 L724.6,470.9 C630,436.9 470,442.9 400,504.9 Z" fill="url(#bOuroE)" stroke="#8E6420" stroke-opacity="0.25" stroke-width=".6"/>
+<path d="M400,194.8 C330,134.8 170,128.8 74.80000000000001,166.8 L74.80000000000001,468.8 C170,434.8 330,440.8 400,502.8 Z" fill="url(#bOuroE)" stroke="#8E6420" stroke-opacity="0.25" stroke-width=".6"/>
+<path d="M400,194.8 C470,134.8 630,128.8 725.2,166.8 L725.2,468.8 C630,434.8 470,440.8 400,502.8 Z" fill="url(#bOuroE)" stroke="#8E6420" stroke-opacity="0.25" stroke-width=".6"/>
+<path d="M400,192.7 C330,132.7 170,126.7 74.19999999999999,164.7 L74.19999999999999,466.7 C170,432.7 330,438.7 400,500.7 Z" fill="url(#bOuroE)" stroke="#8E6420" stroke-opacity="0.25" stroke-width=".6"/>
+<path d="M400,192.7 C470,132.7 630,126.7 725.8,164.7 L725.8,466.7 C630,432.7 470,438.7 400,500.7 Z" fill="url(#bOuroE)" stroke="#8E6420" stroke-opacity="0.25" stroke-width=".6"/>
+<path d="M400,190.6 C330,130.6 170,124.6 73.60000000000002,162.6 L73.60000000000002,464.6 C170,430.6 330,436.6 400,498.6 Z" fill="url(#bOuroE)" stroke="#8E6420" stroke-opacity="0.25" stroke-width=".6"/>
+<path d="M400,190.6 C470,130.6 630,124.6 726.4,162.6 L726.4,464.6 C630,430.6 470,436.6 400,498.6 Z" fill="url(#bOuroE)" stroke="#8E6420" stroke-opacity="0.25" stroke-width=".6"/>
+<path d="M400,188.5 C330,128.5 170,122.5 73.0,160.5 L73.0,462.5 C170,428.5 330,434.5 400,496.5 Z" fill="url(#bOuroE)" stroke="#8E6420" stroke-opacity="0.25" stroke-width=".6"/>
+<path d="M400,188.5 C470,128.5 630,122.5 727.0,160.5 L727.0,462.5 C630,428.5 470,434.5 400,496.5 Z" fill="url(#bOuroE)" stroke="#8E6420" stroke-opacity="0.25" stroke-width=".6"/>
+<path d="M400,186.4 C330,126.4 170,120.4 72.39999999999998,158.4 L72.39999999999998,460.4 C170,426.4 330,432.4 400,494.4 Z" fill="url(#bOuroE)" stroke="#8E6420" stroke-opacity="0.25" stroke-width=".6"/>
+<path d="M400,186.4 C470,126.4 630,120.4 727.6,158.4 L727.6,460.4 C630,426.4 470,432.4 400,494.4 Z" fill="url(#bOuroE)" stroke="#8E6420" stroke-opacity="0.25" stroke-width=".6"/>
+<path d="M400,184.3 C330,124.3 170,118.3 71.80000000000001,156.3 L71.80000000000001,458.3 C170,424.3 330,430.3 400,492.3 Z" fill="url(#bOuroE)" stroke="#8E6420" stroke-opacity="0.25" stroke-width=".6"/>
+<path d="M400,184.3 C470,124.3 630,118.3 728.2,156.3 L728.2,458.3 C630,424.3 470,430.3 400,492.3 Z" fill="url(#bOuroE)" stroke="#8E6420" stroke-opacity="0.25" stroke-width=".6"/>
+<path d="M400,182.2 C330,122.2 170,116.2 71.19999999999999,154.2 L71.19999999999999,456.2 C170,422.2 330,428.2 400,490.2 Z" fill="#E9D9B4" stroke="#8E6420" stroke-opacity="0.15" stroke-width=".6"/>
+<path d="M400,182.2 C470,122.2 630,116.2 728.8,154.2 L728.8,456.2 C630,422.2 470,428.2 400,490.2 Z" fill="#E9D9B4" stroke="#8E6420" stroke-opacity="0.15" stroke-width=".6"/>
+<path d="M400,180.1 C330,120.1 170,114.1 70.60000000000002,152.1 L70.60000000000002,454.1 C170,420.1 330,426.1 400,488.1 Z" fill="#E9D9B4" stroke="#8E6420" stroke-opacity="0.15" stroke-width=".6"/>
+<path d="M400,180.1 C470,120.1 630,114.1 729.4,152.1 L729.4,454.1 C630,420.1 470,426.1 400,488.1 Z" fill="#E9D9B4" stroke="#8E6420" stroke-opacity="0.15" stroke-width=".6"/>
+<path d="M400,178 C330,118 170,112 70,150 L70,452 C170,418 330,424 400,486 Z" fill="url(#bPagL)"/>
+<path d="M400,178 C330,118 170,112 70,150 L70,452 C170,418 330,424 400,486 Z" fill="url(#bTopo)"/>
+<path d="M400,178 C330,118 170,112 70,150 L70,452 C170,418 330,424 400,486 Z" fill="#fff" filter="url(#bGrao)"/>
+<path d="M400,178 C470,118 630,112 730,150 L730,452 C630,418 470,424 400,486 Z" fill="url(#bPagR)"/>
+<path d="M400,178 C470,118 630,112 730,150 L730,452 C630,418 470,424 400,486 Z" fill="url(#bTopo)"/>
+<path d="M400,178 C470,118 630,112 730,150 L730,452 C630,418 470,424 400,486 Z" fill="#fff" filter="url(#bGrao)"/>
+<g font-family="Georgia,'Times New Roman',serif" fill="#3B2F22" opacity=".7">
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tL03" xlink:href="#tL03" textLength="118" lengthAdjust="spacingAndGlyphs">O Senhor é o meu pastor; nada me faltar</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tL04" xlink:href="#tL04" textLength="118" lengthAdjust="spacingAndGlyphs">á. Deitar-me faz em verdes pastos, guia</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tL05" xlink:href="#tL05" textLength="118" lengthAdjust="spacingAndGlyphs">-me mansamente a águas tranquilas. Refr</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tL06" xlink:href="#tL06" textLength="118" lengthAdjust="spacingAndGlyphs">igera a minha alma; guia-me pelas vered</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tL07" xlink:href="#tL07" textLength="118" lengthAdjust="spacingAndGlyphs">as da justiça, por amor do seu nome. Ai</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tL08" xlink:href="#tL08" textLength="118" lengthAdjust="spacingAndGlyphs">nda que eu andasse pelo vale da sombra </textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tL09" xlink:href="#tL09" textLength="118" lengthAdjust="spacingAndGlyphs">da morte, não temeria mal algum, porque</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tL010" xlink:href="#tL010" textLength="118" lengthAdjust="spacingAndGlyphs"> tu estás comigo; a tua vara e o teu ca</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tL011" xlink:href="#tL011" textLength="118" lengthAdjust="spacingAndGlyphs">jado me consolam. Preparas uma mesa per</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tL012" xlink:href="#tL012" textLength="118" lengthAdjust="spacingAndGlyphs">ante mim na presença dos meus inimigos,</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tL013" xlink:href="#tL013" textLength="118" lengthAdjust="spacingAndGlyphs"> unges a minha cabeça com óleo, o meu c</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tL014" xlink:href="#tL014" textLength="118" lengthAdjust="spacingAndGlyphs">álice transborda. Certamente que a bond</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tL015" xlink:href="#tL015" textLength="118" lengthAdjust="spacingAndGlyphs">ade e a misericórdia me seguirão todos </textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tL016" xlink:href="#tL016" textLength="118" lengthAdjust="spacingAndGlyphs">os dias da minha vida; e habitarei na c</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tL10" xlink:href="#tL10" textLength="121" lengthAdjust="spacingAndGlyphs">asa do Senhor por longos dias. O Senhor </textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tL11" xlink:href="#tL11" textLength="121" lengthAdjust="spacingAndGlyphs">é o meu pastor; nada me faltará. Deitar-</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tL12" xlink:href="#tL12" textLength="121" lengthAdjust="spacingAndGlyphs">me faz em verdes pastos, guia-me mansame</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tL13" xlink:href="#tL13" textLength="121" lengthAdjust="spacingAndGlyphs">nte a águas tranquilas. Refrigera a minh</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tL14" xlink:href="#tL14" textLength="121" lengthAdjust="spacingAndGlyphs">a alma; guia-me pelas veredas da justiça</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tL15" xlink:href="#tL15" textLength="121" lengthAdjust="spacingAndGlyphs">, por amor do seu nome. Ainda que eu and</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tL16" xlink:href="#tL16" textLength="121" lengthAdjust="spacingAndGlyphs">asse pelo vale da sombra da morte, não t</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tL17" xlink:href="#tL17" textLength="121" lengthAdjust="spacingAndGlyphs">emeria mal algum, porque tu estás comigo</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tL18" xlink:href="#tL18" textLength="121" lengthAdjust="spacingAndGlyphs">; a tua vara e o teu cajado me consolam.</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tL19" xlink:href="#tL19" textLength="121" lengthAdjust="spacingAndGlyphs"> Preparas uma mesa perante mim na presen</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tL110" xlink:href="#tL110" textLength="121" lengthAdjust="spacingAndGlyphs">ça dos meus inimigos, unges a minha cabe</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tL111" xlink:href="#tL111" textLength="121" lengthAdjust="spacingAndGlyphs">ça com óleo, o meu cálice transborda. Ce</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tL112" xlink:href="#tL112" textLength="121" lengthAdjust="spacingAndGlyphs">rtamente que a bondade e a misericórdia </textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tL113" xlink:href="#tL113" textLength="121" lengthAdjust="spacingAndGlyphs">me seguirão todos os dias da minha vida;</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tL114" xlink:href="#tL114" textLength="121" lengthAdjust="spacingAndGlyphs"> e habitarei na casa do Senhor por longo</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tL115" xlink:href="#tL115" textLength="121" lengthAdjust="spacingAndGlyphs">s dias. O Senhor é o meu pastor; nada me</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tL116" xlink:href="#tL116" textLength="121" lengthAdjust="spacingAndGlyphs"> faltará. Deitar-me faz em verdes pastos</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tR03" xlink:href="#tR03" textLength="121" lengthAdjust="spacingAndGlyphs">Lâmpada para os meus pés é a tua palavra</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tR04" xlink:href="#tR04" textLength="121" lengthAdjust="spacingAndGlyphs">, e luz para o meu caminho. Jurei, e o c</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tR05" xlink:href="#tR05" textLength="121" lengthAdjust="spacingAndGlyphs">umprirei, que guardarei os teus justos j</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tR06" xlink:href="#tR06" textLength="121" lengthAdjust="spacingAndGlyphs">uízos. Estou aflitíssimo; vivifica-me, ó</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tR07" xlink:href="#tR07" textLength="121" lengthAdjust="spacingAndGlyphs"> Senhor, segundo a tua palavra. Aceita, </textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tR08" xlink:href="#tR08" textLength="121" lengthAdjust="spacingAndGlyphs">eu te rogo, as oferendas voluntárias da </textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tR09" xlink:href="#tR09" textLength="121" lengthAdjust="spacingAndGlyphs">minha boca, ó Senhor, e ensina-me os teu</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tR010" xlink:href="#tR010" textLength="121" lengthAdjust="spacingAndGlyphs">s juízos. A minha alma está de contínuo </textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tR011" xlink:href="#tR011" textLength="121" lengthAdjust="spacingAndGlyphs">nas minhas mãos; todavia não me esqueço </textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tR012" xlink:href="#tR012" textLength="121" lengthAdjust="spacingAndGlyphs">da tua lei. Os teus testemunhos tenho eu</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tR013" xlink:href="#tR013" textLength="121" lengthAdjust="spacingAndGlyphs"> tomado por herança para sempre, pois sã</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tR014" xlink:href="#tR014" textLength="121" lengthAdjust="spacingAndGlyphs">o o gozo do meu coração. Lâmpada para os</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tR015" xlink:href="#tR015" textLength="121" lengthAdjust="spacingAndGlyphs"> meus pés é a tua palavra, e luz para o </textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tR016" xlink:href="#tR016" textLength="121" lengthAdjust="spacingAndGlyphs">meu caminho. Jurei, e o cumprirei, que g</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tR10" xlink:href="#tR10" textLength="118" lengthAdjust="spacingAndGlyphs">uardarei os teus justos juízos. Estou a</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tR11" xlink:href="#tR11" textLength="118" lengthAdjust="spacingAndGlyphs">flitíssimo; vivifica-me, ó Senhor, segu</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tR12" xlink:href="#tR12" textLength="118" lengthAdjust="spacingAndGlyphs">ndo a tua palavra. Aceita, eu te rogo, </textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tR13" xlink:href="#tR13" textLength="118" lengthAdjust="spacingAndGlyphs">as oferendas voluntárias da minha boca,</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tR14" xlink:href="#tR14" textLength="118" lengthAdjust="spacingAndGlyphs"> ó Senhor, e ensina-me os teus juízos. </textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tR15" xlink:href="#tR15" textLength="118" lengthAdjust="spacingAndGlyphs">A minha alma está de contínuo nas minha</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tR16" xlink:href="#tR16" textLength="118" lengthAdjust="spacingAndGlyphs">s mãos; todavia não me esqueço da tua l</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tR17" xlink:href="#tR17" textLength="118" lengthAdjust="spacingAndGlyphs">ei. Os teus testemunhos tenho eu tomado</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tR18" xlink:href="#tR18" textLength="118" lengthAdjust="spacingAndGlyphs"> por herança para sempre, pois são o go</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tR19" xlink:href="#tR19" textLength="118" lengthAdjust="spacingAndGlyphs">zo do meu coração. Lâmpada para os meus</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tR110" xlink:href="#tR110" textLength="118" lengthAdjust="spacingAndGlyphs"> pés é a tua palavra, e luz para o meu </textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tR111" xlink:href="#tR111" textLength="118" lengthAdjust="spacingAndGlyphs">caminho. Jurei, e o cumprirei, que guar</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tR112" xlink:href="#tR112" textLength="118" lengthAdjust="spacingAndGlyphs">darei os teus justos juízos. Estou afli</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tR113" xlink:href="#tR113" textLength="118" lengthAdjust="spacingAndGlyphs">tíssimo; vivifica-me, ó Senhor, segundo</textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tR114" xlink:href="#tR114" textLength="118" lengthAdjust="spacingAndGlyphs"> a tua palavra. Aceita, eu te rogo, as </textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tR115" xlink:href="#tR115" textLength="118" lengthAdjust="spacingAndGlyphs">oferendas voluntárias da minha boca, ó </textPath></text>
+<text font-size="5.8" letter-spacing=".05"><textPath href="#tR116" xlink:href="#tR116" textLength="118" lengthAdjust="spacingAndGlyphs">Senhor, e ensina-me os teus juízos. A m</textPath></text>
+</g>
+<g font-family="Georgia,serif" fill="#7A1F1F" text-anchor="middle">
+<text x="155" y="176" font-size="15" font-weight="700" letter-spacing="2" transform="rotate(-6 155 176)">SALMOS</text>
+<text x="155" y="192" font-size="9.5" letter-spacing="1" fill="#8A6A3A" transform="rotate(-6 155 192)">Salmo 23</text>
+<text x="512" y="176" font-size="13" font-weight="700" letter-spacing="2" fill="#7A1F1F" transform="rotate(6 512 176)">SALMOS</text><text x="512" y="191" font-size="9.5" letter-spacing="1" fill="#8A6A3A" transform="rotate(6 512 191)">Salmo 119</text>
+</g>
+<path d="M226,205 Q228,330 226,430" stroke="#8A6A3A" stroke-opacity=".25" stroke-width=".7" fill="none"/>
+<path d="M574,205 Q572,330 574,430" stroke="#8A6A3A" stroke-opacity=".25" stroke-width=".7" fill="none"/>
+<path d="M400,178 C392,300 392,400 400,486 C408,400 408,300 400,178 Z" fill="#5B4424" opacity=".35" filter="url(#bSuave)"/>
+<path d="M400,178 L400,486" stroke="#6B5230" stroke-width="1" opacity=".6"/>
+<path d="M395,200 C392,320 386,440 380,540 L372,552 L388,548 L392,540 C396,440 400,320 401,200 Z" fill="#9C1C24"/>
+<path d="M395,200 C392,320 386,440 380,540" stroke="#D44A4F" stroke-width="1" fill="none" opacity=".6"/>
+<path d="M403,205 C408,320 414,440 424,532 L418,546 L433,540 L435,530 C424,440 414,320 409,205 Z" fill="#D9A441"/>
+<path d="M405,205 C410,320 416,440 426,532" stroke="#FFE8A8" stroke-width="1" fill="none" opacity=".7"/>
+</svg>
   <span class="hero-tag">✦ Igreja O Brasil para Cristo ✦</span>
   <h1 id="hero-nome">Jardim<br><em>São Fernando</em></h1>
   <p id="hero-bv">Bem-vindo! A paz do Senhor esteja com você. Aqui você é recebido como família.</p>
