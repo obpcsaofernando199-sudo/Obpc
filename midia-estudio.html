@@ -382,6 +382,7 @@ video.pv,audio.pv{border-radius:14px;box-shadow:0 0 0 2px #cfdcd4}
   <div class="card stack limpe">
     <h2>Limpe seu celular</h2>
     <p class="note">Apaga do <b>seu celular</b> os vídeos, áudios e fotos que já estão no site. <b>Não apaga nada do site nem do Cloudinary.</b> O que ainda não foi publicado continua guardado.</p>
+    <p class="limpe-ok" style="margin:0;padding:10px 12px;border-radius:12px;background:#E8F5EE;border:1.5px solid #9BD3B4;color:#0F4A34;font-weight:700;font-size:14.5px;line-height:1.4">✅ Pode limpar sem medo: <u>suas postagens NÃO saem do site</u>. Elas continuam no ar normalmente até completar 24 horas. Só o seu celular fica mais leve.</p>
     <p class="note limpe-st">Calculando…</p>
     <button class="btn ouro b-limpe">🧹 Limpe seu celular</button>
   </div>
@@ -395,6 +396,7 @@ video.pv,audio.pv{border-radius:14px;box-shadow:0 0 0 2px #cfdcd4}
   <div class="card stack limpe">
     <h2>Limpe seu celular</h2>
     <p class="note">Apaga do <b>seu celular</b> os vídeos, áudios e fotos que já estão no site. <b>Não apaga nada do site nem do Cloudinary.</b> O que ainda não foi publicado continua guardado.</p>
+    <p class="limpe-ok" style="margin:0;padding:10px 12px;border-radius:12px;background:#E8F5EE;border:1.5px solid #9BD3B4;color:#0F4A34;font-weight:700;font-size:14.5px;line-height:1.4">✅ Pode limpar sem medo: <u>suas postagens NÃO saem do site</u>. Elas continuam no ar normalmente até completar 24 horas. Só o seu celular fica mais leve.</p>
     <p class="note limpe-st">Calculando…</p>
     <button class="btn ouro b-limpe">🧹 Limpe seu celular</button>
   </div>
@@ -511,7 +513,7 @@ var CFG={
   aviso:3 /* alerta amarelo quando restarem este tanto de vagas ou menos */
 };
 var EQUIPE=['Júlia','Giovana','Eliza'];
-var VERSAO='2026-11-20b';
+var VERSAO='2026-11-20c';
 /* compara nomes sem ligar para acento e maiúscula ("Julia" = "Júlia") */
 function mesmoNome(a,b){var n=function(x){return String(x||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toLowerCase()};return !!a&&n(a)===n(b)}
 function nomeCerto(x){for(var i=0;i<EQUIPE.length;i++)if(mesmoNome(x,EQUIPE[i]))return EQUIPE[i];return x}
@@ -1361,7 +1363,7 @@ function limpeCelular(){
   estadoLimpeza().then(function(e){
     var apagaLocal=false,temPub=e.pub.length||e.sobras.length;
     if(!temPub&&!e.loc.length)return toast('✅ Seu celular já está limpo.');
-    if(temPub&&!confirm('Limpar seu celular?\n\nVai liberar '+mb(e.mbPub)+' ('+e.pub.length+' arquivo(s) que já estão no site).\n\nNADA sai do site nem do Cloudinary.'))return;
+    if(temPub&&!confirm('Limpar seu celular?\n\nFIQUE TRANQUILA: suas postagens NÃO saem do site.\n\nVai liberar '+mb(e.mbPub)+' ('+e.pub.length+' arquivo(s) que já estão no site).\n\nNADA sai do site nem do Cloudinary.'))return;
     if(e.loc.length)apagaLocal=confirm('Atenção: '+e.loc.length+' gravação(ões) ('+mb(e.mbLoc)+') ainda NÃO foram para o site.\n\nQuer apagar estas também? Elas serão perdidas.\n\nOK = apagar também\nCancelar = manter guardadas');
     if(!temPub&&!apagaLocal)return;
     var jobs=e.pub.map(function(i){delete i.blob;return putItem(i)});
