@@ -235,9 +235,10 @@ main{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:0 1rem 2
 .capa-audio span{font-size:2rem}
 .card audio{width:100%;margin-top:.7rem;height:40px}
 .fotos{display:grid;gap:.55rem;grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
-.fotos button{border:none;padding:0;cursor:zoom-in;border-radius:14px;overflow:hidden;aspect-ratio:1;background:var(--noite3);border:1px solid var(--linha)}
+.foto-it{position:relative}
+.foto-ab{display:block;width:100%;border:none;padding:0;cursor:zoom-in;border-radius:14px;overflow:hidden;aspect-ratio:1;background:var(--noite3);border:1px solid var(--linha)}
 .fotos img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
-.fotos button:hover img{transform:scale(1.07)}
+.foto-ab:hover img{transform:scale(1.07)}
 
 /* ── Pessoas ── */
 .pessoa{text-align:center;padding:1.1rem .7rem}
@@ -295,6 +296,54 @@ footer p{color:var(--txt2);font-size:.92rem}
 .wpp-flutua svg{width:30px;height:30px;fill:#fff}
 body.com-mini .wpp-flutua{bottom:84px}
 @media(max-width:560px){.topo-nome small{display:none}.duas{grid-template-columns:1fr}.hero{min-height:auto;padding-top:1.6rem;padding-bottom:3.6rem}.radio-play{width:66px;height:66px}.radio-disco{width:76px;height:76px}}
+/* ── TV OBPC na home ── */
+.tv-cab{position:relative;display:flex;flex-wrap:wrap;gap:1.2rem;align-items:center;justify-content:space-between;padding:1.6rem 1.3rem;margin-bottom:1.3rem;border-radius:28px;background:radial-gradient(110% 140% at 0% 0%,rgba(242,193,78,.24),transparent 55%),radial-gradient(80% 120% at 100% 100%,rgba(46,90,190,.35),transparent 60%),linear-gradient(160deg,#141E42,#0A1022);border:1px solid rgba(242,193,78,.38);box-shadow:0 26px 54px rgba(0,0,0,.42);overflow:hidden}
+.tv-marca{display:flex;gap:1rem;align-items:center;min-width:0;flex:1 1 280px}
+.tv-ic{flex:none;width:64px;height:64px;border-radius:18px;display:grid;place-items:center;font-size:2rem;background:var(--goldg);box-shadow:0 10px 26px rgba(242,193,78,.35)}
+.tv-marca small{display:inline-flex;align-items:center;gap:7px;color:#FF8A95;font-size:.7rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase}
+.tv-marca h2{font-family:var(--serif);font-weight:600;font-size:clamp(2rem,7vw,2.9rem);line-height:1;letter-spacing:-.4px;margin-top:.15rem}
+.tv-marca h2 em{font-style:italic;font-weight:500;background:var(--goldg);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tv-marca p{color:var(--txt2);font-size:.92rem;margin-top:.4rem;max-width:520px}
+.tv-bts{display:flex;gap:.6rem;flex-wrap:wrap}
+.tv-card .midia{display:block}
+.tv-card .n-fotos{position:absolute;left:10px;bottom:10px;z-index:2;font-size:.72rem;font-weight:800;background:rgba(7,11,24,.75);border:1px solid rgba(242,193,78,.4);color:var(--ouro2);padding:3px 9px;border-radius:999px}
+
+/* ── Compartilhar ── */
+.bt-sh{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(242,193,78,.45);background:rgba(7,11,24,.6);color:var(--ouro2);font:800 .74rem/1 var(--sans);padding:.55rem .85rem;border-radius:999px;cursor:pointer;transition:transform .2s,background .2s,color .2s;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.bt-sh:hover{background:var(--goldg);color:#0A0F1F;border-color:transparent;transform:translateY(-1px)}
+.bt-sh svg{width:15px;height:15px;flex:none;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+.bt-sh.ic{padding:.5rem;flex:none}.bt-sh.ic span{display:none}
+.bt-sh.canto{position:absolute;top:8px;right:8px;z-index:3;padding:.5rem}.bt-sh.canto span{display:none}
+.card-pe{display:flex;justify-content:flex-end;margin-top:.8rem;padding-top:.7rem;border-top:1px solid var(--linha)}
+.hero-sh{position:relative;margin-top:1rem;background:none;border:none;color:var(--ouro2);font-weight:800;font-size:.86rem;cursor:pointer;display:inline-flex;align-items:center;gap:7px;text-decoration:underline;text-underline-offset:4px}
+.hero-sh svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+.vers-sh{margin-top:1rem}
+.pulsa{animation:pulsa 1.2s ease 3;border-color:var(--ouro)!important}
+@keyframes pulsa{50%{box-shadow:0 0 0 6px rgba(242,193,78,.45),0 0 40px rgba(242,193,78,.5)}}
+.shf{position:fixed;inset:0;z-index:300;display:none;align-items:flex-end;justify-content:center}
+.shf.on{display:flex}
+.shf-fundo{position:absolute;inset:0;background:rgba(3,5,12,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.shf-c{position:relative;width:100%;max-width:520px;max-height:94vh;overflow:auto;background:linear-gradient(180deg,#121B36,#0A1022);border:1px solid rgba(242,193,78,.3);border-bottom:none;border-radius:24px 24px 0 0;padding:.8rem 1.1rem 1.4rem;animation:sobe .25s ease}
+@keyframes sobe{from{transform:translateY(40px);opacity:0}}
+@media(min-width:640px){.shf{align-items:center}.shf-c{border-radius:24px;border-bottom:1px solid rgba(242,193,78,.3)}}
+.shf-alca{width:40px;height:4px;border-radius:4px;background:rgba(255,255,255,.2);margin:0 auto .8rem}
+.shf-c h4{font-family:var(--serif);font-weight:600;font-size:1.25rem;text-align:center;margin-bottom:.8rem}
+.shf-prev{position:relative;border-radius:14px;overflow:hidden;aspect-ratio:1200/630;background:#0A1022;border:1px solid var(--linha)}
+.shf-prev img{width:100%;height:100%;object-fit:cover}
+.shf-st{position:absolute;inset:auto 0 0 0;padding:.5rem;text-align:center;font-size:.78rem;font-weight:700;color:var(--ouro2);background:rgba(7,11,24,.8)}
+.shf-st:empty{display:none}
+.shf-bts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.6rem;margin-top:1rem}
+.shf-bts button{display:flex;flex-direction:column;align-items:center;gap:.4rem;background:rgba(255,255,255,.04);border:1px solid var(--linha);border-radius:16px;padding:.8rem .3rem;cursor:pointer;font-size:.76rem;font-weight:800;color:var(--txt);transition:background .2s,transform .2s}
+.shf-bts button:hover{background:rgba(242,193,78,.1);transform:translateY(-2px)}
+.shf-bts button:disabled{opacity:.45;cursor:wait;transform:none}
+.shf-bts i{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:1.3rem;color:#fff}
+.shf-bts svg{width:24px;height:24px;fill:#fff}
+.r-wpp i,.r-grupo i{background:#25D366}.r-face i{background:#1877F2}.r-insta i{background:radial-gradient(circle at 30% 107%,#fdf497 0%,#fd5949 45%,#d6249f 60%,#285AEB 90%)}.r-copiar i,.r-mais i{background:var(--goldg);color:#0A0F1F}
+.shf-link{margin-top:.9rem;font-size:.78rem;color:var(--txt3);text-align:center;word-break:break-all}
+.shf-link b{color:var(--ouro2)}
+.shf-x{display:block;width:100%;margin-top:.9rem;background:none;border:1px solid var(--linha);border-radius:999px;padding:.7rem;font-weight:800;cursor:pointer}
+.toast{position:fixed;left:50%;bottom:90px;transform:translate(-50%,20px);z-index:400;max-width:min(92vw,420px);background:#FFE29A;color:#0A0F1F;font-weight:800;font-size:.86rem;padding:.75rem 1.1rem;border-radius:14px;box-shadow:0 14px 34px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;text-align:center}
+.toast.on{opacity:1;transform:translate(-50%,0)}
 @media(prefers-reduced-motion:reduce){*,*::before{animation:none!important;transition:none!important;scroll-behavior:auto!important}.revela{opacity:1;transform:none}}
 </style>
 </head>
@@ -308,6 +357,7 @@ body.com-mini .wpp-flutua{bottom:84px}
     <linearGradient id="gCapa" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8E2430"/><stop offset="1" stop-color="#5A1219"/></linearGradient>
   </defs>
   
+  <symbol id="ic-sh" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></symbol>
   <symbol id="biblia-icone" viewBox="0 0 48 48">
     <path d="M13 5h24a3 3 0 0 1 3 3v31H15a3 3 0 0 0 0 6h25v1H15a5 5 0 0 1-5-5V8a3 3 0 0 1 3-3z" fill="url(#gCapa)"/>
     <path d="M15 39h25v6H15a3 3 0 0 1 0-6z" fill="#FFF6DF" stroke="#D9C49A" stroke-width=".8"/>
@@ -325,7 +375,7 @@ body.com-mini .wpp-flutua{bottom:84px}
     <button class="topo-radio" onclick="radioTocar()"><span class="pulso"></span>Rádio ao vivo</button>
   </div>
   <nav class="menu" aria-label="Seções do site">
-    <a href="#agenda">📅 Agenda do mês</a><a href="#radio">Rádio</a><a href="#cultos">Cultos</a><a href="#estudio">Estúdio</a><a href="#avisos">Avisos</a><a href="#eventos">Eventos</a><a href="#palavra">Palavra do Pastor</a><a href="#videos">Vídeos</a><a href="#fotos">Fotos</a><a href="#oracao">Oração</a><a href="#contribua">Contribua</a><a href="#contato">Contato</a>
+    <a href="#agenda">📅 Agenda do mês</a><a href="#radio">Rádio</a><a href="#tv">📺 TV OBPC</a><a href="#cultos">Cultos</a><a href="#avisos">Avisos</a><a href="#eventos">Eventos</a><a href="#palavra">Palavra do Pastor</a><a href="#videos">Vídeos</a><a href="#fotos">Fotos</a><a href="#oracao">Oração</a><a href="#contribua">Contribua</a><a href="#contato">Contato</a>
   </nav>
 </header>
 
@@ -341,9 +391,10 @@ body.com-mini .wpp-flutua{bottom:84px}
   <p id="hero-bv">Bem-vindo! A paz do Senhor esteja com você. Aqui você é recebido como família.</p>
   <div class="hero-bts">
     <button class="bt bt-ouro" onclick="radioTocar()">▶ Ouvir a Rádio OBPC</button>
-    <a class="bt bt-vidro" href="agenda.html">📅 Agenda do mês</a>
+    <a class="bt bt-vidro" href="#tv">📺 TV OBPC</a>
     <a class="bt bt-vidro" id="hero-mapa" href="https://maps.google.com/?q=Rua+Senador+José+Ermírio+de+Moraes,199,Ferraz+de+Vasconcelos" target="_blank" rel="noopener">📍 Como chegar</a>
   </div>
+  <button class="hero-sh" onclick="compartilharSite()"><svg viewBox="0 0 24 24"><use href="#ic-sh"/></svg>Compartilhar o site da igreja</button>
   <div class="contagem" id="contagem" hidden>
     <div style="text-align:left"><small>Próximo culto</small><b id="cont-nome"></b></div>
     <div class="relogio" id="cont-relogio"></div>
@@ -352,17 +403,18 @@ body.com-mini .wpp-flutua{bottom:84px}
 </section>
 
 <main>
-  <div class="versiculo revela">
+  <div class="versiculo revela" id="versiculo" data-sh="versiculo:hoje">
     <small>Versículo do dia</small>
     <q id="vers-txt"></q>
     <cite id="vers-ref"></cite>
+    <button class="bt-sh vers-sh" onclick="compartilhar('versiculo:hoje')" aria-label="Compartilhar o versículo"><svg viewBox="0 0 24 24"><use href="#ic-sh"/></svg><span>Compartilhar o versículo</span></button>
   </div>
 
   <!-- AGENDA DO MÊS — destaque (consulta constante) -->
-  <section class="agenda revela" id="agenda">
+  <section class="agenda revela" id="agenda" data-sh="agenda:mes">
     <div class="agenda-cab">
       <div><small>📅 Consulte sempre</small><h2>Agenda de <em id="ag-mes">mês</em></h2></div>
-      <a class="bt bt-ouro bt-sm" href="agenda.html">Abrir agenda</a>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap"><button class="bt-sh" onclick="compartilhar('agenda:mes')"><svg viewBox="0 0 24 24"><use href="#ic-sh"/></svg><span>Compartilhar a agenda</span></button><a class="bt bt-ouro bt-sm" href="agenda.html">Abrir agenda</a></div>
     </div>
     <div class="ag-lista" id="ag-lista"></div>
     <a class="bt bt-ouro bt-grande" href="agenda.html">📅 Ver a agenda completa do mês</a>
@@ -370,7 +422,7 @@ body.com-mini .wpp-flutua{bottom:84px}
 
   <div class="atalhos revela">
     <a class="atalho" href="biblia-harpa.html"><span>📖</span>Bíblia e Harpa</a>
-        <a class="atalho" href="tv-obpc.html"><span>📺</span>TV OBPC</a>
+    <a class="atalho" href="#tv"><span>📺</span>TV OBPC</a>
     <a class="atalho" href="#oracao"><span>🙏</span>Pedir oração</a>
     <a class="atalho" href="#visita"><span>🏠</span>Visita do pastor</a>
     <a class="atalho" href="#contribua"><span>💛</span>Dízimos e ofertas</a>
@@ -378,7 +430,7 @@ body.com-mini .wpp-flutua{bottom:84px}
 
   <!-- RÁDIO OBPC -->
   <section class="sec revela" id="radio">
-    <div class="radio" id="radio-card">
+    <div class="radio" id="radio-card" data-sh="radio:ao-vivo">
       <div class="radio-top">
         <div class="radio-disco"><svg viewBox="0 0 48 48"><use href="#biblia-icone"/></svg></div>
         <div class="radio-info">
@@ -392,10 +444,19 @@ body.com-mini .wpp-flutua{bottom:84px}
       <div class="radio-ctrl">
         <span aria-hidden="true">🔈</span>
         <input type="range" id="radio-vol" min="0" max="1" step="0.05" value="0.9" aria-label="Volume">
-        <button class="bt bt-vidro" onclick="radioCompartilhar()">📤 Compartilhar</button>
+        <button class="bt-sh" onclick="compartilhar('radio:ao-vivo')"><svg viewBox="0 0 24 24"><use href="#ic-sh"/></svg><span>Compartilhar</span></button>
       </div>
       <audio id="radio-audio" preload="none"></audio>
     </div>
+  </section>
+
+  <!-- TV OBPC: tudo o que o Estúdio de Mídia e os cultos publicam -->
+  <section class="sec revela" id="tv">
+    <div class="tv-cab" data-sh="tv:canal">
+      <div class="tv-marca"><span class="tv-ic">📺</span><div><small><span class="pulso"></span>No ar</small><h2>TV <em>OBPC</em></h2><p>Vídeos, podcasts e fotos do nosso estúdio e dos cultos. Tudo o que é gravado aparece aqui na hora.</p></div></div>
+      <div class="tv-bts"><a class="bt bt-ouro" href="tv-obpc.html">▶ Abrir a TV OBPC</a><button class="bt-sh" onclick="compartilhar('tv:canal')"><svg viewBox="0 0 24 24"><use href="#ic-sh"/></svg><span>Compartilhar a TV</span></button></div>
+    </div>
+    <div class="grade" id="lista-tv"></div>
   </section>
 
   <!-- DESTAQUE DO MÊS -->
@@ -417,12 +478,6 @@ body.com-mini .wpp-flutua{bottom:84px}
     </div>
   </section>
 
-  <!-- ESTÚDIO OBPC (gravações do Estúdio de Mídia) -->
-  <section class="sec revela" id="estudio">
-    <div class="sec-cab"><div><small>Acabou de sair</small><h2>Do nosso <em>estúdio</em></h2></div><a href="tv-obpc.html">Ver na TV OBPC →</a></div>
-    <div class="grade" id="lista-estudio"></div>
-  </section>
-
   <!-- AVISOS -->
   <section class="sec revela" id="avisos">
     <div class="sec-cab"><div><small>Fique por dentro</small><h2>Avisos da <em>igreja</em></h2></div></div>
@@ -437,7 +492,7 @@ body.com-mini .wpp-flutua{bottom:84px}
 
   <!-- PALAVRA DO PASTOR -->
   <section class="sec revela" id="palavra">
-    <div class="sec-cab"><div><small>Edificação</small><h2>Palavra do <em>Pastor</em></h2></div><a href="tv-obpc.html">Ver na TV OBPC →</a></div>
+    <div class="sec-cab"><div><small>Edificação</small><h2>Palavra do <em>Pastor</em></h2></div><a href="#tv">Ver na TV OBPC →</a></div>
     <div class="grade" id="lista-palavras"></div>
   </section>
 
@@ -448,8 +503,8 @@ body.com-mini .wpp-flutua{bottom:84px}
   </section>
 
   <!-- VÍDEOS E CULTOS -->
-  <section class="sec revela" id="videos">
-    <div class="sec-cab"><div><small>Assista</small><h2>Vídeos e <em>cultos</em></h2></div><a href="https://www.youtube.com/@obpcjardimsaofernando4538" target="_blank" rel="noopener">YouTube →</a></div>
+  <section class="sec revela" id="videos" hidden>
+    <div class="sec-cab"><div><small>Assista</small><h2>Vídeos no <em>YouTube</em></h2></div><a href="https://www.youtube.com/@obpcjardimsaofernando4538" target="_blank" rel="noopener">YouTube →</a></div>
     <div class="grade" id="lista-videos"></div>
   </section>
 
@@ -548,7 +603,7 @@ body.com-mini .wpp-flutua{bottom:84px}
         <li id="rod-pastor"></li>
         <li><a id="rod-tel" href="https://wa.me/5511993509109" target="_blank" rel="noopener">📱 (11) 99350-9109</a></li>
         <li><a id="rod-email" href="mailto:obpcsaofernando199@gmail.com">✉️ obpcsaofernando199@gmail.com</a></li>
-        <li><button class="bt bt-ouro bt-sm" style="margin-top:.4rem" onclick="compartilharSite()">📤 Compartilhar o site</button></li>
+        <li><button class="bt-sh" style="margin-top:.4rem" onclick="compartilharSite()"><svg viewBox="0 0 24 24"><use href="#ic-sh"/></svg><span>Compartilhar o site</span></button></li>
       </ul>
     </div>
   </div>
@@ -567,6 +622,27 @@ body.com-mini .wpp-flutua{bottom:84px}
   <button class="fechar" onclick="fecharJanela()" aria-label="Fechar">✕</button>
   <div class="janela-c" id="janela-c"></div>
 </div>
+
+<!-- janela de compartilhar -->
+<div class="shf" id="shf" role="dialog" aria-modal="true" aria-labelledby="shf-tit">
+  <div class="shf-fundo" onclick="fecharSh()"></div>
+  <div class="shf-c">
+    <div class="shf-alca"></div>
+    <h4 id="shf-tit">Compartilhar</h4>
+    <div class="shf-prev"><img id="shf-img" alt="Imagem que vai aparecer no compartilhamento" hidden><div class="shf-st" id="shf-st"></div></div>
+    <div class="shf-bts">
+      <button class="r-wpp" onclick="shRede('wpp')"><i><svg viewBox="0 0 32 32"><path d="M16 3C9 3 3.3 8.6 3.3 15.6c0 2.5.7 4.8 1.9 6.8L3 29l6.8-2.1c1.9 1 4 1.6 6.2 1.6 7 0 12.7-5.6 12.7-12.6S23 3 16 3zm6.3 17.6c-.3.8-1.5 1.5-2.1 1.6-.6.1-1.2.2-3.9-.8-3.3-1.3-5.4-4.7-5.6-4.9-.2-.2-1.3-1.8-1.3-3.4s.8-2.4 1.1-2.7c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .7.5.3.6.9 2.1 1 2.3.1.2.1.4 0 .6-.1.2-.2.4-.4.6l-.5.6c-.2.2-.4.4-.2.7.2.4 1 1.6 2.1 2.6 1.4 1.3 2.6 1.7 3 1.9.4.2.6.1.8-.1.2-.3.9-1.1 1.2-1.4.2-.4.5-.3.8-.2.3.1 2 .9 2.3 1.1.3.2.6.3.7.4.1.3.1.9-.2 1.6z"/></svg></i>WhatsApp</button>
+      <button class="r-grupo" onclick="shRede('grupo')"><i>👥</i>Grupo da igreja</button>
+      <button class="r-face" onclick="shRede('face')"><i><svg viewBox="0 0 24 24"><path d="M14 8V6.2c0-.8.2-1.2 1.4-1.2H17V2h-2.6C11.3 2 10.5 3.6 10.5 6v2H8v3h2.5v11H14V11h2.6l.4-3z"/></svg></i>Facebook</button>
+      <button class="r-insta" onclick="shRede('insta')"><i><svg viewBox="0 0 24 24"><path d="M12 7.3a4.7 4.7 0 1 0 0 9.4 4.7 4.7 0 0 0 0-9.4zm0 7.7a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm4.9-8.9a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2zM12 3.6c2.7 0 3 0 4.1.1 2.7.1 4 1.4 4.1 4.1.1 1.1.1 1.4.1 4.2s0 3-.1 4.1c-.1 2.7-1.4 4-4.1 4.1-1.1.1-1.4.1-4.1.1s-3 0-4.1-.1c-2.7-.1-4-1.4-4.1-4.1C3.7 15 3.6 14.7 3.6 12s0-3 .1-4.1C3.8 5.1 5.1 3.8 7.9 3.7 9 3.6 9.3 3.6 12 3.6zM12 2C9.3 2 8.9 2 7.8 2 4.2 2.2 2.2 4.2 2 7.8 2 8.9 2 9.3 2 12s0 3.1.1 4.2c.2 3.6 2.2 5.6 5.8 5.8 1 .1 1.4.1 4.1.1s3.1 0 4.2-.1c3.6-.2 5.6-2.2 5.8-5.8.1-1.1.1-1.5.1-4.2s0-3.1-.1-4.2c-.2-3.6-2.2-5.6-5.8-5.8C15.1 2 14.7 2 12 2z"/></svg></i>Instagram</button>
+      <button class="r-copiar" onclick="shRede('copiar')"><i>🔗</i>Copiar link</button>
+      <button class="r-mais" onclick="shRede('mais')"><i>⋯</i>Mais opções</button>
+    </div>
+    <div class="shf-link" id="shf-link"></div>
+    <button class="shf-x" onclick="fecharSh()">Fechar</button>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 /* ═════════ Ligação com o painel e o Estúdio de Mídia (Firebase) ═════════
@@ -647,7 +723,6 @@ function radioFaixa(){
   (function tenta(i){if(i>=RADIO_INFO.length)return;fetch(RADIO_INFO[i]+(RADIO_INFO[i].indexOf('?')>-1?'&':'?')+'_t='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(t){var tit='';try{var j=JSON.parse(t);tit=j.songtitle||j.SONGTITLE||(j.streams&&j.streams[0]&&j.streams[0].songtitle)||'';}catch(e){if(t&&t.length<200&&t.trim()[0]!=='<')tit=t.trim();}if(!tit)throw 0;document.getElementById('radio-faixa').textContent='🎵 '+tit;document.getElementById('mini-txt').textContent='🎵 '+tit;try{navigator.mediaSession.metadata.title=tit;}catch(e){}}).catch(function(){tenta(i+1);});})(0);
   _faixaT=setTimeout(radioFaixa,25000);
 }
-function radioCompartilhar(){var u='https://obpcsaofernando199-sudo.github.io/Obpc/#radio';var t='📻 Ouça a Rádio OBPC ao vivo, 24 horas de louvor e Palavra!';if(navigator.share)navigator.share({title:'Rádio OBPC',text:t,url:u}).catch(function(){});else window.open('https://wa.me/?text='+encodeURIComponent(t+'\n'+u),'_blank');}
 
 /* ── informações da igreja ── */
 function rInfo(){
@@ -684,13 +759,14 @@ setInterval(tique,1000);
 function rDestaque(){
   var b=D.banner_culto;var box=document.getElementById('destaque');
   if(!b||(!b.titulo&&!b.bgUrl&&!b.subtit)){so('destaque-sec',false);return;}
-  so('destaque-sec',true);var bg='';
+  so('destaque-sec',true);var bg='',img='';
   if(urlOk(b.bgUrl)){var y=ytId(b.bgUrl);
-    if(y)bg='<iframe class="destaque-bg" src="https://www.youtube.com/embed/'+y+'?autoplay=1&mute=1&loop=1&playlist='+y+'&controls=0" allow="autoplay" title="Destaque"></iframe>';
-    else if(b.bgTp==='video'||ehVideo(b.bgUrl))bg='<video class="destaque-bg" src="'+esc(b.bgUrl)+'" autoplay muted loop playsinline></video>';
-    else bg='<img class="destaque-bg" src="'+esc(b.bgUrl)+'" alt="">';}
+    if(y){bg='<iframe class="destaque-bg" src="https://www.youtube.com/embed/'+y+'?autoplay=1&mute=1&loop=1&playlist='+y+'&controls=0" allow="autoplay" title="Destaque"></iframe>';img='https://img.youtube.com/vi/'+y+'/hqdefault.jpg';}
+    else if(b.bgTp==='video'||ehVideo(b.bgUrl)){bg='<video class="destaque-bg" src="'+esc(b.bgUrl)+'" autoplay muted loop playsinline></video>';img=thumbVideo(b.bgUrl);}
+    else{bg='<img class="destaque-bg" src="'+esc(b.bgUrl)+'" alt="">';img=b.bgUrl;}}
   var meta=[];if(b.dt)meta.push('📅 '+fmtData(b.dt));if(b.hora)meta.push('🕐 '+esc(b.hora));if(b.local)meta.push('📍 '+esc(b.local));
-  box.innerHTML='<div class="destaque">'+bg+'<div class="destaque-ov"></div><div class="destaque-c">'+(b.badge?'<span class="selo">'+esc(b.badge)+'</span>':'')+(b.titulo?'<h3>'+esc(b.titulo)+'</h3>':'')+(b.subtit?'<p>'+esc(b.subtit)+'</p>':'')+(meta.length?'<div class="meta" style="color:var(--txt2)">'+meta.map(function(m){return '<span>'+m+'</span>';}).join('')+'</div>':'')+(b.cta?'<div style="margin-top:1.1rem"><a class="bt bt-ouro bt-sm" href="#cultos">'+esc(b.cta)+'</a></div>':'')+'</div></div>';
+  var k=reg({s:'destaque',id:idDe(b.titulo,b.dt,b.bgUrl),t:b.titulo||'Destaque do mês',d:b.subtit,img:img,dt:b.dt,h:b.hora,l:b.local,tipo:b.badge||'Não perca',cta:'Toque e confira'});
+  box.innerHTML='<div class="destaque" data-sh="'+k+'">'+bg+'<div class="destaque-ov"></div><div class="destaque-c">'+(b.badge?'<span class="selo">'+esc(b.badge)+'</span>':'')+(b.titulo?'<h3>'+esc(b.titulo)+'</h3>':'')+(b.subtit?'<p>'+esc(b.subtit)+'</p>':'')+(meta.length?'<div class="meta" style="color:var(--txt2)">'+meta.map(function(m){return '<span>'+m+'</span>';}).join('')+'</div>':'')+'<div style="margin-top:1.1rem;display:flex;gap:.6rem;flex-wrap:wrap;align-items:center">'+(b.cta?'<a class="bt bt-ouro bt-sm" href="#cultos">'+esc(b.cta)+'</a>':'')+btSh(k)+'</div></div></div>';
 }
 
 /* ── agenda do mês (destaque) ── */
@@ -702,11 +778,14 @@ function rAgendaMes(){
   var doMes=l.filter(function(r){return r.dt.slice(0,7)===mes;});
   if(doMes.length<4)doMes=l.slice(0,8);else doMes=doMes.slice(0,8);
   var box=document.getElementById('ag-lista');
-  if(!doMes.length){box.innerHTML='<div class="vazio">A agenda do mês aparece aqui assim que for preenchida. Toque no botão abaixo para ver a agenda completa.</div>';return;}
   var D3=['dom','seg','ter','qua','qui','sex','sáb'];
-  box.innerHTML=doMes.map(function(r){var d=dt(r.dt),hj=r.dt===hs;function f(v){return Array.isArray(v)?v.join(', '):(v||'');}
+  function f(v){return Array.isArray(v)?v.join(', '):(v||'');}
+  reg({s:'agenda',id:'mes',t:'Agenda de '+MESES[h.getMonth()],d:'Cultos e programações do mês na OBPC Jardim São Fernando. Venha adorar conosco!',tipo:'Agenda do mês',cta:'Toque e veja a agenda',linhas:doMes.slice(0,5).map(function(r){var d=dt(r.dt);return d.getDate()+' '+D3[d.getDay()]+'  ·  '+(f(r.clt)||'Culto');})});
+  if(!doMes.length){box.innerHTML='<div class="vazio">A agenda do mês aparece aqui assim que for preenchida. Toque no botão abaixo para ver a agenda completa.</div>';return;}
+  box.innerHTML=doMes.map(function(r){var d=dt(r.dt),hj=r.dt===hs;
     var sub=[r.dir?'Dirigente: '+f(r.dir):'',r.min?'Ministrante: '+f(r.min):''].filter(Boolean).join(' · ');
-    return '<div class="ag-item'+(hj?' hj':'')+'"><div class="ag-dia"><b>'+d.getDate()+'</b><small>'+D3[d.getDay()]+'</small></div><div class="ag-txt"><b>'+esc(f(r.clt)||'Culto')+(hj?'<em class="ag-hoje">Hoje</em>':'')+'</b>'+(sub?'<span class="sub">'+esc(sub)+'</span>':'')+'</div></div>';}).join('');
+    var k=reg({s:'agenda',id:idDe(r.dt,f(r.clt)),t:f(r.clt)||'Culto',d:sub,dt:r.dt,tipo:hj?'Hoje':'Agenda da igreja',cta:'Venha adorar conosco'});
+    return '<div class="ag-item'+(hj?' hj':'')+'" data-sh="'+k+'"><div class="ag-dia"><b>'+d.getDate()+'</b><small>'+D3[d.getDay()]+'</small></div><div class="ag-txt"><b>'+esc(f(r.clt)||'Culto')+(hj?'<em class="ag-hoje">Hoje</em>':'')+'</b>'+(sub?'<span class="sub">'+esc(sub)+'</span>':'')+'</div>'+btSh(k,'ic')+'</div>';}).join('');
 }
 
 /* ── agenda de hoje ── */
@@ -717,8 +796,10 @@ function rHoje(){
   var html='<div class="data">'+DIAS[h.getDay()]+', '+h.getDate()+' de '+MESES[h.getMonth()]+'</div><h3>Agenda de hoje</h3>';
   if(!rows.length)html+='<p class="hoje-vazio">Hoje não há culto na escala. Veja ao lado os horários da semana.</p>';
   else rows.forEach(function(r){[['Culto / evento',r.clt],['Dirigente',r.dir],['Ministrante',r.min],['Oportunidade',r.opt],['Ensaio',r.ensaio],['Porta / recepção',r.p1]].forEach(function(c){var v=c[1];if(Array.isArray(v))v=v.join(', ');if(v)html+='<div class="hoje-lin"><span>'+c[0]+'</span><b>'+esc(v)+'</b></div>';});});
-  html+='<div style="margin-top:1.1rem"><a class="bt bt-ouro bt-sm" href="agenda.html">📅 Agenda do mês</a></div>';
-  document.getElementById('hoje').innerHTML=html;
+  var hor=lista(D.horarios).map(function(x){return (x.dia||'')+'  ·  '+(x.h||'')+(x.tipo?'  ·  '+x.tipo:'');});
+  var k=reg({s:'cultos',id:'semana',t:'Venha adorar conosco',d:'Horários dos cultos da OBPC Jardim São Fernando. Você é nosso convidado!',tipo:'Nossos cultos',cta:'Toque e veja os horários',linhas:hor.slice(0,5)});
+  html+='<div style="margin-top:1.1rem;display:flex;gap:.6rem;flex-wrap:wrap;align-items:center"><a class="bt bt-ouro bt-sm" href="agenda.html">📅 Agenda do mês</a>'+btSh(k)+'</div>';
+  var el=document.getElementById('hoje');el.innerHTML=html;el.setAttribute('data-sh',k);
 }
 function rHorarios(){
   var l=lista(D.horarios);var box=document.getElementById('horarios');
@@ -730,7 +811,8 @@ function rProximos(){
   var l=lista(D.proximos_cultos&&D.proximos_cultos.lista).filter(function(x){return !x.dt||x.dt>=hs;}).sort(function(a,b){return (a.dt||'9')<(b.dt||'9')?-1:1;}).slice(0,6);
   so('prox-wrap',l.length>0);
   document.getElementById('proximos').innerHTML=l.map(function(x){var d=dt(x.dt);var ic=(x.ic==='⛪'||!x.ic)?'📖':x.ic;
-    return '<div class="card culto">'+(d?'<div class="culto-data"><b>'+d.getDate()+'</b><small>'+MES3[d.getMonth()]+'</small></div>':'<div class="culto-data"><b>'+ic+'</b></div>')+'<div><h3 style="margin:0">'+esc(x.titulo||'Culto')+'</h3>'+(x.subtit?'<p>'+esc(x.subtit)+'</p>':'')+'<div class="meta" style="margin-top:.2rem">'+(x.hora?'<span>🕐 '+esc(x.hora)+'</span>':'')+(x.local?'<span>📍 '+esc(x.local)+'</span>':'')+'</div></div></div>';}).join('');
+    var k=reg({s:'culto',id:idDe(x.titulo,x.dt,x.hora),t:x.titulo||'Culto',d:x.subtit,img:urlOk(x.img)?x.img:'',dt:x.dt,h:x.hora,l:x.local,tipo:'Próximo culto',cta:'Venha adorar conosco'});
+    return '<div class="card culto" data-sh="'+k+'">'+(d?'<div class="culto-data"><b>'+d.getDate()+'</b><small>'+MES3[d.getMonth()]+'</small></div>':'<div class="culto-data"><b>'+ic+'</b></div>')+'<div style="flex:1;min-width:0"><h3 style="margin:0">'+esc(x.titulo||'Culto')+'</h3>'+(x.subtit?'<p>'+esc(x.subtit)+'</p>':'')+'<div class="meta" style="margin-top:.2rem">'+(x.hora?'<span>🕐 '+esc(x.hora)+'</span>':'')+(x.local?'<span>📍 '+esc(x.local)+'</span>':'')+'</div></div>'+btSh(k,'ic')+'</div>';}).join('');
 }
 
 /* ── blocos de mídia ── */
@@ -743,22 +825,37 @@ function midiaBloco(m,titulo){
   if(m.tp==='video'||ehVideo(src)){var th=m.thumb||thumbVideo(src);return '<div class="midia" onclick="abrirVideo(\''+esc(src)+'\',\'mp4\')">'+(th?'<img src="'+esc(th)+'" alt="" loading="lazy" onerror="this.remove()">':'<video src="'+esc(src)+'#t=1" preload="metadata" muted playsinline></video>')+'<div class="play"><i>▶</i></div></div>';}
   return '<div class="midia" onclick="abrirFoto(\''+esc(src)+'\')" style="cursor:zoom-in"><img src="'+esc(src)+'" alt="'+esc(titulo||'')+'" loading="lazy"></div>';
 }
+/* imagem que representa uma mídia (para a prévia do compartilhamento) */
+function capaDe(m){var src=m&&(m.src||m.url);if(!urlOk(src))return '';var y=ytId(src);if(y)return 'https://img.youtube.com/vi/'+y+'/hqdefault.jpg';if(ehAudio(src))return '';if(m.tp==='video'||ehVideo(src))return m.thumb||thumbVideo(src);return src;}
 function boas(md){return lista(md).filter(function(m){var s=m.src||m.url;return s&&!m.local&&String(s).indexOf('idb:')!==0;});}
 
-/* ── ESTÚDIO: o que o midia-estudio.html publica (plat OBPC) aparece aqui sozinho ── */
+/* ═════════ TV OBPC: tudo o que o Estúdio de Mídia e os cultos publicam ═════════
+   Os códigos (e…, c…) são os mesmos da tv-obpc.html, então o card abre o vídeo certo lá. */
 function doEstudio(v){return v&&(v.plat==='OBPC'||v.autor!==undefined||v.entrevistado!==undefined||v.expira!==undefined);}
-function rEstudio(){
-  var l=lista(D.videos).filter(function(v){return doEstudio(v)&&vivo(v)&&urlOk(v.url);});
-  l.sort(function(a,b){return quando(b)-quando(a);});
-  var fotos=lista(D.galeria).filter(function(f){return (f.autor!==undefined||f.expira!==undefined)&&vivo(f)&&urlOk(f.url);});
-  var box=document.getElementById('lista-estudio');
-  if(!l.length&&!fotos.length){box.innerHTML=vazio('Tudo o que for gravado no Estúdio de Mídia aparece aqui na hora.');return;}
-  var h=l.slice(0,6).map(function(v,i){
-    var tit=v.titulo||v.tit||'Gravação';var aud=ehAudio(v.url);
-    return '<article class="card">'+midiaBloco({src:v.url,tp:aud?'audio':'video'},tit)+'<div class="card-c">'+(i===0?'<span class="selo selo-novo">Novo</span> ':'')+'<span class="selo">'+(aud?'🎙️ ':'🎬 ')+esc(v.cat||(aud?'Podcast':'Vídeo'))+'</span><h3>'+esc(tit)+'</h3>'+(v.desc?'<p>'+esc(v.desc)+'</p>':'')+(aud?'<audio controls preload="none" src="'+esc(v.url)+'"></audio>':'')+'<div class="meta">'+(v.entrevistado?'<span>🎤 '+esc(v.entrevistado)+'</span>':'')+(v.data?'<span>📅 '+fmtData(v.data)+'</span>':'')+'</div></div></article>';
+function urlLocal(u){return /^(idb:|blob:|mem:)/.test(u||'');}
+function itensTV(){
+  var it=[],gr={};
+  lista(D.videos).forEach(function(v){if(!doEstudio(v)||!vivo(v)||!urlOk(v.url)||urlLocal(v.url))return;var aud=ehAudio(v.url);
+    it.push({id:'e'+hid(v.url),t:v.titulo||v.tit||'Vídeo OBPC',d:v.desc||'',dt:v.data||'',q:quando(v),m:{src:v.url,tp:aud?'audio':'video'},cat:v.cat||(aud?'Podcast':'Vídeo'),ic:aud?'🎙️':'🎬',ent:v.entrevistado,aud:aud});});
+  lista(D.galeria).forEach(function(x){if(!(x.autor!==undefined||x.expira!==undefined)||!vivo(x)||!urlOk(x.url)||urlLocal(x.url))return;
+    var t=x.titulo||x.tit||'Momento OBPC',k=t+'|'+(x.data||'')+'|'+(x.autor||'');
+    if(!gr[k]){gr[k]={id:'e'+hid(k),t:t,d:'',dt:x.data||'',q:quando(x),m:{src:x.url,tp:x.tp==='video'||ehVideo(x.url)?'video':'foto'},cat:'Fotos',ic:'📸',n:0};it.push(gr[k]);}gr[k].n++;});
+  lista(D.cultos).forEach(function(c,i){var md=boas(c.midias);if(!md.length&&lista(c.urls).length)md=boas(c.urls);if(!md.length)return;
+    it.push({id:'c'+(c.ts||i),t:c.tit||c.titulo||'Momento do culto',d:c.rel||c.relato||'',dt:c.dt||c.data||'',q:c.ts||quando(c),m:md[0],cat:'Culto',ic:'⛪',n:md.length});});
+  it.sort(function(a,b){return (b.q||0)-(a.q||0);});
+  return it;
+}
+function rTV(){
+  var it=itensTV(),box=document.getElementById('lista-tv');
+  reg({s:'tv',id:'canal',t:'TV OBPC',d:'Vídeos, podcasts e fotos da OBPC Jardim São Fernando. Assista agora!',img:it.length?capaDe(it[0].m):'',tipo:'TV OBPC',cta:'Toque para assistir',video:true,u:SITE+'tv-obpc.html'});
+  if(!it.length){box.innerHTML=vazio('Tudo o que for gravado no Estúdio de Mídia e nos cultos aparece aqui na hora.');return;}
+  box.innerHTML=it.slice(0,6).map(function(v,i){
+    var src=v.m.src||v.m.url,y=ytId(src),capa=capaDe(v.m),foto=!y&&!v.aud&&!(v.m.tp==='video'||ehVideo(src));
+    var href='tv-obpc.html#'+v.id;
+    var thumb=v.aud?'<div class="capa-audio"><span>🎙️</span><div class="onda">'+ondaHtml(v.t)+'</div></div>':(capa?'<img src="'+esc(capa)+'" alt="" loading="lazy" onerror="this.remove()">':'<video src="'+esc(src)+'#t=1" preload="metadata" muted playsinline></video>');
+    var k=reg({s:'tv',id:v.id,t:v.t,d:v.d,img:capa,dt:v.dt,tipo:'TV OBPC · '+v.cat,cta:v.aud?'Toque para ouvir':foto?'Toque para ver as fotos':'Toque para assistir',video:!foto,u:SITE+href});
+    return '<article class="card tv-card" data-sh="'+k+'"><a class="midia" href="'+href+'" aria-label="Abrir na TV OBPC">'+thumb+'<div class="play"><i>'+(foto?'⤢':'▶')+'</i></div>'+(v.n>1?'<span class="n-fotos">+'+(v.n-1)+'</span>':'')+'</a><div class="card-c">'+(i===0?'<span class="selo selo-novo">Novo</span> ':'')+'<span class="selo">'+v.ic+' '+esc(v.cat)+'</span><h3><a href="'+href+'" style="text-decoration:none">'+esc(v.t)+'</a></h3>'+(v.d?'<p>'+esc(v.d.length>140?v.d.slice(0,140)+'…':v.d)+'</p>':'')+'<div class="meta">'+(v.ent?'<span>🎤 '+esc(v.ent)+'</span>':'')+(v.dt?'<span>📅 '+fmtData(v.dt)+'</span>':'')+'<a href="'+href+'">Ver na TV OBPC →</a></div><div class="card-pe">'+btSh(k)+'</div></div></article>';
   }).join('');
-  if(fotos.length)h+='<article class="card" style="grid-column:1/-1"><div class="card-c"><span class="selo">📸 Fotos do estúdio</span><div class="fotos" style="margin-top:.4rem">'+fotos.slice(0,8).map(function(f){return '<button onclick="abrirFoto(\''+esc(f.url)+'\')"><img src="'+esc(f.url)+'" alt="'+esc(f.titulo||f.tit||'')+'" loading="lazy"></button>';}).join('')+'</div></div></article>';
-  box.innerHTML=h;
 }
 
 /* ── avisos ── */
@@ -769,7 +866,8 @@ function rAvisos(){
   if(!l.length){box.innerHTML=vazio('Nenhum aviso no momento.');return;}
   box.innerHTML=l.slice(0,9).map(function(a,i){
     var tit=a.tit||a.com_tit||'Aviso';var txt=a.txt||a.com_sub||'';var urg=/urgente|alta/i.test(a.pri||'');
-    return '<article class="card">'+(urlOk(a.img)?'<img class="card-img" src="'+esc(a.img)+'" alt="" loading="lazy">':'')+'<div class="card-c">'+(urg?'<span class="selo selo-urg">Importante</span>':(a.com_badge?'<span class="selo">'+esc(a.com_badge)+'</span>':''))+'<h3>'+esc(tit)+'</h3><p>'+esc(txt.length>220?txt.slice(0,220)+'…':txt)+'</p>'+(a.com_itens?'<p style="margin-top:.4rem">'+esc(a.com_itens)+'</p>':'')+'<div class="meta">'+(a.dt?'<span>📅 '+fmtData(a.dt)+'</span>':'')+(txt.length>220?'<a href="javascript:void 0" onclick="abrirTexto(\'avisos\','+i+')">Ler tudo</a>':'')+(urlOk(a.com_link)?'<a href="'+esc(a.com_link)+'" target="_blank" rel="noopener">Saiba mais</a>':'')+'</div></div></article>';
+    var k=reg({s:'avisos',id:a.ts?String(a.ts):idDe(tit,a.dt),t:tit,d:txt,img:urlOk(a.img)?a.img:'',dt:a.dt,tipo:urg?'Aviso importante':(a.com_badge||'Aviso da igreja'),cta:'Toque e saiba mais'});
+    return '<article class="card" data-sh="'+k+'">'+(urlOk(a.img)?'<img class="card-img" src="'+esc(a.img)+'" alt="" loading="lazy">':'')+'<div class="card-c">'+(urg?'<span class="selo selo-urg">Importante</span>':(a.com_badge?'<span class="selo">'+esc(a.com_badge)+'</span>':''))+'<h3>'+esc(tit)+'</h3><p>'+esc(txt.length>220?txt.slice(0,220)+'…':txt)+'</p>'+(a.com_itens?'<p style="margin-top:.4rem">'+esc(a.com_itens)+'</p>':'')+'<div class="meta">'+(a.dt?'<span>📅 '+fmtData(a.dt)+'</span>':'')+(txt.length>220?'<a href="javascript:void 0" onclick="abrirTexto(\'avisos\','+i+')">Ler tudo</a>':'')+(urlOk(a.com_link)?'<a href="'+esc(a.com_link)+'" target="_blank" rel="noopener">Saiba mais</a>':'')+'</div><div class="card-pe">'+btSh(k)+'</div></div></article>';
   }).join('');
 }
 function rEventos(){
@@ -777,59 +875,71 @@ function rEventos(){
   var l=lista(D.eventos).filter(function(e){return !e.dt||e.dt>=hs;}).sort(function(a,b){return (a.dt||'9')<(b.dt||'9')?-1:1;});
   var box=document.getElementById('lista-eventos');
   if(!l.length){box.innerHTML=vazio('Novos eventos aparecem aqui assim que forem publicados.');return;}
-  box.innerHTML=l.slice(0,9).map(function(e){return '<article class="card">'+(urlOk(e.img)?'<img class="card-img" src="'+esc(e.img)+'" alt="" loading="lazy">':'')+'<div class="card-c">'+(e.tp?'<span class="selo">'+esc(e.tp)+'</span>':'')+'<h3>'+esc(e.nom||'Evento')+'</h3>'+(e.dsc?'<p>'+esc(e.dsc)+'</p>':'')+'<div class="meta">'+(e.dt?'<span>📅 '+fmtData(e.dt)+'</span>':'')+(e.h?'<span>🕐 '+esc(e.h)+'</span>':'')+(e.loc?'<span>📍 '+esc(e.loc)+'</span>':'')+'</div></div></article>';}).join('');
+  box.innerHTML=l.slice(0,9).map(function(e){
+    var k=reg({s:'eventos',id:e.id?String(e.id):idDe(e.nom,e.dt),t:e.nom||'Evento',d:e.dsc,img:urlOk(e.img)?e.img:'',dt:e.dt,h:e.h,l:e.loc,tipo:e.tp||'Evento',cta:'Toque e participe'});
+    return '<article class="card" data-sh="'+k+'">'+(urlOk(e.img)?'<img class="card-img" src="'+esc(e.img)+'" alt="" loading="lazy">':'')+'<div class="card-c">'+(e.tp?'<span class="selo">'+esc(e.tp)+'</span>':'')+'<h3>'+esc(e.nom||'Evento')+'</h3>'+(e.dsc?'<p>'+esc(e.dsc)+'</p>':'')+'<div class="meta">'+(e.dt?'<span>📅 '+fmtData(e.dt)+'</span>':'')+(e.h?'<span>🕐 '+esc(e.h)+'</span>':'')+(e.loc?'<span>📍 '+esc(e.loc)+'</span>':'')+'</div><div class="card-pe">'+btSh(k)+'</div></div></article>';}).join('');
 }
 function rPalavras(){
   var l=lista(D.palavras).slice().sort(function(a,b){return (b.urg?1:0)-(a.urg?1:0)||(b.ts||0)-(a.ts||0);});
   D.palavras_ord=l;var box=document.getElementById('lista-palavras');
   if(!l.length){box.innerHTML=vazio('Em breve, novas mensagens do nosso pastor.');return;}
   box.innerHTML=l.slice(0,6).map(function(p,i){
-    var md=boas(p.midias);var bloco=md.length?midiaBloco(md[0],p.tit):(p.url?midiaBloco({src:p.url},p.tit):'');var txt=p.txt||'';
-    return '<article class="card">'+bloco+'<div class="card-c">'+(p.urg?'<span class="selo selo-novo">Nova mensagem</span>':'')+'<h3>'+esc(p.tit||'Palavra do Pastor')+'</h3>'+(txt?'<p>'+esc(txt.length>200?txt.slice(0,200)+'…':txt)+'</p>':'')+'<div class="meta">'+(p.aut?'<span>👤 '+esc(p.aut)+'</span>':'')+(p.dt?'<span>📅 '+fmtData(p.dt)+'</span>':'')+(txt.length>200?'<a href="javascript:void 0" onclick="abrirTexto(\'palavras\','+i+')">Ler mensagem</a>':'')+'</div></div></article>';
+    var md=boas(p.midias);var m0=md.length?md[0]:(p.url?{src:p.url}:null);var bloco=m0?midiaBloco(m0,p.tit):'';var txt=p.txt||'';
+    var k=reg({s:'palavra',id:p.ts?String(p.ts):idDe(p.tit,p.dt),t:p.tit||'Palavra do Pastor',d:txt,img:m0?capaDe(m0):'',dt:p.dt,tipo:'Palavra do Pastor',cta:m0&&capaDe(m0)!==(m0.src||m0.url)?'Toque para assistir':'Toque e leia a mensagem',video:!!(m0&&(ytId(m0.src||m0.url)||ehVideo(m0.src||m0.url)))});
+    return '<article class="card" data-sh="'+k+'">'+bloco+'<div class="card-c">'+(p.urg?'<span class="selo selo-novo">Nova mensagem</span>':'')+'<h3>'+esc(p.tit||'Palavra do Pastor')+'</h3>'+(txt?'<p>'+esc(txt.length>200?txt.slice(0,200)+'…':txt)+'</p>':'')+'<div class="meta">'+(p.aut?'<span>👤 '+esc(p.aut)+'</span>':'')+(p.dt?'<span>📅 '+fmtData(p.dt)+'</span>':'')+(txt.length>200?'<a href="javascript:void 0" onclick="abrirTexto(\'palavras\','+i+')">Ler mensagem</a>':'')+'</div><div class="card-pe">'+btSh(k)+'</div></div></article>';
   }).join('');
 }
 function rSermoes(){
   var l=lista(D.sermoes).sort(function(a,b){return (b.ts||0)-(a.ts||0);});
   so('sermoes-sec',l.length>0);
   document.getElementById('lista-sermoes').innerHTML=l.slice(0,6).map(function(s){var y=s.yid||ytId(s.url);
-    return '<article class="card">'+(y?midiaBloco({src:'https://youtu.be/'+y}):'')+'<div class="card-c">'+(s.pas?'<span class="selo">📖 '+esc(s.pas)+'</span>':'')+'<h3>'+esc(s.tit)+'</h3>'+(s.res?'<p>'+esc(s.res)+'</p>':'')+'<div class="meta">'+(s.preg?'<span>👤 '+esc(s.preg)+'</span>':'')+(s.dt?'<span>📅 '+fmtData(s.dt)+'</span>':'')+(!y&&urlOk(s.url||s.fb)?'<a href="'+esc(s.url||s.fb)+'" target="_blank" rel="noopener">Assistir</a>':'')+'</div></div></article>';}).join('');
+    var k=reg({s:'sermao',id:s.ts?String(s.ts):idDe(s.tit,s.dt),t:s.tit||'Sermão',d:s.res,img:y?'https://img.youtube.com/vi/'+y+'/hqdefault.jpg':'',dt:s.dt,tipo:s.pas?'Sermão · '+s.pas:'Sermão',cta:'Toque para assistir',video:!!y});
+    return '<article class="card" data-sh="'+k+'">'+(y?midiaBloco({src:'https://youtu.be/'+y}):'')+'<div class="card-c">'+(s.pas?'<span class="selo">📖 '+esc(s.pas)+'</span>':'')+'<h3>'+esc(s.tit)+'</h3>'+(s.res?'<p>'+esc(s.res)+'</p>':'')+'<div class="meta">'+(s.preg?'<span>👤 '+esc(s.preg)+'</span>':'')+(s.dt?'<span>📅 '+fmtData(s.dt)+'</span>':'')+(!y&&urlOk(s.url||s.fb)?'<a href="'+esc(s.url||s.fb)+'" target="_blank" rel="noopener">Assistir</a>':'')+'</div><div class="card-pe">'+btSh(k)+'</div></div></article>';}).join('');
 }
+/* vídeos de fora do estúdio (YouTube, Facebook) — os cultos agora ficam na TV OBPC */
 function rVideos(){
   var itens=[];
-  lista(D.cultos).forEach(function(c){var md=boas(c.midias);if(!md.length&&lista(c.urls).length)md=boas(c.urls);if(md.length)itens.push({t:c.ts||0,tit:c.tit||'Culto',sub:c.dt?fmtData(c.dt):'',txt:c.rel||'',m:md[0],n:md.length});});
   lista(D.videos).forEach(function(v,i){if(doEstudio(v)||!urlOk(v.url))return;var y=v.yid||ytId(v.url);itens.push({t:v.ts||i,tit:v.tit||v.titulo||'Vídeo',sub:v.cat||'',txt:v.dsc||v.desc||'',m:y?{src:'https://youtu.be/'+y}:(/facebook\.com|fb\.watch/.test(v.url)?{fb:v.url,thumb:v.thumb}:{src:v.url,tp:'video',thumb:v.thumb})});});
   itens.sort(function(a,b){return b.t-a.t;});
-  var box=document.getElementById('lista-videos');
-  if(!itens.length){box.innerHTML=vazio('Em breve, vídeos e fotos dos nossos cultos.');return;}
-  box.innerHTML=itens.slice(0,6).map(function(v){
+  so('videos',itens.length>0);
+  document.getElementById('lista-videos').innerHTML=itens.slice(0,6).map(function(v){
     var bl=v.m.fb?'<a class="midia" href="'+esc(v.m.fb)+'" target="_blank" rel="noopener">'+(urlOk(v.m.thumb)?'<img src="'+esc(v.m.thumb)+'" alt="">':'')+'<div class="play"><i>▶</i></div></a>':midiaBloco(v.m,v.tit);
-    return '<article class="card">'+bl+'<div class="card-c"><h3>'+esc(v.tit)+'</h3>'+(v.txt?'<p>'+esc(v.txt.length>140?v.txt.slice(0,140)+'…':v.txt)+'</p>':'')+'<div class="meta">'+(v.sub?'<span>'+esc(v.sub)+'</span>':'')+(v.n>1?'<a href="tv-obpc.html">+'+(v.n-1)+' na TV OBPC</a>':'')+'</div></div></article>';
+    var k=reg({s:'video',id:idDe(v.tit,v.m.src||v.m.fb),t:v.tit,d:v.txt,img:v.m.fb?(urlOk(v.m.thumb)?v.m.thumb:''):capaDe(v.m),tipo:'Vídeo',cta:'Toque para assistir',video:true});
+    return '<article class="card" data-sh="'+k+'">'+bl+'<div class="card-c"><h3>'+esc(v.tit)+'</h3>'+(v.txt?'<p>'+esc(v.txt.length>140?v.txt.slice(0,140)+'…':v.txt)+'</p>':'')+'<div class="meta">'+(v.sub?'<span>'+esc(v.sub)+'</span>':'')+'</div><div class="card-pe">'+btSh(k)+'</div></div></article>';
   }).join('');
 }
 function rInformativos(){
   var l=lista(D.informativos).sort(function(a,b){return (b.ts||0)-(a.ts||0);});
   D.informativos_ord=l;so('informativos-sec',l.length>0);
-  document.getElementById('lista-informativos').innerHTML=l.slice(0,3).map(function(x,i){var t=x.txt||'';return '<article class="card">'+(urlOk(x.img)?'<img class="card-img" src="'+esc(x.img)+'" alt="" loading="lazy">':'')+'<div class="card-c">'+(x.cat?'<span class="selo">'+esc(x.cat)+'</span>':'')+'<h3>'+esc(x.tit||'Informativo')+'</h3><p>'+esc(t.length>180?t.slice(0,180)+'…':t)+'</p>'+(t.length>180?'<div class="meta"><a href="javascript:void 0" onclick="abrirTexto(\'informativos\','+i+')">Ler tudo</a></div>':'')+'</div></article>';}).join('');
+  document.getElementById('lista-informativos').innerHTML=l.slice(0,3).map(function(x,i){var t=x.txt||'';
+    var k=reg({s:'info',id:x.ts?String(x.ts):idDe(x.tit,t.slice(0,40)),t:x.tit||'Informativo',d:t,img:urlOk(x.img)?x.img:'',tipo:x.cat||'Informativo',cta:'Toque e leia'});
+    return '<article class="card" data-sh="'+k+'">'+(urlOk(x.img)?'<img class="card-img" src="'+esc(x.img)+'" alt="" loading="lazy">':'')+'<div class="card-c">'+(x.cat?'<span class="selo">'+esc(x.cat)+'</span>':'')+'<h3>'+esc(x.tit||'Informativo')+'</h3><p>'+esc(t.length>180?t.slice(0,180)+'…':t)+'</p>'+(t.length>180?'<div class="meta"><a href="javascript:void 0" onclick="abrirTexto(\'informativos\','+i+')">Ler tudo</a></div>':'')+'<div class="card-pe">'+btSh(k)+'</div></div></article>';}).join('');
 }
 function rFotos(){
   var f=[];
   lista(D.galeria_fotos).forEach(function(x){if(urlOk(x.url)&&!ehVideo(x.url))f.push({u:x.url,l:x.legenda||'',t:x.timestamp||0});});
-  lista(D.galeria).forEach(function(x){if(urlOk(x.url)&&vivo(x)&&x.tp!=='video'&&!ehVideo(x.url))f.push({u:x.url,l:x.leg||x.titulo||x.tit||'',t:quando(x)});});
+  lista(D.galeria).forEach(function(x){if(urlOk(x.url)&&!urlLocal(x.url)&&vivo(x)&&x.tp!=='video'&&!ehVideo(x.url))f.push({u:x.url,l:x.leg||x.titulo||x.tit||'',t:quando(x)});});
   f.sort(function(a,b){return b.t-a.t;});
   var box=document.getElementById('lista-fotos');
   if(!f.length){box.innerHTML=vazio('As fotos publicadas no painel aparecem aqui.');return;}
-  box.innerHTML=f.slice(0,12).map(function(x){return '<button onclick="abrirFoto(\''+esc(x.u)+'\')" aria-label="'+esc(x.l||'Foto')+'"><img src="'+esc(x.u)+'" alt="'+esc(x.l)+'" loading="lazy"></button>';}).join('');
+  box.innerHTML=f.slice(0,12).map(function(x){
+    var k=reg({s:'foto',id:hid(x.u),t:x.l||'Momentos da nossa igreja',img:x.u,tipo:'Galeria de fotos',cta:'Toque e veja as fotos',foto:x.u});
+    return '<div class="foto-it" data-sh="'+k+'"><button class="foto-ab" onclick="abrirFoto(\''+esc(x.u)+'\')" aria-label="'+esc(x.l||'Foto')+'"><img src="'+esc(x.u)+'" alt="'+esc(x.l)+'" loading="lazy"></button>'+btSh(k,'canto')+'</div>';}).join('');
 }
 function rAniv(){
   var m=new Date().getMonth()+1;
   var l=lista(D.aniversariantes).filter(function(a){var p=String(a.dt||'').split('-');return p.length>=2&&+(p.length===3?p[1]:p[0])===m;}).sort(function(a,b){return +String(a.dt).split('-').pop()-+String(b.dt).split('-').pop();});
   so('aniv-sec',l.length>0);document.getElementById('aniv-mes').textContent=MESES[m-1];
-  document.getElementById('lista-aniv').innerHTML=l.map(function(a){return '<div class="card pessoa">'+(urlOk(a.foto)?'<img class="avatar" src="'+esc(a.foto)+'" alt="">':'<div class="avatar">'+esc(iniciais(a.nm))+'</div>')+'<b>'+esc(a.nm)+'</b><small>🎂 dia '+esc(String(a.dt).split('-').pop())+(a.fn?' · '+esc(a.fn):'')+'</small></div>';}).join('');
+  document.getElementById('lista-aniv').innerHTML=l.map(function(a){var dia=String(a.dt).split('-').pop();
+    var k=reg({s:'aniv',id:idDe(a.nm,a.dt),t:'Feliz aniversário, '+(a.nm||'')+'!',d:'Dia '+dia+' de '+MESES[m-1]+'. Deus abençoe sua vida!',img:urlOk(a.foto)?a.foto:'',tipo:'🎂 Aniversariante',cta:'Deixe seu abraço'});
+    return '<div class="card pessoa" data-sh="'+k+'">'+btSh(k,'canto')+(urlOk(a.foto)?'<img class="avatar" src="'+esc(a.foto)+'" alt="">':'<div class="avatar">'+esc(iniciais(a.nm))+'</div>')+'<b>'+esc(a.nm)+'</b><small>🎂 dia '+esc(dia)+(a.fn?' · '+esc(a.fn):'')+'</small></div>';}).join('');
 }
 function rLideres(){
   var l=lista(D.lideranca).map(function(x){return {nm:x.nm,cg:x.cg,foto:x.foto};}).concat(lista(D.obreiros).map(function(x){return {nm:x.nm,cg:x.fn,foto:x.foto};})).filter(function(x){return x.nm;});
   so('lideranca-sec',l.length>0);
-  document.getElementById('lista-lideres').innerHTML=l.slice(0,12).map(function(a){return '<div class="card pessoa">'+(urlOk(a.foto)?'<img class="avatar" src="'+esc(a.foto)+'" alt="" loading="lazy">':'<div class="avatar">'+esc(iniciais(a.nm))+'</div>')+'<b>'+esc(a.nm)+'</b><small>'+esc(a.cg||'')+'</small></div>';}).join('');
+  document.getElementById('lista-lideres').innerHTML=l.slice(0,12).map(function(a){
+    var k=reg({s:'lider',id:idDe(a.nm,a.cg),t:a.nm,d:a.cg,img:urlOk(a.foto)?a.foto:'',tipo:a.cg||'Liderança',cta:'Conheça nossa igreja'});
+    return '<div class="card pessoa" data-sh="'+k+'">'+btSh(k,'canto')+(urlOk(a.foto)?'<img class="avatar" src="'+esc(a.foto)+'" alt="" loading="lazy">':'<div class="avatar">'+esc(iniciais(a.nm))+'</div>')+'<b>'+esc(a.nm)+'</b><small>'+esc(a.cg||'')+'</small></div>';}).join('');
 }
 
 /* ── vídeo de fundo do topo: o último vídeo gravado no Estúdio de Mídia ── */
@@ -871,7 +981,180 @@ function tocarHero(i){
   v.onerror=function(){_hv.lista.splice(_hv.i,1);if(!_hv.lista.length){h.classList.remove('com-video');v.classList.remove('on');slideFotos();}else tocarHero(_hv.i);};
   var p=v.play();if(p&&p.catch)p.catch(function(){v.classList.add('on');});
 }
-function render(){AGORA=Date.now();[rInfo,rHeroVideo,rAgendaMes,calcProx,rDestaque,rHoje,rHorarios,rProximos,rEstudio,rAvisos,rEventos,rPalavras,rSermoes,rVideos,rInformativos,rFotos,rAniv,rLideres].forEach(function(f){try{f();}catch(e){console.warn(f.name,e);}});}
+function render(){AGORA=Date.now();[rInfo,rFixos,rHeroVideo,rAgendaMes,calcProx,rDestaque,rHoje,rHorarios,rProximos,rTV,rAvisos,rEventos,rPalavras,rSermoes,rVideos,rInformativos,rFotos,rAniv,rLideres].forEach(function(f){try{f();}catch(e){console.warn(f.name,e);}});marcarPulsa();}
+
+/* ═════════ COMPARTILHAR ═════════
+   Cada card tem um botão. Ele monta uma imagem bonita (1200×630) com a foto do próprio card,
+   sobe a imagem para o Cloudinary e grava um link curto no Firebase (obpc/links/CÓDIGO).
+   O Worker obpc-og mostra essa imagem na prévia do WhatsApp/Facebook e leva a pessoa
+   direto para a publicação. Nenhuma senha ou chave fica aqui: o envio usa o preset público. */
+var SITE='https://obpcsaofernando199-sudo.github.io/Obpc/';
+var OG_WORKER='https://obpc-og.obpcsaofernando199.workers.dev';
+var REDES={face:'https://www.facebook.com/profile.php?id=61561313550152',insta:'https://www.instagram.com/obpc.saofernando/',grupo:''};
+var CLOUD={nome:'dm0egn0ks',preset:'obpc_media',pasta:'obpc_compartilhar'};
+var SH={};
+function hid(s){var h=5381;s=String(s);for(var i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return (h>>>0).toString(36);}
+function hash53(str){var h1=0xdeadbeef,h2=0x41c6ce57;for(var i=0;i<str.length;i++){var ch=str.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);}h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);return (4294967296*(2097151&h2)+(h1>>>0)).toString(36);}
+function idDe(){return hid(Array.prototype.slice.call(arguments).map(function(x){return x==null?'':String(x);}).join('|'));}
+function reg(o){var k=o.s+':'+o.id;SH[k]=o;return k;}
+function btSh(k,modo){return '<button type="button" class="bt-sh'+(modo?' '+modo:'')+'" onclick="event.stopPropagation();compartilhar(\''+k+'\')" aria-label="Compartilhar"><svg viewBox="0 0 24 24"><use href="#ic-sh"/></svg><span>Compartilhar</span></button>';}
+function grupoWpp(){var i=D.info||{};var g=i.grupo_wpp||i.grupoWpp||i.grupo||REDES.grupo||'';return /^https:\/\/chat\.whatsapp\.com\//.test(g)?g:'';}
+function lerJ(k){try{return JSON.parse(localStorage.getItem(k)||'{}')||{};}catch(e){return {};}}
+function gravarJ(k,o){try{var ks=Object.keys(o);while(ks.length>60){delete o[ks.shift()];}localStorage.setItem(k,JSON.stringify(o));}catch(e){}}
+function toast(t){var e=document.getElementById('toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(function(){e.classList.remove('on');},3800);}
+function copiarTxt(t){if(navigator.clipboard&&window.isSecureContext)return navigator.clipboard.writeText(t).catch(function(){return copiaVelha(t);});return Promise.resolve(copiaVelha(t));}
+function copiaVelha(t){var a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;opacity:0';document.body.appendChild(a);a.select();try{document.execCommand('copy');}catch(e){}a.remove();}
+
+/* itens fixos: versículo, rádio e o próprio site */
+function rFixos(){
+  var v=document.getElementById('vers-txt').textContent,r=document.getElementById('vers-ref').textContent;
+  reg({s:'versiculo',id:'hoje',t:'“'+v+'”',d:r+' · Versículo do dia',ref:r,tipo:'Versículo do dia',cta:'Toque e receba uma palavra',verso:true});
+  reg({s:'radio',id:'ao-vivo',t:'Rádio OBPC ao vivo',d:'Louvores e Palavra de Deus 24 horas. Toque e ouça agora!',tipo:'Ao vivo · 24 horas',cta:'Toque para ouvir',video:true});
+  var bv=(D.info&&D.info.bv)||'Uma família que ama a Palavra de Deus e acolhe você.';
+  reg({s:'site',id:'inicio',t:'Venha nos conhecer!',d:bv+' Rádio ao vivo, TV OBPC, agenda e muito mais.',tipo:'O Brasil para Cristo',cta:'Toque e conheça',linhas:['Rádio OBPC ao vivo 24h','TV OBPC com vídeos e podcasts','Agenda do mês e próximos cultos'],u:SITE});
+}
+function compartilharSite(){compartilhar('site:inicio');}
+function radioCompartilhar(){compartilhar('radio:ao-vivo');}
+function destinoDe(o){return o.u||(SITE+'?s='+encodeURIComponent(o.s)+'&id='+encodeURIComponent(o.id));}
+function linhaInfo(o){var p=[];if(o.dt&&dt(o.dt))p.push(fmtData(o.dt).replace(/<[^>]+>/g,''));if(o.h)p.push(o.h);if(o.l)p.push(o.l);return p;}
+
+/* ── a imagem da prévia (1200×630) ── */
+function carregaImg(u){return new Promise(function(ok,erro){if(!u)return erro();var im=new Image();im.crossOrigin='anonymous';var t=setTimeout(erro,9000);im.onload=function(){clearTimeout(t);ok(im);};im.onerror=function(){clearTimeout(t);erro();};im.src=u;});}
+function fontesProntas(){try{return Promise.race([Promise.all(['600 64px Fraunces','italic 500 50px Fraunces','800 26px Manrope','600 28px Manrope'].map(function(f){return document.fonts.load(f);})),new Promise(function(r){setTimeout(r,2500);})]);}catch(e){return Promise.resolve();}}
+function quebra(g,txt,larg,max){var ps=String(txt).split(/\s+/),ls=[],l='';ps.forEach(function(p){var t=l?l+' '+p:p;if(g.measureText(t).width>larg&&l){ls.push(l);l=p;}else l=t;});if(l)ls.push(l);if(ls.length>max){ls=ls.slice(0,max);var u=ls[max-1];while(u.length&&g.measureText(u+'…').width>larg)u=u.slice(0,-1);ls[max-1]=u.replace(/[\s,.;:]+$/,'')+'…';}return ls;}
+function pilula(g,x,y,w,h){var r=h/2;g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();}
+function desenhar(o,im){
+  var W=1200,H=630,c=document.createElement('canvas');c.width=W;c.height=H;var g=c.getContext('2d');
+  var SER='Fraunces, Georgia, serif',SAN='Manrope, Arial, sans-serif';
+  g.fillStyle='#0A1022';g.fillRect(0,0,W,H);
+  if(im){var r=Math.max(W/im.width,H/im.height),w=im.width*r,h=im.height*r;g.drawImage(im,(W-w)/2,(H-h)/2,w,h);}
+  else{var bg=g.createLinearGradient(0,0,W,H);bg.addColorStop(0,'#16224A');bg.addColorStop(1,'#070B18');g.fillStyle=bg;g.fillRect(0,0,W,H);}
+  var vl=g.createLinearGradient(0,0,W,0);vl.addColorStop(0,'rgba(7,11,24,.9)');vl.addColorStop(.45,'rgba(7,11,24,.62)');vl.addColorStop(.8,'rgba(7,11,24,.12)');vl.addColorStop(1,'rgba(7,11,24,0)');g.fillStyle=vl;g.fillRect(0,0,W,H);
+  var vb=g.createLinearGradient(0,H*.45,0,H);vb.addColorStop(0,'rgba(7,11,24,0)');vb.addColorStop(1,'rgba(7,11,24,.85)');g.fillStyle=vb;g.fillRect(0,0,W,H);
+  var gl=g.createRadialGradient(120,60,0,120,60,520);gl.addColorStop(0,'rgba(242,193,78,.30)');gl.addColorStop(1,'rgba(242,193,78,0)');g.fillStyle=gl;g.fillRect(0,0,W,H);
+  var ouro=g.createLinearGradient(0,0,W,H);ouro.addColorStop(0,'#FFE29A');ouro.addColorStop(.45,'#F2C14E');ouro.addColorStop(1,'#C8902E');
+  g.strokeStyle='rgba(242,193,78,.55)';g.lineWidth=3;g.strokeRect(18,18,W-36,H-36);
+  var X=72,larg=o.video&&im?720:840,y=78;
+  /* selo */
+  var selo=String(o.tipo||'OBPC').toUpperCase();g.font='800 22px '+SAN;var sw=g.measureText(selo).width+44;
+  pilula(g,X,y,sw,44);g.fillStyle='rgba(242,193,78,.14)';g.fill();g.strokeStyle='rgba(242,193,78,.8)';g.lineWidth=2;g.stroke();
+  g.fillStyle='#FFE29A';g.textBaseline='middle';g.fillText(selo,X+22,y+23);y+=84;
+  /* título */
+  var tam=o.verso?54:76,lin;
+  for(;tam>=40;tam-=4){g.font=(o.verso?'italic 500 ':'600 ')+tam+'px '+SER;lin=quebra(g,o.t||'',larg,o.verso?5:3);if(lin.length<=(o.verso?4:2)||tam<=44)break;}
+  g.fillStyle='#FFFFFF';g.textBaseline='top';g.shadowColor='rgba(0,0,0,.55)';g.shadowBlur=18;
+  lin.forEach(function(l){g.fillText(l,X,y);y+=tam*1.12;});g.shadowBlur=0;y+=8;
+  /* informações */
+  var info=o.verso?[o.ref]:linhaInfo(o);
+  if(info.length){g.font='700 30px '+SAN;g.fillStyle='#FFE29A';g.fillText(quebra(g,info.join('  •  '),larg,1)[0],X,y);y+=50;}
+  else if(o.d&&!o.linhas&&!o.verso){g.font='500 28px '+SAN;g.fillStyle='rgba(244,241,234,.86)';quebra(g,o.d,larg,2).forEach(function(l){g.fillText(l,X,y);y+=38;});y+=10;}
+  if(o.linhas&&o.linhas.length){g.font='700 26px '+SAN;o.linhas.slice(0,Math.max(1,Math.floor((470-y)/38))).forEach(function(l){g.fillStyle='#F2C14E';g.fillText('◆',X,y+2);g.fillStyle='#F4F1EA';g.fillText(quebra(g,l,larg-40,1)[0],X+36,y);y+=38;});}
+  /* chamada */
+  var cta=(o.video?'▶  ':'')+(o.cta||'Toque e confira');g.font='800 28px '+SAN;var cw=g.measureText(cta).width+64,cy=H-128;
+  g.shadowColor='rgba(242,193,78,.45)';g.shadowBlur=26;pilula(g,X,cy,cw,62);g.fillStyle=ouro;g.fill();g.shadowBlur=0;
+  g.fillStyle='#0A0F1F';g.textBaseline='middle';g.fillText(cta,X+32,cy+32);
+  /* assinatura (sem logo) */
+  g.textAlign='right';g.font='italic 500 30px '+SER;g.fillStyle='#FFE29A';g.fillText('OBPC Jardim São Fernando',W-64,H-86);
+  g.font='700 18px '+SAN;g.fillStyle='rgba(244,241,234,.7)';g.fillText('O BRASIL PARA CRISTO',W-64,H-54);g.textAlign='left';
+  /* botão de play */
+  if(o.video&&im){var px=W-215,py=250;g.beginPath();g.arc(px,py,78,0,Math.PI*2);g.fillStyle='rgba(7,11,24,.45)';g.fill();g.lineWidth=5;g.strokeStyle='#FFE29A';g.stroke();g.beginPath();g.moveTo(px-24,py-38);g.lineTo(px+40,py);g.lineTo(px-24,py+38);g.closePath();g.fillStyle='#FFE29A';g.fill();}
+  return c;
+}
+function paraBlob(c){return new Promise(function(ok,erro){try{c.toBlob(function(b){b?ok(b):erro();},'image/jpeg',.86);}catch(e){erro(e);}});}
+function subirImg(blob){
+  var fd=new FormData();fd.append('file',blob,'compartilhar.jpg');fd.append('upload_preset',CLOUD.preset);fd.append('folder',CLOUD.pasta);
+  return Promise.race([fetch('https://api.cloudinary.com/v1_1/'+CLOUD.nome+'/image/upload',{method:'POST',body:fd}).then(function(r){return r.json();}).then(function(j){if(!j.secure_url)throw 0;return j.secure_url;}),new Promise(function(_,e){setTimeout(e,15000);})]);
+}
+function leve(u){if(/res\.cloudinary\.com/.test(u)&&u.indexOf('/image/upload/')>-1&&!/\/upload\/[^\/]*(w_\d+|f_jpg)/.test(u))return u.replace('/image/upload/','/image/upload/c_limit,w_1200,q_auto,f_jpg/');return u;}
+/* prepara tudo: imagem + link curto. Devolve {link, img, blob, previa} */
+function preparar(o){
+  var foto=o.img&&urlOk(o.img)&&!/^data:/.test(o.img)?o.img:'';
+  var fundo=FOTOS_BIBLIA[Math.abs(parseInt(hid(o.s+o.id),36))%FOTOS_BIBLIA.length].replace('w=1920','w=1400');
+  var assin=hash53(JSON.stringify([o.s,o.id,o.t,o.d,foto,o.dt,o.h,o.l,o.linhas,o.cta,'v1']));
+  var cache=lerJ('obpc_sh_img');
+  var r={};
+  return fontesProntas().then(function(){return carregaImg(foto).then(function(im){return {im:im,da:'card'};},function(){return carregaImg(fundo).then(function(im){return {im:im,da:'biblia'};},function(){return {im:null,da:'nada'};});});})
+  .then(function(x){var c=desenhar(o,x.im);r.previa=c.toDataURL('image/jpeg',.8);
+    /* se a foto do card não deixou desenhar (proteção do servidor), a prévia usa a própria foto do card */
+    r.semMontagem=!!foto&&x.da!=='card';
+    return paraBlob(c);})
+  .then(function(b){r.blob=b;
+    if(r.semMontagem)return leve(foto);
+    if(cache[assin])return cache[assin];
+    return subirImg(b).then(function(u){cache[assin]=u;gravarJ('obpc_sh_img',cache);return u;},function(){return foto?leve(foto):SITE+'og-banner.png';});})
+  .then(function(img){r.img=leve(img);return gravarLink(o,r.img);})
+  .then(function(l){r.link=l;return r;});
+}
+function gravarLink(o,img){
+  var rec={s:o.s,id:String(o.id)};
+  if(o.t)rec.t=String(o.t).slice(0,120);
+  var d=o.d||'';if(!d){var inf=linhaInfo(o);d=inf.join(' · ');}
+  if(d)rec.d=String(d).replace(/\s+/g,' ').slice(0,200);
+  if(img)rec.i=img;if(o.dt)rec.dt=String(o.dt).slice(0,40);if(o.h)rec.h=String(o.h).slice(0,20);if(o.l)rec.l=String(o.l).slice(0,80);
+  rec.u=destinoDe(o);
+  var code=hash53(JSON.stringify(rec)).slice(0,7),link=OG_WORKER+'/'+code;
+  var ok=lerJ('obpc_sh_ok');if(ok[code])return Promise.resolve(link);
+  return Promise.race([fetch(FB+'/links/'+code+'.json',{method:'PUT',body:JSON.stringify(rec)}).then(function(x){if(x.ok){ok[code]=1;gravarJ('obpc_sh_ok',ok);}}),new Promise(function(r){setTimeout(r,6000);})]).catch(function(){}).then(function(){return link;});
+}
+function mensagem(o,link){
+  var t=o.verso?o.t+'\n_'+o.ref+'_':'*'+String(o.t||'').replace(/\*/g,'')+'*';
+  var inf=linhaInfo(o).join(' · ');
+  var ic={radio:'📻',tv:'📺',versiculo:'📖',agenda:'📅',cultos:'⛪',culto:'⛪',aniv:'🎉',foto:'📸',site:'🙌'}[o.s]||'✨';
+  return ic+' '+t+(inf?'\n🗓️ '+inf:'')+'\n\n👉 '+(o.cta||'Toque e confira')+': '+link;
+}
+
+/* ── a janela de compartilhar ── */
+var _sh=null;
+function compartilhar(k){
+  var o=SH[k];if(!o){if(k==='site:inicio'||k==='radio:ao-vivo'||k==='versiculo:hoje'){rFixos();o=SH[k];}if(!o)return;}
+  var j=document.getElementById('shf');j.classList.add('on');document.body.style.overflow='hidden';
+  var bts=j.querySelectorAll('.shf-bts button');bts.forEach(function(b){b.disabled=true;});
+  j.querySelector('.r-mais').hidden=!navigator.share;
+  document.getElementById('shf-tit').textContent=o.s==='site'?'Compartilhar o site':'Compartilhar';
+  var im=document.getElementById('shf-img');im.removeAttribute('src');im.hidden=true;
+  document.getElementById('shf-st').textContent='⏳ Preparando a imagem…';document.getElementById('shf-link').innerHTML='';
+  var meu=_sh={o:o};
+  preparar(o).then(function(r){if(_sh!==meu)return;meu.r=r;
+    im.src=r.semMontagem?r.img:r.previa;im.hidden=false;im.onerror=function(){im.src=r.previa;};
+    document.getElementById('shf-st').textContent='';
+    document.getElementById('shf-link').innerHTML='Link: <b>'+esc(r.link.replace(/^https:\/\//,''))+'</b>';
+    bts.forEach(function(b){b.disabled=false;});
+  }).catch(function(e){console.warn(e);if(_sh!==meu)return;var l=destinoDe(o);meu.r={link:l};document.getElementById('shf-st').textContent='';document.getElementById('shf-link').innerHTML='Link: <b>'+esc(l)+'</b>';bts.forEach(function(b){b.disabled=false;});});
+}
+function fecharSh(){document.getElementById('shf').classList.remove('on');document.body.style.overflow='';_sh=null;}
+function arquivoImg(r){try{return r.blob?new File([r.blob],'obpc.jpg',{type:'image/jpeg'}):null;}catch(e){return null;}}
+function shRede(rede){
+  if(!_sh||!_sh.r)return;var o=_sh.o,r=_sh.r,link=r.link,msg=mensagem(o,link);
+  if(rede==='wpp')window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+  else if(rede==='grupo'){var g=grupoWpp();if(g){copiarTxt(msg);toast('Mensagem copiada! No grupo, toque e segure no campo e escolha Colar.');setTimeout(function(){window.open(g,'_blank');},700);}else{toast('Escolha o grupo da igreja na lista do WhatsApp.');window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');}}
+  else if(rede==='face')window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(link),'_blank','noopener,width=640,height=600');
+  else if(rede==='insta'){
+    var f=arquivoImg(r);copiarTxt(msg);
+    if(f&&navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],title:o.t||'OBPC',text:msg}).catch(function(){});toast('Escolha o Instagram. O texto com o link já está copiado para colar.');}
+    else{if(r.blob){var a=document.createElement('a');a.href=URL.createObjectURL(r.blob);a.download='obpc-compartilhar.jpg';document.body.appendChild(a);a.click();a.remove();}
+      toast('Imagem salva! Abra o Instagram, publique a imagem e cole o texto (já copiado).');setTimeout(function(){window.open(REDES.insta,'_blank');},900);}
+  }
+  else if(rede==='copiar')copiarTxt(link).then(function(){toast('Link copiado ✓');});
+  else if(rede==='mais'){var f2=arquivoImg(r),d={title:o.t||'OBPC',text:msg};if(f2&&navigator.canShare&&navigator.canShare({files:[f2]}))d.files=[f2];navigator.share(d).catch(function(){});}
+}
+
+/* ── quem chega pelo link vai direto na publicação ── */
+var SEC_DE={destaque:'destaque-sec',banner:'destaque-sec',agenda:'agenda',radio:'radio',tv:'tv',video:'tv',videos:'tv',avisos:'avisos',aviso:'avisos',eventos:'eventos',evento:'eventos',palavra:'palavra',palavras:'palavra',sermao:'sermoes-sec',info:'informativos-sec',foto:'fotos',galeria:'fotos',aniv:'aniv-sec',lider:'lideranca-sec',cultos:'cultos',culto:'cultos',versiculo:'versiculo',site:''};
+var _dl=(function(){try{var p=new URLSearchParams(location.search);var s=p.get('s');if(!s)return null;return {s:s,id:p.get('id')||'',n:0};}catch(e){return null;}})();
+var _pulsa=null;
+function marcarPulsa(){if(!_pulsa)return;if(Date.now()>_pulsa.ate){_pulsa=null;return;}var e=document.querySelector('[data-sh="'+_pulsa.k+'"]');if(e)e.classList.add('pulsa');}
+function irDeepLink(final){
+  if(!_dl)return;var el=null;if(!final)return;
+  try{el=document.querySelector('[data-sh="'+CSS.escape(_dl.s+':'+_dl.id)+'"]');}catch(e){}
+  if(!el&&!final)return;
+  if(!el){var sid=SEC_DE[_dl.s];el=sid?document.getElementById(sid):null;}
+  var d=_dl;_dl=null;
+  try{history.replaceState(null,'',location.pathname+(el&&el.id?'#'+el.id:''));}catch(e){}
+  if(!el)return;
+  el.closest('.revela')&&el.closest('.revela').classList.add('on');
+  setTimeout(function(){el.scrollIntoView({behavior:'smooth',block:'center'});el.classList.add('pulsa');if(el.getAttribute('data-sh'))_pulsa={k:el.getAttribute('data-sh'),ate:Date.now()+4000};setTimeout(function(){el.classList.remove('pulsa');},4000);
+    if(d.s==='foto'&&SH[d.s+':'+d.id])abrirFoto(SH[d.s+':'+d.id].foto);},350);
+}
 
 /* ── janela ── */
 function abrirJanela(html,escuro){var c=document.getElementById('janela-c');c.className='janela-c'+(escuro?' escuro':'');c.innerHTML=html;document.getElementById('janela').classList.add('on');document.body.style.overflow='hidden';}
@@ -879,14 +1162,13 @@ function fecharJanela(){document.getElementById('janela').classList.remove('on')
 function abrirFoto(u){abrirJanela('<img src="'+esc(u)+'" alt="">',true);}
 function abrirVideo(u,t){abrirJanela(t==='yt'?'<iframe src="https://www.youtube.com/embed/'+esc(u)+'?autoplay=1" allow="autoplay; encrypted-media; fullscreen" allowfullscreen title="Vídeo"></iframe>':'<video src="'+esc(u)+'" controls autoplay playsinline></video>',true);}
 function abrirTexto(tipo,i){var l=tipo==='avisos'?D.avisos_ord:tipo==='palavras'?D.palavras_ord:D.informativos_ord;var x=l&&l[i];if(!x)return;abrirJanela('<div class="janela-txt"><h3>'+esc(x.tit||x.com_tit||'')+'</h3><p>'+esc(x.txt||x.com_sub||'')+'</p></div>');}
-document.addEventListener('keydown',function(e){if(e.key==='Escape')fecharJanela();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){fecharJanela();fecharSh();}});
 
 /* ── formulários → WhatsApp ── */
 function abrirWpp(t){window.open('https://wa.me/'+WPP+'?text='+encodeURIComponent(t),'_blank');}
 function enviarOracao(){var n=document.getElementById('or-nome').value.trim(),t=document.getElementById('or-txt').value.trim();if(!t){alert('Escreva o seu pedido de oração.');return;}abrirWpp('🙏 *PEDIDO DE ORAÇÃO*\n\n'+(n?'👤 '+n+'\n':'👤 Anônimo\n')+'\n'+t);}
 function enviarVisita(){var n=document.getElementById('vi-nome').value.trim(),e=document.getElementById('vi-end').value.trim();if(!n||!e){alert('Preencha o nome e o endereço.');return;}var d=document.getElementById('vi-dia').value,p=document.getElementById('vi-per').value,m=document.getElementById('vi-mot').value.trim();abrirWpp('🏠 *VISITA DO PASTOR*\n\n👤 '+n+'\n📍 '+e+(d?'\n📅 '+fmtData(d):'')+'\n🕐 '+p+(m?'\n📝 '+m:''));}
 function copiarPix(b){var c=document.getElementById('pix-chave').textContent.replace(/\D/g,'');(navigator.clipboard?navigator.clipboard.writeText(c):Promise.reject()).then(function(){b.textContent='Copiado ✓';setTimeout(function(){b.textContent='Copiar';},2000);}).catch(function(){prompt('Copie a chave PIX:',c);});}
-function compartilharSite(){var u='https://obpcsaofernando199-sudo.github.io/Obpc/';var t='📖 Conheça o site da nossa igreja, OBPC Jardim São Fernando! Tem até a Rádio OBPC ao vivo.';if(navigator.share)navigator.share({title:'OBPC Jardim São Fernando',text:t,url:u}).catch(function(){});else window.open('https://wa.me/?text='+encodeURIComponent(t+'\n'+u),'_blank');}
 
 /* ── carregar dados (e atualizar sozinho quando algo novo é publicado) ── */
 var CHAVES=/^(info|banner_culto|proximos_cultos|horarios|avisos|eventos|palavras|sermoes|videos|cultos|informativos|galeria_fotos|galeria|aniversariantes|lideranca|obreiros|escala_agenda|escala_pro)$/;
@@ -897,11 +1179,11 @@ function carregar(){
 /* escuta mudanças em tempo real (gravação nova no estúdio aparece na hora) */
 function escutar(){
   if(!window.EventSource)return;
-  ['videos','galeria','banner_culto','avisos','palavras'].forEach(function(k){try{var es=new EventSource(FB+'/'+k+'.json');var primeiro=true,t=null;function mudou(){if(primeiro){primeiro=false;return;}clearTimeout(t);t=setTimeout(carregar,1500);}es.addEventListener('put',mudou);es.addEventListener('patch',function(){primeiro=false;mudou();});es.onerror=function(){primeiro=true;};}catch(e){}});
+  ['videos','galeria','banner_culto','avisos','palavras','cultos'].forEach(function(k){try{var es=new EventSource(FB+'/'+k+'.json');var primeiro=true,t=null;function mudou(){if(primeiro){primeiro=false;return;}clearTimeout(t);t=setTimeout(carregar,1500);}es.addEventListener('put',mudou);es.addEventListener('patch',function(){primeiro=false;mudou();});es.onerror=function(){primeiro=true;};}catch(e){}});
 }
 try{var c=JSON.parse(localStorage.getItem('obpc_site_cache')||'null');if(c)D=c;}catch(e){}
 render();
-carregar().then(function(){setTimeout(escutar,4000);});
+carregar().then(function(){irDeepLink(true);setTimeout(escutar,4000);});
 setInterval(carregar,120000);
 document.addEventListener('visibilitychange',function(){if(!document.hidden)carregar();});
 if('serviceWorker' in navigator&&location.protocol==='https:'){navigator.serviceWorker.register('sw.js').catch(function(){});}
