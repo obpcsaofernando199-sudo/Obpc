@@ -188,9 +188,12 @@ function hid(s){let h=5381;s=String(s);for(let i=0;i<s.length;i++)h=((h<<5)+h+s.
 function tsDe(x,i){const t=x.data?Date.parse(x.data+'T12:00'):0;return (isNaN(t)?0:t)-i*1000;}
 function normE(){
   const out=[],gr={},agora=Date.now(),vivo=x=>!(x&&x.expira&&x.expira<=agora);
-  RV.filter(vivo).slice(0,12).forEach((x,i)=>{if(!x.url||/^(idb:|blob:|mem:)/.test(x.url))return;
-    out.push({id:'e'+hid(x.url),ts:tsDe(x,i),t:x.titulo||x.tit||'Vídeo OBPC',d:x.data||'',r:[x.desc,x.entrevistado?'Entrevistado: '+x.entrevistado:''].filter(Boolean).join('\n'),a:x.autor||'',m:[{k:'v',src:x.url}]});});
-  RG.filter(vivo).slice(0,30).forEach((x,i)=>{if(!x.url||/^(idb:|blob:|mem:)/.test(x.url))return;
+  /* os mais novos primeiro (o Firebase entrega na ordem de chegada; antes o corte de 12 deixava o vídeo novo de fora) */
+  const novos=l=>l.map((x,i)=>({x:x,i:i,q:x.ts||x.timestamp||(x.data?Date.parse(x.data+'T12:00'):0)||0})).sort((a,b)=>(b.q-a.q)||(b.i-a.i)).map(o=>o.x);
+  novos(RV.filter(vivo)).slice(0,40).forEach((x,i)=>{if(!x.url||/^(idb:|blob:|mem:)/.test(x.url))return;
+    const y=ytId(x.url);
+    out.push({id:'e'+hid(x.url),ts:tsDe(x,i),t:x.titulo||x.tit||'Vídeo OBPC',d:x.data||'',r:[x.desc||x.dsc,x.entrevistado?'Entrevistado: '+x.entrevistado:''].filter(Boolean).join('\n'),a:x.autor||'',m:[y?{k:'y',id:y,src:x.url}:{k:'v',src:x.url}]});});
+  novos(RG.filter(vivo)).slice(0,60).forEach((x,i)=>{if(!x.url||/^(idb:|blob:|mem:)/.test(x.url))return;
     const t=x.titulo||x.tit||'Momento OBPC',k=t+'|'+(x.data||'')+'|'+(x.autor||'');
     if(!gr[k]){gr[k]={id:'e'+hid(k),ts:tsDe(x,i),t:t,d:x.data||'',r:'',a:x.autor||'',m:[]};out.push(gr[k]);}
     gr[k].m.push({k:'i',src:x.url});});
