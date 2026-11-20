@@ -394,8 +394,9 @@ video.pv,audio.pv{border-radius:14px;box-shadow:0 0 0 2px #cfdcd4}
   <div class="card stack" id="p-pin">
     <h2>Painel do Pastor</h2>
     <p class="note">Área do pastor e da liderança. Digite a senha para entrar.</p>
-    <input type="password" id="p-senha" inputmode="numeric" autocomplete="off" placeholder="Senha">
+    <div style="display:flex;gap:8px;align-items:center"><input type="password" id="p-senha" inputmode="numeric" pattern="[0-9]*" autocomplete="new-password" autocapitalize="off" spellcheck="false" placeholder="Senha (só números)" style="flex:1;min-width:0"><button type="button" class="btn" id="p-ver" style="flex:0 0 auto;padding:0 14px" aria-label="Mostrar a senha">Ver</button></div>
     <button class="btn pri" id="p-entrar">Entrar</button>
+    <p class="note" style="font-size:12.5px">Depois de entrar uma vez, este celular fica liberado por 30 dias. Toque em “Trancar” para pedir a senha de novo.</p>
   </div>
   <div id="p-area" class="stack" hidden>
     <div class="card"><h2>Resumo do site</h2><div id="p-res"></div></div>
@@ -493,11 +494,15 @@ var CFG={
   /* QUANTAS HORAS o que for publicado fica no site/nuvem/celular antes de apagar sozinho. 0 = nunca apaga. */
   validadeH:24,
   limiteMB:100, /* maior vídeo que o Cloudinary GRATUITO aceita (acima disso o envio falha). Se o plano for pago, aumente. */
-  pin:'102030', /* senha do painel do pastor: TROQUE por outra */
+  pin:'102030', /* senha do painel do pastor: TROQUE por outra (só números) */
+  pinAntigos:['1020'], /* senhas antigas que ainda valem (para quem já tinha decorado). Para cancelar uma, apague daqui. */
   aviso:3 /* alerta amarelo quando restarem este tanto de vagas ou menos */
 };
-var EQUIPE=['Julia','Giovana','Eliza'];
-var VERSAO='2026-11-16m';
+var EQUIPE=['Júlia','Giovana','Eliza'];
+var VERSAO='2026-11-20a';
+/* compara nomes sem ligar para acento e maiúscula ("Julia" = "Júlia") */
+function mesmoNome(a,b){var n=function(x){return String(x||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toLowerCase()};return !!a&&n(a)===n(b)}
+function nomeCerto(x){for(var i=0;i<EQUIPE.length;i++)if(mesmoNome(x,EQUIPE[i]))return EQUIPE[i];return x}
 /* perguntas da entrevista: escritas pela equipe, sem perguntas padrão. Ficam guardadas neste celular. */
 var PERGUNTAS=[];
 try{var _p=JSON.parse(localStorage.getItem('midia_perguntas')||'[]');if(Array.isArray(_p))PERGUNTAS=_p.filter(function(x){return typeof x==='string'&&x.trim()}).slice(0,30)}catch(e){}
@@ -558,11 +563,12 @@ function limparPedacos(rid){return db().then(function(d){return new Promise(func
 
 /* ---------- quem grava ---------- */
 var quem=localStorage.getItem('midia_quem')||'';
-if(quem==='Elisa'){quem='Eliza';try{localStorage.setItem('midia_quem',quem)}catch(e){}} /* nome corrigido: troca o que já estava salvo no celular */
+if(quem==='Elisa')quem='Eliza';
+if(quem&&nomeCerto(quem)!==quem){quem=nomeCerto(quem);try{localStorage.setItem('midia_quem',quem)}catch(e){}} /* nome corrigido (Julia → Júlia, Elisa → Eliza): troca o que já estava salvo no celular */
 (function(){var he=document.querySelector('header .e');if(he)he.textContent+=' · v'+VERSAO})();
 function desenhaQuem(){passo();
   $('#quem').innerHTML=EQUIPE.map(function(n){return '<button class="chip'+(quem===n?' on':'')+'" data-q="'+n+'">'+n+'</button>'}).join('');
-  $$('#quem .chip').forEach(function(b){b.onclick=function(){quem=b.dataset.q;localStorage.setItem('midia_quem',quem);desenhaQuem()}});
+  $$('#quem .chip').forEach(function(b){b.onclick=function(){quem=b.dataset.q;try{localStorage.setItem('midia_quem',quem)}catch(e){}desenhaQuem()}});
 }
 desenhaQuem();
 
@@ -894,11 +900,11 @@ $('#foto-enviar').onclick=function(){
   confirmaLimite('galeria',fotos.length).then(function(vai){
    if(!vai){btn.disabled=false;toast('Envio cancelado. As fotos continuam aqui.');return}
    fotosParaItens().then(function(itens){
-    fotos=[];desenhaFotos();$('#foto-leg').value='';cont();
+    fotos=[];$('#thumbs').innerHTML='';$('#foto-salvar').disabled=true;$('#foto-leg').value='';cont();
     var ok=0,falhou=0,ultimo=null,i=0,motivo='';
     function prox(){
       if(i>=itens.length){
-        btn.disabled=false;tela('inicio');
+        btn.textContent='Enviar e publicar no site';tela('inicio');desenhaFotos();
         if(ultimo)abrirShare(ultimo);
         toast(ok+' foto(s) no site'+(falhou?' · '+falhou+' falharam ('+motivo+'). Estão em Minhas.':''),falhou?9000:4000);
         setTimeout(posPublicacao,4200);return;
@@ -916,7 +922,8 @@ var atual=null;
 function abrirRevisao(it){
   atual=it;
   $('#rev-h').textContent=(TIPOS[it.tipo]||'Gravação')+' pronto';
-  var url=URL.createObjectURL(it.blob);
+  if(revUrl)URL.revokeObjectURL(revUrl);
+  var url=revUrl=URL.createObjectURL(it.blob);
   $('#rev-pv').innerHTML=(it.audio?'<audio class="pv" controls src="'+url+'"></audio>':'<video class="pv" controls playsinline src="'+url+'" style="max-height:34vh"></video>')+'<p class="note" style="margin-top:6px;text-align:center">'+mb(it.tam||(it.blob&&it.blob.size)||0)+(it.dur?' · '+fmt(it.dur):'')+'</p>';
   $('#rev-pub').textContent='Enviar e publicar no site';
   $('#rev-valid').textContent=CFG.validadeH?'Depois de publicado, fica no site por '+(CFG.validadeH===24?'1 dia':CFG.validadeH+' horas')+' e some sozinho.':'';
@@ -927,15 +934,17 @@ function abrirRevisao(it){
   ['rev-pub','rev-guardar','rev-desc-btn'].forEach(function(i){$('#'+i).disabled=false});
   $('#f-rev').classList.add('show');
 }
-function fechaRevisao(){$('#f-rev').classList.remove('show');$('#rev-pv').innerHTML='';atual=null}
+var revUrl='';
+function fechaRevisao(){$('#f-rev').classList.remove('show');$('#rev-pv').innerHTML='';if(revUrl){URL.revokeObjectURL(revUrl);revUrl=''}atual=null}
 function lerForm(){
   atual.titulo=$('#rev-tit').value.trim()||tituloPadrao(atual.tipo);atual.desc=$('#rev-desc').value.trim();
   if(atual.tipo==='entrevista'){atual.ent=$('#rev-ent').value.trim()}
   return putItem(atual);
 }
-$('#rev-guardar').onclick=function(){lerForm().then(function(){toast('Guardado no celular. Envie quando quiser, na aba Minhas.');fechaRevisao()})};
-$('#rev-desc-btn').onclick=function(){if(!confirm('Descartar esta gravação? Ela será apagada do celular.'))return;var id=atual.id;fechaRevisao();delItem(id).then(cont)};
+$('#rev-guardar').onclick=function(){if(!atual)return;lerForm().then(function(){toast('Guardado no celular. Envie quando quiser, na aba Minhas.');fechaRevisao()})};
+$('#rev-desc-btn').onclick=function(){if(!atual)return;if(!confirm('Descartar esta gravação? Ela será apagada do celular.'))return;var id=atual.id;fechaRevisao();delItem(id).then(cont)};
 $('#rev-pub').onclick=function(){
+  if(!atual)return;
   if(atual.tipo==='entrevista'&&!$('#rev-cons').checked){toast('Marque que o entrevistado autorizou a publicação.');return}
   var it=atual;
   var jaNoSite=it.siteOk;
@@ -1326,10 +1335,18 @@ $('#b-liberar').onclick=function(){
 
 /* ---------- painel do pastor ---------- */
 var pOk=false,pFiltro='videos',pDados={videos:[],galeria:[]};
+try{pOk=+localStorage.getItem('midia_pastor_ate')>Date.now()}catch(e){}
 function painel(){$('#p-pin').hidden=pOk;$('#p-area').hidden=!pOk;if(pOk)pCarrega()}
-$('#p-entrar').onclick=function(){if($('#p-senha').value.trim()===CFG.pin){pOk=true;$('#p-senha').value='';painel()}else toast('Senha incorreta.')};
-$('#p-senha').onkeydown=function(e){if(e.key==='Enter')$('#p-entrar').click()};
-$('#p-sair').onclick=function(){pOk=false;painel()};
+/* aceita só os números digitados (ignora espaço, ponto ou traço que o teclado colocar) */
+function senhaOk(v){v=String(v||'').replace(/\D/g,'');return !!v&&[CFG.pin].concat(CFG.pinAntigos||[]).some(function(p){return String(p).replace(/\D/g,'')===v})}
+$('#p-entrar').onclick=function(){
+  var el=$('#p-senha');
+  if(senhaOk(el.value)){pOk=true;el.value='';try{localStorage.setItem('midia_pastor_ate',String(Date.now()+30*864e5))}catch(e){}painel();toast('Bem-vindo ao Painel do Pastor.')}
+  else{toast(el.value.trim()?'Senha incorreta. Confira os números e tente de novo.':'Digite a senha.');logErr('senha-pastor','senha errada');el.focus()}
+};
+$('#p-senha').onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();$('#p-entrar').click()}};
+$('#p-ver').onclick=function(){var el=$('#p-senha'),v=el.type==='password';el.type=v?'text':'password';this.textContent=v?'Esconder':'Ver'};
+$('#p-sair').onclick=function(){pOk=false;try{localStorage.removeItem('midia_pastor_ate')}catch(e){}painel()};
 $('#p-atualiza').onclick=function(){pCarrega()};
 $$('#p-filtro .chip').forEach(function(b){b.onclick=function(){pFiltro=b.dataset.f;$$('#p-filtro .chip').forEach(function(x){x.classList.toggle('on',x===b)});pDesenha()}});
 function pCarrega(){
@@ -1338,7 +1355,7 @@ function pCarrega(){
 }
 function pDesenha(){
   var por={};
-  ['videos','galeria'].forEach(function(k){pDados[k].forEach(function(x){var a=x.autor||'Outros';por[a]=por[a]||{v:0,f:0};por[a][k==='videos'?'v':'f']++})});
+  ['videos','galeria'].forEach(function(k){pDados[k].forEach(function(x){var a=nomeCerto(x.autor)||'Outros';por[a]=por[a]||{v:0,f:0};por[a][k==='videos'?'v':'f']++})});
   $('#p-res').innerHTML='<p class="note">Vídeos e áudios no site: <b>'+pDados.videos.length+' de '+CFG.lim.videos+'</b><br>Fotos no site: <b>'+pDados.galeria.length+' de '+CFG.lim.galeria+'</b></p><p class="note" style="margin-top:8px"><b>Quem publicou:</b></p>'+
     (Object.keys(por).map(function(a){return '<p class="note">• '+esc(a)+': '+por[a].v+' vídeo(s)/áudio(s) e '+por[a].f+' foto(s)</p>'}).join('')||'<p class="note">Nada publicado ainda.</p>');
   var l=pDados[pFiltro];
@@ -1357,7 +1374,7 @@ function retirarSite(k,x,depois,sem){
   if(!sem&&!confirm('Retirar do site?\n\n'+tituloItem(x)+'\n\nO arquivo também será apagado do Cloudinary. Não dá para desfazer.'))return;
   var u=CFG.fb+'/'+k+'.json';
   (function tenta(n){
-    fetch(u,{headers:{'X-Firebase-ETag':'true'},cache:'no-store'}).then(function(r){
+    fetch(u,{headers:{'X-Firebase-ETag':'true'},cache:'no-store'}).catch(function(){return fetch(u,{cache:'no-store'})}).then(function(r){
       if(!r.ok)throw new Error('leitura');var et=r.headers.get('ETag');
       return r.json().then(function(d){
         var arr=normLista(d).filter(function(y){return y.url!==x.url});
@@ -1367,7 +1384,7 @@ function retirarSite(k,x,depois,sem){
           if(w.status===412&&n<3)return tenta(n+1);throw new Error('gravação');
         });
       });
-    }).catch(function(){toast('Não consegui retirar agora. Tente de novo.')});
+    }).catch(function(e){logErr('retirar',e);toast('Não consegui retirar agora. Veja a internet e tente de novo.')});
   })(0);
 }
 /* apaga tudo o que sobra de uma publicação: arquivo e capa no Cloudinary, link curto no Firebase e marca no celular */
@@ -1390,8 +1407,8 @@ function desenhaSite(){
   if(!quem){box.innerHTML='';return}
   Promise.all([fbLer('videos'),fbLer('galeria')]).then(function(r){
     var its=[];
-    r[0].forEach(function(x){if(x&&x.autor===quem)its.push({k:'videos',x:x})});
-    r[1].forEach(function(x){if(x&&x.autor===quem)its.push({k:'galeria',x:x})});
+    r[0].forEach(function(x){if(x&&mesmoNome(x.autor,quem))its.push({k:'videos',x:x})});
+    r[1].forEach(function(x){if(x&&mesmoNome(x.autor,quem))its.push({k:'galeria',x:x})});
     if(!its.length){box.innerHTML='';return}
     box.innerHTML='<div class="card"><h2>Minhas publicações no site</h2><p class="note">Se não gostar de alguma, toque em Retirar do site. Ela some do site e do Cloudinary.</p></div>'+its.map(function(o,i){
       var x=o.x,th=o.k==='galeria'&&x.url?'<img src="'+esc(x.url.replace('/image/upload/','/image/upload/c_fill,w_160,h_160,q_auto,f_jpg/'))+'" alt="">':(/\.mp3(\?|$)/i.test(x.url||'')?'ÁUDIO':'VÍDEO');
