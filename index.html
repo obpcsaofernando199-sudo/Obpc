@@ -1076,7 +1076,7 @@ function preparar(o){
   var cache=lerJ('obpc_sh_img');
   var r={};
   return fontesProntas().then(function(){return carregaImg(foto).then(function(im){return {im:im,da:'card'};},function(){return carregaImg(fundo).then(function(im){return {im:im,da:'biblia'};},function(){return {im:null,da:'nada'};});});})
-  .then(function(x){var c=desenhar(o,x.im);r.previa=c.toDataURL('image/jpeg',.8);
+  .then(function(x){var c=desenhar(o,x.im);r.previa=c.toDataURL('image/jpeg',.8);r.png=new Promise(function(ok){try{c.toBlob(function(b){ok(b);},'image/png');}catch(e){ok(null);}});
     /* se a foto do card não deixou desenhar (proteção do servidor), a prévia usa a própria foto do card */
     r.semMontagem=!!foto&&x.da!=='card';
     return paraBlob(c);})
@@ -1125,19 +1125,25 @@ function compartilhar(k){
 }
 function fecharSh(){document.getElementById('shf').classList.remove('on');document.body.style.overflow='';_sh=null;}
 function arquivoImg(r){try{return r.blob?new File([r.blob],'obpc.jpg',{type:'image/jpeg'}):null;}catch(e){return null;}}
+/* A imagem vai junto: no celular (e no Windows) abre a lista de apps com a imagem + texto.
+   Onde o navegador não deixa mandar arquivo, a imagem é copiada para colar (Ctrl+V) e também baixada. */
+function podeArquivo(f){try{return !!(f&&navigator.canShare&&navigator.share&&navigator.canShare({files:[f]}));}catch(e){return false;}}
+function copiarImagem(r){try{if(!r.png||!window.ClipboardItem||!navigator.clipboard||!navigator.clipboard.write)return Promise.reject();return navigator.clipboard.write([new ClipboardItem({'image/png':r.png})]);}catch(e){return Promise.reject(e);}}
+function baixarImagem(r){if(!r.blob)return;var a=document.createElement('a');a.href=URL.createObjectURL(r.blob);a.download='obpc-compartilhar.jpg';document.body.appendChild(a);a.click();a.remove();}
+function comImagem(r,o,msg,app,abrir){
+  var f=arquivoImg(r);
+  if(podeArquivo(f)){copiarTxt(msg);navigator.share({files:[f],title:o.t||'OBPC',text:msg}).catch(function(){});toast('Escolha o '+app+' na lista. A imagem e o texto vão juntos.');return;}
+  copiarImagem(r).then(function(){toast('Imagem copiada! No '+app+', clique na conversa e aperte Ctrl+V para colar a imagem.');},function(){baixarImagem(r);toast('Imagem salva no computador. No '+app+', toque no clipe 📎 e escolha a imagem "obpc-compartilhar".');});
+  if(abrir)setTimeout(function(){window.open(abrir,'_blank');},600);
+}
 function shRede(rede){
   if(!_sh||!_sh.r)return;var o=_sh.o,r=_sh.r,link=r.link,msg=mensagem(o,link);
-  if(rede==='wpp')window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
-  else if(rede==='grupo'){var g=grupoWpp();if(g){copiarTxt(msg);toast('Mensagem copiada! No grupo, toque e segure no campo e escolha Colar.');setTimeout(function(){window.open(g,'_blank');},700);}else{toast('Escolha o grupo da igreja na lista do WhatsApp.');window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');}}
-  else if(rede==='face')window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(link),'_blank','noopener,width=640,height=600');
-  else if(rede==='insta'){
-    var f=arquivoImg(r);copiarTxt(msg);
-    if(f&&navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],title:o.t||'OBPC',text:msg}).catch(function(){});toast('Escolha o Instagram. O texto com o link já está copiado para colar.');}
-    else{if(r.blob){var a=document.createElement('a');a.href=URL.createObjectURL(r.blob);a.download='obpc-compartilhar.jpg';document.body.appendChild(a);a.click();a.remove();}
-      toast('Imagem salva! Abra o Instagram, publique a imagem e cole o texto (já copiado).');setTimeout(function(){window.open(REDES.insta,'_blank');},900);}
-  }
+  if(rede==='wpp')comImagem(r,o,msg,'WhatsApp','https://wa.me/?text='+encodeURIComponent(msg));
+  else if(rede==='grupo'){var g=grupoWpp();if(g&&!podeArquivo(arquivoImg(r))){copiarTxt(msg);}comImagem(r,o,msg,'WhatsApp (grupo da igreja)',g||('https://wa.me/?text='+encodeURIComponent(msg)));}
+  else if(rede==='face'){var f=arquivoImg(r);if(podeArquivo(f)){comImagem(r,o,msg,'Facebook');}else{copiarImagem(r).catch(function(){});toast('Abrindo o Facebook. A imagem também foi copiada: se quiser, cole com Ctrl+V na postagem.');window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(link),'_blank','noopener,width=640,height=600');}}
+  else if(rede==='insta'){copiarTxt(msg);var fi=arquivoImg(r);if(podeArquivo(fi)){navigator.share({files:[fi],title:o.t||'OBPC'}).catch(function(){});toast('Escolha o Instagram. O texto com o link já está copiado para colar na legenda.');}else{baixarImagem(r);toast('Imagem salva! Publique no Instagram e cole o texto (já copiado).');setTimeout(function(){window.open(REDES.insta,'_blank');},900);}}
   else if(rede==='copiar')copiarTxt(link).then(function(){toast('Link copiado ✓');});
-  else if(rede==='mais'){var f2=arquivoImg(r),d={title:o.t||'OBPC',text:msg};if(f2&&navigator.canShare&&navigator.canShare({files:[f2]}))d.files=[f2];navigator.share(d).catch(function(){});}
+  else if(rede==='mais'){var f2=arquivoImg(r),d={title:o.t||'OBPC',text:msg};if(podeArquivo(f2))d.files=[f2];navigator.share(d).catch(function(){});}
 }
 
 /* ── quem chega pelo link vai direto na publicação ── */
