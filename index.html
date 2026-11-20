@@ -134,6 +134,26 @@ main{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:0 1rem 2
 .versiculo q{display:block;margin-top:.6rem;font-family:var(--serif);font-style:italic;font-size:clamp(1.15rem,3.8vw,1.6rem);line-height:1.55;quotes:"“" "”"}
 .versiculo cite{display:block;margin-top:.7rem;font-style:normal;font-weight:800;font-size:.85rem;letter-spacing:.1em;color:var(--ouro2)}
 
+/* ── Agenda do mês (destaque) ── */
+.agenda{position:relative;overflow:hidden;margin-top:1.4rem;border-radius:28px;padding:1.5rem 1.3rem;background:radial-gradient(80% 120% at 100% 0%,rgba(242,193,78,.3),transparent 55%),linear-gradient(135deg,#17234B,#0B1124);border:1.5px solid rgba(242,193,78,.55);box-shadow:0 24px 60px rgba(0,0,0,.45),0 0 0 6px rgba(242,193,78,.06)}
+.agenda-cab{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
+.agenda-cab small{color:var(--ouro);font-size:.7rem;font-weight:800;letter-spacing:.22em;text-transform:uppercase}
+.agenda-cab h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.8rem,6vw,2.6rem);line-height:1.05;margin-top:.2rem}
+.agenda-cab h2 em{font-style:italic;font-weight:500;background:var(--goldg);-webkit-background-clip:text;background-clip:text;color:transparent;text-transform:capitalize}
+.ag-lista{display:grid;gap:.55rem;grid-template-columns:minmax(0,1fr)}
+.ag-item{display:flex;align-items:center;gap:.85rem;padding:.7rem .8rem;border-radius:16px;background:rgba(7,11,24,.5);border:1px solid var(--linha)}
+.ag-item.hj{border-color:rgba(242,193,78,.7);background:rgba(242,193,78,.12)}
+.ag-dia{flex-shrink:0;width:56px;text-align:center;border-radius:12px;padding:.35rem .2rem;background:rgba(242,193,78,.12);border:1px solid rgba(242,193,78,.3);line-height:1.05}
+.ag-item.hj .ag-dia{background:var(--goldg);color:#0A0F1F;border:none}
+.ag-dia b{display:block;font-family:var(--serif);font-size:1.4rem}
+.ag-dia small{font-size:.6rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.ag-txt{min-width:0;flex:1}
+.ag-txt b{display:block;font-size:.98rem;line-height:1.25}
+.ag-txt .sub{display:block;color:var(--txt3);font-size:.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ag-hoje{font-style:normal;display:inline-block;margin-left:.4rem;font-size:.6rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#0A0F1F;background:var(--goldg);padding:2px 8px;border-radius:999px;vertical-align:middle}
+.agenda .bt-grande{width:100%;margin-top:1.1rem;font-size:1.02rem;padding:1rem 1.4rem}
+@media(min-width:860px){.ag-lista{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
 /* ── Atalhos ── */
 .atalhos{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.75rem;margin-top:1.4rem}
 .atalho{display:flex;align-items:center;gap:.7rem;text-decoration:none;background:var(--vidro);border:1px solid var(--linha);border-radius:16px;padding:.85rem .9rem;font-weight:800;font-size:.86rem;transition:.25s}
@@ -312,7 +332,7 @@ body.com-mini .wpp-flutua{bottom:84px}
     <button class="topo-radio" onclick="radioTocar()"><span class="pulso"></span>Rádio ao vivo</button>
   </div>
   <nav class="menu" aria-label="Seções do site">
-    <a href="#radio">Rádio</a><a href="#cultos">Cultos</a><a href="#estudio">Estúdio</a><a href="#avisos">Avisos</a><a href="#eventos">Eventos</a><a href="#palavra">Palavra do Pastor</a><a href="#videos">Vídeos</a><a href="#fotos">Fotos</a><a href="#oracao">Oração</a><a href="#contribua">Contribua</a><a href="#contato">Contato</a>
+    <a href="#agenda">📅 Agenda do mês</a><a href="#radio">Rádio</a><a href="#cultos">Cultos</a><a href="#estudio">Estúdio</a><a href="#avisos">Avisos</a><a href="#eventos">Eventos</a><a href="#palavra">Palavra do Pastor</a><a href="#videos">Vídeos</a><a href="#fotos">Fotos</a><a href="#oracao">Oração</a><a href="#contribua">Contribua</a><a href="#contato">Contato</a>
   </nav>
 </header>
 
@@ -328,7 +348,7 @@ body.com-mini .wpp-flutua{bottom:84px}
   <p id="hero-bv">Bem-vindo! A paz do Senhor esteja com você. Aqui você é recebido como família.</p>
   <div class="hero-bts">
     <button class="bt bt-ouro" onclick="radioTocar()">▶ Ouvir a Rádio OBPC</button>
-    <a class="bt bt-vidro" href="#cultos">🕐 Horários de culto</a>
+    <a class="bt bt-vidro" href="agenda.html">📅 Agenda do mês</a>
     <a class="bt bt-vidro" id="hero-mapa" href="https://maps.google.com/?q=Rua+Senador+José+Ermírio+de+Moraes,199,Ferraz+de+Vasconcelos" target="_blank" rel="noopener">📍 Como chegar</a>
   </div>
   <div class="contagem" id="contagem" hidden>
@@ -345,10 +365,19 @@ body.com-mini .wpp-flutua{bottom:84px}
     <cite id="vers-ref"></cite>
   </div>
 
+  <!-- AGENDA DO MÊS — destaque (consulta constante) -->
+  <section class="agenda revela" id="agenda">
+    <div class="agenda-cab">
+      <div><small>📅 Consulte sempre</small><h2>Agenda de <em id="ag-mes">mês</em></h2></div>
+      <a class="bt bt-ouro bt-sm" href="agenda.html">Abrir agenda</a>
+    </div>
+    <div class="ag-lista" id="ag-lista"></div>
+    <a class="bt bt-ouro bt-grande" href="agenda.html">📅 Ver a agenda completa do mês</a>
+  </section>
+
   <div class="atalhos revela">
     <a class="atalho" href="biblia-harpa.html"><span>📖</span>Bíblia e Harpa</a>
-    <a class="atalho" href="agenda.html"><span>📅</span>Agenda do mês</a>
-    <a class="atalho" href="tv-obpc.html"><span>📺</span>TV OBPC</a>
+        <a class="atalho" href="tv-obpc.html"><span>📺</span>TV OBPC</a>
     <a class="atalho" href="#oracao"><span>🙏</span>Pedir oração</a>
     <a class="atalho" href="#visita"><span>🏠</span>Visita do pastor</a>
     <a class="atalho" href="#contribua"><span>💛</span>Dízimos e ofertas</a>
@@ -671,6 +700,22 @@ function rDestaque(){
   box.innerHTML='<div class="destaque">'+bg+'<div class="destaque-ov"></div><div class="destaque-c">'+(b.badge?'<span class="selo">'+esc(b.badge)+'</span>':'')+(b.titulo?'<h3>'+esc(b.titulo)+'</h3>':'')+(b.subtit?'<p>'+esc(b.subtit)+'</p>':'')+(meta.length?'<div class="meta" style="color:var(--txt2)">'+meta.map(function(m){return '<span>'+m+'</span>';}).join('')+'</div>':'')+(b.cta?'<div style="margin-top:1.1rem"><a class="bt bt-ouro bt-sm" href="#cultos">'+esc(b.cta)+'</a></div>':'')+'</div></div>';
 }
 
+/* ── agenda do mês (destaque) ── */
+function linhasAgenda(){var a=lista(D.escala_pro&&D.escala_pro.rows);if(!a.length)a=lista(D.escala_agenda&&D.escala_agenda.rows);return a.filter(function(r){return r.dt&&dt(r.dt);});}
+function rAgendaMes(){
+  var h=new Date(),hs=hojeStr(),mes=hs.slice(0,7);
+  document.getElementById('ag-mes').textContent=MESES[h.getMonth()];
+  var l=linhasAgenda().filter(function(r){return r.dt>=hs;}).sort(function(a,b){return a.dt<b.dt?-1:a.dt>b.dt?1:0;});
+  var doMes=l.filter(function(r){return r.dt.slice(0,7)===mes;});
+  if(doMes.length<4)doMes=l.slice(0,8);else doMes=doMes.slice(0,8);
+  var box=document.getElementById('ag-lista');
+  if(!doMes.length){box.innerHTML='<div class="vazio">A agenda do mês aparece aqui assim que for preenchida. Toque no botão abaixo para ver a agenda completa.</div>';return;}
+  var D3=['dom','seg','ter','qua','qui','sex','sáb'];
+  box.innerHTML=doMes.map(function(r){var d=dt(r.dt),hj=r.dt===hs;function f(v){return Array.isArray(v)?v.join(', '):(v||'');}
+    var sub=[r.dir?'Dirigente: '+f(r.dir):'',r.min?'Ministrante: '+f(r.min):''].filter(Boolean).join(' · ');
+    return '<div class="ag-item'+(hj?' hj':'')+'"><div class="ag-dia"><b>'+d.getDate()+'</b><small>'+D3[d.getDay()]+'</small></div><div class="ag-txt"><b>'+esc(f(r.clt)||'Culto')+(hj?'<em class="ag-hoje">Hoje</em>':'')+'</b>'+(sub?'<span class="sub">'+esc(sub)+'</span>':'')+'</div></div>';}).join('');
+}
+
 /* ── agenda de hoje ── */
 function rHoje(){
   var hs=hojeStr(),h=new Date();
@@ -809,7 +854,7 @@ function rHeroVideo(){
   v.onerror=function(){h.classList.remove('com-video');v.classList.remove('on');};
   var p=v.play();if(p&&p.catch)p.catch(function(){v.classList.add('on');});
 }
-function render(){AGORA=Date.now();[rInfo,rHeroVideo,calcProx,rDestaque,rHoje,rHorarios,rProximos,rEstudio,rAvisos,rEventos,rPalavras,rSermoes,rVideos,rInformativos,rFotos,rAniv,rLideres].forEach(function(f){try{f();}catch(e){console.warn(f.name,e);}});}
+function render(){AGORA=Date.now();[rInfo,rHeroVideo,rAgendaMes,calcProx,rDestaque,rHoje,rHorarios,rProximos,rEstudio,rAvisos,rEventos,rPalavras,rSermoes,rVideos,rInformativos,rFotos,rAniv,rLideres].forEach(function(f){try{f();}catch(e){console.warn(f.name,e);}});}
 
 /* ── janela ── */
 function abrirJanela(html,escuro){var c=document.getElementById('janela-c');c.className='janela-c'+(escuro?' escuro':'');c.innerHTML=html;document.getElementById('janela').classList.add('on');document.body.style.overflow='hidden';}
