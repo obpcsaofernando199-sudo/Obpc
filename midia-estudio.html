@@ -379,6 +379,12 @@ video.pv,audio.pv{border-radius:14px;box-shadow:0 0 0 2px #cfdcd4}
       <button class="btn" id="foto-salvar" disabled>Só guardar no celular</button>
     </div>
   </div>
+  <div class="card stack limpe">
+    <h2>Limpe seu celular</h2>
+    <p class="note">Apaga do <b>seu celular</b> os vídeos, áudios e fotos que já estão no site. <b>Não apaga nada do site nem do Cloudinary.</b> O que ainda não foi publicado continua guardado.</p>
+    <p class="note limpe-st">Calculando…</p>
+    <button class="btn ouro b-limpe">🧹 Limpe seu celular</button>
+  </div>
 </section>
 
 <!-- ============ ABA MINHAS ============ -->
@@ -386,6 +392,12 @@ video.pv,audio.pv{border-radius:14px;box-shadow:0 0 0 2px #cfdcd4}
   <div class="card"><h2>Minhas gravações</h2><p class="note">O que foi gravado neste celular. Toque em Publicar para mandar para o site.</p></div>
   <div id="lista" class="stack"></div>
   <div id="lista-site" class="stack"></div>
+  <div class="card stack limpe">
+    <h2>Limpe seu celular</h2>
+    <p class="note">Apaga do <b>seu celular</b> os vídeos, áudios e fotos que já estão no site. <b>Não apaga nada do site nem do Cloudinary.</b> O que ainda não foi publicado continua guardado.</p>
+    <p class="note limpe-st">Calculando…</p>
+    <button class="btn ouro b-limpe">🧹 Limpe seu celular</button>
+  </div>
 </section>
 
 <!-- ============ ABA INSTALAR ============ -->
@@ -427,7 +439,7 @@ video.pv,audio.pv{border-radius:14px;box-shadow:0 0 0 2px #cfdcd4}
   <div class="card stack">
     <h2>Espaço no celular</h2>
     <p class="note" id="espaco">Calculando…</p>
-    <button class="btn" id="b-liberar">Apagar do celular o que já foi publicado</button>
+    <button class="btn ouro b-limpe">🧹 Limpe seu celular</button>
   </div>
 </section>
 
@@ -499,7 +511,7 @@ var CFG={
   aviso:3 /* alerta amarelo quando restarem este tanto de vagas ou menos */
 };
 var EQUIPE=['Júlia','Giovana','Eliza'];
-var VERSAO='2026-11-20a';
+var VERSAO='2026-11-20b';
 /* compara nomes sem ligar para acento e maiúscula ("Julia" = "Júlia") */
 function mesmoNome(a,b){var n=function(x){return String(x||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toLowerCase()};return !!a&&n(a)===n(b)}
 function nomeCerto(x){for(var i=0;i<EQUIPE.length;i++)if(mesmoNome(x,EQUIPE[i]))return EQUIPE[i];return x}
@@ -586,7 +598,7 @@ function aba(n){
   if(n!=='gravar'&&telaAtual==='rec'&&!(rec&&rec.estado!=='parado')){cancelaContagem();tentaMidia++;fechaCamera();tela('inicio')}
   ['gravar','minhas','instalar','pastor'].forEach(function(a){$('#aba-'+a).hidden=a!==n});
   $$('nav button').forEach(function(b){b.classList.toggle('on',b.dataset.aba===n)});
-  if(n==='minhas')desenhaLista();if(n==='instalar'){espaco();desenhaDiag()}if(n==='pastor')painel();
+  desenhaLimpeza();if(n==='minhas')desenhaLista();if(n==='instalar'){espaco();desenhaDiag()}if(n==='pastor')painel();
   window.scrollTo(0,0);
 }
 $$('nav button').forEach(function(b){b.onclick=function(){if(rec&&rec.estado!=='parado'){toast('Termine a gravação antes de sair desta tela.');return}aba(b.dataset.aba)}});
@@ -1272,7 +1284,7 @@ $$('#f-share [data-r]').forEach(function(b){b.onclick=function(){
 
 /* ---------- aba Minhas ---------- */
 var urlsTmp=[];
-function cont(){allItens().then(function(l){var p=l.filter(function(i){return i.status!=='publicado'}).length;$('#cont').textContent=p?'('+p+')':''})}
+function cont(){desenhaLimpeza();allItens().then(function(l){var p=l.filter(function(i){return i.status!=='publicado'}).length;$('#cont').textContent=p?'('+p+')':''})}
 function desenhaLista(){
   desenhaSite();
   urlsTmp.forEach(function(u){URL.revokeObjectURL(u)});urlsTmp=[];
@@ -1324,14 +1336,45 @@ function espaco(){
   if(navigator.storage&&navigator.storage.estimate){navigator.storage.estimate().then(function(e){el.textContent='Usado pelo Estúdio: '+mb(e.usage||0)+(e.quota?' de cerca de '+mb(e.quota)+' disponíveis.':'.')})}
   else el.textContent='Não consegui medir o espaço neste celular.';
 }
-$('#b-liberar').onclick=function(){
-  allItens().then(function(l){
-    var pub=l.filter(function(i){return i.status==='publicado'&&i.blob});
-    if(!pub.length)return toast('Não há nada publicado para apagar.');
-    if(!confirm('Apagar do celular '+pub.length+' arquivo(s) já publicado(s)? Eles continuam no site.'))return;
-    Promise.all(pub.map(function(i){delete i.blob;return putItem(i)})).then(function(){toast('Espaço liberado.');espaco();desenhaLista()});
+/* ---------- Limpe seu celular: só o celular; site e Cloudinary ficam como estão ---------- */
+function tamItem(i){return (i.blob&&i.blob.size)||0}
+function estadoLimpeza(){
+  return Promise.all([allItens(),tx('pedacos','readonly',function(s){return s.getAll()})]).then(function(r){
+    var l=r[0]||[],tem={};l.forEach(function(i){tem[i.id]=1});
+    var pub=l.filter(function(i){return i.blob&&(i.status==='publicado'||i.removido)});
+    var loc=l.filter(function(i){return i.blob&&!(i.status==='publicado'||i.removido)});
+    var sobras=(r[1]||[]).filter(function(p){return tem[p.rid]&&!(rec&&rec.id===p.rid)});
+    var soma=function(a,f){return a.reduce(function(t,x){return t+f(x)},0)};
+    return {pub:pub,loc:loc,sobras:sobras,mbPub:soma(pub,tamItem)+soma(sobras,function(p){return (p.blob&&p.blob.size)||0}),mbLoc:soma(loc,tamItem)};
   });
-};
+}
+function desenhaLimpeza(){
+  var els=$$('.limpe-st');if(!els.length)return;
+  estadoLimpeza().then(function(e){
+    var t=e.pub.length||e.sobras.length?'Dá para liberar '+mb(e.mbPub)+' agora ('+e.pub.length+' arquivo(s) que já estão no site).':'✅ Seu celular está limpo: nada publicado ocupando espaço.';
+    if(e.loc.length)t+=' Guardado e ainda não publicado: '+e.loc.length+' ('+mb(e.mbLoc)+').';
+    els.forEach(function(x){x.textContent=t});
+  }).catch(function(){els.forEach(function(x){x.textContent=''})});
+}
+function limpeCelular(){
+  if(rec&&rec.estado!=='parado')return toast('Termine a gravação antes de limpar.');
+  estadoLimpeza().then(function(e){
+    var apagaLocal=false,temPub=e.pub.length||e.sobras.length;
+    if(!temPub&&!e.loc.length)return toast('✅ Seu celular já está limpo.');
+    if(temPub&&!confirm('Limpar seu celular?\n\nVai liberar '+mb(e.mbPub)+' ('+e.pub.length+' arquivo(s) que já estão no site).\n\nNADA sai do site nem do Cloudinary.'))return;
+    if(e.loc.length)apagaLocal=confirm('Atenção: '+e.loc.length+' gravação(ões) ('+mb(e.mbLoc)+') ainda NÃO foram para o site.\n\nQuer apagar estas também? Elas serão perdidas.\n\nOK = apagar também\nCancelar = manter guardadas');
+    if(!temPub&&!apagaLocal)return;
+    var jobs=e.pub.map(function(i){delete i.blob;return putItem(i)});
+    e.sobras.forEach(function(p){jobs.push(limparPedacos(p.rid))});
+    if(apagaLocal)e.loc.forEach(function(i){jobs.push(delItem(i.id))});
+    Promise.all(jobs).then(function(){
+      var lib=e.mbPub+(apagaLocal?e.mbLoc:0);
+      toast('🧹 Celular limpo! '+mb(lib)+' liberados. O site continua igual.',5000);
+      espaco();cont();if(!$('#aba-minhas').hidden)desenhaLista();
+    }).catch(function(err){logErr('limpe-celular',err);toast('Não consegui limpar tudo. Tente de novo.')});
+  });
+}
+$$('.b-limpe').forEach(function(b){b.onclick=limpeCelular});
 
 /* ---------- painel do pastor ---------- */
 var pOk=false,pFiltro='videos',pDados={videos:[],galeria:[]};
@@ -1496,7 +1539,7 @@ function limpaSite(){
 
 $('#b-apagar-site').onclick=function(){aba('minhas');setTimeout(function(){var e=$('#lista-site');if(e&&e.children.length)e.scrollIntoView({behavior:'smooth',block:'start'});else toast('Você não tem nada publicado no site agora.')},700)};
 (function(){var a=$('#b-ver-site');if(a&&CFG.site)a.href=CFG.site})();
-cont();recupera();atualizaCap();limpaSite();
+cont();recupera();atualizaCap();limpaSite();setTimeout(desenhaLimpeza,1500);
 setInterval(limpaSite,10*60*1000);
 window.addEventListener('online',function(){atualizaCap();limpaSite()});
 document.addEventListener('visibilitychange',function(){if(!document.hidden){atualizaCap();limpaSite()}});
