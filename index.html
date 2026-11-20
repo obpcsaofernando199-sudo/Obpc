@@ -15,7 +15,9 @@
 <meta property="og:url" content="https://obpcsaofernando199-sudo.github.io/Obpc/">
 <meta property="og:title" content="OBPC Jardim São Fernando">
 <meta property="og:description" content="Rádio OBPC ao vivo, cultos, Palavra do Pastor e muito mais. Venha nos visitar!">
-<meta property="og:image" content="https://obpcsaofernando199-sudo.github.io/Obpc/og-banner.png">
+<meta property="og:image" content="https://obpcsaofernando199-sudo.github.io/Obpc/og-site.jpg?v=2">
+<meta property="og:image:type" content="image/jpeg">
+<meta name="twitter:image" content="https://obpcsaofernando199-sudo.github.io/Obpc/og-site.jpg?v=2">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
@@ -1081,7 +1083,7 @@ function preparar(o){
   .then(function(b){r.blob=b;
     if(r.semMontagem)return leve(foto);
     if(cache[assin])return cache[assin];
-    return subirImg(b).then(function(u){cache[assin]=u;gravarJ('obpc_sh_img',cache);return u;},function(){return foto?leve(foto):SITE+'og-banner.png';});})
+    return subirImg(b).then(function(u){cache[assin]=u;gravarJ('obpc_sh_img',cache);return u;},function(){return foto?leve(foto):SITE+'og-site.jpg';});})
   .then(function(img){r.img=leve(img);return gravarLink(o,r.img);})
   .then(function(l){r.link=l;return r;});
 }
