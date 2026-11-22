@@ -1,12 +1,16 @@
 /* Service worker do Estúdio de Mídia — só guarda o "esqueleto" do app.
    Nunca guarda Cloudinary, Firebase ou Workers (uploads e dados vão sempre direto). */
-var VERSAO = 'midia-v5';
+var VERSAO = 'midia-v6';
 var ARQUIVOS = [
   './midia-estudio.html',
   './manifest-midia.json',
   './icone-midia-180.png',
   './icone-midia-192.png',
-  './icone-midia-512.png'
+  './icone-midia-512.png',
+  './icones/camera.webp',
+  './icones/fotos.webp',
+  './icones/microfone.webp',
+  './icones/entrevista.webp'
 ];
 
 self.addEventListener('install', function (e) {
