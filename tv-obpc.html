@@ -141,6 +141,25 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .pl .txt1 small{letter-spacing:.14em;text-transform:uppercase;color:#E8B84E;font-weight:700}
 .pl .txt1 b{font:600 clamp(20px,4vw,32px)/1.2 Georgia,serif}
 </style>
+<style id="tv-noite-ouro">
+/* 23/11/2026: TV OBPC no mesmo visual do site (Noite & Ouro). O botão ◐ ainda deixa clara. */
+:root:not([data-theme="light"]){--bg:#0A0F1F;--tx:#F4F1EA;--mut:#AEB6CC;--sf:#141C36;--bd:rgba(242,193,78,.22);--ac:#F2C14E;--ouro:#F2C14E;--card:#121A33;--yt:#E11D48;color-scheme:dark}
+:root:not([data-theme="light"]) body{background:radial-gradient(70% 40% at 15% 0,rgba(46,90,190,.28),transparent 70%),radial-gradient(60% 35% at 100% 10%,rgba(242,193,78,.12),transparent 70%),#0A0F1F;background-attachment:fixed}
+:root:not([data-theme="light"]) .top{background:rgba(10,15,31,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:2px solid #C8902E}
+:root:not([data-theme="light"]) body::before{background:#0A0F1F}
+.brand h1{font-family:Georgia,'Playfair Display',serif;letter-spacing:0}
+:root:not([data-theme="light"]) .brand h1{color:#FFE29A}
+.yt{background:linear-gradient(135deg,#FFE29A,#F2C14E 50%,#C8902E)!important;color:#0A0F1F!important}
+.lg{background-color:#0C1328;border:1.5px solid #F2C14E}
+:root:not([data-theme="light"]) .chip{background:#141C36;color:#E8E2D2;border:1px solid rgba(242,193,78,.25)}
+.chip.on{background:linear-gradient(135deg,#FFE29A,#F2C14E 50%,#C8902E)!important;color:#0A0F1F!important;font-weight:700}
+.th{border-radius:16px;border:3px solid #E2B04A;box-shadow:0 0 0 1px #9C6B1C,0 14px 28px -14px rgba(0,0,0,.9)}
+.th .ph0{background:radial-gradient(70% 90% at 80% 10%,rgba(242,193,78,.35),transparent 60%),linear-gradient(135deg,#16224A,#0A1022)!important;color:#F2C14E}
+.bd.v,.th .bd.v{background:rgba(10,15,31,.85);color:#FFE29A;border:1px solid rgba(242,193,78,.5)}
+.lt.on{background:#F2C14E;color:#0A0F1F}
+:root:not([data-theme="light"]) .tt{color:#F4F1EA}
+:root:not([data-theme="light"]) .sk .th,:root:not([data-theme="light"]) .sk .l1,:root:not([data-theme="light"]) .sk .l2{background:#141C36!important;border-color:#141C36}
+</style>
 </head>
 <body>
 <header class="top">
@@ -218,16 +237,17 @@ function normE(){
 function carregar(silent){
   try{const local=lerLocal('obpc_cultos');if(local&&typeof local==='object'){RC=lista(local);set();LOADED=true;}}catch(e){console.warn(e);}
   try{const lp=lerLocal('obpc_palavras');if(lp&&typeof lp==='object'){RP=lista(lp);set();LOADED=true;}}catch(e){console.warn(e);}
+  /* vídeos que o próprio aparelho já tem (da TV ou do site): a TV aparece na hora, sem esperar a internet */
+  if(!RV.length){try{const tv=lerLocal('obpc_tv_cache')||{},si=lerLocal('obpc_site_cache')||{};const v=tv.videos||si.videos;if(v){RV=lista(v);if(!RC.length&&si.cultos)RC=lista(si.cultos);if(!RP.length&&si.palavras)RP=lista(si.palavras);set();if(ITEMS.length)LOADED=true;}}catch(e){console.warn(e);}}
   /* nunca ficar preso nos quadros de "carregando" */
-  setTimeout(()=>{if(!LOADED){LOADED=true;_RS='';render();}},8000);
+  setTimeout(()=>{if(!LOADED){LOADED=true;_RS='';render();}},4000);
   fetch(FB+'cultos.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(fb=>{
     if(fb&&typeof fb==='object'){RC=lista(fb);set();}
   }).catch(()=>{}).then(()=>{LOADED=true;render();if(!silent||!location.hash)onHash();});
   fetch(FB+'palavras.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(fb=>{
     if(fb&&typeof fb==='object'){RP=lista(fb);set();}
   }).catch(()=>{}).then(()=>{LOADED=true;render();if(!silent||!location.hash)onHash();});
-  fetch(FB+'videos.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(fb=>{if(fb!==null){RV=lista(fb);set();}}).catch(()=>{}).then(()=>{render();if(!silent||!location.hash)onHash();});
-  fetch(FB+'galeria.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(fb=>{if(fb!==null){RG=lista(fb);set();}}).catch(()=>{}).then(()=>{render();if(!silent||!location.hash)onHash();});
+  fetch(FB+'videos.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(fb=>{if(fb!==null){RV=lista(fb);LOADED=true;window._netOk=true;set();try{localStorage.setItem('obpc_tv_cache',JSON.stringify({videos:fb}));}catch(e){}}}).catch(()=>{}).then(()=>{render();if(!silent||!location.hash)onHash();});
   fetch(FB+'info.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(i=>{
     if(!i)return;if(i.nome)NOME=i.nome;const l=i.logoB64||i.logo;if(l){const e=$('lg');e.textContent='';e.style.backgroundImage='url("'+l+'")';}
   }).catch(()=>{});
@@ -295,12 +315,12 @@ function thumb(v){
 }
 function renderChips(){
   const nl=ITEMS.filter(v=>isLater(v.id)).length,nc=ITEMS.filter(continuando).length;
-  const d=[['all','Tudo'],['v','Vídeos'],['f','Fotos'],['p','🎤 Palavra do Pastor'],['l','🕒 Assistir depois'+(nl?' ('+nl+')':'')]];
+  const d=[['all','Tudo'],['v','Vídeos'],['p','🎤 Palavra do Pastor'],['l','🕒 Assistir depois'+(nl?' ('+nl+')':'')]];
   if(nc)d.push(['c','▶ Continuar assistindo ('+nc+')']);
   const c=$('chips');c.innerHTML='';
   d.forEach(x=>{const b=document.createElement('button');b.className='chip'+(CHIP===x[0]?' on':'');b.textContent=x[1];b.onclick=()=>{CHIP=x[0];render();};c.appendChild(b);});
 }
-const VAZIO={all:'Nenhum vídeo ou foto por aqui ainda.',v:'Nenhum vídeo por aqui ainda.',f:'Nenhuma foto por aqui ainda.',p:'Nenhuma Palavra do Pastor por aqui ainda.',l:'Você ainda não guardou nada.\nToque no 🕒 de qualquer vídeo para assistir depois.',c:'Nada para continuar por enquanto.'};
+const VAZIO={all:'Nenhum vídeo por aqui ainda.',v:'Nenhum vídeo por aqui ainda.',f:'Nenhuma foto por aqui ainda.',p:'Nenhuma Palavra do Pastor por aqui ainda.',l:'Você ainda não guardou nada.\nToque no 🕒 de qualquer vídeo para assistir depois.',c:'Nada para continuar por enquanto.'};
 function render(){
   const sig=[CHIP,Q,NOME,LOADED,LATER.join('.'),ITEMS.map(v=>{const m=v.m[0]||{};return v.id+':'+v.t+':'+v.m.length+':'+(m.src||m.id||'')+':'+(v.u?1:0)+':'+pct(v);}).join(',')].join('|');
   if(sig===_RS&&$('grid').firstChild)return;_RS=sig;
@@ -315,6 +335,7 @@ function render(){
   let l=ITEMS.filter(matches);
   if(CHIP==='l')l=LATER.slice().reverse().map(id=>l.filter(x=>x.id===id)[0]).filter(Boolean);
   const em=$('empty');em.textContent=(Q.trim()&&!l.length)?'Nada encontrado para "'+Q.trim()+'".':(VAZIO[CHIP]||VAZIO.all);
+  if(!l.length&&!ITEMS.length&&!window._netOk)em.textContent='📺 Buscando os vídeos da TV OBPC…\nSe demorar, confira a internet e puxe a tela para baixo.';
   em.style.whiteSpace='pre-line';em.classList.toggle('hide',l.length>0);
   l.forEach(v=>{
     const c=document.createElement('div');c.className='card'+(v.u?' urg':'');c.tabIndex=0;c.appendChild(thumb(v));
@@ -465,7 +486,7 @@ try{render();}catch(e){console.warn(e);}
 carregar();
 setInterval(()=>carregar(true),30000);
 /* vídeo novo aparece na hora: escuta o Firebase ao vivo (antes só olhava a cada 90 s) */
-(function(){if(!window.EventSource)return;let t=null;['videos','cultos','palavras'].forEach(k=>{try{const es=new EventSource(FB+k+'.json');let pri=true;const mud=()=>{if(pri){pri=false;return;}clearTimeout(t);t=setTimeout(()=>carregar(true),800);};es.addEventListener('put',mud);es.addEventListener('patch',mud);}catch(e){}});})();
+(function(){if(!window.EventSource)return;let t=null;['videos'].forEach(k=>{try{const es=new EventSource(FB+k+'.json');let pri=true;const mud=()=>{if(pri){pri=false;return;}clearTimeout(t);t=setTimeout(()=>carregar(true),800);};es.addEventListener('put',mud);es.addEventListener('patch',mud);}catch(e){}});})();
 </script>
 </body>
 </html>
