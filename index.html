@@ -310,6 +310,14 @@ footer p{color:var(--txt2);font-size:.92rem}
 .janela-c img,.janela-c video{width:100%;max-height:84vh;object-fit:contain;margin:0 auto}
 .janela-c iframe{width:100%;aspect-ratio:16/9;border:0}
 .janela-txt{padding:1.5rem 1.4rem}
+.mx-pl{position:relative;background:#000}
+.mx-pl iframe{display:block}
+.mx-nv{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:1px solid rgba(242,193,78,.5);background:rgba(7,11,24,.7);color:var(--ouro2);font-size:1.6rem;line-height:1;cursor:pointer;z-index:2}
+.mx-nv.l{left:8px}.mx-nv.r{right:8px}
+.mx-info{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .8rem;padding:.8rem 1rem;background:var(--noite2);color:var(--txt)}
+.mx-info b{font-family:var(--serif);font-weight:600;font-size:1.05rem;flex:1 1 200px;min-width:0}
+.mx-info small{color:var(--txt3)}
+.mx-info a.bt-sh{text-decoration:none}
 .janela-txt h3{font-family:var(--serif);font-weight:600;font-size:1.6rem;color:var(--ouro2);margin-bottom:.6rem}
 .janela-txt p{white-space:pre-line;color:var(--txt);font-size:1.02rem}
 .fechar{position:fixed;top:12px;right:12px;width:46px;height:46px;border-radius:50%;border:none;background:var(--goldg);color:#0A0F1F;font-size:1.25rem;font-weight:800;cursor:pointer;z-index:101}
@@ -1621,8 +1629,43 @@ function irDeepLink(final){
   if(primeira){el.classList.add('pulsa');if(el.getAttribute('data-sh'))_pulsa={k:el.getAttribute('data-sh'),ate:Date.now()+4500};setTimeout(function(){el.classList.remove('pulsa');},4500);}
   if(!final)return;
   [400,1200,2500,4000].forEach(function(t){setTimeout(function(){var e=document.querySelector('[data-sh="'+(el.getAttribute('data-sh')||'')+'"]')||el;if(e.isConnected)irAte(e);if(t===4000)_dlAlvo=null;},t);});
+  if((d.s==='tv'||d.s==='momentos')&&/^[ec]/.test(d.id))setTimeout(function(){tocarId(d.id);},500);
   if(d.s==='foto'&&SH[d.s+':'+d.id])setTimeout(function(){abrirFoto(SH[d.s+':'+d.id].foto);},500);
 }
+
+/* ═════════ VÍDEOS TOCAM AQUI MESMO ═════════
+   Qualquer card que levaria para a TV OBPC (tv-obpc.html#código) agora abre o player na própria página.
+   Vídeo do estúdio, vídeo/foto do culto, YouTube e Facebook. O link da TV continua embaixo do player. */
+function midiasDoItem(id){
+  var r=null;
+  lista(D.videos).some(function(v){if(urlOk(v.url)&&'e'+hid(v.url)===id){r={t:v.titulo||v.tit||'Vídeo OBPC',ms:[{src:v.url,tp:ehAudio(v.url)?'audio':'video'}]};return true;}return false;});
+  if(!r)lista(D.cultos).some(function(c,i){if('c'+(c.ts||i)===id){var md=midiasCulto(c);if(md.length)r={t:c.tit||c.titulo||'Momento do culto',ms:md};return true;}return false;});
+  return r;
+}
+function playerHtml(m){
+  var src=m.src||m.url||'',y=ytId(src);
+  if(y)return '<iframe src="https://www.youtube.com/embed/'+esc(y)+'?autoplay=1&rel=0&playsinline=1" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen title="Vídeo"></iframe>';
+  if(/facebook\.com|fb\.watch/.test(src))return '<iframe src="https://www.facebook.com/plugins/video.php?href='+encodeURIComponent(src)+'&show_text=false&autoplay=true" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen title="Vídeo"></iframe>';
+  if(m.tp==='audio'||ehAudio(src))return '<audio src="'+esc(src)+'" controls autoplay style="width:100%;display:block;margin:2.5rem 0"></audio>';
+  if(m.tp==='video'||ehVideo(src)){var th=thumbVideo(src);return '<video src="'+esc(src)+'"'+(th?' poster="'+esc(th)+'"':'')+' controls autoplay playsinline></video>';}
+  return '<img src="'+esc(src)+'" alt="">';
+}
+var _mx=null;
+function abrirMidias(ms,i,tit,tv){
+  _mx={l:ms,i:i,t:tit,tv:tv};var n=ms.length;
+  try{if(!radio.paused)radioParar();}catch(e){}
+  abrirJanela('<div class="mx-pl">'+playerHtml(ms[i])+(n>1?'<button class="mx-nv l" onclick="mxIr(-1)" aria-label="Anterior">‹</button><button class="mx-nv r" onclick="mxIr(1)" aria-label="Próximo">›</button>':'')+'</div>'
+    +'<div class="mx-info"><b>'+esc(tit||'')+'</b>'+(n>1?'<small>'+(i+1)+' de '+n+'</small>':'')+(tv?'<a class="bt-sh" href="'+esc(tv)+'"><span>📺 Abrir na TV OBPC</span></a>':'')+'</div>',true);
+  var vd=document.querySelector('#janela-c video');if(vd){vd.onended=function(){if(_mx&&_mx.i<n-1)mxIr(1);};var p=vd.play();if(p&&p.catch)p.catch(function(){});}
+}
+function mxIr(d){if(!_mx)return;var n=_mx.l.length;abrirMidias(_mx.l,(_mx.i+d+n)%n,_mx.t,_mx.tv);}
+function tocarId(id){var r=midiasDoItem(id);if(!r)return false;abrirMidias(r.ms,0,r.t,'tv-obpc.html#'+id);return true;}
+document.addEventListener('click',function(e){
+  var a=e.target.closest&&e.target.closest('a[href]');if(!a||e.ctrlKey||e.metaKey||e.shiftKey)return;
+  var h=a.getAttribute('href')||'',m=h.match(/^tv-obpc\.html#([\w-]+)$/);
+  if(m&&!a.closest('#janela')){if(tocarId(m[1]))e.preventDefault();return;}
+  if(a.classList.contains('hero-janela')){var v=document.getElementById('hero-video'),u=v&&(v.currentSrc||v.getAttribute('src'));if(u&&/^https?:/.test(u)){e.preventDefault();var id='e'+hid(u);if(!tocarId(id))abrirMidias([{src:u,tp:'video'}],0,'TV OBPC','tv-obpc.html');}}
+});
 
 /* ── janela ── */
 function abrirJanela(html,escuro){var c=document.getElementById('janela-c');c.className='janela-c'+(escuro?' escuro':'');c.innerHTML=html;document.getElementById('janela').classList.add('on');document.body.style.overflow='hidden';}
