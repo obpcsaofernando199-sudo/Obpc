@@ -130,11 +130,20 @@ main{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:0 1rem 2
 .card{position:relative;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.025));border:1px solid var(--linha);border-radius:var(--raio);overflow:hidden;transition:transform .3s,border-color .3s,box-shadow .3s}
 .card:hover{transform:translateY(-4px);border-color:rgba(242,193,78,.45);box-shadow:0 18px 40px rgba(0,0,0,.35),0 0 0 1px rgba(242,193,78,.15)}
 .card-c{padding:1.05rem 1.15rem 1.2rem}
-.card-img{aspect-ratio:16/10;object-fit:cover;width:100%;background:var(--noite3)}
+.card-img{aspect-ratio:16/9;object-fit:cover;width:100%;background:var(--noite3)}
+/* fotos e vídeos se ajustam ao formato: em pé (9:16) ou deitado (16:9), sem cortar (2026-11-23) */
+.midia.fmt::before{content:"";position:absolute;inset:-20px;background:var(--fundo) center/cover no-repeat;filter:blur(22px) brightness(.55);transform:scale(1.1)}
+.midia.fmt img,.midia.fmt video{position:relative;object-fit:contain}
+.midia.vert,.card-img.vert{aspect-ratio:9/16;max-height:80vh}
+.card-img.fmt{object-fit:contain;background:#05080F}
 .card h3{font-family:var(--serif);font-weight:600;font-size:1.18rem;line-height:1.25;margin-bottom:.35rem}
 .card p{font-size:.92rem;color:var(--txt2);white-space:pre-line}
 .selo{display:inline-flex;align-items:center;gap:5px;font-size:.66rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ouro2);background:rgba(242,193,78,.1);border:1px solid rgba(242,193,78,.35);padding:3px 10px;border-radius:999px;margin-bottom:.55rem}
 .selo-urg{color:#fff;background:#D9434F;border-color:#D9434F}
+/* sinaleiro: luz vermelha piscando no selo e borda acesa no card urgente */
+.selo.sinal i{width:9px;height:9px;border-radius:50%;background:#fff;box-shadow:0 0 0 0 rgba(255,255,255,.8);animation:sinal 1s ease-in-out infinite}
+@keyframes sinal{50%{opacity:.25;box-shadow:0 0 10px 3px rgba(255,80,90,.9)}}
+.card.card-urg{border-color:#D9434F!important;box-shadow:0 0 0 2px rgba(217,67,79,.55),0 0 26px rgba(217,67,79,.35)!important}
 .selo-novo{color:#0A0F1F;background:var(--goldg);border:none}
 .meta{display:flex;flex-wrap:wrap;gap:.35rem .9rem;font-size:.8rem;color:var(--txt3);margin-top:.6rem}
 .meta a{color:var(--ouro2);font-weight:800;text-decoration:none}
@@ -166,7 +175,12 @@ main{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:0 1rem 2
 .ag-txt b{display:block;font-size:.98rem;line-height:1.25}
 .ag-txt .sub{display:block;color:var(--txt3);font-size:.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ag-hoje{font-style:normal;display:inline-block;margin-left:.4rem;font-size:.6rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#0A0F1F;background:var(--goldg);padding:2px 8px;border-radius:999px;vertical-align:middle}
-.agenda .bt-grande{width:100%;margin-top:1.1rem;font-size:1.02rem;padding:1rem 1.4rem}
+.agenda .bt-grande{width:100%;margin-top:1.1rem;font-size:1.02rem;padding:1rem 1.4rem;cursor:pointer;border:0}
+.ag-item.passou{opacity:.55}
+.ag-lista.tudo .ag-item{align-items:flex-start}
+.ag-esc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.35rem .8rem;margin-top:.45rem}
+.ag-esc span{font-size:.85rem;line-height:1.3;color:var(--txt)}
+.ag-esc small{display:block;font-size:.62rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ouro)}
 @media(min-width:860px){.ag-lista{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 /* ── Atalhos ── */
@@ -323,7 +337,7 @@ body.com-mini .wpp-flutua{bottom:84px}
 .bt-sh svg{width:15px;height:15px;flex:none;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
 .bt-sh.ic{padding:.5rem;flex:none}.bt-sh.ic span{display:none}
 .bt-sh.canto{position:absolute;top:8px;right:8px;z-index:3;padding:.5rem}.bt-sh.canto span{display:none}
-.card-pe{display:flex;justify-content:flex-end;margin-top:.8rem;padding-top:.7rem;border-top:1px solid var(--linha)}
+.card-pe{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:.5rem;margin-top:.8rem;padding-top:.7rem;border-top:1px solid var(--linha)}
 .hero-sh{position:relative;margin-top:1rem;background:none;border:none;color:var(--ouro2);font-weight:800;font-size:.86rem;cursor:pointer;display:inline-flex;align-items:center;gap:7px;text-decoration:underline;text-underline-offset:4px}
 .hero-sh svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
 .vers-sh{margin-top:1rem}
@@ -339,6 +353,7 @@ body.com-mini .wpp-flutua{bottom:84px}
 .shf-c h4{font-family:var(--serif);font-weight:600;font-size:1.25rem;text-align:center;margin-bottom:.8rem}
 .shf-prev{position:relative;border-radius:14px;overflow:hidden;aspect-ratio:1200/630;background:#0A1022;border:1px solid var(--linha)}
 .shf-prev img{width:100%;height:100%;object-fit:cover}
+.shf-prev.alto{aspect-ratio:auto;max-height:52vh;overflow:auto}.shf-prev.alto img{height:auto;object-fit:contain}
 .shf-st{position:absolute;inset:auto 0 0 0;padding:.5rem;text-align:center;font-size:.78rem;font-weight:700;color:var(--ouro2);background:rgba(7,11,24,.8)}
 .shf-st:empty{display:none}
 .shf-bts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.6rem;margin-top:1rem}
@@ -581,10 +596,10 @@ footer li a{display:inline-flex;align-items:center}
   <section class="agenda revela" id="agenda" data-sh="agenda:mes">
     <div class="agenda-cab">
       <div class="cab-ic"><img class="ic3d sec-ic" src="icones/agenda.webp" alt="" aria-hidden="true"><div><small>Consulte sempre</small><h2>Agenda de <em id="ag-mes">mês</em></h2></div></div>
-      <div style="display:flex;gap:.5rem;flex-wrap:wrap"><button class="bt-sh" onclick="compartilhar('agenda:mes')"><svg viewBox="0 0 24 24"><use href="#ic-sh"/></svg><span>Compartilhar a agenda</span></button><a class="bt bt-ouro bt-sm" href="agenda.html">Abrir agenda</a></div>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap"><button class="bt-sh" onclick="compartilhar('agenda:mes')"><svg viewBox="0 0 24 24"><use href="#ic-sh"/></svg><span>Compartilhar a agenda completa</span></button></div>
     </div>
     <div class="ag-lista" id="ag-lista"></div>
-    <a class="bt bt-ouro bt-grande" href="agenda.html"><img class="ic3d" src="icones/agenda.webp" alt="" aria-hidden="true">Ver a agenda completa do mês</a>
+    <button type="button" class="bt bt-ouro bt-grande" id="ag-mais" onclick="agTudo()"><img class="ic3d" src="icones/agenda.webp" alt="" aria-hidden="true"><span>Ver a agenda completa do mês</span></button>
   </section>
 
   <div class="atalhos revela">
@@ -646,7 +661,7 @@ footer li a{display:inline-flex;align-items:center}
 
   <!-- CULTOS -->
   <section class="sec revela" id="cultos">
-    <div class="sec-cab"><div class="cab-ic"><img class="ic3d sec-ic" src="icones/relogio.webp" alt="" aria-hidden="true"><div><small>Venha adorar conosco</small><h2>Nossos <em>cultos</em></h2></div></div><a href="agenda.html">Agenda completa →</a></div>
+    <div class="sec-cab"><div class="cab-ic"><img class="ic3d sec-ic" src="icones/relogio.webp" alt="" aria-hidden="true"><div><small>Venha adorar conosco</small><h2>Nossos <em>cultos</em></h2></div></div><a href="#agenda" onclick="agTudo(true)">Agenda completa →</a></div>
     <div class="lado">
       <div class="hoje" id="hoje"></div>
       <div class="lista-hor" id="horarios"></div>
@@ -954,25 +969,36 @@ function rDestaque(){
 
 /* ── agenda do mês (destaque) ── */
 function linhasAgenda(){var a=lista(D.escala_pro&&D.escala_pro.rows);if(!a.length)a=lista(D.escala_agenda&&D.escala_agenda.rows);return a.filter(function(r){return r.dt&&dt(r.dt);});}
+/* Agenda do mês: mostra os próximos cultos e, no botão, a agenda completa do mês com a escala de cada culto.
+   Compartilhar a agenda completa gera um cartaz em pé com TODOS os cultos do mês (não corta mais). */
+var _agTudo=false;
+function agTudo(abrir){_agTudo=abrir===true?true:!_agTudo;rAgendaMes();if(abrir===true)setTimeout(function(){var e=document.getElementById('agenda');if(e)e.scrollIntoView({behavior:'smooth',block:'start'});},60);}
+function papeisDe(r){function f(v){return Array.isArray(v)?v.join(', '):(v||'');}return [['Dirigente',r.dir],['Ministrante',r.min],['Oportunidade',r.opt],['Ensaio',r.ensaio],['Porta / recepção',r.p1]].map(function(c){var v=f(c[1]);return v?[c[0],v]:null;}).filter(Boolean);}
 function rAgendaMes(){
   var h=new Date(),hs=hojeStr(),mes=hs.slice(0,7);
   document.getElementById('ag-mes').textContent=MESES[h.getMonth()];
-  var l=linhasAgenda().filter(function(r){return r.dt>=hs;}).sort(function(a,b){return a.dt<b.dt?-1:a.dt>b.dt?1:0;});
-  var doMes=l.filter(function(r){return r.dt.slice(0,7)===mes;});
-  if(doMes.length<4)doMes=l.slice(0,8);else doMes=doMes.slice(0,8);
+  var todas=linhasAgenda().sort(function(a,b){return a.dt<b.dt?-1:a.dt>b.dt?1:0;});
+  var doMesTodo=todas.filter(function(r){return r.dt.slice(0,7)===mes;});
+  var l=todas.filter(function(r){return r.dt>=hs;});
+  var prox=l.filter(function(r){return r.dt.slice(0,7)===mes;});
+  if(prox.length<4)prox=l.slice(0,8);else prox=prox.slice(0,8);
+  var mostrar=_agTudo?(doMesTodo.length?doMesTodo:l):prox;
   var box=document.getElementById('ag-lista');
   var D3=['dom','seg','ter','qua','qui','sex','sáb'];
   function f(v){return Array.isArray(v)?v.join(', '):(v||'');}
-  reg({s:'agenda',id:'mes',t:'Agenda de '+MESES[h.getMonth()],d:'Cultos e programações do mês na OBPC Jardim São Fernando. Venha adorar conosco!',tipo:'Agenda do mês',cta:'Toque e veja a agenda',linhas:doMes.slice(0,5).map(function(r){var d=dt(r.dt);return d.getDate()+' '+D3[d.getDay()]+'  ·  '+(f(r.clt)||'Culto');})});
-  if(!doMes.length){box.innerHTML='<div class="vazio">A agenda do mês aparece aqui assim que for preenchida. Toque no botão abaixo para ver a agenda completa.</div>';return;}
-  box.innerHTML=doMes.map(function(r){var d=dt(r.dt),hj=r.dt===hs;
-    var sub=[r.dir?'Dirigente: '+f(r.dir):'',r.min?'Ministrante: '+f(r.min):''].filter(Boolean).join(' · ');
-    var esc1=[['Dirigente',r.dir],['Ministrante',r.min],['Oportunidade',r.opt],['Ensaio',r.ensaio],['Porta / recepção',r.p1]].map(function(c){var v=f(c[1]);return v?c[0]+': '+v:'';}).filter(Boolean);
-    var k=reg({s:'agenda',id:idDe(r.dt,f(r.clt)),t:f(r.clt)||'Culto',d:sub,dt:r.dt,tipo:hj?'Escala de hoje':'Agenda da igreja',cta:'Venha adorar conosco',linhas:esc1.length?esc1.slice(0,5):null,ic3d:'escala'});
-    return '<div class="ag-item'+(hj?' hj':'')+'" data-sh="'+k+'"><div class="ag-dia"><b>'+d.getDate()+'</b><small>'+D3[d.getDay()]+'</small></div><div class="ag-txt"><b>'+esc(f(r.clt)||'Culto')+(hj?'<em class="ag-hoje">Hoje</em>':'')+'</b>'+(sub?'<span class="sub">'+esc(sub)+'</span>':'')+'</div>'+btSh(k,'ic')+'</div>';}).join('');
+  /* cartaz da agenda completa (todos os cultos do mês) */
+  var cartaz=(doMesTodo.length?doMesTodo:l.slice(0,12)).map(function(r){var d=dt(r.dt);return {dia:d.getDate(),sem:D3[d.getDay()],tit:f(r.clt)||'Culto',linhas:papeisDe(r).slice(0,3).map(function(p){return p[0]+': '+p[1];}),hj:r.dt===hs,passou:r.dt<hs};});
+  reg({s:'agenda',id:'mes',t:'Agenda de '+MESES[h.getMonth()],d:'Cultos e programações do mês na OBPC Jardim São Fernando. Venha adorar conosco!',tipo:'Agenda do mês',cta:'Toque e veja a agenda',linhas:prox.slice(0,5).map(function(r){var d=dt(r.dt);return d.getDate()+' '+D3[d.getDay()]+'  ·  '+(f(r.clt)||'Culto');}),cartaz:cartaz,cartazTit:'Agenda de '+MESES[h.getMonth()],ic3d:'agenda'});
+  var bt=document.getElementById('ag-mais');
+  if(bt){bt.hidden=doMesTodo.length<=prox.length&&!_agTudo;bt.querySelector('span').textContent=_agTudo?'Mostrar só os próximos':'Ver a agenda completa do mês';}
+  if(!mostrar.length){box.innerHTML='<div class="vazio">A agenda do mês aparece aqui assim que for preenchida.</div>';return;}
+  box.classList.toggle('tudo',_agTudo);
+  box.innerHTML=mostrar.map(function(r){var d=dt(r.dt),hj=r.dt===hs,ps=papeisDe(r);
+    var sub=ps.slice(0,2).map(function(p){return p[0]+': '+p[1];}).join(' · ');
+    var k=reg({s:'agenda',id:idDe(r.dt,f(r.clt)),t:f(r.clt)||'Culto',d:sub,dt:r.dt,tipo:hj?'Escala de hoje':'Agenda da igreja',cta:'Venha adorar conosco',linhas:ps.length?ps.slice(0,5).map(function(p){return p[0]+': '+p[1];}):null,cartaz:[{dia:d.getDate(),sem:D3[d.getDay()],tit:f(r.clt)||'Culto',linhas:ps.map(function(p){return p[0]+': '+p[1];}),hj:hj}],cartazTit:hj?'Agenda de hoje':'Agenda da igreja',cartazSub:DIAS[d.getDay()]+', '+d.getDate()+' de '+MESES[d.getMonth()],ic3d:'escala'});
+    var det=_agTudo&&ps.length?'<div class="ag-esc">'+ps.map(function(p){return '<span><small>'+esc(p[0])+'</small>'+esc(p[1])+'</span>';}).join('')+'</div>':(sub?'<span class="sub">'+esc(sub)+'</span>':'');
+    return '<div class="ag-item'+(hj?' hj':'')+(r.dt<hs?' passou':'')+'" data-sh="'+k+'"><div class="ag-dia"><b>'+d.getDate()+'</b><small>'+D3[d.getDay()]+'</small></div><div class="ag-txt"><b>'+esc(f(r.clt)||'Culto')+(hj?'<em class="ag-hoje">Hoje</em>':'')+'</b>'+det+'</div>'+btSh(k,'ic')+'</div>';}).join('');
 }
-
-/* ── agenda de hoje ── */
 function rHoje(){
   var hs=hojeStr(),h=new Date();
   var rows=lista(D.escala_pro&&D.escala_pro.rows).filter(function(r){return r.dt===hs;});
@@ -985,12 +1011,14 @@ function rHoje(){
   if(rows.length){
     var esc1=[];rows.forEach(function(r){[['Dirigente',r.dir],['Ministrante',r.min],['Oportunidade',r.opt],['Ensaio',r.ensaio],['Porta / recepção',r.p1]].forEach(function(c){var v=c[1];if(Array.isArray(v))v=v.join(', ');if(v)esc1.push(c[0]+': '+v);});});
     var nomes=rows.map(function(r){var v=r.clt;if(Array.isArray(v))v=v.join(', ');return v||'Culto';});
-    k=reg({s:'hoje',id:hs,t:nomes.join(' · '),d:esc1.join(' · ')||'Escala do culto de hoje na OBPC Jardim São Fernando.',dt:hs,tipo:'Escala de hoje',cta:'Venha adorar conosco',linhas:esc1.slice(0,5),ic3d:'escala'});
+    var D3h=['dom','seg','ter','qua','qui','sex','sáb'];
+    k=reg({s:'hoje',id:hs,t:nomes.join(' · '),d:esc1.join(' · ')||'Escala do culto de hoje na OBPC Jardim São Fernando.',dt:hs,tipo:'Escala de hoje',cta:'Venha adorar conosco',linhas:esc1.slice(0,5),ic3d:'escala',
+      cartaz:rows.map(function(r){var v=r.clt;if(Array.isArray(v))v=v.join(', ');return {dia:h.getDate(),sem:D3h[h.getDay()],tit:v||'Culto',linhas:papeisDe(r).map(function(p){return p[0]+': '+p[1];}),hj:true};}),cartazTit:'Agenda de hoje',cartazSub:DIAS[h.getDay()]+', '+h.getDate()+' de '+MESES[h.getMonth()]});
   }else{
     var hor=lista(D.horarios).map(function(x){return (x.dia||'')+'  ·  '+(x.h||'')+(x.tipo?'  ·  '+x.tipo:'');});
     k=reg({s:'cultos',id:'semana',t:'Venha adorar conosco',d:'Horários dos cultos da OBPC Jardim São Fernando. Você é nosso convidado!',tipo:'Nossos cultos',cta:'Toque e veja os horários',linhas:hor.slice(0,5),ic3d:'relogio'});
   }
-  html+='<div style="margin-top:1.1rem;display:flex;gap:.6rem;flex-wrap:wrap;align-items:center"><a class="bt bt-ouro bt-sm" href="agenda.html">'+ic('agenda')+'Agenda do mês</a>'+btSh(k)+'</div>';
+  html+='<div style="margin-top:1.1rem;display:flex;gap:.6rem;flex-wrap:wrap;align-items:center"><a class="bt bt-ouro bt-sm" href="#agenda" onclick="agTudo(true)">'+ic('agenda')+'Agenda do mês</a>'+btSh(k)+'</div>';
   var el=document.getElementById('hoje');el.innerHTML=html;el.setAttribute('data-sh',k);
 }
 function rHorarios(){
@@ -1009,6 +1037,17 @@ function rProximos(){
 
 /* ── blocos de mídia ── */
 function ondaHtml(seed){var s=0;String(seed||'x').split('').forEach(function(c){s=(s*31+c.charCodeAt(0))%9973;});var h='';for(var i=0;i<22;i++){s=(s*9301+49297)%233280;h+='<i style="height:'+(20+Math.round(s/233280*80))+'%"></i>';}return h;}
+/* descobre se a foto/vídeo é em pé ou deitado e escolhe 9:16 ou 16:9 */
+function formato(el){
+  try{var w=el.naturalWidth||el.videoWidth,h=el.naturalHeight||el.videoHeight;if(!w||!h)return;
+    var box=el.classList.contains('card-img')?el:el.closest('.midia');if(!box||box.dataset.fmt)return;box.dataset.fmt=1;
+    box.classList.add('fmt');if(h>w*1.05)box.classList.add('vert');
+    if(box!==el){var u=el.currentSrc||el.src||el.poster;if(u&&el.tagName==='IMG')box.style.setProperty('--fundo','url("'+u.replace(/"/g,'%22')+'")');}
+  }catch(e){}
+}
+document.addEventListener('load',function(e){var t=e.target;if(t&&(t.tagName==='IMG'||t.tagName==='VIDEO')&&(t.classList.contains('card-img')||t.closest&&t.closest('.midia')))formato(t);},true);
+document.addEventListener('loadedmetadata',function(e){var t=e.target;if(t&&t.tagName==='VIDEO'&&t.closest&&t.closest('.midia'))formato(t);},true);
+function formatoTodos(){[].forEach.call(document.querySelectorAll('img.card-img,.midia img,.midia video'),function(el){if(el.complete!==false||el.readyState>0)formato(el);});}
 function midiaBloco(m,titulo){
   var src=m&&(m.src||m.url||m.secure_url);if(!urlOk(src))return '';
   var y=ytId(src);
@@ -1147,7 +1186,7 @@ function rPalavras(){
   box.innerHTML=l.slice(0,6).map(function(p,i){
     var md=boas(p.midias);var m0=md.length?md[0]:(p.url?{src:p.url}:null);var bloco=m0?midiaBloco(m0,p.tit):'';var txt=p.txt||'';
     var k=reg({s:'palavra',id:p.ts?String(p.ts):idDe(p.tit,p.dt),t:p.tit||'Palavra do Pastor',d:txt,img:m0?capaDe(m0):'',dt:p.dt,tipo:'Palavra do Pastor',cta:m0&&capaDe(m0)!==(m0.src||m0.url)?'Toque para assistir':'Toque e leia a mensagem',video:!!(m0&&(ytId(m0.src||m0.url)||ehVideo(m0.src||m0.url)))});
-    return '<article class="card" data-sh="'+k+'">'+bloco+'<div class="card-c">'+(p.urg?'<span class="selo selo-novo">Nova mensagem</span>':'')+'<h3>'+esc(p.tit||'Palavra do Pastor')+'</h3>'+(txt?'<p>'+esc(txt.length>200?txt.slice(0,200)+'…':txt)+'</p>':'')+'<div class="meta">'+(p.aut?'<span>'+ic('biblia','mi')+esc(p.aut)+'</span>':'')+(p.dt?'<span>'+ic('agenda','mi')+fmtData(p.dt)+'</span>':'')+(txt.length>200?'<a href="javascript:void 0" onclick="abrirTexto(\'palavras\','+i+')">Ler mensagem</a>':'')+'</div><div class="card-pe">'+btSh(k)+'</div></div></article>';
+    return '<article class="card'+(p.urg?' card-urg':'')+'" data-sh="'+k+'">'+bloco+'<div class="card-c">'+(p.urg?'<span class="selo selo-urg sinal"><i></i>Urgente</span>':'')+'<h3>'+esc(p.tit||'Palavra do Pastor')+'</h3>'+(txt?'<p>'+esc(txt.length>200?txt.slice(0,200)+'…':txt)+'</p>':'')+'<div class="meta">'+(p.aut?'<span>'+ic('biblia','mi')+esc(p.aut)+'</span>':'')+(p.dt?'<span>'+ic('agenda','mi')+fmtData(p.dt)+'</span>':'')+(txt.length>200?'<a href="javascript:void 0" onclick="abrirTexto(\'palavras\','+i+')">Ler mensagem</a>':'')+'</div><div class="card-pe"><a class="bt bt-vidro bt-sm" href="tv-obpc.html'+(p.ts?'#p'+esc(p.ts):'')+'">'+ic('tv')+'Ver na TV OBPC</a>'+btSh(k)+'</div></div></article>';
   }).join('');
 }
 function rSermoes(){
@@ -1252,7 +1291,7 @@ function tocarHero(i){
     _hv.lista.splice(_hv.i,1);if(!_hv.lista.length){h.classList.remove('com-video');v.classList.remove('on');slideFotos();}else tocarHero(_hv.i);};
   var p=v.play();if(p&&p.catch)p.catch(function(){v.classList.add('on');});
 }
-function render(){AGORA=Date.now();[rInfo,rFixos,rHeroVideo,rAgendaMes,calcProx,rDestaque,rHoje,rHorarios,rProximos,rMomentos,rPodcast,rTV,rAvisos,rEventos,rPalavras,rSermoes,rVideos,rInformativos,rFotos,rAniv,rLideres].forEach(function(f){try{f();}catch(e){console.warn(f.name,e);}});marcarPulsa();}
+function render(){AGORA=Date.now();[rInfo,rFixos,rHeroVideo,rAgendaMes,calcProx,rDestaque,rHoje,rHorarios,rProximos,rMomentos,rPodcast,rTV,rAvisos,rEventos,rPalavras,rSermoes,rVideos,rInformativos,rFotos,rAniv,rLideres].forEach(function(f){try{f();}catch(e){console.warn(f.name,e);}});marcarPulsa();setTimeout(formatoTodos,50);}
 
 /* ═════════ COMPARTILHAR ═════════
    Cada card tem um botão. Ele monta uma imagem bonita (1200×630) com a foto do próprio card,
@@ -1296,7 +1335,56 @@ function carregaImg(u){return new Promise(function(ok,erro){if(!u)return erro();
 function fontesProntas(){try{return Promise.race([Promise.all(['600 64px Fraunces','italic 500 50px Fraunces','800 26px Manrope','600 28px Manrope'].map(function(f){return document.fonts.load(f);})),new Promise(function(r){setTimeout(r,2500);})]);}catch(e){return Promise.resolve();}}
 function quebra(g,txt,larg,max){var ps=String(txt).split(/\s+/),ls=[],l='';ps.forEach(function(p){var t=l?l+' '+p:p;if(g.measureText(t).width>larg&&l){ls.push(l);l=p;}else l=t;});if(l)ls.push(l);if(ls.length>max){ls=ls.slice(0,max);var u=ls[max-1];while(u.length&&g.measureText(u+'…').width>larg)u=u.slice(0,-1);ls[max-1]=u.replace(/[\s,.;:]+$/,'')+'…';}return ls;}
 function pilula(g,x,y,w,h){var r=h/2;g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();}
+/* cartaz em pé, no estilo do site, com quantos cultos houver (a altura cresce; nada é cortado) */
+function desenharCartaz(o,icn){
+  var W=1080,P=64,itens=o.cartaz||[],SER='Fraunces, Georgia, serif',SAN='Manrope, Arial, sans-serif';
+  var tmp=document.createElement('canvas').getContext('2d');
+  function lin(it){tmp.font='600 30px '+SAN;var n=0;it.linhas.forEach(function(l){n+=quebra(tmp,l,W-P*2-190,2).length;});return n;}
+  var alt=itens.map(function(it){return Math.max(150,96+lin(it)*40);});
+  var H=Math.max(itens.length>1?1350:1080,(o.cartazSub?490:430)+alt.reduce(function(a,b){return a+b+22;},0)+230);
+  var c=document.createElement('canvas');c.width=W;c.height=H;var g=c.getContext('2d');
+  var bg=g.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#1A2754');bg.addColorStop(.5,'#0F1733');bg.addColorStop(1,'#070B18');g.fillStyle=bg;g.fillRect(0,0,W,H);
+  var gl=g.createRadialGradient(W-120,80,10,W-120,80,700);gl.addColorStop(0,'rgba(242,193,78,.35)');gl.addColorStop(1,'rgba(242,193,78,0)');g.fillStyle=gl;g.fillRect(0,0,W,H);
+  var ouro=g.createLinearGradient(0,0,W,0);ouro.addColorStop(0,'#FFE29A');ouro.addColorStop(.5,'#F2C14E');ouro.addColorStop(1,'#C8902E');
+  g.strokeStyle='rgba(242,193,78,.6)';g.lineWidth=4;g.strokeRect(22,22,W-44,H-44);
+  if(icn){g.shadowColor='rgba(0,0,0,.5)';g.shadowBlur=30;g.shadowOffsetY=14;g.drawImage(icn,W-P-190,70,190,190);g.shadowBlur=0;g.shadowOffsetY=0;}
+  var y=86;var selo=String(o.tipo||'Agenda').toUpperCase();g.font='800 26px '+SAN;var sw=g.measureText(selo).width+48;
+  pilula(g,P,y,sw,50);g.fillStyle='rgba(242,193,78,.14)';g.fill();g.strokeStyle='rgba(242,193,78,.85)';g.lineWidth=2;g.stroke();
+  g.fillStyle='#FFE29A';g.textBaseline='middle';g.fillText(selo,P+24,y+26);y+=92;
+  g.textBaseline='top';var tt=o.cartazTit||o.t||'Agenda',tam=74,ls;
+  for(;tam>=46;tam-=4){g.font='600 '+tam+'px '+SER;ls=quebra(g,tt,W-P*2-(icn?200:0),2);if(ls.length<=2)break;}
+  g.fillStyle='#fff';ls.forEach(function(l){g.fillText(l,P,y);y+=tam*1.1;});
+  if(o.cartazSub){g.font='700 40px '+SAN;g.fillStyle='#fff';g.fillText(quebra(g,o.cartazSub,W-P*2,1)[0],P,y+4);y+=60;}
+  g.font='italic 500 34px '+SER;g.fillStyle='#FFE29A';g.fillText('OBPC Jardim São Fernando',P,y+6);y+=90;
+  itens.forEach(function(it,i){
+    var h=alt[i],x=P,w=W-P*2;
+    g.save();if(it.passou)g.globalAlpha=.55;
+    g.lineWidth=it.hj?4:2;g.strokeStyle=it.hj?'#F2C14E':'rgba(255,255,255,.14)';
+    g.beginPath();var r=26;g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();
+    g.fillStyle=it.hj?'rgba(242,193,78,.16)':'rgba(255,255,255,.06)';g.fill();g.stroke();
+    /* folhinha do calendário (igual à do site) */
+    var cx=x+26,cy=y+24,cw=122,ch=118;
+    g.fillStyle=it.hj?'#F7D774':'#F4EFE3';g.beginPath();g.moveTo(cx+14,cy);g.arcTo(cx+cw,cy,cx+cw,cy+ch,14);g.arcTo(cx+cw,cy+ch,cx,cy+ch,14);g.arcTo(cx,cy+ch,cx,cy,14);g.arcTo(cx,cy,cx+cw,cy,14);g.closePath();g.fill();
+    g.fillStyle=it.hj?'#C8902E':'#C9343B';g.fillRect(cx,cy,cw,36);
+    g.fillStyle='#fff';g.font='800 24px '+SAN;g.textAlign='center';g.textBaseline='middle';g.fillText(String(it.sem||'').toUpperCase(),cx+cw/2,cy+19);
+    g.fillStyle='#1A1F2E';g.font='600 58px '+SER;g.fillText(String(it.dia),cx+cw/2,cy+78);g.textAlign='left';
+    var tx=x+180,tw=w-210,ty=y+26;g.textBaseline='top';
+    g.font='800 38px '+SAN;g.fillStyle='#fff';var t1=quebra(g,it.tit,tw-(it.hj?120:0),1)[0];g.fillText(t1,tx,ty);
+    if(it.hj){var tl=g.measureText(t1).width;g.font='800 22px '+SAN;var hw=g.measureText('HOJE').width+30;pilula(g,tx+tl+16,ty+4,hw,36);g.fillStyle=ouro;g.fill();g.fillStyle='#0A0F1F';g.textBaseline='middle';g.fillText('HOJE',tx+tl+31,ty+23);g.textBaseline='top';}
+    ty+=56;g.font='600 30px '+SAN;
+    it.linhas.forEach(function(l){var p=l.indexOf(': ');quebra(g,l,tw,2).forEach(function(q,j){if(j===0&&p>0){var rot=l.slice(0,p+1);g.fillStyle='#F2C14E';g.fillText(rot,tx,ty);var rw=g.measureText(rot+' ').width;g.fillStyle='rgba(244,241,234,.92)';g.fillText(q.slice(p+2),tx+rw,ty);}else{g.fillStyle='rgba(244,241,234,.92)';g.fillText(q,tx,ty);}ty+=40;});});
+    g.restore();y+=h+22;
+  });
+  if(!itens.length){g.font='600 36px '+SAN;g.fillStyle='rgba(244,241,234,.8)';g.fillText('A agenda deste mês ainda vai ser preenchida.',P,y);y+=80;}
+  /* rodapé */
+  var cy2=H-150,cta=o.cta||'Venha adorar conosco';g.font='800 32px '+SAN;var cw2=g.measureText(cta).width+70;
+  g.shadowColor='rgba(242,193,78,.45)';g.shadowBlur=26;pilula(g,P,cy2,cw2,70);g.fillStyle=ouro;g.fill();g.shadowBlur=0;
+  g.fillStyle='#0A0F1F';g.textBaseline='middle';g.fillText(cta,P+35,cy2+36);
+  g.textAlign='right';g.font='700 22px '+SAN;g.fillStyle='rgba(244,241,234,.75)';g.fillText('O BRASIL PARA CRISTO',W-P,cy2+36);g.textAlign='left';
+  return c;
+}
 function desenhar(o,im,icn){
+  if(o.cartaz)return desenharCartaz(o,icn);
   var W=1200,H=630,c=document.createElement('canvas');c.width=W;c.height=H;var g=c.getContext('2d');
   var SER='Fraunces, Georgia, serif',SAN='Manrope, Arial, sans-serif';
   g.fillStyle='#0A1022';g.fillRect(0,0,W,H);
@@ -1345,12 +1433,12 @@ function leve(u){if(/res\.cloudinary\.com/.test(u)&&u.indexOf('/image/upload/')>
 function preparar(o){
   var foto=o.img&&urlOk(o.img)&&!/^data:/.test(o.img)?o.img:'';
   var fundo=FOTOS_BIBLIA[Math.abs(parseInt(hid(o.s+o.id),36))%FOTOS_BIBLIA.length].replace('w=1920','w=1400');
-  var assin=hash53(JSON.stringify([o.s,o.id,o.t,o.d,foto,o.dt,o.h,o.l,o.linhas,o.cta,o.tipo,'v2']));
+  var assin=hash53(JSON.stringify([o.s,o.id,o.t,o.d,foto,o.dt,o.h,o.l,o.linhas,o.cta,o.tipo,o.cartaz||0,o.cartazTit||'',o.cartazSub||'','v3']));
   var cache=lerJ('obpc_sh_img');
   var r={};
   var nomeIc=o.ic3d||ICS[o.s]||'';
   return fontesProntas().then(function(){return carregaImg(foto).then(function(im){return {im:im,da:'card'};},function(){return carregaImg(fundo).then(function(im){return {im:im,da:'biblia'};},function(){return {im:null,da:'nada'};});});})
-  .then(function(x){if(x.da==='card'||!nomeIc)return x;return carregaImg('icones/'+nomeIc+'.webp').then(function(i){x.icn=i;return x;},function(){return x;});})
+  .then(function(x){if(o.cartaz)x={im:null,da:'cartaz'};if(x.da==='card'||!nomeIc)return x;return carregaImg('icones/'+nomeIc+'.webp').then(function(i){x.icn=i;return x;},function(){return x;});})
   .then(function(x){var c=desenhar(o,x.im,x.icn);r.previa=c.toDataURL('image/jpeg',.8);r.png=new Promise(function(ok){try{c.toBlob(function(b){ok(b);},'image/png');}catch(e){ok(null);}});
     /* se a foto do card não deixou desenhar (proteção do servidor), a prévia usa a própria foto do card */
     r.semMontagem=!!foto&&x.da!=='card';
@@ -1389,6 +1477,7 @@ function compartilhar(k){
   j.querySelector('.r-mais').hidden=!navigator.share;
   document.getElementById('shf-tit').textContent=o.s==='site'?'Compartilhar o site':'Compartilhar';
   var im=document.getElementById('shf-img');im.removeAttribute('src');im.hidden=true;
+  var pv=im.closest('.shf-prev');if(pv)pv.classList.toggle('alto',!!o.cartaz);
   document.getElementById('shf-st').textContent='⏳ Preparando a imagem…';document.getElementById('shf-link').innerHTML='';
   var meu=_sh={o:o};
   preparar(o).then(function(r){if(_sh!==meu)return;meu.r=r;
