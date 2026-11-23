@@ -996,6 +996,7 @@ function publicar(it,onp){
         var jaPub=it.siteOk?Promise.resolve():(it.tipo==='foto'
           ?fbLista('galeria',{url:u,tp:'img',tit:it.titulo,titulo:it.titulo,data:dataISO,autor:it.quem||'',expira:it.expira||null,vh:it.vh||null})
           :fbLista('videos',{url:u,titulo:it.titulo,tit:it.titulo,cat:it.tipo==='culto'?'Culto':it.tipo==='podcast'?'Podcast':'Entrevista',plat:'OBPC',desc:it.desc||'',entrevistado:it.ent||'',orig:it.audio?it.urlCloud:'',data:dataISO,autor:it.quem||'',expira:it.expira||null,vh:it.vh||null}));
+        if(!it.audio&&it.tipo!=='foto'){try{fetch(u,{method:'HEAD',mode:'no-cors'}).catch(function(){});fetch(u.replace('/video/upload/','/video/upload/so_1,w_480,q_auto,f_jpg/').replace(/\.[a-z0-9]+(\?.*)?$/i,'.jpg'),{mode:'no-cors'}).catch(function(){});}catch(e){}} /* a nuvem já começa a preparar o vídeo e a capa para a TV */
         return jaPub.then(function(){
           it.siteOk=true;it.status='publicado';it.urlSite=u;it.previa=imgPrevia(it,it.urlCloud);
           if(!it.audio&&it.tipo!=='foto')aquecerFundo(u);

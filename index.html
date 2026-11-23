@@ -553,6 +553,16 @@ footer li a{display:inline-flex;align-items:center}
 /* Podcast: toque na onda para pular para a parte que quiser */
 .pod-onda{cursor:pointer;touch-action:manipulation}
 </style>
+<style id="molduras-video">
+/* 23/11/2026: todo vídeo/foto dos cards fica numa moldura dourada, centralizado.
+   Deitado = 16:9 (largura toda). Em pé = 9:16, mais estreito e no meio. */
+.card .midia{display:block;width:calc(100% - 24px);margin:12px auto 0;border:5px solid #E2B04A;border-radius:20px;
+  box-shadow:0 0 0 1px #9C6B1C,0 0 0 6px rgba(242,193,78,.12),0 16px 30px -14px rgba(0,0,0,.9);box-sizing:border-box}
+.card .midia.vert{aspect-ratio:9/16;width:auto;height:min(64vh,560px);max-height:none;max-width:calc(100% - 24px);margin-left:auto;margin-right:auto}
+.card .midia img,.card .midia video{border-radius:14px}
+.tv-card .midia{border-bottom:5px solid #E2B04A}
+.card .midia .play{z-index:2}
+</style>
 </head>
 <body>
 
@@ -675,7 +685,7 @@ footer li a{display:inline-flex;align-items:center}
   <!-- TV OBPC: tudo o que o Estúdio de Mídia e os cultos publicam -->
   <section class="sec revela" id="tv">
     <div class="tv-cab" data-sh="tv:canal">
-      <div class="tv-marca"><span class="tv-ic"><img class="ic3d" src="icones/tv.webp" alt="" aria-hidden="true"></span><div><small><span class="pulso"></span>No ar</small><h2>TV <em>OBPC</em></h2><p>Vídeos, podcasts e fotos do nosso estúdio e dos cultos. Tudo o que é gravado aparece aqui na hora.</p></div></div>
+      <div class="tv-marca"><span class="tv-ic"><img class="ic3d" src="icones/tv.webp" alt="" aria-hidden="true"></span><div><small><span class="pulso"></span>No ar</small><h2>TV <em>OBPC</em></h2><p>Os vídeos do nosso estúdio e dos cultos. Todo vídeo gravado aparece aqui na hora.</p></div></div>
       <div class="tv-bts"><a class="bt bt-ouro" href="tv-obpc.html">▶ Abrir a TV OBPC</a><button class="bt-sh" onclick="compartilhar('tv:canal')"><svg viewBox="0 0 24 24"><use href="#ic-sh"/></svg><span>Compartilhar a TV</span></button></div>
     </div>
     <div class="grade" id="lista-tv"></div>
@@ -1179,7 +1189,7 @@ function rPodcast(){
   if(_pod.id)podPinta();
 }
 function rTV(){
-  var it=itensTV(),box=document.getElementById('lista-tv');
+  var it=itensTV().filter(function(v){var s=v.m.src||v.m.url;return !v.aud&&(ytId(s)||v.m.tp==='video'||ehVideo(s));}),box=document.getElementById('lista-tv'); /* TV OBPC: só vídeos */
   reg({s:'tv',id:'canal',t:'TV OBPC',d:'Vídeos, podcasts e fotos da OBPC Jardim São Fernando. Assista agora!',img:it.length?capaDe(it[0].m):'',tipo:'TV OBPC',cta:'Toque para assistir',video:true});
   if(!it.length){box.innerHTML=vazio('Tudo o que for gravado no Estúdio de Mídia e nos cultos aparece aqui na hora.');return;}
   box.innerHTML=it.slice(0,6).map(function(v,i){
