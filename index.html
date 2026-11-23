@@ -318,6 +318,7 @@ footer p{color:var(--txt2);font-size:.92rem}
 .mx-info b{font-family:var(--serif);font-weight:600;font-size:1.05rem;flex:1 1 200px;min-width:0}
 .mx-info small{color:var(--txt3)}
 .mx-info a.bt-sh{text-decoration:none}
+.mx-916.pronto{background:var(--goldg);color:#0A0F1F;border-color:transparent}
 .janela-txt h3{font-family:var(--serif);font-weight:600;font-size:1.6rem;color:var(--ouro2);margin-bottom:.6rem}
 .janela-txt p{white-space:pre-line;color:var(--txt);font-size:1.02rem}
 .fechar{position:fixed;top:12px;right:12px;width:46px;height:46px;border-radius:50%;border:none;background:var(--goldg);color:#0A0F1F;font-size:1.25rem;font-weight:800;cursor:pointer;z-index:101}
@@ -1655,7 +1656,7 @@ function abrirMidias(ms,i,tit,tv){
   _mx={l:ms,i:i,t:tit,tv:tv};var n=ms.length;
   try{if(!radio.paused)radioParar();}catch(e){}
   abrirJanela('<div class="mx-pl">'+playerHtml(ms[i])+(n>1?'<button class="mx-nv l" onclick="mxIr(-1)" aria-label="Anterior">‹</button><button class="mx-nv r" onclick="mxIr(1)" aria-label="Próximo">›</button>':'')+'</div>'
-    +'<div class="mx-info"><b>'+esc(tit||'')+'</b>'+(n>1?'<small>'+(i+1)+' de '+n+'</small>':'')+(tv?'<a class="bt-sh" href="'+esc(tv)+'"><span>📺 Abrir na TV OBPC Jardim São Fernando</span></a>':'')+'</div>',true);
+    +'<div class="mx-info"><b>'+esc(tit||'')+'</b>'+(n>1?'<small>'+(i+1)+' de '+n+'</small>':'')+'<button class="bt-sh mx-916" onclick="vertical916(this)"><span>📱 Compartilhar em pé (9:16)</span></button>'+(tv?'<a class="bt-sh" href="'+esc(tv)+'"><span>📺 Abrir na TV OBPC Jardim São Fernando</span></a>':'')+'</div>',true);
   var vd=document.querySelector('#janela-c video');if(vd){vd.onended=function(){if(_mx&&_mx.i<n-1)mxIr(1);};var p=vd.play();if(p&&p.catch)p.catch(function(){});}
 }
 function mxIr(d){if(!_mx)return;var n=_mx.l.length;abrirMidias(_mx.l,(_mx.i+d+n)%n,_mx.t,_mx.tv);}
@@ -1666,6 +1667,61 @@ document.addEventListener('click',function(e){
   if(m&&!a.closest('#janela')){if(tocarId(m[1]))e.preventDefault();return;}
   if(a.classList.contains('hero-janela')){var v=document.getElementById('hero-video'),u=v&&(v.currentSrc||v.getAttribute('src'));if(u&&/^https?:/.test(u)){e.preventDefault();var id='e'+hid(u);if(!tocarId(id))abrirMidias([{src:u,tp:'video'}],0,'TV OBPC Jardim São Fernando','tv-obpc.html');}}
 });
+
+/* ═════════ COMPARTILHAR EM PÉ (9:16) — Status do WhatsApp, Reels e Stories ═════════
+   Vídeo do Cloudinary: o próprio vídeo é refeito em 720×1280 (fundo desfocado) e vai como arquivo.
+   YouTube, Facebook ou foto: vai um cartaz em pé com a capa, o título e o link.
+   Primeiro toque prepara; o segundo ("Enviar agora") abre a lista de apps (o celular exige o toque). */
+function url916(src,comTexto){
+  var t=comTexto?'/l_text:Arial_42_bold:OBPC%20Jardim%20S%C3%A3o%20Fernando,co_rgb:FFE29A,g_south,y_90':'';
+  return src.replace(/\/video\/upload\/(?:[a-z]{1,3}_[^\/]*\/)*/,'/video/upload/c_pad,ar_9:16,w_720,h_1280,b_blurred:400:15,q_auto,vc_h264'+t+'/').replace(/\.(mov|webm|m4v|3gp|ogv)(\?|$)/i,'.mp4$2');
+}
+function baixarVideo916(src){
+  function tenta(u){return fetch(u).then(function(r){if(!r.ok)throw r.status;var t=r.headers.get('content-type')||'';if(!/video/.test(t))throw 'tipo';return r.blob();});}
+  return tenta(url916(src,true)).catch(function(){return tenta(url916(src,false));}).then(function(b){return new File([b],'obpc-video-vertical.mp4',{type:'video/mp4'});});
+}
+function cartaz916(o,capa){
+  return fontesProntas().then(function(){return carregaImg(capa).then(null,function(){return carregaImg(FOTOS_BIBLIA[0].replace('w=1920','w=1200')).then(null,function(){return null;});});}).then(function(im){
+    var W=1080,H=1920,c=document.createElement('canvas');c.width=W;c.height=H;var g=c.getContext('2d'),SER='Fraunces, Georgia, serif',SAN='Manrope, Arial, sans-serif';
+    g.fillStyle='#0A1022';g.fillRect(0,0,W,H);
+    if(im){var r=Math.max(W/im.width,H/im.height);try{g.filter='blur(28px) brightness(.55)';}catch(e){}g.drawImage(im,(W-im.width*r)/2,(H-im.height*r)/2,im.width*r,im.height*r);g.filter='none';}
+    var vg=g.createLinearGradient(0,0,0,H);vg.addColorStop(0,'rgba(7,11,24,.75)');vg.addColorStop(.5,'rgba(7,11,24,.25)');vg.addColorStop(1,'rgba(7,11,24,.9)');g.fillStyle=vg;g.fillRect(0,0,W,H);
+    var ouro=g.createLinearGradient(0,0,W,H);ouro.addColorStop(0,'#FFE29A');ouro.addColorStop(.45,'#F2C14E');ouro.addColorStop(1,'#C8902E');
+    g.textAlign='center';g.textBaseline='middle';
+    var selo='TV OBPC JARDIM SÃO FERNANDO';g.font='800 30px '+SAN;var sw=g.measureText(selo).width+60;pilula(g,(W-sw)/2,170,sw,64);g.fillStyle='rgba(242,193,78,.16)';g.fill();g.strokeStyle='rgba(242,193,78,.8)';g.lineWidth=2;g.stroke();g.fillStyle='#FFE29A';g.fillText(selo,W/2,203);
+    var tam=84,lin;for(;tam>=56;tam-=4){g.font='600 '+tam+'px '+SER;lin=quebra(g,o.t||'',920,4);if(lin.length<=3)break;}
+    g.fillStyle='#fff';g.shadowColor='rgba(0,0,0,.6)';g.shadowBlur=20;var y=330;lin.forEach(function(l){g.fillText(l,W/2,y+tam/2);y+=tam*1.12;});g.shadowBlur=0;
+    var bw=980,bh=Math.round(bw*9/16),bx=(W-bw)/2,by=Math.max(y+60,700);
+    g.save();g.beginPath();g.roundRect?g.roundRect(bx,by,bw,bh,28):g.rect(bx,by,bw,bh);g.clip();
+    if(im){var r2=Math.max(bw/im.width,bh/im.height);g.drawImage(im,bx+(bw-im.width*r2)/2,by+(bh-im.height*r2)/2,im.width*r2,im.height*r2);}else{g.fillStyle='#16224A';g.fillRect(bx,by,bw,bh);}
+    g.restore();g.strokeStyle='rgba(242,193,78,.85)';g.lineWidth=4;g.beginPath();if(g.roundRect)g.roundRect(bx,by,bw,bh,28);else g.rect(bx,by,bw,bh);g.stroke();
+    var px=W/2,py=by+bh/2;g.beginPath();g.arc(px,py,92,0,Math.PI*2);g.fillStyle='rgba(7,11,24,.5)';g.fill();g.lineWidth=6;g.strokeStyle='#FFE29A';g.stroke();g.beginPath();g.moveTo(px-28,py-46);g.lineTo(px+50,py);g.lineTo(px-28,py+46);g.closePath();g.fillStyle='#FFE29A';g.fill();
+    var cta='▶  Toque no link e assista';g.font='800 40px '+SAN;var cw=g.measureText(cta).width+90,cy=by+bh+120;
+    g.shadowColor='rgba(242,193,78,.45)';g.shadowBlur=30;pilula(g,(W-cw)/2,cy,cw,92);g.fillStyle=ouro;g.fill();g.shadowBlur=0;g.fillStyle='#0A0F1F';g.fillText(cta,W/2,cy+47);
+    g.font='italic 500 48px '+SER;g.fillStyle='#FFE29A';g.fillText('OBPC Jardim São Fernando',W/2,H-200);
+    g.font='700 26px '+SAN;g.fillStyle='rgba(244,241,234,.75)';g.fillText('O BRASIL PARA CRISTO',W/2,H-140);
+    return paraBlob(c);
+  }).then(function(b){return new File([b],'obpc-vertical.jpg',{type:'image/jpeg'});});
+}
+function vertical916(bt){
+  if(bt._f){enviar916(bt);return;}
+  if(bt._ocupado||!_mx)return;bt._ocupado=1;
+  var m=_mx.l[_mx.i],src=m.src||m.url||'',id=((_mx.tv||'').split('#')[1])||'';
+  var o=SH['tv:'+id]||SH['momentos:'+id]||{s:'tv',id:id||hid(src),t:_mx.t||'TV OBPC Jardim São Fernando',cta:'Toque para assistir'};
+  var y=ytId(src),capa=y?'https://img.youtube.com/vi/'+y+'/hqdefault.jpg':(ehVideo(src)||m.tp==='video')?thumbVideo(src):(ehAudio(src)?'':src);
+  var ehCloud=/res\.cloudinary\.com/.test(src)&&/\/video\/upload\//.test(src);
+  bt.querySelector('span').textContent=ehCloud?'⏳ Preparando o vídeo em pé… (pode levar 1 minuto)':'⏳ Preparando…';
+  var pArq=(ehCloud?baixarVideo916(src).catch(function(){return cartaz916(o,capa);}):cartaz916(o,capa));
+  var pLink=gravarLink(o,capa&&!/^data:/.test(capa)?leve(capa):'').catch(function(){return destinoDe(o);});
+  Promise.all([pArq,pLink]).then(function(r){bt._f=r[0];bt._msg='📺 *'+String(o.t||'').replace(/\*/g,'')+'*\n\n👉 Assista: '+r[1];bt._ocupado=0;
+    bt.querySelector('span').textContent='📤 Enviar agora ('+(r[0].type.indexOf('video')===0?'vídeo':'imagem')+' 9:16)';bt.classList.add('pronto');toast('Pronto! Toque em "Enviar agora" e escolha o Status do WhatsApp, Reels ou Stories.');
+  }).catch(function(e){console.warn(e);bt._ocupado=0;bt.querySelector('span').textContent='📱 Compartilhar em pé (9:16)';toast('Não deu para preparar agora. Tente de novo.');});
+}
+function enviar916(bt){
+  var f=bt._f,msg=bt._msg;copiarTxt(msg);
+  if(podeArquivo(f)){navigator.share({files:[f],text:msg}).catch(function(){});toast('Escolha o app. O texto com o link já está copiado para colar.');}
+  else{var a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=f.name;document.body.appendChild(a);a.click();a.remove();toast('Arquivo em pé salvo no aparelho. O texto com o link já está copiado.');}
+}
 
 /* ── janela ── */
 function abrirJanela(html,escuro){var c=document.getElementById('janela-c');c.className='janela-c'+(escuro?' escuro':'');c.innerHTML=html;document.getElementById('janela').classList.add('on');document.body.style.overflow='hidden';}
