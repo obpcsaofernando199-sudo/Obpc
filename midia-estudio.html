@@ -503,7 +503,7 @@ var CFG={
   /* REDES OFICIAIS DA OBPC — confira/preencha aqui. grupo = link de convite do grupo de WhatsApp (https://chat.whatsapp.com/XXXX). Vazio = o WhatsApp abre a lista para escolher o grupo. */
   redes:{face:'https://www.facebook.com/profile.php?id=61561313550152',insta:'https://www.instagram.com/obpc.saofernando/',grupo:''},
   /* LIMITES DO SITE (iguais aos do index.html): passou disso, as publicações mais antigas saem do site. */
-  lim:{galeria:30,videos:12},
+  lim:{galeria:60,videos:30}, /* com 48 h no ar cabe mais coisa: antes 12 vídeos de um culto já empurravam os do mesmo dia para fora */
   /* TEMPO MÁXIMO de cada gravação, em segundos (a gravação para sozinha). Culto = momentos curtos. 0 = sem limite. */
   maxSeg:{culto:60,video:300,audio:1800},
   /* QUANTAS HORAS o que for publicado fica no site/nuvem/celular antes de apagar sozinho. 0 = nunca apaga. */
@@ -1028,7 +1028,7 @@ function tituloItem(x){return String((x&&(x.titulo||x.tit))||'sem título').repl
 var capEstado=null; /* {galeria:n, videos:n} publicados agora no site */
 function capacidade(){
   return Promise.all([fbLer('galeria'),fbLer('videos')]).then(function(r){
-    capEstado={galeria:r[0].length,videos:r[1].length,listas:{galeria:r[0],videos:r[1]}};return capEstado;
+    capEstado={galeria:r[0].filter(doEstudioReg).length,videos:r[1].filter(doEstudioReg).length,listas:{galeria:r[0],videos:r[1]}};return capEstado;
   });
 }
 function desenhaCap(){
@@ -1051,6 +1051,7 @@ function atualizaCap(){return capacidade().then(desenhaCap,function(){capEstado=
 /* Antes de publicar: avisa se vai sobrar gente para fora do site. Resolve true (pode seguir) ou false (cancelou). */
 function confirmaLimite(nome,qtd){
   return fbLer(nome).then(function(lista){
+    lista=lista.filter(doEstudioReg); /* só o que o Estúdio publicou conta vaga */
     var lim=CFG.lim[nome],sai=lista.length+qtd-lim;
     if(sai<=0)return true;
     var antigas=lista.slice(Math.max(0,lista.length-sai)).reverse().slice(0,3).map(tituloItem);
@@ -1074,6 +1075,7 @@ function marcaRemovidos(rem){
 }
 
 /* ---------- publicar no site (Firebase) ---------- */
+function doEstudioReg(x){return !!x&&(x.plat==='OBPC'||x.autor!==undefined||x.entrevistado!==undefined||x.expira!==undefined)}
 function fbLista(nome,novo){
   var u=CFG.fb+'/'+nome+'.json',lim=CFG.lim[nome]||50;
   function tenta(n){
@@ -1083,7 +1085,9 @@ function fbLista(nome,novo){
       return r.json().then(function(d){
         var arr=normLista(d);
         arr.unshift(novo);
-        var removidos=arr.slice(lim);arr=arr.slice(0,lim); /* só as mais novas ficam; as antigas saem */
+        /* o limite vale só para o que o Estúdio publicou; os vídeos/fotos do painel nunca são tirados (nem apagados da nuvem) */
+        var removidos=arr.filter(doEstudioReg).slice(lim);
+        arr=arr.filter(function(x){return removidos.indexOf(x)<0}); /* só as mais novas do Estúdio ficam; as antigas saem (a ordem do resto não muda) */
         var h={'Content-Type':'application/json'};if(etag)h['if-match']=etag;
         return fetch(u,{method:'PUT',headers:h,body:JSON.stringify(arr)}).then(function(w){
           if(w.ok){
