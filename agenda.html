@@ -188,47 +188,13 @@ body:not(.exportando) .filter-actions,body:not(.exportando) .jpg-group{width:100
 body:not(.exportando) .filter-actions .btn,body:not(.exportando) .jpg-group button{flex:1 1 auto;justify-content:center;font-size:.8rem;padding:10px 8px;border-radius:8px}
 body:not(.exportando) #active-filter-badge{flex-wrap:wrap}
 body:not(.exportando) #active-filter-badge span[style]{margin-left:0!important}
-body:not(.exportando) #toolbar-selection{position:fixed;left:0;right:0;bottom:0;margin:0;max-height:40vh;overflow:auto;z-index:900;border-radius:16px 16px 0 0;box-shadow:0 -10px 30px rgba(0,0,0,.35)}
-body:not(.exportando) .chip{font-size:.95rem;padding:9px 14px}
 body:not(.exportando) #scale-sheet{padding:10px 8px 14px;border-radius:10px}
 body:not(.exportando) .church-title{font-size:1.05rem}
 body:not(.exportando) .period-month{font-size:1.5rem}
 body:not(.exportando) .period-nav{width:34px;height:34px;font-size:1.2rem}
-body:not(.exportando) #main-table,body:not(.exportando) #main-table tbody{display:block;border:0;width:100%}
-body:not(.exportando) #main-table thead{display:none}
-body:not(.exportando) #main-table tr{display:grid;grid-template-columns:1fr 1fr;border:1.5px solid #CBD5E1;border-radius:14px;margin:0 0 10px;overflow:hidden;box-shadow:0 4px 12px -8px rgba(13,61,94,.5)}
-body:not(.exportando) #main-table tr.row-filtered-out,body:not(.exportando) #main-table tr.row-no-match,body:not(.exportando) #main-table tr.row-mes-oculto{display:none}
-body:not(.exportando) #main-table td{display:block;width:auto!important;border:0;border-bottom:1px solid rgba(0,0,0,.08);order:2;min-width:0}
-body:not(.exportando) #main-table td:nth-child(2),body:not(.exportando) #main-table td:nth-child(3){order:0;border-bottom:1.5px solid rgba(0,0,0,.15)}
-body:not(.exportando) #main-table td:nth-child(5){order:1;grid-column:1/-1}
-body:not(.exportando) #main-table td:nth-child(odd):not(:nth-child(5)):not(:nth-child(1)):not(:last-child),body:not(.exportando) #main-table td:nth-child(2){border-right:1px solid rgba(0,0,0,.08)}
-body:not(.exportando) #main-table td:nth-child(1){display:none}
-body:not(.exportando) #main-table td:last-child{order:3;grid-column:1/-1;background:#FEF2F2}
-body:not(.exportando) #main-table td::before{display:block;padding:6px 10px 0;font-size:.6rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#64748B;text-align:left}
-body:not(.exportando) #main-table td:nth-child(2)::before{content:"Data"}
-body:not(.exportando) #main-table td:nth-child(3)::before{content:"Dia"}
-body:not(.exportando) #main-table td:nth-child(4)::before{content:"Ensaio"}
-body:not(.exportando) #main-table td:nth-child(5)::before{content:"Culto / Evento"}
-body:not(.exportando) #main-table td:nth-child(6)::before{content:"Porta (recepção)"}
-body:not(.exportando) #main-table td:nth-child(7)::before{content:"Dirigente"}
-body:not(.exportando) #main-table td:nth-child(8)::before{content:"Oportunidade"}
-body:not(.exportando) #main-table td:nth-child(9)::before{content:"Ministrante"}
-body:not(.exportando) #main-table td:last-child::before{display:none}
-body:not(.exportando) .cell-data{min-height:40px;font-size:.95rem}
-body:not(.exportando) #main-table td:nth-child(5) .cell-data{font-size:1.05rem;font-weight:800}
-body:not(.exportando) .dt-display{font-size:.95rem}
-body:not(.exportando) .td-data-wrap{height:40px}
-body:not(.exportando) .td-data-wrap:hover::before{display:none}
-body:not(.exportando) .linha-acoes{flex-direction:row}
-body:not(.exportando) #main-table td.td-dirigente-split::before{display:none}
 body:not(.exportando) .td-dirigente-split .dir-split-wrap{height:auto;min-height:58px}
 body:not(.exportando) .td-dirigente-split .dir-sub{justify-content:flex-start}
 body:not(.exportando) .dir-sub-label{font-size:.6rem;padding:6px 0 2px}
-body:not(.exportando) body.chips-on{padding-bottom:42vh}
-body:not(.exportando) .btn-del-linha,body:not(.exportando) .btn-edit-linha{height:40px;font-size:.85rem;border-bottom:0}
-body:not(.exportando) .btn-edit-linha::after{content:" Editar";font-size:.8rem}
-body:not(.exportando) .btn-del-linha::after{content:" Excluir";font-size:.8rem}
-body:not(.exportando) .row-regional{box-shadow:inset 5px 0 0 #7C3AED,0 4px 12px -8px rgba(13,61,94,.5)!important}
 body:not(.exportando) .upload-box,body:not(.exportando) .config-box,body:not(.exportando) .load-confirm-box{width:calc(100vw - 24px);max-height:90vh;overflow:auto}
 body:not(.exportando) .config-grid{grid-template-columns:1fr}
 }
@@ -243,34 +209,6 @@ body:not(.exportando) .config-grid{grid-template-columns:1fr}
 body:not(.exportando) #mais-opcoes-btn{display:flex;width:100%;justify-content:center;background:rgba(255,255,255,.08)!important;color:#F4F1EA!important;border:1px solid rgba(242,193,78,.4)!important}
 body:not(.mais-on) .so-pc{display:none!important}
 body:not(.mais-on) #save-bar,body:not(.mais-on) #filter-panel{display:none!important}
-body:not(.exportando) #toolbar-selection{display:none!important}
-body:not(.exportando) #main-table td .cell-data,body:not(.exportando) #main-table td .td-data-wrap,body:not(.exportando) #main-table td .dir-sub-input{pointer-events:none}
-body:not(.exportando) #main-table tr{grid-template-columns:1fr auto;cursor:pointer}
-body:not(.exportando) #main-table td{border-right:0!important;border-bottom:0}
-body:not(.exportando) #main-table td:nth-child(2){order:0;grid-column:1}
-body:not(.exportando) #main-table td:nth-child(3){order:0;grid-column:2;border-bottom:0}
-body:not(.exportando) #main-table td:nth-child(2)::before,body:not(.exportando) #main-table td:nth-child(3)::before,body:not(.exportando) #main-table td:nth-child(5)::before{display:none}
-body:not(.exportando) #main-table td:nth-child(2) .td-data-wrap{justify-content:flex-start;padding-left:12px;height:44px}
-body:not(.exportando) #main-table td:nth-child(2) .dt-display{font-size:1.15rem;font-weight:900}
-body:not(.exportando) #main-table td:nth-child(2) .td-data-wrap::after{display:none}
-body:not(.exportando) #main-table td:nth-child(3) .cell-data{font-weight:800;color:#475569;padding-right:12px;min-height:44px}
-body:not(.exportando) #main-table td:nth-child(5){border-top:1px solid rgba(0,0,0,.08);border-bottom:1px solid rgba(0,0,0,.08)}
-body:not(.exportando) #main-table td:nth-child(5) .cell-data{justify-content:flex-start;text-align:left;padding:8px 12px;font-size:1.15rem;min-height:0}
-body:not(.exportando) #main-table td:nth-child(n+4):not(:last-child){grid-column:1/-1;display:flex;align-items:center}
-body:not(.exportando) #main-table td:nth-child(n+4):not(:nth-child(5)):not(:last-child)::before{flex:0 0 112px;padding:6px 0 6px 12px;font-size:.68rem}
-body:not(.exportando) #main-table td:nth-child(n+4):not(:nth-child(5)):not(:last-child) .cell-data{justify-content:flex-start;text-align:left;min-height:34px;font-size:1rem;padding:4px 10px 4px 0}
-body:not(.exportando) #main-table td:nth-child(4):has(.cell-data:empty),body:not(.exportando) #main-table td:nth-child(6):has(.cell-data:empty),body:not(.exportando) #main-table td:nth-child(8):has(.cell-data:empty),body:not(.exportando) #main-table td:nth-child(9):has(.cell-data:empty),body:not(.exportando) #main-table td.td-dirigente-normal:has(.cell-data:empty){display:none}
-body:not(.exportando) #main-table td.td-dirigente-split{display:block}
-body:not(.exportando) #main-table td.td-dirigente-split .dir-split-wrap{display:block;min-height:0}
-body:not(.exportando) #main-table td.td-dirigente-split .dir-sub{flex-direction:row;align-items:center;border-right:0!important}
-body:not(.exportando) #main-table td.td-dirigente-split .dir-sub-label{flex:0 0 112px;width:auto;background:none;border:0;text-align:left;padding:6px 0 6px 12px;color:#7C3AED;font-size:.68rem;letter-spacing:.1em}
-body:not(.exportando) #main-table td.td-dirigente-split .dir-sub-input{justify-content:flex-start;font-size:1rem;padding:4px 10px 4px 0;min-height:34px}
-body:not(.exportando) #main-table td:last-child{background:transparent;padding:8px 10px 10px!important;border-top:1px solid rgba(0,0,0,.08)}
-body:not(.exportando) .linha-acoes{gap:8px}
-body:not(.exportando) .btn-edit-linha{flex:1;height:48px!important;border-radius:12px;background:linear-gradient(135deg,#1A2754,#0C1328)!important;color:#FFE29A!important;font-size:1.05rem!important}
-body:not(.exportando) .btn-edit-linha::after{content:" Editar este culto"!important;font-size:1rem!important}
-body:not(.exportando) .btn-del-linha{flex:0 0 52px;height:48px!important;border-radius:12px;background:#FEE2E2!important}
-body:not(.exportando) .btn-del-linha::after{content:""!important}
 body:not(.exportando) #edit-linha-modal{align-items:stretch!important;background:#070B18!important}
 body:not(.exportando) #edit-linha-modal>div{width:100%!important;max-width:none!important;max-height:none!important;height:100%;border:0!important;border-radius:0!important;padding:16px 16px 110px!important;background:linear-gradient(180deg,#121B36,#070B18)!important}
 body:not(.exportando) #edit-linha-modal h2{font-size:1.3rem!important;color:#F2C14E!important}
@@ -280,6 +218,64 @@ body:not(.exportando) #edit-linha-modal>div>div:last-of-type{position:fixed;left
 body:not(.exportando) #edit-linha-modal>div>div:last-of-type button{flex:1;font-size:1.1rem;padding:14px;border-radius:14px}
 body:not(.exportando) .eln-chip{font-size:1rem;padding:10px 14px}
 }
+
+/* ── CELULAR · 3ª versão (2026-11-23): a tabela fica para o computador e para a foto.
+   No celular aparece uma lista limpa (#lista-cel), um cartão por culto; tocar abre a tela de edição. ── */
+#lista-cel,#toast-cel{display:none}
+@media (max-width:820px){
+body:not(.exportando) #main-table,body:not(.exportando) #toolbar-selection{display:none!important}
+body:not(.exportando) #lista-cel{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+body:not(.exportando) #scale-sheet{background:#F7F3EA}
+.cc{display:flex;align-items:stretch;gap:12px;background:#fff;border:1px solid #E6DCC6;border-radius:16px;padding:12px;box-shadow:0 6px 16px -12px rgba(12,19,40,.6);cursor:pointer;-webkit-tap-highlight-color:transparent;color:#151B2E;text-align:left;width:100%;font-family:'DM Sans',sans-serif}
+.cc:active{transform:scale(.99)}
+.cc-dia{flex:0 0 58px;border-radius:12px;background:linear-gradient(160deg,#1A2754,#0C1328);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 0;align-self:flex-start;min-height:66px}
+.cc-dia b{font:800 1.6rem/1 'DM Sans',sans-serif;color:#FFE29A}
+.cc-dia small{font-size:.72rem;font-weight:800;letter-spacing:.08em;margin-top:3px}
+.cc-info{flex:1;min-width:0}
+.cc-tit{font-weight:900;font-size:1.2rem;line-height:1.2;margin:2px 0 6px}
+.cc-sem{font-size:.85rem;color:#5D6478;font-weight:700;margin-bottom:6px}
+.cc-l{display:flex;gap:8px;font-size:.98rem;line-height:1.35;padding:3px 0;border-top:1px dashed #EEE6D3}
+.cc-l span{flex:0 0 96px;color:#8A6A1F;font-weight:800;font-size:.74rem;letter-spacing:.04em;text-transform:uppercase;padding-top:3px}
+.cc-l b{font-weight:600;min-width:0;overflow-wrap:anywhere}
+.cc-vazio{color:#9AA0AE;font-style:italic;font-size:.92rem}
+.cc-ed{display:flex;justify-content:center;align-items:center;gap:6px;margin-top:10px;width:100%;padding:12px!important;font-size:1.05rem!important;background:linear-gradient(135deg,#FFE29A,#F2C14E 45%,#C8902E);color:#0A0F1F;font-weight:900;font-size:.95rem;border-radius:999px;padding:9px 16px}
+.cc.hoje{border:2px solid #F2C14E;box-shadow:0 0 0 4px rgba(242,193,78,.25)}
+.cc.hoje .cc-dia{background:linear-gradient(135deg,#FFE29A,#F2C14E 45%,#C8902E)}
+.cc.hoje .cc-dia b,.cc.hoje .cc-dia small{color:#0A0F1F}
+.cc.passou{opacity:.6}
+.cc.regional .cc-dia{background:linear-gradient(160deg,#6D28D9,#4C1D95)}
+.cc-tag{display:inline-block;font-size:.66rem;font-weight:900;letter-spacing:.08em;padding:2px 8px;border-radius:999px;background:#EDE9FE;color:#6D28D9;margin-left:6px;vertical-align:middle}
+.cc-nada{text-align:center;color:#5D6478;padding:26px 10px;font-size:1rem}
+body:not(.exportando) #toast-cel{display:block;position:fixed;left:12px;right:12px;top:calc(12px + env(safe-area-inset-top,0px));z-index:9900;background:#0C1328;color:#fff;border:1.5px solid #F2C14E;border-radius:14px;padding:14px 16px;font-weight:800;font-size:1rem;text-align:center;box-shadow:0 14px 30px -10px rgba(0,0,0,.7);transform:translateY(-200%);transition:transform .3s}
+body:not(.exportando) #toast-cel.on{transform:none}
+body:not(.exportando) #toast-cel.warn{border-color:#EF4444;background:#3B0A12}
+body:not(.exportando) .eln-excluir{display:block;width:100%;margin:18px 0 0;padding:14px;border-radius:14px;border:1.5px solid rgba(239,68,68,.6);background:transparent;color:#FCA5A5;font:800 1rem 'DM Sans',sans-serif}
+}
+
+/* ── quadro "Nomes e cultos" (2026-11-23): acrescentar e tirar com um toque ── */
+#config-modal{z-index:9000!important;background:rgba(7,11,24,.92)!important}
+#config-modal .config-grid{display:none}
+#config-modal .config-box{width:520px;max-width:calc(100vw - 24px);max-height:92vh;overflow:auto;background:linear-gradient(180deg,#121B36,#0C1328);border:1.5px solid #F2C14E;border-radius:20px;padding:18px}
+#config-modal .config-box>h2{font-family:'Playfair Display',Georgia,serif;font-size:1.35rem;margin-bottom:4px}
+.lx-sub{text-align:center;color:#C9CEDC;font-size:.9rem;margin-bottom:12px}
+.lx-abas{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.lx-aba{border:1.5px solid rgba(242,193,78,.4);background:rgba(255,255,255,.05);color:#F4F1EA;border-radius:999px;padding:12px;font:800 1rem 'DM Sans',sans-serif;cursor:pointer}
+.lx-aba.on{background:linear-gradient(135deg,#FFE29A,#F2C14E 45%,#C8902E);color:#0A0F1F;border-color:#F2C14E}
+.lx-add{display:flex;gap:8px;margin-bottom:12px}
+.lx-add input{flex:1;min-width:0;padding:14px;border-radius:14px;border:1.5px solid rgba(242,193,78,.45);background:#070B18;color:#fff;font:600 1.05rem 'DM Sans',sans-serif;outline:none}
+.lx-add input:focus{border-color:#F2C14E;box-shadow:0 0 0 3px rgba(242,193,78,.25)}
+.lx-add button{flex:none;border:0;border-radius:14px;padding:0 18px;background:#22C55E;color:#fff;font:900 1.05rem 'DM Sans',sans-serif;cursor:pointer}
+.lx-lista{display:flex;flex-direction:column;gap:8px}
+.lx-item{display:flex;align-items:center;gap:10px;background:#FFFDF8;color:#151B2E;border-radius:14px;padding:6px 6px 6px 16px;font-weight:700;font-size:1.05rem}
+.lx-item span{flex:1;min-width:0;overflow-wrap:anywhere}
+.lx-item button{flex:none;border:0;border-radius:12px;background:#FEE2E2;color:#B91C1C;font:800 .95rem 'DM Sans',sans-serif;padding:12px 14px;cursor:pointer}
+.lx-item.novo{animation:lxNovo 1.2s}
+@keyframes lxNovo{0%{background:#FEF3C7}100%{background:#FFFDF8}}
+.lx-conta{color:#FFE29A;font-size:.85rem;font-weight:700;margin:2px 0 8px}
+.lx-fim{position:sticky;bottom:-18px;margin:14px -18px -18px;padding:12px 18px;background:#0C1328;border-top:1px solid rgba(242,193,78,.35)}
+.lx-fim button{width:100%;border:0;border-radius:14px;padding:15px;background:linear-gradient(135deg,#FFE29A,#F2C14E 45%,#C8902E);color:#0A0F1F;font:900 1.1rem 'DM Sans',sans-serif;cursor:pointer}
+.eln-lista-btn{display:block;width:100%;margin:6px 0 0;padding:13px;border-radius:14px;border:1.5px dashed rgba(242,193,78,.6);background:transparent;color:#FFE29A;font:800 1rem 'DM Sans',sans-serif;cursor:pointer}
+@media (max-width:820px){#config-modal{align-items:stretch!important}#config-modal .config-box{max-width:none;width:100%;max-height:none;height:100%;border-radius:0;border:0}}
 </style>
 </head>
 <body>
@@ -287,7 +283,7 @@ body:not(.exportando) .eln-chip{font-size:1rem;padding:10px 14px}
 <div class="top-nav">
   <div style="display:flex;gap:8px;">
     <button class="btn btn-add" onclick="addRow()">➕ Novo Culto</button>
-    <button class="btn btn-config so-pc" onclick="openConfig(true)">⚙️ Listas</button>
+    <button class="btn btn-config" onclick="openConfig(true)">👥 Nomes e cultos</button>
     <button class="btn so-pc" id="btn-agenda-mes" style="background:#7C3AED;color:#fff" onclick="inserirAgendaRegional2026()" title="A Agenda Regional já é preenchida automaticamente. Use este botão só se apagar uma data regional por engano.">🔄 Reconferir Agenda Regional</button>
   </div>
   <div style="text-align:center"><strong style="color:var(--gold);font-size:0.8rem;">SISTEMA DE ESCALA OBPC</strong></div>
@@ -416,6 +412,7 @@ body:not(.exportando) .eln-chip{font-size:1rem;padding:10px 14px}
     </thead>
     <tbody id="tableBody"></tbody>
   </table>
+  <div id="lista-cel" aria-live="polite"></div>
 </div>
 
 <div id="upload-modal">
@@ -478,6 +475,7 @@ body:not(.exportando) .eln-chip{font-size:1rem;padding:10px 14px}
   </div>
 </div>
 
+<div id="toast-cel" role="status"></div>
 <div id="edit-linha-modal" style="position:fixed;inset:0;background:rgba(0,0,0,0.88);display:none;align-items:center;justify-content:center;z-index:8500">
   <div style="background:#1E293B;border:2px solid var(--blue);border-radius:14px;padding:24px;width:460px;max-width:92vw;max-height:88vh;overflow-y:auto">
     <h2 style="color:var(--blue);margin-bottom:14px;font-size:1.05rem;text-align:center">✎ Editar Culto Completo</h2>
@@ -1577,45 +1575,172 @@ window.onload = load;
     document.body.classList.toggle('chips-on',tb.style.display!=='none');return r;};
   window.fecharChips=function(){tb.style.display='none';document.body.classList.remove('chips-on');if(window.globalActiveCell){globalActiveCell.classList.remove('active-cell');}};
 })();
-/* ── edição fácil: nomes para tocar no editor, toque no cartão abre o editor, novo culto já abre o editor ── */
+/* ── CELULAR: lista de cultos + tela de edição (2026-11-23, 3ª versão) ── */
 (function(){
   var cel=window.matchMedia('(max-width:820px)');
-  function lista(id){return (document.getElementById(id).value||'').split('\n').map(function(x){return x.trim();}).filter(Boolean);}
-  function linhas(v){return v.split('\n').map(function(x){return x.trim();}).filter(Boolean);}
-  function marca(box,ta){var tem=linhas(ta.value);[].forEach.call(box.children,function(c){c.classList.toggle('on',tem.indexOf(c.textContent)>-1);});}
-  function chips(taId,listaId,unico){
-    var ta=document.getElementById(taId);if(!ta)return;
-    var box=ta.nextElementSibling;
-    if(!box||!box.classList.contains('eln-chips')){box=document.createElement('div');box.className='eln-chips';ta.parentNode.insertBefore(box,ta.nextSibling);ta.addEventListener('input',function(){marca(box,ta);});}
-    box.innerHTML='';
-    lista(listaId).forEach(function(n){var b=document.createElement('button');b.type='button';b.className='eln-chip';b.textContent=n;
-      b.onclick=function(){var l=linhas(ta.value),i=l.indexOf(n);
-        if(unico)l=(i>-1?[]:[n]);else if(i>-1)l.splice(i,1);else l.push(n);
-        ta.value=l.join('\n');ta.dispatchEvent(new Event('input'));};
-      box.appendChild(b);});
-    marca(box,ta);
+  var tb=document.getElementById('tableBody'),box=document.getElementById('lista-cel'),modal=document.getElementById('edit-linha-modal');
+  function $(id){return document.getElementById(id);}
+  function lista(id){return ($(id).value||'').split('\n').map(function(x){return x.trim();}).filter(Boolean);}
+  function linhas(v){return String(v||'').split('\n').map(function(x){return x.trim();}).filter(Boolean);}
+  function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function editorAberto(){return modal&&modal.style.display==='flex';}
+
+  /* aviso na parte de baixo da tela (no celular a barra de status fica escondida) */
+  var tt;function aviso(msg,warn){var t=$('toast-cel');if(!t)return;t.textContent=msg;t.className=(warn?'warn ':'')+'on';clearTimeout(tt);tt=setTimeout(function(){t.className='';},warn?7000:3500);}
+  var ms=window.mostrarStatus;window.mostrarStatus=function(m,w){try{ms.apply(this,arguments);}catch(e){}if(cel.matches)aviso(m,w);};
+
+  /* ---- lista do celular ---- */
+  function valor(el){return el?(el.getAttribute('data-raw')||el.innerText||''):'';}
+  function dadosDa(tr){
+    var tdDir=tr.querySelector('td.td-dirigente'),dir=tdDir?tdDir.querySelector('.cell-obr-dir'):null,ce=tdDir?tdDir.querySelector('.cell-obr-cel'):null;
+    return {dt:(tr.querySelector('.dt-input')||{}).value||'',day:(tr.querySelector('.cell-day')||{}).innerText||'',clt:(tr.querySelector('.cell-clt')||{}).innerText||'',
+      ens:(tr.querySelector('.cell-ensaio')||{}).innerText||'',p1:valor(tr.querySelector('.cell-obr')),dir:valor(dir),cel:ce?valor(ce):(tdDir&&tdDir.getAttribute('data-cel')||''),
+      opt:valor(tr.querySelector('td.col-oportunidade .cell-obr')),min:valor(tr.querySelector('td.col-ministrante .cell-obr')),reg:tr.getAttribute('data-origem')==='regional',ex:tr.getAttribute('data-origem')==='exemplo'};
   }
-  /* no editor, "Culto / Evento" vem logo depois da data */
-  var clt=document.getElementById('eln-clt'),ens=document.getElementById('eln-ens');
+  var SEM=['DOM','SEG','TER','QUA','QUI','SEX','SÁB'];
+  function hojeISO(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
+  function render(){
+    if(!box)return;var hj=hojeISO(),h='',n=0;
+    /* em ordem de data (só na tela; a tabela não muda) */
+    var vis=[].map.call(tb.children,function(tr,i){return {tr:tr,i:i,d:dadosDa(tr)};}).filter(function(x){var c=x.tr.classList;return !c.contains('row-mes-oculto')&&!c.contains('row-filtered-out')&&!c.contains('row-no-match');});
+    vis.sort(function(a,b){return (a.d.dt||'9999')<(b.d.dt||'9999')?-1:(a.d.dt||'9999')>(b.d.dt||'9999')?1:a.i-b.i;});
+    vis.forEach(function(x){var tr=x.tr,i=x.i,d=x.d;n++;
+      var dd=d.dt?new Date(d.dt+'T00:00:00'):null;
+      var cls='cc'+(d.dt===hj?' hoje':'')+(d.dt&&d.dt<hj?' passou':'')+(d.reg?' regional':'');
+      var L=[['Ensaio',d.ens],['Porta',d.p1],['Dirigente',d.dir],['Celebração',d.cel],['Oportunidade',d.opt],['Ministrante',d.min]]
+        .filter(function(x){return linhas(x[1]).length;}).map(function(x){return '<div class="cc-l"><span>'+x[0]+'</span><b>'+esc(linhas(x[1]).join(', '))+'</b></div>';}).join('');
+      h+='<div class="'+cls+'" role="button" tabindex="0" data-i="'+i+'">'+
+        '<div class="cc-dia">'+(dd?'<b>'+('0'+dd.getDate()).slice(-2)+'</b><small>'+SEM[dd.getDay()]+'</small>':'<b>?</b><small>DATA</small>')+'</div>'+
+        '<div class="cc-info"><div class="cc-tit">'+(linhas(d.clt).length?esc(linhas(d.clt).join(' · ')):'<span class="cc-vazio">Culto sem nome</span>')+(d.dt===hj?'<span class="cc-tag" style="background:#FEF3C7;color:#8A5A00">HOJE</span>':'')+(d.reg?'<span class="cc-tag">REGIONAL</span>':'')+(d.ex?'<span class="cc-tag" style="background:#DCFCE7;color:#166534">EXEMPLO</span>':'')+'</div>'+
+        (d.dt?'<div class="cc-sem">'+esc(d.day||'')+'</div>':'<div class="cc-sem">Sem data — toque para escolher</div>')+
+        (L||'<div class="cc-vazio">Ninguém escalado ainda</div>')+
+        '<span class="cc-ed">✏️ Editar</span></div></div>';
+    });
+    box.innerHTML=n?h:'<div class="cc-nada">Nenhum culto neste mês.<br>Toque em <b>➕ Novo Culto</b> lá em cima.</div>';
+  }
+  var rt;function agenda(){clearTimeout(rt);rt=setTimeout(render,60);}
+  new MutationObserver(agenda).observe(tb,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['class','data-raw','data-cel','data-origem']});
+  tb.addEventListener('change',agenda);
+  box.addEventListener('click',function(e){var c=e.target.closest('.cc');if(!c)return;var tr=tb.children[+c.getAttribute('data-i')];if(tr)abrirEditarLinha(tr.querySelector('.btn-edit-linha'));});
+  box.addEventListener('keydown',function(e){if(e.key==='Enter'){var c=e.target.closest('.cc');if(c)c.click();}});
+
+  /* ---- tela de edição: nomes para tocar ---- */
+  function marca(bx,ta){var tem=linhas(ta.value);[].forEach.call(bx.children,function(c){c.classList.toggle('on',tem.indexOf(c.textContent)>-1);});}
+  function chips(taId,listaId,unico){
+    var ta=$(taId);if(!ta)return;var bx=ta.nextElementSibling;
+    if(!bx||!bx.classList.contains('eln-chips')){bx=document.createElement('div');bx.className='eln-chips';ta.parentNode.insertBefore(bx,ta.nextSibling);ta.addEventListener('input',function(){marca(bx,ta);});}
+    bx.innerHTML='';
+    lista(listaId).forEach(function(n){var b=document.createElement('button');b.type='button';b.className='eln-chip';b.textContent=n;
+      b.onclick=function(){var l=linhas(ta.value),i=l.indexOf(n);if(unico)l=(i>-1?[]:[n]);else if(i>-1)l.splice(i,1);else l.push(n);ta.value=l.join('\n');ta.dispatchEvent(new Event('input'));};
+      bx.appendChild(b);});
+    marca(bx,ta);
+  }
+  /* "Culto / Evento" logo depois da data */
+  var clt=$('eln-clt'),ens=$('eln-ens');
   if(clt&&ens){var lc=clt.previousElementSibling,le=ens.previousElementSibling;le.parentNode.insertBefore(lc,le);le.parentNode.insertBefore(clt,le);}
+  /* botão excluir dentro da tela de edição */
+  var bts=modal.firstElementChild.querySelector('button[onclick="salvarEdicaoLinha()"]').parentNode;
+  var bx=document.createElement('button');bx.type='button';bx.className='eln-excluir';bx.textContent='🗑️ Excluir este culto';
+  bx.onclick=function(){var tr=_elnTr;if(!tr||!confirm('Excluir este culto da escala?'))return;_novo=null;fecharEditarLinha();_registrarRemocaoRegional(tr);tr.remove();save();if(currentTab==='data')populateDatasSelect();aviso('🗑️ Culto excluído');};
+  bts.parentNode.insertBefore(bx,bts);
+  var lb=document.createElement('button');lb.type='button';lb.className='eln-lista-btn';lb.textContent='👥 Acrescentar ou tirar nomes da lista';
+  lb.onclick=function(){openConfig(true,'list-obreiros');};bts.parentNode.insertBefore(lb,bx);
+  window._elnRefazChips=function(){chips('eln-clt','list-cultos',true);['eln-p1','eln-dir','eln-cel','eln-opt','eln-min'].forEach(function(id){chips(id,'list-obreiros');});};
+
+  var _novo=null,_salvando=false,_espera=null;
   var abrir=window.abrirEditarLinha;
   window.abrirEditarLinha=function(btn){var r=abrir.apply(this,arguments);
     chips('eln-clt','list-cultos',true);['eln-p1','eln-dir','eln-cel','eln-opt','eln-min'].forEach(function(id){chips(id,'list-obreiros');});
-    var m=document.getElementById('edit-linha-modal');if(m&&m.firstElementChild)m.firstElementChild.scrollTop=0;
-    var tr=btn&&btn.closest&&btn.closest('tr'),dt=tr&&tr.querySelector('.dt-display'),h=m&&m.querySelector('h2');
-    if(h)h.textContent='✎ Editar culto'+(dt&&!dt.classList.contains('vazio')?' — '+dt.textContent:'');
+    if(modal.firstElementChild)modal.firstElementChild.scrollTop=0;
+    var tr=btn&&btn.closest&&btn.closest('tr'),dt=tr&&tr.querySelector('.dt-display'),h=modal.querySelector('h2');
+    if(h)h.textContent=tr&&tr===_novo?'➕ Novo culto':'✏️ Editar culto'+(dt&&!dt.classList.contains('vazio')?' — '+dt.textContent:'');
+    bx.style.display=tr&&tr===_novo?'none':'';
     return r;};
-  /* tocar em qualquer parte do cartão abre o editor (só no celular) */
-  document.getElementById('tableBody').addEventListener('click',function(e){
-    if(!cel.matches||document.body.classList.contains('exportando'))return;
-    if(e.target.closest('.btn-del-linha,.btn-edit-linha'))return;
-    var tr=e.target.closest('tr');if(!tr)return;var b=tr.querySelector('.btn-edit-linha');if(b){e.preventDefault();abrirEditarLinha(b);}
-  });
-  /* "Novo Culto" no celular: cria a linha e já abre o editor */
+  var salvar=window.salvarEdicaoLinha;
+  window.salvarEdicaoLinha=function(){
+    if(!$('eln-dt').value){aviso('📅 Escolha a data do culto',true);$('eln-dt').focus();return;}
+    if(_elnTr&&_elnTr.getAttribute('data-origem')==='exemplo')_elnTr.removeAttribute('data-origem');
+    _salvando=true;try{salvar.apply(this,arguments);}finally{_salvando=false;}
+    _novo=null;filtrarPorMes();render();aviso('✅ Culto salvo! Enviando para o site…');};
+  var fechar=window.fecharEditarLinha;
+  window.fecharEditarLinha=function(){var tr=_elnTr;fechar.apply(this,arguments);
+    if(!_salvando&&_novo&&tr===_novo){_novo=null;tr.remove();} /* "Cancelar" num culto novo: não deixa linha vazia */
+    if(_espera){var d=_espera;_espera=null;_aplica(d);} /* dados que chegaram do site enquanto editava */
+  };
+  /* dados novos do site não apagam o que está sendo editado: espera fechar a tela */
+  var _aplica=window._aplicarDadosEscalaPro;
+  window._aplicarDadosEscalaPro=function(d){if(editorAberto()){_espera=d;return;}return _aplica.apply(this,arguments);};
+  /* Novo Culto: cria a linha e já abre a tela */
   var add=window.addRow;
   window.addRow=function(data){var r=add.apply(this,arguments);
-    if(!data&&cel.matches){var tb=document.getElementById('tableBody'),tr=tb.lastElementChild;if(tr){var b=tr.querySelector('.btn-edit-linha');if(b)abrirEditarLinha(b);}}
+    if(!data&&cel.matches){var tr=tb.lastElementChild;if(tr){_novo=tr;abrirEditarLinha(tr.querySelector('.btn-edit-linha'));}}
     return r;};
+  cel.addEventListener&&cel.addEventListener('change',render);
+  /* Dezembro/2026 com exemplos (pedido do Pastor em 23/11/2026).
+     Só entra depois de conferir o site: se dezembro ainda não tiver nenhum culto (fora os da Regional).
+     Os exemplos ficam marcados "EXEMPLO" até alguém editar e salvar. */
+  (function(){
+    if(new Date()>new Date(2026,11,31,23,59))return;
+    var EX=[['2026-12-02','Quarta-feira','Culto de Ensino','','Diac. Nair','Diac. Charles','','Coop. Carol','Pr André'],
+      ['2026-12-06','Domingo','Santa Ceia','Ensaio do Louvor 17h','Diac. Dorico','Pr Sergio','Pr André','Diac. Katia','Pr Sergio'],
+      ['2026-12-09','Quarta-feira','Culto de Oração','','Diac. Lucimar','Diac. Sergio','','','Pr Sergio'],
+      ['2026-12-13','Domingo','Culto de Louvor','Ensaio do Louvor 17h','Diac. Angélica','Coop. Wallace','','Flavia','Pr André'],
+      ['2026-12-16','Quarta-feira','Culto de Ensino','','Diac. Zilandra','Diac. Munique','','','Pr Sergio'],
+      ['2026-12-20','Domingo','Culto de Jovens','Ensaio do Louvor 17h','Coop Lucas','JUBRAC','','Bianca','Preletor Convidado'],
+      ['2026-12-23','Quarta-feira','Culto de Oração','','Diac. Nair','Diac. Charles','','','Pr André'],
+      ['2026-12-25','Sexta-feira','Culto de Natal','Ensaio do Coral 15h','Diac. Dorico\nDiac. Katia','Pr André','','MENIBRAC','Pr Sergio'],
+      ['2026-12-27','Domingo','Culto de Louvor','Ensaio do Louvor 17h','Diac. Lucimar','Diac. Sergio','','UFEBRAC','Pr Sergio'],
+      ['2026-12-30','Quarta-feira','Culto de Ensino','','Diac. Angélica','Coop. Carol','','','Pr André'],
+      ['2026-12-31','Quinta-feira','Culto da Virada','Ensaio do Louvor 20h','Diac. Dorico','Pr Sergio','','Coop. Wallace','Pr Sergio']];
+    function temDezembro(rows){return (rows||[]).some(function(r){return String(r.dt||'').indexOf('2026-12')===0&&r.origem!=='regional';});}
+    fetch('https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com/obpc/escala_pro.json').then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(fb){
+      if(fb&&temDezembro(fb.rows))return;
+      setTimeout(function(){ /* espera a página terminar de aplicar os dados do site */
+        if(editorAberto()||temDezembro(coletarDados().rows))return;
+        EX.forEach(function(e){addRow({dt:e[0],day:e[1],clt:e[2],ensaio:e[3],p1:e[4],dir:e[5],cel:e[6],opt:e[7],min:e[8],origem:'exemplo'});});
+        filtrarPorMes();save();render();
+        aviso('📅 Dezembro já tem cultos de exemplo. Toque em › para ver.');
+      },2500);
+    }).catch(function(){});
+  })();
+  render();
+})();
+/* ── quadro "Nomes e cultos": lista com botão Tirar e campo para Acrescentar ── */
+(function(){
+  var cx=document.querySelector('#config-modal .config-box');if(!cx)return;
+  var aba='list-obreiros';
+  var h=cx.querySelector('h2');h.textContent='👥 Nomes e cultos';
+  var ui=document.createElement('div');
+  ui.innerHTML='<div class="lx-sub">Estes nomes aparecem para tocar na hora de montar a escala.</div>'+
+    '<div class="lx-abas"><button type="button" class="lx-aba" data-l="list-obreiros">👤 Obreiros</button><button type="button" class="lx-aba" data-l="list-cultos">⛪ Cultos</button></div>'+
+    '<form class="lx-add"><input id="lx-novo" autocomplete="off" enterkeyhint="done"><button type="submit">➕ Pôr</button></form>'+
+    '<div class="lx-conta" id="lx-conta"></div><div class="lx-lista" id="lx-lista"></div>';
+  h.parentNode.insertBefore(ui,h.nextSibling);
+  var velho=cx.querySelector('.btn.btn-add');if(velho)velho.style.display='none';
+  var fim=document.createElement('div');fim.className='lx-fim';fim.innerHTML='<button type="button">✅ Pronto</button>';cx.appendChild(fim);
+  fim.firstChild.onclick=function(){openConfig(false);};
+  function ta(){return document.getElementById(aba);}
+  function itens(){return ta().value.split('\n').map(function(x){return x.trim();}).filter(Boolean);}
+  function grava(l){ta().value=l.join('\n');ta().dispatchEvent(new Event('input',{bubbles:true}));}
+  function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function desenha(novo){
+    [].forEach.call(ui.querySelectorAll('.lx-aba'),function(b){b.classList.toggle('on',b.getAttribute('data-l')===aba);});
+    var l=itens(),ob=aba==='list-obreiros';
+    document.getElementById('lx-novo').placeholder=ob?'Escreva o nome (ex.: Irmã Maria)':'Escreva o culto (ex.: Culto de Missões)';
+    document.getElementById('lx-conta').textContent=l.length+(ob?(l.length===1?' nome':' nomes'):(l.length===1?' culto':' cultos'))+' na lista';
+    document.getElementById('lx-lista').innerHTML=l.map(function(n,i){return '<div class="lx-item'+(n===novo?' novo':'')+'"><span>'+esc(n)+'</span><button type="button" data-i="'+i+'">✕ Tirar</button></div>';}).join('')||'<div class="lx-sub">A lista está vazia.</div>';
+  }
+  ui.addEventListener('click',function(e){
+    var a=e.target.closest('.lx-aba');if(a){aba=a.getAttribute('data-l');desenha();return;}
+    var b=e.target.closest('.lx-item button');if(b){var l=itens(),n=l[+b.getAttribute('data-i')];
+      if(!confirm('Tirar "'+n+'" da lista?\n(Quem já está na escala continua lá.)'))return;l.splice(+b.getAttribute('data-i'),1);grava(l);desenha();}
+  });
+  ui.querySelector('form').addEventListener('submit',function(e){e.preventDefault();var inp=document.getElementById('lx-novo'),n=inp.value.trim().replace(/\s+/g,' ');if(!n)return;
+    var l=itens();if(l.some(function(x){return x.toLowerCase()===n.toLowerCase();})){alert('"'+n+'" já está na lista.');return;}
+    l.push(n);grava(l);inp.value='';desenha(n);var it=document.querySelector('#lx-lista .novo');if(it)it.scrollIntoView({block:'nearest'});});
+  var oc=window.openConfig;
+  window.openConfig=function(show,qual){if(show){aba=qual||aba;desenha();}var r=oc.apply(this,arguments);
+    if(!show&&document.getElementById('edit-linha-modal').style.display==='flex'&&window._elnRefazChips)_elnRefazChips();return r;};
 })();
 /* foto/JPG: gera sempre o quadro largo (mesmo no celular) */
 (function(){var h=window.html2canvas;if(!h)return;
