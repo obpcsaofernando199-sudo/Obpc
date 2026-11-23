@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Painel ADM — OBPC São Fernando</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -3701,8 +3702,8 @@ input:focus,textarea:focus,select:focus{border-color:#C8902E!important;box-shado
 .toast{background:#0C1328!important;color:#fff!important;border:1px solid #F2C14E}
 /* aviso "Publicado — ver no site" */
 #aba-av h2,#aba-clt h2{background:none!important;box-shadow:none!important;padding:0 0 .2rem!important;color:#121B36!important;font-size:1.35rem!important}
-#ver-site{position:fixed;left:12px;right:12px;margin:0 auto;width:auto;max-width:560px;top:72px;transform:translateY(-180%);z-index:700;display:flex;align-items:center;gap:.7rem;max-width:calc(100% - 24px);padding:.6rem .7rem .6rem 1rem;border-radius:18px;background:linear-gradient(135deg,#1A2754,#0C1328);color:#fff;border:1.5px solid #F2C14E;box-shadow:0 18px 40px -12px rgba(7,11,24,.7);transition:transform .35s}
-#ver-site.on{transform:none}
+#ver-site{position:fixed;left:12px;right:12px;margin:0 auto;width:auto;max-width:560px;top:72px;transform:translateY(-12px);opacity:0;visibility:hidden;pointer-events:none;z-index:700;display:flex;align-items:center;gap:.7rem;max-width:calc(100% - 24px);padding:.6rem .7rem .6rem 1rem;border-radius:18px;background:linear-gradient(135deg,#1A2754,#0C1328);color:#fff;border:1.5px solid #F2C14E;box-shadow:0 18px 40px -12px rgba(7,11,24,.7);transition:transform .35s,opacity .35s,visibility .35s}
+#ver-site.on{transform:none;opacity:1;visibility:visible;pointer-events:auto}
 #ver-site span{flex:1}
 #ver-site span{font-size:.85rem;line-height:1.3;min-width:0}
 #ver-site small{display:block;color:#FFE29A;font-weight:700;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase}
