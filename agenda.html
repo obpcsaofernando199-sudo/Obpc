@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Agenda do Mês | OBPC JD SÃO FERNANDO</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700;900&family=DM+Serif+Display&family=Playfair+Display:wght@700;900&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
@@ -291,7 +292,7 @@ body:not(.exportando) .eln-excluir{display:block;width:100%;margin:18px 0 0;padd
     <button class="btn" id="btn-salvar-agenda" onclick="salvarAgenda()">💾 SALVAR AGENDA</button>
     <button class="btn btn-photo" onclick="takeScreenshot()">📸 Foto Completa</button>
     <button class="btn btn-clear so-pc" onclick="resetData()">🗑️</button>
-    <button class="btn" id="mais-opcoes-btn" onclick="document.body.classList.toggle('mais-on');this.textContent=document.body.classList.contains('mais-on')?'▲ Menos opções':'⚙️ Mais opções (listas, arquivo, filtros)'">⚙️ Mais opções (listas, arquivo, filtros)</button>
+    <button class="btn" id="mais-opcoes-btn" onclick="document.body.classList.toggle('mais-on');this.textContent=document.body.classList.contains('mais-on')?'▲ Menos opções':'⚙️ Mais opções (arquivo, filtros, regional)'">⚙️ Mais opções (arquivo, filtros, regional)</button>
   </div>
 </div>
 
@@ -1671,9 +1672,10 @@ window.onload = load;
   var _aplica=window._aplicarDadosEscalaPro;
   window._aplicarDadosEscalaPro=function(d){if(editorAberto()){_espera=d;return;}return _aplica.apply(this,arguments);};
   /* Novo Culto: cria a linha e já abre a tela */
-  var add=window.addRow;
+  var add=window.addRow,_pronto=false;
+  window.addEventListener('load',function(){setTimeout(function(){_pronto=true;},0);}); /* as linhas vazias criadas ao abrir não abrem a tela */
   window.addRow=function(data){var r=add.apply(this,arguments);
-    if(!data&&cel.matches){var tr=tb.lastElementChild;if(tr){_novo=tr;abrirEditarLinha(tr.querySelector('.btn-edit-linha'));}}
+    if(!data&&_pronto&&cel.matches){var tr=tb.lastElementChild;if(tr){_novo=tr;abrirEditarLinha(tr.querySelector('.btn-edit-linha'));}}
     return r;};
   cel.addEventListener&&cel.addEventListener('change',render);
   /* Dezembro/2026 com exemplos (pedido do Pastor em 23/11/2026).
