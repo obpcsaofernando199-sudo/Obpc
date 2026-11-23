@@ -576,6 +576,13 @@ footer li a{display:inline-flex;align-items:center}
 /* a agenda só aparece no dia de culto (ou quando a pessoa abre) */
 .agenda[hidden]{display:none!important}
 </style>
+<style id="como-chegar-css">
+.mapa-cx{border:5px solid #E2B04A;border-radius:22px;overflow:hidden;box-shadow:0 0 0 1px #9C6B1C,0 18px 36px -16px rgba(0,0,0,.9);background:#0D1530;aspect-ratio:16/10}
+.mapa-cx iframe{display:block;width:100%;height:100%;border:0}
+.mapa-end{text-align:center;margin:.9rem 0 .2rem;font-weight:700;color:var(--ouro2,#FFE29A)}
+.mapa-bts{display:flex;flex-wrap:wrap;justify-content:center;gap:.65rem;margin-top:.8rem}
+@media(max-width:560px){.mapa-cx{aspect-ratio:4/3}.mapa-bts .bt{flex:1 1 100%;justify-content:center}}
+</style>
 </head>
 <body>
 
@@ -821,6 +828,19 @@ footer li a{display:inline-flex;align-items:center}
     </div>
   </section>
 
+  <!-- COMO CHEGAR (no final da página, a pedido do Pastor) -->
+  <section class="sec revela" id="como-chegar">
+    <div class="sec-cab"><div class="cab-ic"><img class="ic3d sec-ic" src="icones/local.webp" alt="" aria-hidden="true"><div><small>Venha nos visitar</small><h2>Como <em>chegar</em></h2></div></div></div>
+    <div class="mapa-cx">
+      <iframe id="mapa-frame" title="Mapa da igreja" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=Rua+Senador+Jos%C3%A9+Erm%C3%ADrio+de+Moraes%2C+199%2C+Ferraz+de+Vasconcelos&amp;z=16&amp;output=embed"></iframe>
+    </div>
+    <p class="mapa-end" id="mapa-end">📍 Rua Senador José Ermírio de Moraes, 199, Ferraz de Vasconcelos</p>
+    <div class="mapa-bts">
+      <a class="bt bt-ouro" id="hero-mapa" href="https://maps.google.com/?q=Rua+Senador+Jos%C3%A9+Erm%C3%ADrio+de+Moraes%2C+199%2C+Ferraz+de+Vasconcelos" target="_blank" rel="noopener"><img class="ic3d" src="icones/local.webp" alt="" aria-hidden="true">Abrir no Google Maps</a>
+      <a class="bt bt-vidro" id="waze-mapa" href="https://waze.com/ul?q=Rua+Senador+Jos%C3%A9+Erm%C3%ADrio+de+Moraes%2C+199%2C+Ferraz+de+Vasconcelos&amp;navigate=yes" target="_blank" rel="noopener">🚗 Ir pelo Waze</a>
+    </div>
+  </section>
+
   <p class="aviso-net" id="aviso-net">Sem internet no momento. Mostrando as últimas informações salvas.</p>
 </main>
 
@@ -986,7 +1006,7 @@ function rInfo(){
   document.getElementById('topo-nome').textContent=nome;document.getElementById('rod-nome').textContent=nome;
   if(i.bv)document.getElementById('hero-bv').textContent=i.bv;
   if(i.sobre)document.getElementById('rod-sobre').textContent=i.sobre;
-  if(i.end){document.getElementById('rod-end').textContent=i.end;var q='https://maps.google.com/?q='+encodeURIComponent(i.end+(i.cidade?', '+i.cidade:''));document.getElementById('rod-mapa').href=q;var hm=document.getElementById('hero-mapa');if(hm)hm.href=q;}
+  if(i.end){document.getElementById('rod-end').textContent=i.end;var q='https://maps.google.com/?q='+encodeURIComponent(i.end+(i.cidade?', '+i.cidade:''));document.getElementById('rod-mapa').href=q;var hm=document.getElementById('hero-mapa');if(hm)hm.href=q;var lc=i.end+(i.cidade?', '+i.cidade:''),me=document.getElementById('mapa-end'),mf=document.getElementById('mapa-frame'),wz=document.getElementById('waze-mapa');if(me)me.textContent='📍 '+lc;if(mf){var ns='https://maps.google.com/maps?q='+encodeURIComponent(lc)+'&z=16&output=embed';if(mf.getAttribute('src')!==ns)mf.src=ns;}if(wz)wz.href='https://waze.com/ul?q='+encodeURIComponent(lc)+'&navigate=yes';}
   if(i.cidade)document.getElementById('rod-cidade').textContent=i.cidade;
   if(i.pastor)document.getElementById('rod-pastor').innerHTML=ic('biblia','mi')+'Pastor: '+esc(i.pastor);
   if(i.email){var e=document.getElementById('rod-email');e.innerHTML=ic('email','mi')+esc(i.email);e.href='mailto:'+i.email;}
