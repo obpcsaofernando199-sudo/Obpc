@@ -348,6 +348,8 @@ body.pdfando #folha-print{display:block!important;position:fixed;left:-20000px;t
   .fp-t tr.fp-dom td{background:#FFF1F2}
   .fp-t tr.fp-reg td.fp-c{color:#5B21B6}
   .fp-pe{margin-top:6px;display:flex;justify-content:space-between;font-size:8pt;color:#5D6478}
+@keyframes piscaBt{0%,100%{box-shadow:0 0 0 0 rgba(242,193,78,.9)}50%{box-shadow:0 0 0 10px rgba(242,193,78,0)}}
+.pisca{animation:piscaBt 1s ease-in-out 6}
 </style>
 </head>
 <body>
@@ -1967,6 +1969,10 @@ function pdfEscala(){
     });
   }).catch(function(){volta();alert('Não consegui montar o PDF agora. Verifique a internet e tente de novo.');});
 }
+/* veio do painel por "Imprimir / PDF da escala": mostra os dois botões piscando */
+(function(){if(!/imprimir|pdf/.test(location.hash))return;
+  setTimeout(function(){var b=document.getElementById('btn-imprimir'),c=document.getElementById('btn-pdf');if(!b)return;
+    b.scrollIntoView({block:'center'});[b,c].forEach(function(x){if(x){x.classList.remove('pisca');void x.offsetWidth;x.classList.add('pisca');}});},1200);})();
 /* foto/JPG: gera sempre o quadro largo (mesmo no celular) */
 (function(){var h=window.html2canvas;if(!h)return;
   window.html2canvas=function(el,o){var b=document.body;b.classList.add('exportando');o=Object.assign({windowWidth:1260},o||{});
