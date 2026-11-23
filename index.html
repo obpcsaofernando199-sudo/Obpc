@@ -852,9 +852,9 @@ var AGORA=Date.now();
 
 /* ── 3 cliques na logo do topo abrem o painel ── */
 /* entrada do painel: 3 toques na logo, com calma (até 2 s entre um toque e outro).
-   Toques "grudados" (menos de 0,15 s, o celular às vezes conta 2 vezes) valem como um só. A logo dá uma piscadinha a cada toque. */
+   Toques "grudados" (menos de 0,15 s, o celular às vezes conta 2 vezes) valem como um só. A logo dá uma piscadinha a cada toque. Conta no instante em que o dedo encosta (mais sensível). */
 (function(){var lg=document.getElementById('logo'),n=0,t=0;if(!lg)return;lg.style.touchAction='manipulation';lg.style.cursor='pointer';
-  lg.addEventListener('click',function(){var a=Date.now(),d=a-t;if(d<150)return;n=(d<2000)?n+1:1;t=a;
+  lg.addEventListener(window.PointerEvent?'pointerdown':'click',function(){var a=Date.now(),d=a-t;if(d<150)return;n=(d<2000)?n+1:1;t=a;
     lg.classList.remove('toque');void lg.offsetWidth;lg.classList.add('toque');
     if(n>=3){n=0;location.href='painel.html';}});})();
 
