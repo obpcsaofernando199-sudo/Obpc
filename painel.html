@@ -3676,17 +3676,91 @@ async function galfEnviar(){
 .clp-card [style*="width:96px"]:hover{transform:scale(1.05)}
 @media (prefers-reduced-motion:reduce){.avp-card,.clp-card,.avp-faixa{animation:none!important}}
 </style>
-<style id="acabamento-biblia">
-/* Painel no mesmo visual do site: Esmeralda & Ouro */
-header{background:linear-gradient(135deg,#0F4A34,#0B2E22)!important;border-bottom:2px solid #C98A2E;}
-nav{background:linear-gradient(180deg,#0F4A34,#0B2E22)!important;}
-nav .grp{color:rgba(245,210,122,.55)!important;}
-nav a:hover,nav a.on{background:rgba(232,184,78,.16)!important;color:#fff!important;border-left-color:#E8B84E!important;}
-h2{font-family:'Fraunces',Georgia,serif;font-weight:700;color:#0F4A34!important;border-bottom-color:#E8B84E!important;}
-.card{border:1px solid #EFE4CC;border-radius:14px;box-shadow:0 2px 10px rgba(20,74,58,.07)!important;}
-.bp{background:linear-gradient(135deg,#14573C,#0F4A34)!important;color:#fff!important;}
-.btn{border-radius:30px;}
-input:focus,textarea:focus,select:focus{border-color:#C98A2E!important;box-shadow:0 0 0 3px rgba(232,184,78,.18);}
+<style id="acabamento-noite-ouro">
+/* Painel no mesmo visual do site (2026-11-23): "Noite & Ouro" — azul-noite com dourado, cartões de papel claro para ler e digitar bem */
+:root{--azul:#121B36;--azul2:#C8902E;--cinza:#EEF0F6;--borda:#E3DCCB;--txt:#151B2E;--muted:#5D6478;--noite:#070B18;--ouro:#F2C14E;--goldg:linear-gradient(135deg,#FFE29A 0%,#F2C14E 45%,#C8902E 100%)}
+body{background:radial-gradient(60% 40% at 10% 0,rgba(46,90,190,.18),transparent 70%),radial-gradient(50% 40% at 100% 10%,rgba(242,193,78,.14),transparent 70%),#EEF0F6;background-attachment:fixed}
+header{background:linear-gradient(135deg,#0C1328,#070B18)!important;border-bottom:2px solid #F2C14E;height:60px!important}
+header strong{font-family:'Fraunces',Georgia,serif;font-size:1.02rem!important;letter-spacing:.01em}
+#hhor{background:var(--goldg)!important;color:#0A0F1F;font-weight:800}
+nav{background:linear-gradient(180deg,#0C1328,#070B18)!important;border-right:1px solid rgba(242,193,78,.25)}
+nav .grp{color:#F2C14E!important;opacity:.75;font-weight:800;letter-spacing:.18em!important;margin-top:.4rem}
+nav a{color:rgba(244,241,234,.78)!important;border-radius:0 12px 12px 0;margin-right:8px;gap:10px!important}
+nav a:hover,nav a.on{background:rgba(242,193,78,.14)!important;color:#fff!important;border-left-color:#F2C14E!important}
+nav a .ic3d{width:24px;height:24px;object-fit:contain;flex:none;filter:drop-shadow(0 2px 2px rgba(0,0,0,.4))}
+h2{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:1.35rem!important;color:#121B36!important;border-bottom:0!important;padding-bottom:.2rem!important;display:flex;align-items:center;gap:.5rem}
+h2::after{content:"";flex:1;height:2px;margin-left:.4rem;background:linear-gradient(90deg,#F2C14E,transparent)}
+.card{background:#FFFDF8;border:1px solid #E9E1CF;border-radius:18px!important;box-shadow:0 1px 0 #fff inset,0 10px 24px -14px rgba(12,19,40,.35)!important}
+.dc{border-left-color:#F2C14E!important;border-radius:16px!important;background:linear-gradient(160deg,#FFFDF8,#F7F1E3)!important}
+.dc .num{color:#121B36!important;font-family:'Fraunces',Georgia,serif}
+.btn{border-radius:30px;min-height:42px}
+.bp{background:linear-gradient(135deg,#1A2754,#0C1328)!important;color:#FFE29A!important;box-shadow:0 4px 12px -4px rgba(12,19,40,.6)}
+.bs{background:var(--goldg)!important;color:#0A0F1F!important;box-shadow:0 4px 12px -4px rgba(200,144,46,.7)}
+.li{background:#FFFBF3;border-radius:12px}
+input:focus,textarea:focus,select:focus{border-color:#C8902E!important;box-shadow:0 0 0 3px rgba(242,193,78,.22)}
+.toast{background:#0C1328!important;color:#fff!important;border:1px solid #F2C14E}
+/* aviso "Publicado — ver no site" */
+#aba-av h2,#aba-clt h2{background:none!important;box-shadow:none!important;padding:0 0 .2rem!important;color:#121B36!important;font-size:1.35rem!important}
+#ver-site{position:fixed;left:12px;right:12px;margin:0 auto;width:auto;max-width:560px;top:72px;transform:translateY(-180%);z-index:700;display:flex;align-items:center;gap:.7rem;max-width:calc(100% - 24px);padding:.6rem .7rem .6rem 1rem;border-radius:18px;background:linear-gradient(135deg,#1A2754,#0C1328);color:#fff;border:1.5px solid #F2C14E;box-shadow:0 18px 40px -12px rgba(7,11,24,.7);transition:transform .35s}
+#ver-site.on{transform:none}
+#ver-site span{flex:1}
+#ver-site span{font-size:.85rem;line-height:1.3;min-width:0}
+#ver-site small{display:block;color:#FFE29A;font-weight:700;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase}
+#ver-site a{flex:none;text-decoration:none;font-weight:800;font-size:.85rem;color:#0A0F1F;background:var(--goldg);padding:.55rem .9rem;border-radius:999px}
+#ver-site button{flex:none;background:none;border:0;color:rgba(255,255,255,.6);font-size:1.2rem;cursor:pointer;padding:0 .2rem}
 </style>
+<div id="ver-site" role="status" aria-live="polite"><span><small>Publicado no site</small><b id="vs-t"></b></span><a id="vs-a" href="index.html" target="_blank" rel="noopener">Ver no site ›</a><button type="button" onclick="this.parentNode.classList.remove('on')" aria-label="Fechar">✕</button></div>
+<script>
+/* ===== Ligação painel → site (2026-11-23) =====
+   1) ícones 3D no menu, iguais aos do site;
+   2) depois de publicar, aparece "Ver no site", que abre o site já no card publicado
+      (o mesmo endereço ?s=…&id=… que o site usa nos links compartilhados). */
+(function(){
+  var IC={dash:'sino',info:'pomba',hor:'relogio',bnr:'estrela',av:'avisos',ens:'volume',or:'oracao',ev:'eventos',inf:'jornal',ser:'pergaminho',clt:'tv',pas:'biblia',aniv:'aniv',ob:'abraco',lid:'abraco',ofe:'coracao',vid:'video',mapp:'celular',div:'link',galf:'fotos',mig:'camera'};
+  var HREF={'agenda.html':'escala','igreja26.html':'coracao','banners_culto.html':'estrela','pix.html':'coracao','carta.html':'email'};
+  [].forEach.call(document.querySelectorAll('#snav a'),function(a){
+    var m=(a.getAttribute('onclick')||'').match(/ir\('([a-z]+)'/),k=m?IC[m[1]]:'';
+    if(!k){var h=a.getAttribute('href')||'';Object.keys(HREF).forEach(function(x){if(h.indexOf(x)>-1)k=HREF[x];});}
+    if(!k)return;
+    var txt=a.textContent.replace(/^[^A-Za-zÀ-ú]+/,'').trim();
+    a.innerHTML='<img class="ic3d" src="icones/'+k+'.webp" alt="" aria-hidden="true">'+txt.replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});
+  });
+  /* mesmos códigos do site (index.html: hid / idDe) */
+  function hid(s){var h=5381;s=String(s);for(var i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return (h>>>0).toString(36);}
+  function idDe(){return hid([].slice.call(arguments).map(function(x){return x==null?'':String(x);}).join('|'));}
+  var MAPA={
+    avisos:function(x){return ['avisos',x.ts?String(x.ts):idDe(x.tit||x.com_tit||'Aviso',x.dt),x.tit||x.com_tit];},
+    eventos:function(x){return ['eventos',x.id?String(x.id):idDe(x.nom,x.dt),x.nom];},
+    palavras:function(x){return ['palavra',x.ts?String(x.ts):idDe(x.tit,x.dt),x.tit];},
+    sermoes:function(x){return ['sermao',x.ts?String(x.ts):idDe(x.tit,x.dt),x.tit];},
+    informativos:function(x){return ['info',x.ts?String(x.ts):idDe(x.tit,String(x.txt||'').slice(0,40)),x.tit];},
+    cultos:function(x){return ['momentos','c'+(x.ts||0),x.tit||x.titulo];},
+    aniversariantes:function(x){return ['aniv',idDe(x.nm,x.dt),x.nm];},
+    lideranca:function(x){return ['lider',idDe(x.nm,x.cg),x.nm];},
+    horarios:function(){return ['cultos','semana','Horários dos cultos'];},
+    info:function(){return ['site','inicio','Informações da igreja'];}
+  };
+  var SITE='index.html';
+  function mostra(s,id,t){
+    var b=document.getElementById('ver-site');if(!b)return;
+    document.getElementById('vs-t').textContent=t||'Ver como ficou';
+    document.getElementById('vs-a').href=SITE+'?s='+encodeURIComponent(s)+'&id='+encodeURIComponent(id);
+    b.classList.add('on');clearTimeout(mostra._t);mostra._t=setTimeout(function(){b.classList.remove('on');},12000);
+  }
+  function lista(v){return Array.isArray(v)?v:(v&&typeof v==='object'?Object.keys(v).map(function(k){return v[k];}):[]);}
+  var sAnt=DB.s;
+  DB.s=function(k,v){
+    var r;try{
+      if(MAPA[k]){
+        var antes={};lista(DB.g(k)).forEach(function(x){try{antes[JSON.stringify(x)]=1;}catch(e){}});
+        var novo=null;if(v&&typeof v==='object'){lista(v).some(function(x){try{if(x&&!antes[JSON.stringify(x)]){novo=x;return true;}}catch(e){}return false;});}
+        if(k==='horarios'||k==='info')novo=v;
+        if(novo){var m=MAPA[k](novo);r=sAnt.apply(DB,arguments);Promise.resolve(r).then(function(ok){if(ok!==null)mostra(m[0],m[1],m[2]);});return r;}
+      }
+    }catch(e){}
+    return sAnt.apply(DB,arguments);
+  };
+})();
+</script>
 </body>
 </html>

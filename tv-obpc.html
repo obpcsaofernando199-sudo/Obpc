@@ -124,6 +124,22 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 @media (hover:hover){.card:hover{transform:translateY(-3px)}.card:hover .th{box-shadow:0 4px 10px rgba(15,74,52,.18),0 18px 36px rgba(15,74,52,.20)}}
 .bd{border-radius:6px;padding:2px 7px;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
 @media (prefers-reduced-motion:reduce){.card,.card .th{transition:none!important}.card:hover{transform:none!important}}
+/* Palavra do Pastor urgente: sinaleiro vermelho piscando (2026-11-23) */
+.faixa-urg{display:flex;align-items:center;gap:10px;margin:12px 16px 0;padding:12px 14px;border-radius:14px;background:linear-gradient(135deg,#B3122E,#E11D48);color:#fff;text-decoration:none;font-weight:700;box-shadow:0 8px 20px -8px rgba(225,29,72,.7)}
+.faixa-urg.hide{display:none}
+.faixa-urg b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.faixa-urg small{display:block;font-size:11px;letter-spacing:.12em;opacity:.9}
+.luz{flex:none;width:14px;height:14px;border-radius:50%;background:#fff;animation:luz 1s ease-in-out infinite}
+@keyframes luz{50%{background:#ffd1d9;box-shadow:0 0 14px 5px rgba(255,255,255,.85)}}
+.card.urg .th{box-shadow:0 0 0 3px #E11D48,0 0 22px rgba(225,29,72,.55)}
+.bd.urg{display:flex;align-items:center;gap:5px;background:#E11D48!important;font-weight:700}
+.bd.urg i{width:8px;height:8px;border-radius:50%;background:#fff;animation:luz 1s ease-in-out infinite}
+.th .txt0{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;gap:6px;padding:14px 16px;background:radial-gradient(90% 80% at 85% 10%,rgba(232,184,78,.35),transparent 60%),linear-gradient(135deg,#0F4A34,#0B2E22);color:#fff}
+.th .txt0 small{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#E8B84E;font-weight:700}
+.th .txt0 b{font:600 19px/1.2 Georgia,serif;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.pl .txt1{height:100%;display:flex;flex-direction:column;justify-content:center;gap:10px;padding:24px;background:radial-gradient(90% 80% at 85% 10%,rgba(232,184,78,.35),transparent 60%),linear-gradient(135deg,#0F4A34,#0B2E22);color:#fff;overflow:auto}
+.pl .txt1 small{letter-spacing:.14em;text-transform:uppercase;color:#E8B84E;font-weight:700}
+.pl .txt1 b{font:600 clamp(20px,4vw,32px)/1.2 Georgia,serif}
 </style>
 </head>
 <body>
@@ -132,7 +148,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   <div class="sr"><input id="q" type="search" placeholder="Pesquisar" aria-label="Pesquisar" oninput="Q=this.value;render()"></div>
   <button class="ib" id="sh" title="Compartilhar a TV" aria-label="Compartilhar a TV OBPC">↗</button><button class="ib" id="th" title="Tema" aria-label="Alternar tema">◐</button>
 </header>
-<main id="home"><div class="chips" id="chips"></div><div class="grid" id="grid"></div><div class="empty hide" id="empty">Nenhum vídeo ou foto por aqui ainda.</div></main>
+<main id="home"><a class="faixa-urg hide" id="urg" href="#"></a><div class="chips" id="chips"></div><div class="grid" id="grid"></div><div class="empty hide" id="empty">Nenhum vídeo ou foto por aqui ainda.</div></main>
 <main id="watch" class="watch hide"></main>
 <div id="msg" role="status" aria-live="polite"></div>
 <script>
@@ -256,13 +272,13 @@ function matches(v){
 }
 function thumb(v){
   const m=v.m[0]||{k:'t'},th=document.createElement('div');th.className='th';
-  if(m.k==='t')th.innerHTML='<div style="width:100%;height:100%;display:grid;place-items:center;font-size:48px;background:linear-gradient(135deg,#0F4A34,#14442E)">🎤</div>';
+  if(m.k==='t')th.innerHTML='<div class="txt0"><small>🎤 Palavra do Pastor</small><b>'+esc(v.t)+'</b></div>';
   else if(m.k==='y')th.innerHTML='<img loading="lazy" src="https://i.ytimg.com/vi/'+m.id+'/mqdefault.jpg" alt="">';
   else if(m.k==='v'){const pj=poster(m.src);th.innerHTML='<div class="ph0">'+(isAud(m.src)?'🎙️':'▶')+'</div>'+(pj?'<img loading="lazy" src="'+esc(pj)+'" alt="" onerror="this.remove()">':'');}
   else th.innerHTML='<img loading="lazy" src="'+esc(m.src)+'" alt="">';
   const n=v.m.length,p=PROG[v.id],pc=pct(v),b=document.createElement('span');
   b.className='bd'+(temVideo(v)?' v':'');
-  if(v.u){b.style.background='#e11d48';b.textContent='🚨 URGENTE';}
+  if(v.u){b.classList.add('urg');b.innerHTML='<i></i>URGENTE';}
   else if(!n)b.textContent='🎤 Palavra';
   else if(temVideo(v))b.textContent=(n===1&&p&&p.d)?fmtDur(p.d):'▶ '+(n>1?n+' itens':'Vídeo');
   else b.textContent='📷 '+n+(n>1?' fotos':' foto');
@@ -287,6 +303,8 @@ function render(){
   const sig=[CHIP,Q,NOME,LOADED,LATER.join('.'),ITEMS.map(v=>{const m=v.m[0]||{};return v.id+':'+v.t+':'+v.m.length+':'+(m.src||m.id||'')+':'+(v.u?1:0)+':'+pct(v);}).join(',')].join('|');
   if(sig===_RS&&$('grid').firstChild)return;_RS=sig;
   renderChips();const g=$('grid');g.innerHTML='';
+  const ur=ITEMS.filter(v=>v.u&&v.p)[0],fx=$('urg');
+  if(fx){fx.classList.toggle('hide',!ur);if(ur){fx.href='#'+ur.id;fx.innerHTML='<span class="luz"></span><span style="min-width:0;flex:1"><small>PALAVRA URGENTE DO PASTOR</small><b>'+esc(ur.t)+'</b></span><span>›</span>';}}
   if(!LOADED&&!ITEMS.length){
     $('empty').classList.add('hide');
     for(let i=0;i<6;i++){const s=document.createElement('div');s.className='sk';s.innerHTML='<div class="th"></div><div class="l1"></div><div class="l2"></div>';g.appendChild(s);}
@@ -297,7 +315,7 @@ function render(){
   const em=$('empty');em.textContent=(Q.trim()&&!l.length)?'Nada encontrado para "'+Q.trim()+'".':(VAZIO[CHIP]||VAZIO.all);
   em.style.whiteSpace='pre-line';em.classList.toggle('hide',l.length>0);
   l.forEach(v=>{
-    const c=document.createElement('div');c.className='card';c.tabIndex=0;c.appendChild(thumb(v));
+    const c=document.createElement('div');c.className='card'+(v.u?' urg':'');c.tabIndex=0;c.appendChild(thumb(v));
     const seen=pct(v)>=92?' · <span class="seen">Visto</span>':'';
     const t=document.createElement('div');t.className='ct';
     t.innerHTML='<div class="lg">⛪</div><div><h3 class="tt">'+esc(v.t)+'</h3><div class="mt">'+esc(v.p?(v.a||'Palavra do Pastor'):NOME)+'</div><div class="mt">'+esc(ago(v.d,v.ts))+seen+'</div></div>';
@@ -372,7 +390,7 @@ function saveProg(){
 function play(v,i){
   saveProg();CURI=i;
   const m=v.m[i],p=$('pl');
-  if(!m){p.innerHTML='<div style="height:100%;display:grid;place-items:center;font-size:64px;background:linear-gradient(135deg,#0F4A34,#14442E)">🎤</div>';return;}
+  if(!m){p.innerHTML='<div class="txt1"><small>'+(v.u?'🚨 Urgente · ':'🎤 ')+'Palavra do Pastor</small><b>'+esc(v.t)+'</b>'+(v.a?'<span>'+esc(v.a)+'</span>':'')+'</div>';return;}
   [].forEach.call($('ph').children,(n,j)=>n.classList.toggle('on',j===i));
   if(m.k==='y')p.innerHTML='<iframe src="https://www.youtube.com/embed/'+m.id+'?autoplay=1&rel=0" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
   else if(m.k==='v'){
