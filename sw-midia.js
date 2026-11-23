@@ -1,6 +1,6 @@
 /* Service worker do Estúdio de Mídia — só guarda o "esqueleto" do app.
    Nunca guarda Cloudinary, Firebase ou Workers (uploads e dados vão sempre direto). */
-var VERSAO = 'midia-v6';
+var VERSAO = 'midia-v7';
 var ARQUIVOS = [
   './midia-estudio.html',
   './manifest-midia.json',
