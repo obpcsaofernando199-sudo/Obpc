@@ -563,6 +563,19 @@ footer li a{display:inline-flex;align-items:center}
 .tv-card .midia{border-bottom:5px solid #E2B04A}
 .card .midia .play{z-index:2}
 </style>
+<style id="destaques-inicio">
+/* 23/11/2026: três botões em destaque (Bíblia, Harpa Cristã, Abrir agenda), no estilo dos atalhos do site */
+.destaques{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;margin-top:1.4rem}
+.atalho.dq{width:100%;font:inherit;font-weight:800;font-size:.95rem;color:#FFE29A;cursor:pointer;border:1.5px solid rgba(242,193,78,.6);
+  background:radial-gradient(90% 70% at 50% 0,rgba(242,193,78,.22),transparent 70%),linear-gradient(180deg,#1C2A58,#0D1530);
+  box-shadow:0 14px 28px -16px rgba(0,0,0,.9),0 0 0 4px rgba(242,193,78,.07),inset 0 1px 0 rgba(255,255,255,.14)}
+.atalho.dq:active{transform:scale(.97)}
+.atalho.dq span{width:70px;height:70px}
+.atalho.dq span .ic3d{width:50px;height:50px}
+@media(max-width:380px){.atalho.dq{font-size:.85rem}.atalho.dq span{width:58px;height:58px}.atalho.dq span .ic3d{width:42px;height:42px}}
+/* a agenda só aparece no dia de culto (ou quando a pessoa abre) */
+.agenda[hidden]{display:none!important}
+</style>
 </head>
 <body>
 
@@ -595,7 +608,7 @@ footer li a{display:inline-flex;align-items:center}
     <button class="topo-radio" onclick="radioTocar()"><span class="pulso"></span>Rádio ao vivo</button>
   </div>
   <nav class="menu" aria-label="Seções do site">
-    <a href="#agenda"><img class="ic3d" src="icones/agenda.webp" alt="" aria-hidden="true">Agenda do mês</a><a href="#radio"><img class="ic3d" src="icones/radio.webp" alt="" aria-hidden="true">Rádio</a><a href="#momentos"><img class="ic3d" src="icones/camera.webp" alt="" aria-hidden="true">Momentos do culto</a><a href="#podcast"><img class="ic3d" src="icones/microfone.webp" alt="" aria-hidden="true">Podcast</a><a href="#tv"><img class="ic3d" src="icones/tv.webp" alt="" aria-hidden="true">TV OBPC</a><a href="#cultos"><img class="ic3d" src="icones/relogio.webp" alt="" aria-hidden="true">Cultos</a><a href="#avisos"><img class="ic3d" src="icones/avisos.webp" alt="" aria-hidden="true">Avisos</a><a href="#eventos"><img class="ic3d" src="icones/eventos.webp" alt="" aria-hidden="true">Eventos</a><a href="#palavra"><img class="ic3d" src="icones/biblia.webp" alt="" aria-hidden="true">Palavra do Pastor</a><a href="#videos"><img class="ic3d" src="icones/video.webp" alt="" aria-hidden="true">Vídeos</a><a href="#fotos"><img class="ic3d" src="icones/fotos.webp" alt="" aria-hidden="true">Fotos</a><a href="#oracao"><img class="ic3d" src="icones/oracao.webp" alt="" aria-hidden="true">Oração</a><a href="#contribua"><img class="ic3d" src="icones/coracao.webp" alt="" aria-hidden="true">Contribua</a><a href="#contato"><img class="ic3d" src="icones/celular.webp" alt="" aria-hidden="true">Contato</a>
+    <a href="#agenda" onclick="agTudo(true)"><img class="ic3d" src="icones/agenda.webp" alt="" aria-hidden="true">Agenda do mês</a><a href="#radio"><img class="ic3d" src="icones/radio.webp" alt="" aria-hidden="true">Rádio</a><a href="#momentos"><img class="ic3d" src="icones/camera.webp" alt="" aria-hidden="true">Momentos do culto</a><a href="#podcast"><img class="ic3d" src="icones/microfone.webp" alt="" aria-hidden="true">Podcast</a><a href="#tv"><img class="ic3d" src="icones/tv.webp" alt="" aria-hidden="true">TV OBPC</a><a href="#cultos"><img class="ic3d" src="icones/relogio.webp" alt="" aria-hidden="true">Cultos</a><a href="#avisos"><img class="ic3d" src="icones/avisos.webp" alt="" aria-hidden="true">Avisos</a><a href="#eventos"><img class="ic3d" src="icones/eventos.webp" alt="" aria-hidden="true">Eventos</a><a href="#palavra"><img class="ic3d" src="icones/biblia.webp" alt="" aria-hidden="true">Palavra do Pastor</a><a href="#videos"><img class="ic3d" src="icones/video.webp" alt="" aria-hidden="true">Vídeos</a><a href="#fotos"><img class="ic3d" src="icones/fotos.webp" alt="" aria-hidden="true">Fotos</a><a href="#oracao"><img class="ic3d" src="icones/oracao.webp" alt="" aria-hidden="true">Oração</a><a href="#contribua"><img class="ic3d" src="icones/coracao.webp" alt="" aria-hidden="true">Contribua</a><a href="#contato"><img class="ic3d" src="icones/celular.webp" alt="" aria-hidden="true">Contato</a>
   </nav>
 </header>
 
@@ -630,8 +643,15 @@ footer li a{display:inline-flex;align-items:center}
     <button class="bt-sh vers-sh" onclick="compartilhar('versiculo:hoje')" aria-label="Compartilhar o versículo"><svg viewBox="0 0 24 24"><use href="#ic-sh"/></svg><span>Compartilhar o versículo</span></button>
   </div>
 
-  <!-- AGENDA DO MÊS — destaque (consulta constante) -->
-  <section class="agenda revela" id="agenda" data-sh="agenda:mes">
+  <!-- BOTÕES EM DESTAQUE -->
+  <div class="destaques revela">
+    <a class="atalho dq" href="biblia-harpa.html"><span><img class="ic3d" src="icones/biblia.webp" alt="" aria-hidden="true"></span>Bíblia</a>
+    <a class="atalho dq" href="biblia-harpa.html#harpa"><span><img class="ic3d" src="icones/pergaminho.webp" alt="" aria-hidden="true"></span>Harpa Cristã</a>
+    <button type="button" class="atalho dq" onclick="agTudo(true)"><span><img class="ic3d" src="icones/agenda.webp" alt="" aria-hidden="true"></span>Abrir agenda</button>
+  </div>
+
+  <!-- AGENDA: só aparece no dia de culto (escala de hoje) ou quando a pessoa toca em "Abrir agenda" -->
+  <section class="agenda revela" id="agenda" data-sh="agenda:mes" hidden>
     <div class="agenda-cab">
       <div class="cab-ic"><img class="ic3d sec-ic" src="icones/agenda.webp" alt="" aria-hidden="true"><div><small>Consulte sempre</small><h2>Agenda de <em id="ag-mes">mês</em></h2></div></div>
       <div style="display:flex;gap:.5rem;flex-wrap:wrap"><button class="bt-sh" onclick="compartilhar('agenda:mes')"><svg viewBox="0 0 24 24"><use href="#ic-sh"/></svg><span>Compartilhar a agenda completa</span></button></div>
@@ -641,7 +661,6 @@ footer li a{display:inline-flex;align-items:center}
   </section>
 
   <div class="atalhos revela">
-    <a class="atalho" href="biblia-harpa.html"><span><img class="ic3d" src="icones/biblia.webp" alt="" aria-hidden="true"></span>Bíblia e Harpa</a>
     <a class="atalho" href="#tv"><span><img class="ic3d" src="icones/tv.webp" alt="" aria-hidden="true"></span>TV OBPC</a>
     <a class="atalho" href="#oracao"><span><img class="ic3d" src="icones/oracao.webp" alt="" aria-hidden="true"></span>Pedir oração</a>
     <a class="atalho" href="#visita"><span><img class="ic3d" src="icones/visita.webp" alt="" aria-hidden="true"></span>Visita do pastor</a>
@@ -1025,7 +1044,13 @@ function rAgendaMes(){
   var l=todas.filter(function(r){return r.dt>=hs;});
   var prox=l.filter(function(r){return r.dt.slice(0,7)===mes;});
   if(prox.length<4)prox=l.slice(0,8);else prox=prox.slice(0,8);
-  var mostrar=_agTudo?(doMesTodo.length?doMesTodo:l):prox;
+  if(!_agTudo&&!rAgendaMes._dl&&/[?&]s=agenda/.test(location.search)){rAgendaMes._dl=1;_agTudo=true;} /* link compartilhado da agenda abre ela */
+  var hojeL=todas.filter(function(r){return r.dt===hs;});
+  var mostrar=_agTudo?(doMesTodo.length?doMesTodo:l):hojeL; /* fechada: só a escala de HOJE, e só se hoje tem culto */
+  var sec=document.getElementById('agenda');if(sec)sec.hidden=!_agTudo&&!hojeL.length;
+  var h2=sec&&sec.querySelector('h2'),sm=sec&&sec.querySelector('.cab-ic small');
+  if(h2)h2.innerHTML=_agTudo?'Agenda de <em id="ag-mes">'+MESES[h.getMonth()]+'</em>':'Hoje tem <em id="ag-mes">culto</em>';
+  if(sm)sm.textContent=_agTudo?'Consulte sempre':'Escala de hoje';
   var box=document.getElementById('ag-lista');
   var D3=['dom','seg','ter','qua','qui','sex','sáb'];
   function f(v){return Array.isArray(v)?v.join(', '):(v||'');}
@@ -1033,13 +1058,13 @@ function rAgendaMes(){
   var cartaz=(doMesTodo.length?doMesTodo:l.slice(0,12)).map(function(r){var d=dt(r.dt);return {dia:d.getDate(),sem:D3[d.getDay()],tit:f(r.clt)||'Culto',linhas:papeisDe(r).slice(0,3).map(function(p){return p[0]+': '+p[1];}),hj:r.dt===hs,passou:r.dt<hs};});
   reg({s:'agenda',id:'mes',t:'Agenda de '+MESES[h.getMonth()],d:'Cultos e programações do mês na OBPC Jardim São Fernando. Venha adorar conosco!',tipo:'Agenda do mês',cta:'Toque e veja a agenda',linhas:prox.slice(0,5).map(function(r){var d=dt(r.dt);return d.getDate()+' '+D3[d.getDay()]+'  ·  '+(f(r.clt)||'Culto');}),cartaz:cartaz,cartazTit:'Agenda de '+MESES[h.getMonth()],ic3d:'agenda'});
   var bt=document.getElementById('ag-mais');
-  if(bt){bt.hidden=doMesTodo.length<=prox.length&&!_agTudo;bt.querySelector('span').textContent=_agTudo?'Mostrar só os próximos':'Ver a agenda completa do mês';}
+  if(bt){bt.hidden=false;bt.querySelector('span').textContent=_agTudo?'Fechar a agenda':'Ver a agenda completa do mês';}
   if(!mostrar.length){box.innerHTML='<div class="vazio">A agenda do mês aparece aqui assim que for preenchida.</div>';return;}
   box.classList.toggle('tudo',_agTudo);
   box.innerHTML=mostrar.map(function(r){var d=dt(r.dt),hj=r.dt===hs,ps=papeisDe(r);
     var sub=ps.slice(0,2).map(function(p){return p[0]+': '+p[1];}).join(' · ');
     var k=reg({s:'agenda',id:idDe(r.dt,f(r.clt)),t:f(r.clt)||'Culto',d:sub,dt:r.dt,tipo:hj?'Escala de hoje':'Agenda da igreja',cta:'Venha adorar conosco',linhas:ps.length?ps.slice(0,5).map(function(p){return p[0]+': '+p[1];}):null,cartaz:[{dia:d.getDate(),sem:D3[d.getDay()],tit:f(r.clt)||'Culto',linhas:ps.map(function(p){return p[0]+': '+p[1];}),hj:hj}],cartazTit:hj?'Agenda de hoje':'Agenda da igreja',cartazSub:DIAS[d.getDay()]+', '+d.getDate()+' de '+MESES[d.getMonth()],ic3d:'escala'});
-    var det=_agTudo&&ps.length?'<div class="ag-esc">'+ps.map(function(p){return '<span><small>'+esc(p[0])+'</small>'+esc(p[1])+'</span>';}).join('')+'</div>':(sub?'<span class="sub">'+esc(sub)+'</span>':'');
+    var det=(_agTudo||hj)&&ps.length?'<div class="ag-esc">'+ps.map(function(p){return '<span><small>'+esc(p[0])+'</small>'+esc(p[1])+'</span>';}).join('')+'</div>':(sub?'<span class="sub">'+esc(sub)+'</span>':'');
     return '<div class="ag-item'+(hj?' hj':'')+(r.dt<hs?' passou':'')+'" data-sh="'+k+'"><div class="ag-dia"><b>'+d.getDate()+'</b><small>'+D3[d.getDay()]+'</small></div><div class="ag-txt"><b>'+esc(f(r.clt)||'Culto')+(hj?'<em class="ag-hoje">Hoje</em>':'')+'</b>'+det+'</div>'+btSh(k,'ic')+'</div>';}).join('');
 }
 function rHoje(){
