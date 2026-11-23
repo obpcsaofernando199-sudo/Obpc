@@ -56,7 +56,7 @@ button{font-family:inherit;color:inherit}
 .logo img{width:100%;height:100%;object-fit:cover}
 .logo svg{width:30px;height:30px}
 .topo-nome{line-height:1.15;min-width:0}
-.topo-nome b{display:block;font-family:var(--serif);font-weight:600;font-size:1.04rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topo-nome b{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;font-family:var(--serif);font-weight:600;font-size:1rem;line-height:1.12;overflow:hidden}
 .topo-nome small{color:var(--ouro);font-size:.64rem;letter-spacing:.16em;text-transform:uppercase}
 .topo-radio{margin-left:auto;flex-shrink:0;display:inline-flex;align-items:center;gap:7px;padding:.48rem .9rem;border-radius:999px;border:1px solid rgba(242,193,78,.45);background:rgba(242,193,78,.08);font-weight:800;font-size:.76rem;cursor:pointer;color:var(--ouro2)}
 .pulso{width:8px;height:8px;border-radius:50%;background:#FF4D5E;box-shadow:0 0 0 0 rgba(255,77,94,.6);animation:pulso 1.6s infinite}
@@ -1012,7 +1012,7 @@ function radioFaixa(){
 function jd(t){return String(t==null?'':t).replace(/Jardim(?=\s+S[ãa]o Fernando)/g,'Jd.').replace(/JARDIM(?=\s+S[ÃA]O FERNANDO)/g,'JD.');}
 function rInfo(){
   var i=D.info||{};
-  var nome=jd(i.nome||'OBPC Jd. São Fernando');
+  var nome=jd(i.nome||'OBPC Jd. São Fernando');if(/S[ãa]o Fernando/i.test(nome)&&!/Jd\.|Jardim/i.test(nome))nome=nome.replace(/(S[ãa]o Fernando)/i,'Jd. $1');
   document.getElementById('topo-nome').textContent=nome;document.getElementById('rod-nome').textContent=nome;
   if(i.bv)document.getElementById('hero-bv').textContent=jd(i.bv);
   if(i.sobre)document.getElementById('rod-sobre').textContent=jd(i.sobre);
