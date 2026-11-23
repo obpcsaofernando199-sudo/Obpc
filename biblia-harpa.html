@@ -620,6 +620,8 @@ function answerQuiz(choice, q){
 initBible();
 initHarpa();
 initQuiz();
+/* link direto para a Harpa (botão do site): biblia-harpa.html#harpa */
+if(location.hash==='#harpa'){const bh=document.querySelector('.tab-btn[data-tab="harpa"]');if(bh)bh.click();}
 </script>
 
 </body>
