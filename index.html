@@ -528,6 +528,31 @@ footer li a{display:inline-flex;align-items:center}
 @keyframes toqueLogo{50%{transform:scale(.88);filter:brightness(1.4)}}
 .logo.toque{animation:toqueLogo .25s ease}
 </style>
+<style id="midia-charme">
+/* ── 23/11/2026: fotos inteiras, vídeo em moldura dourada e podcast que toca de verdade ── */
+/* Galeria: a foto aparece INTEIRA (sem cortar), com o fundo dela mesma desfocado nas sobras */
+.foto-ab{position:relative;background:#05080F}
+.foto-ab::before{content:"";position:absolute;inset:-18px;background:var(--fundo,none) center/cover no-repeat;filter:blur(16px) brightness(.5);transform:scale(1.1)}
+.fotos img{position:relative;object-fit:contain}
+.foto-ab:hover img{transform:none}
+/* Vídeo do topo: numa moldura dourada, inteiro; no fundo do site fica só a foto dele, bem suave */
+.fundo-video .hero-fundo{position:absolute;inset:-30px;width:calc(100% + 60px);height:calc(100% + 60px);object-fit:cover;opacity:0;transition:opacity 1.2s;filter:blur(20px) brightness(.6);pointer-events:none}
+.fundo-video .hero-fundo.on{opacity:.5}
+.hero-janela{position:relative;display:none;margin:1.6rem auto .2rem;padding:6px;border-radius:28px;text-decoration:none;max-width:min(88vw,620px);
+  background:linear-gradient(145deg,#FFE29A,#E2B04A 40%,#9C6B1C 75%,#FFE29A);box-shadow:0 22px 46px -16px rgba(0,0,0,.85),0 0 0 6px rgba(242,193,78,.12)}
+.hero.com-video .hero-janela{display:inline-block}
+.hero-janela #hero-video{position:relative;inset:auto;display:block;width:auto;height:auto;max-width:100%;max-height:min(56vh,520px);min-width:180px;min-height:120px;
+  object-fit:contain;opacity:1;border-radius:22px;background:#05080F;transition:none;pointer-events:none}
+.hj-selo{position:absolute;z-index:2;left:50%;top:-13px;transform:translateX(-50%);white-space:nowrap;padding:5px 13px;border-radius:999px;
+  background:#0C1328;color:#FFE29A;border:1.5px solid #F2C14E;font:800 .7rem/1 var(--sans,system-ui);letter-spacing:.14em;text-transform:uppercase;box-shadow:0 6px 14px -6px #000}
+.hj-selo b{display:inline-block;width:8px;height:8px;border-radius:50%;background:#FF4D5E;margin-right:7px;vertical-align:1px;animation:hjPisca 1.4s infinite}
+@keyframes hjPisca{50%{opacity:.25}}
+.hj-ver{position:absolute;z-index:2;right:16px;bottom:16px;padding:8px 14px;border-radius:999px;background:linear-gradient(135deg,#FFE29A,#F2C14E 50%,#C8902E);color:#0A0F1F;font:900 .85rem/1 var(--sans,system-ui);box-shadow:0 8px 18px -8px #000}
+/* cards de vídeo em pé: menos altos e com o vídeo inteiro */
+.midia.vert{max-height:64vh}
+/* Podcast: toque na onda para pular para a parte que quiser */
+.pod-onda{cursor:pointer;touch-action:manipulation}
+</style>
 </head>
 <body>
 
@@ -551,7 +576,7 @@ footer li a{display:inline-flex;align-items:center}
 </svg>
 
 <!-- vídeos gravados passando ao fundo do site inteiro, um depois do outro, bem clarinhos -->
-<div class="fundo-video" aria-hidden="true"><video class="hero-video" id="hero-video" muted playsinline autoplay preload="auto" disablepictureinpicture disableremoteplayback></video><div class="fundo-veu"></div></div>
+<div class="fundo-video" aria-hidden="true"><img class="hero-fundo" id="hero-fundo" alt=""><div class="fundo-veu"></div></div>
 
 <header class="topo">
   <div class="topo-in">
@@ -578,6 +603,7 @@ footer li a{display:inline-flex;align-items:center}
     <a class="bt bt-vidro" href="#tv"><img class="ic3d" src="icones/tv.webp" alt="" aria-hidden="true">TV OBPC</a>
     <a class="bt bt-vidro" id="hero-mapa" href="https://maps.google.com/?q=Rua+Senador+José+Ermírio+de+Moraes,199,Ferraz+de+Vasconcelos" target="_blank" rel="noopener"><img class="ic3d" src="icones/local.webp" alt="" aria-hidden="true">Como chegar</a>
   </div>
+  <a class="hero-janela" href="tv-obpc.html" aria-label="Assistir na TV OBPC"><span class="hj-selo"><b></b>Agora na TV OBPC</span><video class="hero-video" id="hero-video" muted playsinline autoplay preload="auto" disablepictureinpicture disableremoteplayback></video><span class="hj-ver">▶ Assistir</span></a>
   <button class="hero-sh" onclick="compartilharSite()"><svg viewBox="0 0 24 24"><use href="#ic-sh"/></svg>Compartilhar o site da igreja</button>
   <div class="contagem" id="contagem" hidden>
     <div style="text-align:left"><small>Próximo culto</small><b id="cont-nome"></b></div>
@@ -1581,6 +1607,43 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)carr
 /* O site, o Estúdio de Mídia e o painel (avisos no celular) dividem o mesmo endereço.
    Só registra o sw.js se o aparelho ainda não tiver o do Estúdio ou o das notificações, para não desligar o deles. */
 if('serviceWorker' in navigator&&location.protocol==='https:'){try{navigator.serviceWorker.getRegistration().then(function(r){var w=r&&(r.active||r.waiting||r.installing);if(w&&!/\/sw\.js(\?|$)/.test(w.scriptURL))return;navigator.serviceWorker.register('sw.js').catch(function(){});}).catch(function(){});}catch(e){}}
+</script>
+<script>
+/* ── 23/11/2026 (moldura do vídeo, fotos inteiras e podcast) ── */
+(function(){
+  /* fundo do site: a foto do vídeo que está tocando, desfocada */
+  var _toca=tocarHero;
+  tocarHero=function(i){_toca(i);try{var f=document.getElementById('hero-fundo'),th=thumbVideo(_hv.lista[_hv.i]||'');if(f){if(th){f.src=th;f.classList.add('on');}else f.classList.remove('on');}}catch(e){}};
+  var _rhv=rHeroVideo;
+  rHeroVideo=function(){_rhv();var f=document.getElementById('hero-fundo');if(f&&!(_hv.lista&&_hv.lista.length))f.classList.remove('on');};
+  /* galeria: a própria foto vira o fundo desfocado, para a foto inteira caber sem cortar */
+  var _rf=rFotos;
+  rFotos=function(){_rf();[].forEach.call(document.querySelectorAll('#lista-fotos .foto-ab img'),function(im){var u=im.getAttribute('src');if(u)im.parentNode.style.setProperty('--fundo','url("'+u.replace(/"/g,'%22')+'")');});};
+  /* podcast: se o MP3 ainda não estiver pronto na nuvem, tenta o arquivo original e depois o M4A */
+  function alternativas(u,orig){var l=[u];if(orig&&orig!==u)l.push(orig);if(/\.mp3(\?|$)/i.test(u))l.push(u.replace(/\.mp3(\?.*)?$/i,'.m4a'));return l;}
+  var _tocar=podTocar;
+  podTocar=function(id){
+    var x=null;itensPodcast().some(function(v){if(v.id===id){x=v;return true;}return false;});
+    var a=podAudio();
+    if(x&&!a._erroLigado){a._erroLigado=true;a.addEventListener('error',function(){
+      var l=a._alt||[];if(a._k<l.length-1){a._k++;a.src=l[a._k];var p=a.play();if(p&&p.catch)p.catch(function(){});return;}
+      toast('Este áudio ainda está sendo preparado. Tente de novo em 1 minuto.');var c=podCard();if(c)c.classList.remove('tocando');podBt('▶');});}
+    var novo=_pod.id!==id;_tocar(id);
+    if(x&&novo){a._alt=alternativas(x.u,x.orig);a._k=0;}
+  };
+  var _ip=itensPodcast;
+  itensPodcast=function(){var it=_ip(),por={};lista(D.videos).forEach(function(v){if(v&&v.url)por['e'+hid(v.url)]=v.orig||'';});it.forEach(function(v){v.orig=por[v.id]||'';});return it;};
+  /* toque na onda do podcast: pula para aquele ponto */
+  document.addEventListener('click',function(e){var o=e.target.closest&&e.target.closest('.pod-onda');if(!o)return;var c=o.closest('.pod');if(!c)return;var id=c.getAttribute('data-pid');
+    var r=o.getBoundingClientRect(),p=Math.min(1,Math.max(0,(e.clientX-r.left)/r.width));
+    if(_pod.id!==id){podTocar(id);var a=podAudio();a.addEventListener('loadedmetadata',function f(){a.removeEventListener('loadedmetadata',f);if(a.duration&&isFinite(a.duration))a.currentTime=p*a.duration;});return;}
+    var a=podAudio();if(a.duration&&isFinite(a.duration)){a.currentTime=p*a.duration;podPinta();}if(a.paused){var q=a.play();if(q&&q.catch)q.catch(function(){});}});
+  /* na TV OBPC daqui do site, o card de podcast toca aqui mesmo (no Podcast OBPC) */
+  document.addEventListener('click',function(e){var m=e.target.closest&&e.target.closest('#lista-tv .tv-card .midia');if(!m||!m.querySelector('.capa-audio'))return;
+    var id=(m.getAttribute('href')||'').split('#')[1];if(!id||!document.querySelector('.pod[data-pid="'+id+'"]'))return;
+    e.preventDefault();var s=document.getElementById('podcast');if(s)s.scrollIntoView({behavior:'smooth',block:'start'});podTocar(id);});
+  try{render();}catch(e){}
+})();
 </script>
 </body>
 </html>

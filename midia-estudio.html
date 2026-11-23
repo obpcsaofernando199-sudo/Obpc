@@ -632,7 +632,7 @@ $('#b-pausa').onclick=function(){
 function comecar(){
   if(!stream)return preparaMidia();
   var audio=soAudio(),mime=escolheMime(audio),id='r'+uid(),opt={};
-  if(mime)opt.mimeType=mime;if(!audio)opt.videoBitsPerSecond=1500000;opt.audioBitsPerSecond=160000;
+  if(mime)opt.mimeType=mime;if(!audio)opt.videoBitsPerSecond=1500000;opt.audioBitsPerSecond=audio?96000:160000; /* voz: 96 kbps já é ótimo e o arquivo fica menor (a nuvem converte para MP3 mais rápido) */
   var mr;try{mr=new MediaRecorder(stream,opt)}catch(e){try{mr=new MediaRecorder(stream);mime=mr.mimeType||mime}catch(e2){toast('Não foi possível iniciar a gravação.');return}}
   rec={id:id,mr:mr,mime:mr.mimeType||mime||(audio?'audio/webm':'video/webm'),audio:audio,t0:Date.now(),ms:0,estado:'gravando',tipo:modo,tam:0,falhas:0,escondida:false,lim:limiteMs(modo,audio),fila:Promise.resolve()};
   try{localStorage.setItem('midia_rec_atual',JSON.stringify({id:id,tipo:modo,mime:rec.mime,audio:audio,quem:quem,ent:$('#ent-nome').value||'',ini:Date.now()}))}catch(e){}
@@ -992,10 +992,10 @@ function publicar(it,onp){
       it.urlCloud=j.secure_url;it.status='enviado';return putItem(it).then(function(){
         onp(0.92,'Publicando no site…');
         var u=urlSite(it,it.urlCloud),dataISO=new Date().toISOString().slice(0,10);
-        if(!it.siteOk){it.expira=CFG.validadeH?Date.now()+CFG.validadeH*36e5:0;it.vh=CFG.validadeH||0;} /* hora em que some sozinho do site, da nuvem e do celular */
+        if(!it.siteOk){it.expira=(CFG.validadeH&&!it.audio)?Date.now()+CFG.validadeH*36e5:0;it.vh=it.audio?0:(CFG.validadeH||0);} /* podcast/entrevista em áudio fica no site (só vídeo e foto somem sozinhos) */ /* hora em que some sozinho do site, da nuvem e do celular */
         var jaPub=it.siteOk?Promise.resolve():(it.tipo==='foto'
           ?fbLista('galeria',{url:u,tp:'img',tit:it.titulo,titulo:it.titulo,data:dataISO,autor:it.quem||'',expira:it.expira||null,vh:it.vh||null})
-          :fbLista('videos',{url:u,titulo:it.titulo,tit:it.titulo,cat:it.tipo==='culto'?'Culto':it.tipo==='podcast'?'Podcast':'Entrevista',plat:'OBPC',desc:it.desc||'',entrevistado:it.ent||'',data:dataISO,autor:it.quem||'',expira:it.expira||null,vh:it.vh||null}));
+          :fbLista('videos',{url:u,titulo:it.titulo,tit:it.titulo,cat:it.tipo==='culto'?'Culto':it.tipo==='podcast'?'Podcast':'Entrevista',plat:'OBPC',desc:it.desc||'',entrevistado:it.ent||'',orig:it.audio?it.urlCloud:'',data:dataISO,autor:it.quem||'',expira:it.expira||null,vh:it.vh||null}));
         return jaPub.then(function(){
           it.siteOk=true;it.status='publicado';it.urlSite=u;it.previa=imgPrevia(it,it.urlCloud);
           if(!it.audio&&it.tipo!=='foto')aquecerFundo(u);
