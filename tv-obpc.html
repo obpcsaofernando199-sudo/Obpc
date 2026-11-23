@@ -148,7 +148,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   <div class="sr"><input id="q" type="search" placeholder="Pesquisar" aria-label="Pesquisar" oninput="Q=this.value;render()"></div>
   <button class="ib" id="sh" title="Compartilhar a TV" aria-label="Compartilhar a TV OBPC">↗</button><button class="ib" id="th" title="Tema" aria-label="Alternar tema">◐</button>
 </header>
-<main id="home"><a class="faixa-urg hide" id="urg" href="#"></a><div class="chips" id="chips"></div><div class="grid" id="grid"></div><div class="empty hide" id="empty">Nenhum vídeo ou foto por aqui ainda.</div></main>
+<main id="home"><a class="faixa-urg hide" id="urg" href="#"></a><div class="chips" id="chips"></div><div class="grid" id="grid"></div><div class="empty hide" id="empty">Nenhum vídeo por aqui ainda.</div></main>
 <main id="watch" class="watch hide"></main>
 <div id="msg" role="status" aria-live="polite"></div>
 <script>
@@ -234,9 +234,11 @@ function carregar(silent){
 }
 function set(){
   const now=Date.now(),vis={};
-  const c=seguro(norm,lista(RC).filter(x=>typeof x==='object'&&(!x.ts||(now-x.ts)/864e5<=DIAS))).filter(v=>v.m.length);
-  const p=seguro(normP,lista(RP).filter(x=>typeof x==='object')).filter(v=>v.m.length||v.r);
-  let e=[];try{e=normE();}catch(er){console.warn(er);}
+  /* a TV mostra SÓ VÍDEOS (pedido do Pastor, 23/11/2026): sem podcast e sem fotos. A Palavra urgente continua, com o sinal vermelho. */
+  const soVideo=v=>{v.m=v.m.filter(m=>m.k==='y'||(m.k==='v'&&!isAud(m.src)));return v;};
+  const c=seguro(norm,lista(RC).filter(x=>typeof x==='object'&&(!x.ts||(now-x.ts)/864e5<=DIAS))).map(soVideo).filter(v=>v.m.length);
+  const p=seguro(normP,lista(RP).filter(x=>typeof x==='object')).map(soVideo).filter(v=>v.m.length||(v.u&&v.r));
+  let e=[];try{e=normE().map(soVideo).filter(v=>v.m.length);}catch(er){console.warn(er);}
   ITEMS=c.concat(p).concat(e).filter(v=>{if(vis[v.id])return false;vis[v.id]=1;return true;});
   ITEMS.sort((a,b)=>(b.u?1:0)-(a.u?1:0)||b.ts-a.ts);
   render();
@@ -461,7 +463,9 @@ document.addEventListener('keydown',ev=>{
 $('th').onclick=()=>{const r=document.documentElement,d=getComputedStyle(r).colorScheme==='dark',n=d?'light':'dark';r.setAttribute('data-theme',n);try{localStorage.setItem('tvob_theme',n);}catch(e){}};
 try{render();}catch(e){console.warn(e);}
 carregar();
-setInterval(()=>carregar(true),90000);
+setInterval(()=>carregar(true),30000);
+/* vídeo novo aparece na hora: escuta o Firebase ao vivo (antes só olhava a cada 90 s) */
+(function(){if(!window.EventSource)return;let t=null;['videos','cultos','palavras'].forEach(k=>{try{const es=new EventSource(FB+k+'.json');let pri=true;const mud=()=>{if(pri){pri=false;return;}clearTimeout(t);t=setTimeout(()=>carregar(true),800);};es.addEventListener('put',mud);es.addEventListener('patch',mud);}catch(e){}});})();
 </script>
 </body>
 </html>
