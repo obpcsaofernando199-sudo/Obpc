@@ -277,6 +277,46 @@ body:not(.exportando) .eln-excluir{display:block;width:100%;margin:18px 0 0;padd
 .lx-fim button{width:100%;border:0;border-radius:14px;padding:15px;background:linear-gradient(135deg,#FFE29A,#F2C14E 45%,#C8902E);color:#0A0F1F;font:900 1.1rem 'DM Sans',sans-serif;cursor:pointer}
 .eln-lista-btn{display:block;width:100%;margin:6px 0 0;padding:13px;border-radius:14px;border:1.5px dashed rgba(242,193,78,.6);background:transparent;color:#FFE29A;font:800 1rem 'DM Sans',sans-serif;cursor:pointer}
 @media (max-width:820px){#config-modal{align-items:stretch!important}#config-modal .config-box{max-width:none;width:100%;max-height:none;height:100%;border-radius:0;border:0}}
+
+/* ── AGENDA FÁCIL (2026-11-23, 4ª versão): topo com 2 botões, frase de ajuda, e editar um campo por vez ── */
+#ajuda-cel,#status-cel{display:none}
+#eln-facil,#eln-facil2{display:flex;flex-direction:column;gap:10px;margin:4px 0 6px}
+.ef{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:1.5px solid rgba(242,193,78,.45);background:#FFFDF8;color:#151B2E;border-radius:16px;padding:14px;cursor:pointer;font-family:'DM Sans',sans-serif;-webkit-tap-highlight-color:transparent}
+.ef i{font-style:normal;font-size:1.6rem;flex:none;width:34px;text-align:center}
+.ef span{flex:1;min-width:0}
+.ef small{display:block;font-size:.8rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#8A6A1F}
+.ef b{display:block;font-size:1.12rem;font-weight:800;overflow-wrap:anywhere}
+.ef b.vz{color:#9AA0AE;font-weight:600;font-style:italic}
+.ef em{font-style:normal;flex:none;font-weight:900;color:#C8902E;font-size:1rem}
+#edit-linha-modal.facil .eln-chips,#edit-linha-modal.facil .eln-orig,#edit-linha-modal.facil p{display:none!important}
+#eln-pick.on~#toast-cel,body:has(#eln-pick.on) #toast-cel{display:none!important}
+.eln-dica{color:#C9CEDC;font-size:.95rem;margin:-6px 0 12px;text-align:center}
+#eln-pick{position:fixed;inset:0;z-index:8800;display:none;flex-direction:column;background:#070B18;font-family:'DM Sans',sans-serif;color:#F4F1EA}
+#eln-pick.on{display:flex}
+#eln-pick .pk-top{padding:16px 16px 10px;border-bottom:1px solid rgba(242,193,78,.3);background:#0C1328}
+#eln-pick h3{margin:0;font:700 1.35rem 'Playfair Display',Georgia,serif;color:#F2C14E}
+#eln-pick .pk-dica{color:#C9CEDC;font-size:.95rem;margin-top:4px}
+#eln-pick .pk-lista{flex:1;overflow:auto;padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.pk-it{display:flex;align-items:center;gap:12px;width:100%;border:1.5px solid rgba(255,255,255,.12);background:#121B36;color:#F4F1EA;border-radius:14px;padding:15px 14px;font:700 1.12rem 'DM Sans',sans-serif;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pk-it i{flex:none;width:30px;height:30px;border-radius:50%;border:2px solid rgba(242,193,78,.6);display:grid;place-items:center;font-style:normal;font-size:1rem}
+.pk-it.on{background:#FFF7DD;color:#151B2E;border-color:#F2C14E}
+.pk-it.on i{background:#F2C14E;border-color:#F2C14E;color:#0A0F1F}
+.pk-it.nada{color:#C9CEDC;font-weight:600}
+.pk-novo{display:flex;gap:8px;margin-top:6px}
+.pk-novo input{flex:1;min-width:0;padding:14px;border-radius:14px;border:1.5px dashed rgba(242,193,78,.6);background:#070B18;color:#fff;font:600 1.05rem 'DM Sans',sans-serif;outline:none}
+.pk-novo button{flex:none;border:0;border-radius:14px;padding:0 16px;background:#22C55E;color:#fff;font:900 1rem 'DM Sans',sans-serif}
+#eln-pick .pk-fim{padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));background:#0C1328;border-top:1.5px solid #F2C14E}
+#eln-pick .pk-fim button{width:100%;border:0;border-radius:16px;padding:16px;font:900 1.2rem 'DM Sans',sans-serif;background:linear-gradient(135deg,#FFE29A,#F2C14E 45%,#C8902E);color:#0A0F1F}
+@media (max-width:820px){
+body:not(.exportando) #ajuda-cel{display:block;text-align:center;font-size:1.05rem;color:#151B2E;background:#FFF7DD;border:1.5px solid #F2C14E;border-radius:14px;padding:12px;margin-top:10px}
+body:not(.exportando) #status-cel{display:block;text-align:center;color:#C9CEDC;font-size:.9rem;font-weight:700;width:100%}
+body:not(.exportando) .church-title,body:not(.exportando) .theme-line,body:not(.exportando) .period-sub{display:none}
+body:not(.exportando) .compact-header{border:0;padding:4px 0;margin:0}
+body:not(.exportando) .period-month{font-size:1.7rem}
+body:not(.exportando) .period-nav{width:48px;height:48px;font-size:1.6rem}
+body:not(.exportando) .top-nav>div:nth-child(2){display:none}
+body:not(.exportando) .top-nav .btn-add{font-size:1.15rem!important;padding:16px!important}
+}
 </style>
 </head>
 <body>
@@ -284,14 +324,15 @@ body:not(.exportando) .eln-excluir{display:block;width:100%;margin:18px 0 0;padd
 <div class="top-nav">
   <div style="display:flex;gap:8px;">
     <button class="btn btn-add" onclick="addRow()">➕ Novo Culto</button>
-    <button class="btn btn-config" onclick="openConfig(true)">👥 Nomes e cultos</button>
+    <button class="btn btn-config so-pc" onclick="openConfig(true)">👥 Nomes e cultos</button>
     <button class="btn so-pc" id="btn-agenda-mes" style="background:#7C3AED;color:#fff" onclick="inserirAgendaRegional2026()" title="A Agenda Regional já é preenchida automaticamente. Use este botão só se apagar uma data regional por engano.">🔄 Reconferir Agenda Regional</button>
   </div>
   <div style="text-align:center"><strong style="color:var(--gold);font-size:0.8rem;">SISTEMA DE ESCALA OBPC</strong></div>
   <div style="display:flex;gap:8px;">
-    <button class="btn" id="btn-salvar-agenda" onclick="salvarAgenda()">💾 SALVAR AGENDA</button>
-    <button class="btn btn-photo" onclick="takeScreenshot()">📸 Foto Completa</button>
+    <button class="btn so-pc" id="btn-salvar-agenda" onclick="salvarAgenda()">💾 SALVAR AGENDA</button>
+    <button class="btn btn-photo so-pc" onclick="takeScreenshot()">📸 Foto Completa</button>
     <button class="btn btn-clear so-pc" onclick="resetData()">🗑️</button>
+    <div id="status-cel">✅ Tudo salvo</div>
     <button class="btn" id="mais-opcoes-btn" onclick="document.body.classList.toggle('mais-on');this.textContent=document.body.classList.contains('mais-on')?'▲ Menos opções':'⚙️ Mais opções (arquivo, filtros, regional)'">⚙️ Mais opções (arquivo, filtros, regional)</button>
   </div>
 </div>
@@ -413,6 +454,7 @@ body:not(.exportando) .eln-excluir{display:block;width:100%;margin:18px 0 0;padd
     </thead>
     <tbody id="tableBody"></tbody>
   </table>
+  <div id="ajuda-cel">👆 <b>Toque num culto</b> para mudar quem participa.</div>
   <div id="lista-cel" aria-live="polite"></div>
 </div>
 
@@ -477,6 +519,7 @@ body:not(.exportando) .eln-excluir{display:block;width:100%;margin:18px 0 0;padd
 </div>
 
 <div id="toast-cel" role="status"></div>
+<div id="eln-pick" role="dialog" aria-modal="true"></div>
 <div id="edit-linha-modal" style="position:fixed;inset:0;background:rgba(0,0,0,0.88);display:none;align-items:center;justify-content:center;z-index:8500">
   <div style="background:#1E293B;border:2px solid var(--blue);border-radius:14px;padding:24px;width:460px;max-width:92vw;max-height:88vh;overflow-y:auto">
     <h2 style="color:var(--blue);margin-bottom:14px;font-size:1.05rem;text-align:center">✎ Editar Culto Completo</h2>
@@ -1588,7 +1631,7 @@ window.onload = load;
 
   /* aviso na parte de baixo da tela (no celular a barra de status fica escondida) */
   var tt;function aviso(msg,warn){var t=$('toast-cel');if(!t)return;t.textContent=msg;t.className=(warn?'warn ':'')+'on';clearTimeout(tt);tt=setTimeout(function(){t.className='';},warn?7000:3500);}
-  var ms=window.mostrarStatus;window.mostrarStatus=function(m,w){try{ms.apply(this,arguments);}catch(e){}if(cel.matches)aviso(m,w);};
+  var ms=window.mostrarStatus;window.mostrarStatus=function(m,w){try{ms.apply(this,arguments);}catch(e){}if(cel.matches&&w)aviso(m,w);}; /* no celular, só avisos de problema aparecem por cima; o resto fica na linha "Tudo salvo" */
 
   /* ---- lista do celular ---- */
   function valor(el){return el?(el.getAttribute('data-raw')||el.innerText||''):'';}
@@ -1615,7 +1658,7 @@ window.onload = load;
         '<div class="cc-info"><div class="cc-tit">'+(linhas(d.clt).length?esc(linhas(d.clt).join(' · ')):'<span class="cc-vazio">Culto sem nome</span>')+(d.dt===hj?'<span class="cc-tag" style="background:#FEF3C7;color:#8A5A00">HOJE</span>':'')+(d.reg?'<span class="cc-tag">REGIONAL</span>':'')+(d.ex?'<span class="cc-tag" style="background:#DCFCE7;color:#166534">EXEMPLO</span>':'')+'</div>'+
         (d.dt?'<div class="cc-sem">'+esc(d.day||'')+'</div>':'<div class="cc-sem">Sem data — toque para escolher</div>')+
         (L||'<div class="cc-vazio">Ninguém escalado ainda</div>')+
-        '<span class="cc-ed">✏️ Editar</span></div></div>';
+        '<span class="cc-ed">✏️ Toque para mudar</span></div></div>';
     });
     box.innerHTML=n?h:'<div class="cc-nada">Nenhum culto neste mês.<br>Toque em <b>➕ Novo Culto</b> lá em cima.</div>';
   }
@@ -1743,6 +1786,85 @@ window.onload = load;
   var oc=window.openConfig;
   window.openConfig=function(show,qual){if(show){aba=qual||aba;desenha();}var r=oc.apply(this,arguments);
     if(!show&&document.getElementById('edit-linha-modal').style.display==='flex'&&window._elnRefazChips)_elnRefazChips();return r;};
+})();
+/* ── AGENDA FÁCIL: editar um campo por vez ── */
+(function(){
+  var modal=document.getElementById('edit-linha-modal');if(!modal)return;
+  var box=modal.firstElementChild,pick=document.getElementById('eln-pick');
+  function $(id){return document.getElementById(id);}
+  function linhas(v){return String(v||'').split('\n').map(function(x){return x.trim();}).filter(Boolean);}
+  function lista(id){return linhas($(id).value);}
+  function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  var CAMPOS=[['eln-clt','⛪','Culto','list-cultos',1,'Qual é o culto?','Toque no culto. Se não estiver na lista, escreva embaixo.'],
+    ['eln-p1','🚪','Porta (recepção)','list-obreiros',0,'Quem fica na porta?','Toque nos nomes. Pode escolher mais de um.'],
+    ['eln-dir','🎤','Dirigente','list-obreiros',0,'Quem dirige o culto?','Toque no nome.'],
+    ['eln-cel','🍷','Celebração da Ceia','list-obreiros',0,'Quem celebra a Santa Ceia?','Toque no nome.'],
+    ['eln-opt','🙋','Oportunidade','list-obreiros',0,'Quem tem a oportunidade?','Toque nos nomes. Pode escolher mais de um.'],
+    ['eln-min','📖','Ministrante (pregação)','list-obreiros',0,'Quem vai pregar?','Toque no nome.']];
+  /* esconde os campos antigos (os dados continuam neles) e monta os botões grandes */
+  CAMPOS.forEach(function(c){var ta=$(c[0]);if(!ta)return;ta.classList.add('eln-orig');var lb=ta.previousElementSibling;if(lb&&lb.tagName==='LABEL')lb.classList.add('eln-orig');});
+  var cw=$('eln-cel-wrap');
+  var dt=$('eln-dt'),ens=$('eln-ens');
+  var dica=document.createElement('div');dica.className='eln-dica';dica.textContent='Toque em cada item para mudar. No fim, toque em ✅ Salvar.';
+  box.querySelector('h2').after(dica);
+  var fac=document.createElement('div');fac.id='eln-facil';
+  dt.after(fac);
+  var fac2=document.createElement('div');fac2.id='eln-facil2';fac2.style.cssText='display:flex;flex-direction:column;gap:10px;margin:0 0 6px';
+  /* ensaio: campo de escrever, dentro da lista */
+  var le=ens.previousElementSibling;
+  var ensWrap=document.createElement('div');ensWrap.className='ef';ensWrap.style.cursor='text';
+  ensWrap.innerHTML='<i>🎵</i><span><small>Ensaio (pode deixar em branco)</small></span>';
+  ensWrap.querySelector('span').appendChild(ens);ens.rows=1;ens.placeholder='Ex.: Ensaio do Louvor 17h';
+  ens.setAttribute('style','width:100%;border:0!important;background:transparent!important;color:#151B2E;font:700 1.1rem DM Sans,sans-serif;padding:4px 0!important;min-height:0!important;resize:none;outline:none;margin:0');
+  if(le&&le.tagName==='LABEL')le.classList.add('eln-orig');
+  fac.after(ensWrap);ensWrap.after(fac2);ensWrap.style.margin='0 0 10px'; /* o campo do ensaio fica sempre na página */
+  function desenha(){
+    fac.innerHTML='';fac2.innerHTML='';
+    CAMPOS.forEach(function(c,k){
+      if(c[0]==='eln-cel'&&cw&&cw.style.display==='none')return;
+      var v=linhas($(c[0]).value);
+      var b=document.createElement('button');b.type='button';b.className='ef';
+      b.innerHTML='<i>'+c[1]+'</i><span><small>'+c[2]+'</small><b class="'+(v.length?'':'vz')+'">'+(v.length?esc(v.join(', ')):'Toque para escolher')+'</b></span><em>Mudar ›</em>';
+      b.onclick=function(){abre(c);};(k===0?fac:fac2).appendChild(b);
+    });
+  }
+  /* tela de escolher nomes */
+  var atual=null;
+  function abre(c){
+    atual=c;var ta=$(c[0]),tem=linhas(ta.value),l=lista(c[3]);
+    tem.forEach(function(n){if(l.indexOf(n)<0)l.unshift(n);}); /* nome escrito à mão também aparece */
+    pick.innerHTML='<div class="pk-top"><h3>'+c[1]+' '+esc(c[5])+'</h3><div class="pk-dica">'+esc(c[6])+'</div></div>'+
+      '<div class="pk-lista">'+l.map(function(n){return '<button type="button" class="pk-it'+(tem.indexOf(n)>-1?' on':'')+'"><i>'+(tem.indexOf(n)>-1?'✓':'')+'</i><span>'+esc(n)+'</span></button>';}).join('')+
+      '<button type="button" class="pk-it nada"><i>✕</i><span>Ninguém / deixar em branco</span></button>'+
+      '<form class="pk-novo"><input placeholder="'+(c[4]?'Outro culto…':'Outro nome…')+'" enterkeyhint="done"><button type="submit">➕ Pôr</button></form></div>'+
+      '<div class="pk-fim"><button type="button">✅ Pronto</button></div>';
+    pick.classList.add('on');
+    pick.querySelectorAll('.pk-it').forEach(function(b){b.onclick=function(){
+      var n=b.querySelector('span').textContent,v=linhas(ta.value);
+      if(b.classList.contains('nada'))v=[];
+      else if(c[4])v=[n];
+      else{var i=v.indexOf(n);if(i>-1)v.splice(i,1);else v.push(n);}
+      ta.value=v.join('\n');ta.dispatchEvent(new Event('input'));
+      if(c[4]||b.classList.contains('nada'))return fecha();
+      pick.querySelectorAll('.pk-it:not(.nada)').forEach(function(x){var on=v.indexOf(x.querySelector('span').textContent)>-1;x.classList.toggle('on',on);x.querySelector('i').textContent=on?'✓':'';});
+    };});
+    pick.querySelector('form').onsubmit=function(e){e.preventDefault();var inp=this.querySelector('input'),n=inp.value.trim().replace(/\s+/g,' ');if(!n)return;
+      var lt=$(c[3]),ll=linhas(lt.value);if(ll.map(function(x){return x.toLowerCase();}).indexOf(n.toLowerCase())<0){ll.push(n);lt.value=ll.join('\n');lt.dispatchEvent(new Event('input',{bubbles:true}));}
+      var v=c[4]?[n]:linhas(ta.value).concat(linhas(ta.value).indexOf(n)<0?[n]:[]);ta.value=v.join('\n');ta.dispatchEvent(new Event('input'));
+      if(c[4])return fecha();abre(c);};
+    pick.querySelector('.pk-fim button').onclick=fecha;
+    var pl=pick.querySelector('.pk-lista');if(pl)pl.scrollTop=0;
+  }
+  function fecha(){pick.classList.remove('on');atual=null;desenha();}
+  var ab=window.abrirEditarLinha;
+  window.abrirEditarLinha=function(){var r=ab.apply(this,arguments);modal.classList.add('facil');pick.classList.remove('on');desenha();return r;};
+  var fe=window.fecharEditarLinha;
+  window.fecharEditarLinha=function(){pick.classList.remove('on');return fe.apply(this,arguments);};
+  /* "Tudo salvo" no topo do celular */
+  var mp=window.marcarPendente,st=$('status-cel');
+  window.marcarPendente=function(p){var r=mp.apply(this,arguments);if(st)st.textContent=p?'⏳ Salvando no site…':'✅ Tudo salvo no site';return r;};
+  /* o botão de "acrescentar nomes" do editor some: agora dá para pôr o nome na própria lista de escolher */
+  var lb=box.querySelector('.eln-lista-btn');if(lb)lb.style.display='none';
 })();
 /* foto/JPG: gera sempre o quadro largo (mesmo no celular) */
 (function(){var h=window.html2canvas;if(!h)return;
