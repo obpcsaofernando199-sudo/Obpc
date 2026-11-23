@@ -1623,7 +1623,21 @@ if('serviceWorker' in navigator&&location.protocol==='https:'){try{navigator.ser
 (function(){
   /* fundo do site: a foto do vídeo que está tocando, desfocada */
   var _toca=tocarHero;
-  tocarHero=function(i){_toca(i);try{var f=document.getElementById('hero-fundo'),v=document.getElementById('hero-video'),th=thumbVideo(_hv.lista[_hv.i]||''),src=v&&v.getAttribute('src');if(f){if(th)f.poster=th;if(src&&f.getAttribute('src')!==src){f.src=src;var p=f.play();if(p&&p.catch)p.catch(function(){});}f.classList.add('on');}}catch(e){}}; /* vídeo de fundo do site volta (o mesmo da moldura) */
+  /* vídeo de fundo do site (o mesmo da moldura) e GUARDADO NO CELULAR: da 2ª vez em diante entra na hora, mesmo antes da internet responder */
+  var CX='obpc-fundo-v1';
+  function tocaEl(el){var p=el.play();if(p&&p.catch)p.catch(function(){});}
+  function fundoSinc(){try{var f=document.getElementById('hero-fundo'),v=document.getElementById('hero-video'),u=_hv.lista&&_hv.lista[_hv.i],src=v&&v.getAttribute('src');if(!f||!src)return;
+    var th=u&&thumbVideo(u);if(th)f.poster=th;if(f.getAttribute('src')!==src){f.src=src;tocaEl(f);}f.classList.add('on');}catch(e){}}
+  function doCelular(){
+    var v=document.getElementById('hero-video'),orig=_hv.lista&&_hv.lista[_hv.i],url=orig&&fundoLeve(orig);if(!v||!url||!/^https:/.test(url)||!window.caches)return;
+    caches.open(CX).then(function(c){return c.match(url).then(function(r){
+      if(r)return r.blob().then(function(b){if((_hv.lista&&_hv.lista[_hv.i])!==orig||!b.size)return;var o=URL.createObjectURL(b);v.src=o;tocaEl(v);fundoSinc();});
+      /* 1ª vez: guarda este vídeo (e só os que ainda estão no site) para a próxima visita */
+      return fetch(url,{mode:'cors'}).then(function(x){if(!x.ok)return;return c.put(url,x).then(function(){return c.keys();}).then(function(ks){var vale={};(_hv.lista||[]).forEach(function(z){vale[fundoLeve(z)]=1;});ks.forEach(function(k){if(!vale[k.url])c.delete(k);});});}).catch(function(){});
+    });}).catch(function(){});
+  }
+  tocarHero=function(i){_toca(i);fundoSinc();doCelular();};
+  if(_hv.lista&&_hv.lista.length){fundoSinc();doCelular();} /* o site já começou a tocar antes deste trecho carregar */
   document.addEventListener('visibilitychange',function(){var f=document.getElementById('hero-fundo');if(!f||!f.getAttribute('src'))return;if(document.hidden)f.pause();else{var p=f.play();if(p&&p.catch)p.catch(function(){});}});
   var _rhv=rHeroVideo;
   rHeroVideo=function(){_rhv();var f=document.getElementById('hero-fundo');if(f&&!(_hv.lista&&_hv.lista.length)){f.classList.remove('on');f.pause();f.removeAttribute('src');}};
