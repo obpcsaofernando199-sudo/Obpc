@@ -182,7 +182,7 @@ video.pv,audio.pv{width:100%;border-radius:14px;background:#000}
       <button class="big" data-ir="culto"><span class="i"><img src="icones/camera.webp" alt="" aria-hidden="true"></span><b>Culto</b><small>vídeo curto</small><span class="vai">Momentos do culto · TV</span></button>
       <button class="big" data-ir="foto"><span class="i"><img src="icones/fotos.webp" alt="" aria-hidden="true"></span><b>Fotos</b><small>do momento</small><span class="vai">Fotos · Galeria</span></button>
       <button class="big" data-ir="podcast"><span class="i"><img src="icones/microfone.webp" alt="" aria-hidden="true"></span><b>Podcast</b><small>só áudio</small><span class="vai">Podcast · TV</span></button>
-      <button class="big" data-ir="entrevista"><span class="i"><img src="icones/entrevista.webp" alt="" aria-hidden="true"></span><b>Entrevista</b><small>vídeo ou áudio</small><span class="vai">TV OBPC</span></button>
+      <button class="big" data-ir="entrevista"><span class="i"><img src="icones/entrevista.webp" alt="" aria-hidden="true"></span><b>Entrevista</b><small>vídeo ou áudio</small><span class="vai">TV OBPC Jardim São Fernando</span></button>
     </div>
     <div class="aviso" id="aviso-recup" hidden></div>
     <p class="note" id="nota-regra" style="text-align:center"></p>
@@ -1077,7 +1077,7 @@ function linkCurto(it){
   rec.t=String(it.titulo||'OBPC').replace(/\*\*/g,'').slice(0,120);
   rec.d=(it.tipo==='foto'?'Veja os momentos da nossa igreja!':(it.desc||'Assista na OBPC Jardim São Fernando')).replace(/\s+/g,' ').slice(0,220);
   if(it.previa)rec.i=it.previa;
-  /* quem toca no link cai direto neste vídeo/áudio na TV OBPC (mesmo código 'e…' da tv-obpc.html) */
+  /* quem toca no link cai direto neste vídeo/áudio na TV OBPC Jardim São Fernando (mesmo código 'e…' da tv-obpc.html) */
   if(it.tipo!=='foto'&&it.urlSite)rec.u=CFG.site+'tv-obpc.html#e'+hidTV(it.urlSite);
   /* foto: abre direto na Galeria de fotos (mesmo código 'e…' da galeria.html) */
   if(it.tipo==='foto'&&it.urlSite)rec.u=CFG.site+'galeria.html?f=e'+hidTV(it.urlSite);
