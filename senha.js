@@ -1,4 +1,4 @@
-/* Senha das páginas de administração (painel, agenda, financeiro) — 23/11/2026.
+/* Senha das páginas de administração (painel e financeiro — a agenda ficou sem senha a pedido do Pastor) — 23/11/2026.
    Pede uma senha de números. Depois de acertar uma vez, o aparelho fica liberado
    (vale para todas essas páginas). Para trocar a senha, troque o HASH abaixo.
    Observação: é uma proteção simples, contra curiosos; não substitui login de verdade. */

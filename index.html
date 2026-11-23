@@ -525,6 +525,8 @@ footer li a{display:inline-flex;align-items:center}
 .pod .bt-sh{flex:none}
 @media(max-width:560px){.pod{flex-direction:column;align-items:stretch;text-align:left}.pod-capa{width:100%;height:120px}}
 @media(prefers-reduced-motion:reduce){*,*::before{animation:none!important;transition:none!important;scroll-behavior:auto!important}.revela{opacity:1;transform:none}}
+@keyframes toqueLogo{50%{transform:scale(.88);filter:brightness(1.4)}}
+.logo.toque{animation:toqueLogo .25s ease}
 </style>
 </head>
 <body>
@@ -849,7 +851,12 @@ var D={};
 var AGORA=Date.now();
 
 /* ── 3 cliques na logo do topo abrem o painel ── */
-(function(){var n=0,t=0;document.getElementById('logo').addEventListener('click',function(){var a=Date.now();n=(a-t<700)?n+1:1;t=a;if(n>=3){n=0;location.href='painel.html';}});})();
+/* entrada do painel: 3 toques na logo, com calma (até 2 s entre um toque e outro).
+   Toques "grudados" (menos de 0,15 s, o celular às vezes conta 2 vezes) valem como um só. A logo dá uma piscadinha a cada toque. */
+(function(){var lg=document.getElementById('logo'),n=0,t=0;if(!lg)return;lg.style.touchAction='manipulation';lg.style.cursor='pointer';
+  lg.addEventListener('click',function(){var a=Date.now(),d=a-t;if(d<150)return;n=(d<2000)?n+1:1;t=a;
+    lg.classList.remove('toque');void lg.offsetWidth;lg.classList.add('toque');
+    if(n>=3){n=0;location.href='painel.html';}});})();
 
 /* ── utilidades ── */
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
