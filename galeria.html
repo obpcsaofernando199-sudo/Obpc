@@ -87,7 +87,7 @@ const app = initializeApp({
 });
 const db = getDatabase(app);
 
-const NOMES = {todas:"Todas",cultos:"Cultos",missoes:"Missões","santa-ceia":"Santa Ceia",familia:"Família",jubrac:"Jubrac",umasbrac:"Umasbrac",ufebrac:"Ufebrac",menibrac:"Menibrac"};
+const NOMES = {todas:"Todas",momentos:"Momentos do culto",cultos:"Cultos",missoes:"Missões","santa-ceia":"Santa Ceia",familia:"Família",jubrac:"Jubrac",umasbrac:"Umasbrac",ufebrac:"Ufebrac",menibrac:"Menibrac"};
 const POR_PAGINA = 24;
 const params = new URLSearchParams(location.search);
 let FOTOS = [], lista = [], cat = params.get("c") || "todas", atual = 0, mostrando = POR_PAGINA, fotoLink = params.get("f");
@@ -98,12 +98,28 @@ const nome = c => NOMES[c] || (c ? c[0].toUpperCase() + c.slice(1) : "Outras");
 // miniaturas leves via Cloudinary (a original só abre no lightbox)
 const thumb = (u, w) => /res\.cloudinary\.com/.test(u) && u.includes("/upload/") ? u.replace("/upload/", `/upload/w_${w},q_auto,f_auto/`) : u;
 
+/* duas fontes: as fotos do painel (galeria_fotos) e as fotos tiradas no Estúdio de Mídia (galeria), que ficam 48 h */
+let DO_PAINEL = [], DO_ESTUDIO = [], carregou = {};
+const hid = s => { let h = 5381; s = String(s); for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0; return (h >>> 0).toString(36); };
+const listaFb = d => !d || typeof d !== "object" ? [] : Array.isArray(d) ? d.filter(Boolean) : Object.values(d).filter(Boolean);
+const fimDe = x => !x || !x.expira ? 0 : (x.vh ? x.expira : x.expira + 864e5);
+const ehVideo = u => /\.(mp4|webm|mov|m4v|3gp|ogv)(\?|$)/i.test(u || "") || (u || "").includes("/video/upload/");
 onValue(ref(db, "obpc/galeria_fotos"), snap => {
-  FOTOS = Object.entries(snap.val() || {}).map(([k, f]) => ({...f, _k: k})).sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-  if (cat !== "todas" && !FOTOS.some(f => f.categoria === cat)) cat = "todas";
-  filtros(); grade();
-  if (fotoLink) { const i = lista.findIndex(f => f._k === fotoLink); fotoLink = null; if (i >= 0) { mostrando = Math.max(mostrando, i + 1); grade(); abrir(i); } }
+  DO_PAINEL = Object.entries(snap.val() || {}).map(([k, f]) => ({...f, _k: k}));
+  carregou.p = 1; juntar();
 });
+onValue(ref(db, "obpc/galeria"), snap => {
+  const agora = Date.now();
+  DO_ESTUDIO = listaFb(snap.val()).filter(x => x && typeof x.url === "string" && /^https?:/.test(x.url) && x.tp !== "video" && !ehVideo(x.url) && (x.autor !== undefined || x.expira !== undefined) && !(fimDe(x) && fimDe(x) <= agora))
+    .map(x => ({url: x.url, legenda: x.titulo || x.tit || x.leg || "", categoria: "momentos", timestamp: x.ts || (x.expira ? fimDe(x) - 48 * 36e5 : (x.data ? Date.parse(x.data + "T12:00") : 0)) || 0, _k: "e" + hid(x.url)}));
+  carregou.e = 1; juntar();
+});
+function juntar() {
+  FOTOS = DO_ESTUDIO.concat(DO_PAINEL).sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+  if (carregou.p && carregou.e && cat !== "todas" && !FOTOS.some(f => f.categoria === cat)) cat = "todas";
+  filtros(); grade();
+  if (fotoLink) { const i = lista.findIndex(f => f._k === fotoLink); if (i >= 0 || (carregou.p && carregou.e)) fotoLink = null; if (i >= 0) { mostrando = Math.max(mostrando, i + 1); grade(); abrir(i); } }
+}
 
 function filtros() {
   const cont = {}; FOTOS.forEach(f => cont[f.categoria] = (cont[f.categoria] || 0) + 1);

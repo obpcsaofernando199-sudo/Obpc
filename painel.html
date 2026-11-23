@@ -1247,6 +1247,32 @@ var FB='https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com/obpc';
 var _dbUltimaGravacaoLocal={};
 var _dbSalvandoAgora={};
 var DB={g:function(k){try{return JSON.parse(localStorage.getItem('obpc_'+k));}catch(e){return null;}},s:function(k,v){_dbUltimaGravacaoLocal[k]=Date.now();_dbSalvandoAgora[k]=(_dbSalvandoAgora[k]||0)+1;try{localStorage.setItem('obpc_'+k,JSON.stringify(v));}catch(e){console.error('localStorage cheio/erro ao salvar',k,e);if(typeof showToast==='function')showToast('⚠️ Aparelho sem espaço local pra "'+k+'" — publicando direto no site...');}var payload=JSON.stringify(v);function _liberar(){_dbSalvandoAgora[k]=Math.max(0,(_dbSalvandoAgora[k]||1)-1);}function _tentar(n){return fetchComLimite(FB+'/'+k+'.json',{method:'PUT',body:payload,headers:{'Content-Type':'application/json'}},20000).then(function(r){if(!r.ok){if(n<3)return new Promise(function(res){setTimeout(res,1200*n);}).then(function(){return _tentar(n+1);});_liberar();console.error('Firebase PUT falhou para',k,r.status);if(typeof showToast==='function')showToast('⚠️ "'+k+'" NÃO sincronizou com o servidor (erro '+r.status+') — tente salvar de novo');return null;}_liberar();return r;}).catch(function(e){if(n<3)return new Promise(function(res){setTimeout(res,1200*n);}).then(function(){return _tentar(n+1);});_liberar();console.error('Firebase PUT erro de rede para',k,e);if(typeof showToast==='function')showToast('⚠️ Sem conexão — "'+k+'" só foi salvo neste aparelho! Tente de novo.');return null;});}return _tentar(1);},sync:async function(){try{var r=await fetch(FB+'.json');if(!r.ok)return;var d=await r.json();if(!d)return;var agora=Date.now();Object.keys(d).forEach(function(k){if(_dbSalvandoAgora[k]>0)return;if(agora-(_dbUltimaGravacaoLocal[k]||0)<10000)return;try{localStorage.setItem('obpc_'+k,JSON.stringify(d[k]));}catch(e){}});}catch(e){}},listen:function(){try{var es=new EventSource(FB+'.json?accept=text/event-stream');es.addEventListener('put',function(e){try{var d=JSON.parse(e.data);if(!d||!d.data)return;var agora2=Date.now();if(d.path==='/'&&typeof d.data==='object')Object.keys(d.data).forEach(function(k){if(_dbSalvandoAgora[k]>0)return;if(agora2-(_dbUltimaGravacaoLocal[k]||0)<10000)return;try{localStorage.setItem('obpc_'+k,JSON.stringify(d.data[k]));}catch(e){}});else if(d.path&&d.path.length>1){var k=d.path.replace(/^\//,'');if(_dbSalvandoAgora[k]>0)return;if(agora2-(_dbUltimaGravacaoLocal[k]||0)<10000)return;try{localStorage.setItem('obpc_'+k,JSON.stringify(d.data));}catch(e){}}}catch(e){}});}catch(e){}}};
+/* videos e galeria são escritos por DOIS lugares: este painel e o Estúdio de Mídia.
+   Antes, ao salvar aqui, a lista deste aparelho substituía a do servidor e podia apagar o que o Estúdio acabou de publicar.
+   Agora, antes de gravar, o painel busca a lista do servidor e mantém o que ele nunca viu (publicado pelo Estúdio).
+   O que o painel já viu e tirou da lista continua tirado. O que já venceu (48 h) não volta. */
+(function(){
+  var MESC={videos:1,galeria:1};
+  function arr(d){return !d?[]:Array.isArray(d)?d.filter(Boolean):(typeof d==='object'?Object.keys(d).map(function(k){return d[k];}).filter(Boolean):[]);}
+  function vistos(k){try{return JSON.parse(localStorage.getItem('obpc_vistos_'+k)||'{}')||{};}catch(e){return {};}}
+  function marca(k,l){try{var v=vistos(k);(l||[]).forEach(function(x){if(x&&x.url)v[x.url]=1;});var ks=Object.keys(v);if(ks.length>800)ks.slice(0,ks.length-800).forEach(function(u){delete v[u];});localStorage.setItem('obpc_vistos_'+k,JSON.stringify(v));}catch(e){}}
+  function fimDe(x){return !x||!x.expira?0:(x.vh?x.expira:x.expira+864e5);}
+  function vivo(x){var f=fimDe(x);return !f||f>Date.now();}
+  var gOrig=DB.g,sOrig=DB.s;
+  DB.g=function(k){var v=gOrig.call(DB,k);if(MESC[k]&&Array.isArray(v))marca(k,v);return v;};
+  DB.s=function(k,v){
+    if(!MESC[k]||!Array.isArray(v))return sOrig.call(DB,k,v);
+    v=v.filter(function(x){return !x||vivo(x);});marca(k,v);
+    _dbUltimaGravacaoLocal[k]=Date.now();
+    try{localStorage.setItem('obpc_'+k,JSON.stringify(v));}catch(e){}
+    return fetchComLimite(FB+'/'+k+'.json',{cache:'no-store'},8000).then(function(r){return r.ok?r.json():null;}).then(function(srv){
+      var vis=vistos(k),tem={};v.forEach(function(x){if(x&&x.url)tem[x.url]=1;});
+      var novos=arr(srv).filter(function(x){return x&&x.url&&!tem[x.url]&&!vis[x.url]&&vivo(x);});
+      if(novos.length){v=novos.concat(v);marca(k,novos);}
+      return sOrig.call(DB,k,v);
+    },function(){return sOrig.call(DB,k,v);});
+  };
+})();
 var IDB=(function(){var db=null;function op(){return new Promise(function(res,rej){if(db){res(db);return;}var r=indexedDB.open('obpc_m',1);r.onupgradeneeded=function(e){e.target.result.createObjectStore('f',{keyPath:'id',autoIncrement:true});};r.onsuccess=function(e){db=e.target.result;res(db);};r.onerror=rej;});}async function salv(file){var d=await op();return new Promise(function(res,rej){var tx=d.transaction('f','readwrite');var rq=tx.objectStore('f').add({n:file.name||'',t:file.type||'',b:file,ts:Date.now()});rq.onsuccess=function(){res('idb:'+rq.result);};rq.onerror=rej;});}async function url(src){if(!src||!src.startsWith('idb:'))return src||'';try{var d=await op();var rec=await new Promise(function(res,rej){var rq=d.transaction('f','readonly').objectStore('f').get(Number(src.replace('idb:','')));rq.onsuccess=function(){res(rq.result);};rq.onerror=rej;});return rec?URL.createObjectURL(rec.b):'';}catch(e){return '';}}return{salv:salv,url:url};})();
 var _i={};var _md={clt:[],pas:[]};
 function fetchComLimite(url,opts,ms){var ctrl=new AbortController();var t=setTimeout(function(){ctrl.abort();},ms);opts=opts||{};opts.signal=ctrl.signal;return fetch(url,opts).then(function(r){clearTimeout(t);return r;}).catch(function(e){clearTimeout(t);throw e;});}

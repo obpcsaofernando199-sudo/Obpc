@@ -383,7 +383,7 @@ video.pv,audio.pv{border-radius:14px;box-shadow:0 0 0 2px #cfdcd4}
   <div class="card stack limpe">
     <h2>Limpe seu celular</h2>
     <p class="note">Apaga do <b>seu celular</b> os vídeos, áudios e fotos que já estão no site. <b>Não apaga nada do site nem do Cloudinary.</b> O que ainda não foi publicado continua guardado.</p>
-    <p class="limpe-ok" style="margin:0;padding:10px 12px;border-radius:12px;background:#E8F5EE;border:1.5px solid #9BD3B4;color:#0F4A34;font-weight:700;font-size:14.5px;line-height:1.4">✅ Pode limpar sem medo: <u>suas postagens NÃO saem do site</u>. Elas continuam no ar normalmente até completar 24 horas. Só o seu celular fica mais leve.</p>
+    <p class="limpe-ok" style="margin:0;padding:10px 12px;border-radius:12px;background:#E8F5EE;border:1.5px solid #9BD3B4;color:#0F4A34;font-weight:700;font-size:14.5px;line-height:1.4">✅ Pode limpar sem medo: <u>suas postagens NÃO saem do site</u>. Elas continuam no ar normalmente até completar 48 horas. Só o seu celular fica mais leve.</p>
     <p class="note limpe-st">Calculando…</p>
     <button class="btn ouro b-limpe">🧹 Limpe seu celular</button>
   </div>
@@ -397,7 +397,7 @@ video.pv,audio.pv{border-radius:14px;box-shadow:0 0 0 2px #cfdcd4}
   <div class="card stack limpe">
     <h2>Limpe seu celular</h2>
     <p class="note">Apaga do <b>seu celular</b> os vídeos, áudios e fotos que já estão no site. <b>Não apaga nada do site nem do Cloudinary.</b> O que ainda não foi publicado continua guardado.</p>
-    <p class="limpe-ok" style="margin:0;padding:10px 12px;border-radius:12px;background:#E8F5EE;border:1.5px solid #9BD3B4;color:#0F4A34;font-weight:700;font-size:14.5px;line-height:1.4">✅ Pode limpar sem medo: <u>suas postagens NÃO saem do site</u>. Elas continuam no ar normalmente até completar 24 horas. Só o seu celular fica mais leve.</p>
+    <p class="limpe-ok" style="margin:0;padding:10px 12px;border-radius:12px;background:#E8F5EE;border:1.5px solid #9BD3B4;color:#0F4A34;font-weight:700;font-size:14.5px;line-height:1.4">✅ Pode limpar sem medo: <u>suas postagens NÃO saem do site</u>. Elas continuam no ar normalmente até completar 48 horas. Só o seu celular fica mais leve.</p>
     <p class="note limpe-st">Calculando…</p>
     <button class="btn ouro b-limpe">🧹 Limpe seu celular</button>
   </div>
@@ -507,14 +507,18 @@ var CFG={
   /* TEMPO MÁXIMO de cada gravação, em segundos (a gravação para sozinha). Culto = momentos curtos. 0 = sem limite. */
   maxSeg:{culto:60,video:300,audio:1800},
   /* QUANTAS HORAS o que for publicado fica no site/nuvem/celular antes de apagar sozinho. 0 = nunca apaga. */
-  validadeH:24,
+  validadeH:48, /* era 24; o que já foi publicado com 24 h também passa a valer 48 h (veja fimDe) */
   limiteMB:100, /* maior vídeo que o Cloudinary GRATUITO aceita (acima disso o envio falha). Se o plano for pago, aumente. */
   pin:'102030', /* senha do painel do pastor: TROQUE por outra (só números) */
   pinAntigos:['1020'], /* senhas antigas que ainda valem (para quem já tinha decorado). Para cancelar uma, apague daqui. */
   aviso:3 /* alerta amarelo quando restarem este tanto de vagas ou menos */
 };
 var EQUIPE=['Júlia','Giovana','Eliza'];
-var VERSAO='2026-11-22a';
+var VERSAO='2026-11-23a';
+/* Hora em que a publicação some. As antigas (sem 'vh') foram gravadas com 24 h e ganham mais 24 h, ficando 48 h como as novas. */
+function fimDe(x){if(!x||!x.expira)return 0;return x.vh?x.expira:x.expira+24*36e5}
+function venceu(x,agora){var f=fimDe(x);return !!f&&f<=agora}
+function validadeTxt(){var h=CFG.validadeH;return h%24===0?(h===24?'1 dia':(h/24)+' dias'):h+' horas'}
 /* compara nomes sem ligar para acento e maiúscula ("Julia" = "Júlia") */
 function mesmoNome(a,b){var n=function(x){return String(x||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toLowerCase()};return !!a&&n(a)===n(b)}
 function nomeCerto(x){for(var i=0;i<EQUIPE.length;i++)if(mesmoNome(x,EQUIPE[i]))return EQUIPE[i];return x}
@@ -941,7 +945,7 @@ function abrirRevisao(it){
   var url=revUrl=URL.createObjectURL(it.blob);
   $('#rev-pv').innerHTML=(it.audio?'<audio class="pv" controls src="'+url+'"></audio>':'<video class="pv" controls playsinline src="'+url+'" style="max-height:34vh"></video>')+'<p class="note" style="margin-top:6px;text-align:center">'+mb(it.tam||(it.blob&&it.blob.size)||0)+(it.dur?' · '+fmt(it.dur):'')+'</p>';
   $('#rev-pub').textContent='Enviar e publicar no site';
-  $('#rev-valid').textContent=CFG.validadeH?'Depois de publicado, fica no site por '+(CFG.validadeH===24?'1 dia':CFG.validadeH+' horas')+' e some sozinho.':'';
+  $('#rev-valid').textContent=CFG.validadeH?'Depois de publicado, fica no site por '+validadeTxt()+' e some sozinho.':'';
   $('#rev-tit').value=it.titulo;$('#rev-desc').value=it.desc||'';
   var ent=it.tipo==='entrevista';
   $('#rev-ent-l').hidden=!ent;$('#rev-cons-l').hidden=!ent;$('#rev-ent').value=it.ent||'';$('#rev-cons').checked=false;
@@ -1119,10 +1123,10 @@ function publicar(it,onp){
       it.urlCloud=j.secure_url;it.status='enviado';return putItem(it).then(function(){
         onp(0.92,'Publicando no site…');
         var u=urlSite(it,it.urlCloud),dataISO=new Date().toISOString().slice(0,10);
-        if(!it.siteOk)it.expira=CFG.validadeH?Date.now()+CFG.validadeH*36e5:0; /* hora em que some sozinho do site, da nuvem e do celular */
+        if(!it.siteOk){it.expira=CFG.validadeH?Date.now()+CFG.validadeH*36e5:0;it.vh=CFG.validadeH||0;} /* hora em que some sozinho do site, da nuvem e do celular */
         var jaPub=it.siteOk?Promise.resolve():(it.tipo==='foto'
-          ?fbLista('galeria',{url:u,tp:'img',tit:it.titulo,titulo:it.titulo,data:dataISO,autor:it.quem||'',expira:it.expira||null})
-          :fbLista('videos',{url:u,titulo:it.titulo,tit:it.titulo,cat:it.tipo==='culto'?'Culto':it.tipo==='podcast'?'Podcast':'Entrevista',plat:'OBPC',desc:it.desc||'',entrevistado:it.ent||'',data:dataISO,autor:it.quem||'',expira:it.expira||null}));
+          ?fbLista('galeria',{url:u,tp:'img',tit:it.titulo,titulo:it.titulo,data:dataISO,autor:it.quem||'',expira:it.expira||null,vh:it.vh||null})
+          :fbLista('videos',{url:u,titulo:it.titulo,tit:it.titulo,cat:it.tipo==='culto'?'Culto':it.tipo==='podcast'?'Podcast':'Entrevista',plat:'OBPC',desc:it.desc||'',entrevistado:it.ent||'',data:dataISO,autor:it.quem||'',expira:it.expira||null,vh:it.vh||null}));
         return jaPub.then(function(){
           it.siteOk=true;it.status='publicado';it.urlSite=u;it.previa=imgPrevia(it,it.urlCloud);
           return garantePrevia(it).then(function(){return putItem(it)});
@@ -1204,6 +1208,8 @@ function linkCurto(it){
   if(it.previa)rec.i=it.previa;
   /* quem toca no link cai direto neste vídeo/áudio na TV OBPC (mesmo código 'e…' da tv-obpc.html) */
   if(it.tipo!=='foto'&&it.urlSite)rec.u=CFG.site+'tv-obpc.html#e'+hidTV(it.urlSite);
+  /* foto: abre direto na Galeria de fotos (mesmo código 'e…' da galeria.html) */
+  if(it.tipo==='foto'&&it.urlSite)rec.u=CFG.site+'galeria.html?f=e'+hidTV(it.urlSite);
   var code=hash(JSON.stringify(rec));
   return fetch(CFG.fb+'/links/'+code+'.json',{method:'PUT',body:JSON.stringify(rec)}).then(function(r){
     if(!r.ok)throw new Error('link');
@@ -1301,7 +1307,7 @@ function desenhaLista(){
       var st=it.removido?'<span class="tag err">Saiu do site (limite)</span>':it.status==='publicado'?'<span class="tag ok">No site</span>':it.status==='enviado'?'<span class="tag pend">Enviado, falta publicar</span>':'<span class="tag pend">Só no celular</span>';
       var th=it.tipo==='foto'&&it.blob?(function(){var u=URL.createObjectURL(it.blob);urlsTmp.push(u);return '<img src="'+u+'" alt="">'})():(it.previa&&!semCapa(it)?'<img src="'+esc(it.previa)+'" alt="">':(it.audio?'ÁUDIO':'VÍDEO'));
       var info=[TIPOS[it.tipo]||'Foto',it.dur?fmt(it.dur):'',mb(it.tam||0),it.quem||'',new Date(it.criado).toLocaleDateString('pt-BR')].filter(Boolean).join(' · ');
-      var ex=(it.expira&&it.status==='publicado'&&!it.removido)?'<span class="tag">Some '+restaTxt(it.expira)+'</span>':'';
+      var ex=(it.expira&&it.status==='publicado'&&!it.removido)?'<span class="tag">Some '+restaTxt(fimDe(it))+'</span>':'';
       return '<div class="card" data-id="'+it.id+'"><div class="item"><div class="mini-img">'+th+'</div><div style="min-width:0"><div class="t">'+esc(it.titulo)+'</div><div class="m">'+esc(info)+'</div><div>'+st+ex+(it.blob?'':'<span class="tag">Arquivo liberado</span>')+'</div></div></div>'+
       '<div class="acoes">'+((it.status!=='publicado'||it.removido)&&it.blob?'<button class="btn pri" data-a="pub">'+(it.removido?'Publicar de novo':'Publicar')+'</button>':'')+
       (it.status==='publicado'&&!it.removido?'<button class="btn ouro" data-a="share">Compartilhar</button>':'')+
@@ -1410,7 +1416,7 @@ function pDesenha(){
   var l=pDados[pFiltro];
   $('#p-lista').innerHTML=l.length?l.map(function(x,i){
     var th=pFiltro==='galeria'&&x.url?'<img src="'+esc(x.url.replace('/image/upload/','/image/upload/c_fill,w_160,h_160,q_auto,f_jpg/'))+'" alt="">':(/\.mp3(\?|$)/i.test(x.url||'')?'ÁUDIO':'VÍDEO');
-    var info=[x.cat||'',x.autor||'',x.data||'',x.entrevistado?'com '+x.entrevistado:'',x.expira?'some '+restaTxt(x.expira):''].filter(Boolean).join(' · ');
+    var info=[x.cat||'',x.autor||'',x.data||'',x.entrevistado?'com '+x.entrevistado:'',x.expira?'some '+restaTxt(fimDe(x)):''].filter(Boolean).join(' · ');
     return '<div class="card"><div class="item"><div class="mini-img">'+th+'</div><div style="min-width:0"><div class="t">'+esc(tituloItem(x))+'</div><div class="m">'+esc(info)+'</div></div></div><div class="acoes">'+(x.url?'<a class="btn" style="text-align:center;line-height:40px;text-decoration:none" href="'+esc(x.url)+'" target="_blank" rel="noopener">Abrir</a>':'')+'<button class="btn perigo" data-i="'+i+'">Retirar do site</button></div></div>';
   }).join(''):'<div class="card"><p class="note">Nada publicado nesta lista.</p></div>';
   $$('#p-lista [data-i]').forEach(function(b){b.onclick=function(){pRetirar(pFiltro,+b.dataset.i)}});
@@ -1461,7 +1467,7 @@ function desenhaSite(){
     if(!its.length){box.innerHTML='';return}
     box.innerHTML='<div class="card"><h2>Minhas publicações no site</h2><p class="note">Se não gostar de alguma, toque em Retirar do site. Ela some do site e do Cloudinary.</p></div>'+its.map(function(o,i){
       var x=o.x,th=o.k==='galeria'&&x.url?'<img src="'+esc(x.url.replace('/image/upload/','/image/upload/c_fill,w_160,h_160,q_auto,f_jpg/'))+'" alt="">':(/\.mp3(\?|$)/i.test(x.url||'')?'ÁUDIO':'VÍDEO');
-      var info=[x.cat||'',x.data||'',x.expira?'some '+restaTxt(x.expira):''].filter(Boolean).join(' · ');
+      var info=[x.cat||'',x.data||'',x.expira?'some '+restaTxt(fimDe(x)):''].filter(Boolean).join(' · ');
       return '<div class="card"><div class="item"><div class="mini-img">'+th+'</div><div style="min-width:0"><div class="t">'+esc(tituloItem(x))+'</div><div class="m">'+esc(info)+'</div></div></div><div class="acoes"><button class="btn perigo" data-s="'+i+'">Retirar do site</button></div></div>';
     }).join('');
     $$('#lista-site [data-s]').forEach(function(b){b.onclick=function(){var o=its[+b.dataset.s];retirarSite(o.k,o.x,function(){desenhaSite();desenhaLista()})}});
@@ -1504,9 +1510,9 @@ function varrer(nome,agora){
       if(!r.ok)throw new Error('leitura '+r.status);
       var et=r.headers.get('ETag');
       return r.json().then(function(d){
-        var arr=normLista(d),venc=arr.filter(function(x){return x&&x.expira&&x.expira<=agora});
+        var arr=normLista(d),venc=arr.filter(function(x){return venceu(x,agora)});
         if(!venc.length)return 0;
-        var resto=arr.filter(function(x){return !(x&&x.expira&&x.expira<=agora)});
+        var resto=arr.filter(function(x){return !venceu(x,agora)});
         var h={'Content-Type':'application/json'};if(et)h['if-match']=et;
         return fetch(u,{method:'PUT',headers:h,body:JSON.stringify(resto)}).then(function(w){
           if(w.ok){apagarCloud(venc);return venc.length}
@@ -1521,7 +1527,7 @@ function varrer(nome,agora){
 /* no celular: só apaga o que JÁ foi publicado e venceu; gravação ainda não publicada nunca é apagada sozinha */
 function limpaCelular(agora){
   return allItens().then(function(l){
-    var venc=l.filter(function(i){return i.expira&&i.expira<=agora&&(i.status==='publicado'||i.removido)});
+    var venc=l.filter(function(i){return venceu(i,agora)&&(i.status==='publicado'||i.removido)});
     if(!venc.length)return 0;
     venc.forEach(apagaLink);apagarCloud(venc.filter(function(i){return i.capaUrl}).map(function(i){return {url:i.capaUrl}}));
     return Promise.all(venc.map(function(i){return delItem(i.id)})).then(function(){return venc.length});
@@ -1533,13 +1539,13 @@ function limpaSite(){
   return Promise.all([varrer('videos',agora),varrer('galeria',agora)]).catch(function(e){logErr('limpeza-site',e);return [0,0]})
     .then(function(r){return limpaCelular(agora).then(function(m){return [r[0]+r[1],m]},function(e){logErr('limpeza-celular',e);return [r[0]+r[1],0]})})
     .then(function(x){
-      if(x[0]||x[1]){toast('🧹 Passou de 1 dia: '+(x[0]?x[0]+' saiu do site. ':'')+(x[1]?x[1]+' liberado(s) do celular.':''),6000);cont();atualizaCap();if(!$('#aba-minhas').hidden)desenhaLista()}
+      if(x[0]||x[1]){toast('🧹 Passou de '+validadeTxt()+': '+(x[0]?x[0]+' saiu do site. ':'')+(x[1]?x[1]+' liberado(s) do celular.':''),6000);cont();atualizaCap();if(!$('#aba-minhas').hidden)desenhaLista()}
     }).then(function(){limpando=false},function(){limpando=false});
 }
 (function(){
   var p=$('#nota-regra');if(!p)return;var s=[];
   if(CFG.maxSeg&&CFG.maxSeg.culto)s.push('Cada vídeo do culto grava até '+textoDuracao(CFG.maxSeg.culto)+'.');
-  if(CFG.validadeH)s.push('O que for publicado some do site, da nuvem e do celular depois de '+(CFG.validadeH===24?'1 dia':CFG.validadeH+' horas')+'.');
+  if(CFG.validadeH)s.push('O que for publicado some do site, da nuvem e do celular depois de '+validadeTxt()+'.');
   p.textContent=s.join(' ');
 })();
 

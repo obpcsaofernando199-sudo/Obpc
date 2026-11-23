@@ -74,8 +74,10 @@ button{font-family:inherit;color:inherit}
 @keyframes zoom{from{transform:scale(1)}to{transform:scale(1.1)}}
 .hero.com-video .hero-fotos{display:none}
 .hero{padding-top:5rem}
+.fundo-video{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
 .hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.2s;pointer-events:none}
-.hero-video.on{opacity:.38}
+.hero-video.on{opacity:.32}
+.fundo-veu{position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 20%,rgba(7,11,24,.15),rgba(7,11,24,.55) 70%,rgba(7,11,24,.75))}
 .hero-veu{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(7,11,24,.55) 0%,rgba(7,11,24,.25) 40%,rgba(7,11,24,.85) 100%)}
 .hero.com-video .hero-biblia{display:none}
 .hero.com-video .raios{opacity:.45}
@@ -506,6 +508,9 @@ footer li a{display:inline-flex;align-items:center}
   </symbol>
 </svg>
 
+<!-- vídeos gravados passando ao fundo do site inteiro, um depois do outro, bem clarinhos -->
+<div class="fundo-video" aria-hidden="true"><video class="hero-video" id="hero-video" muted playsinline autoplay preload="auto" disablepictureinpicture></video><div class="fundo-veu"></div></div>
+
 <header class="topo">
   <div class="topo-in">
     <div class="logo" id="logo" title="OBPC Jardim São Fernando" role="img" aria-label="Logo da igreja"><svg><use href="#biblia-icone"/></svg></div>
@@ -513,13 +518,12 @@ footer li a{display:inline-flex;align-items:center}
     <button class="topo-radio" onclick="radioTocar()"><span class="pulso"></span>Rádio ao vivo</button>
   </div>
   <nav class="menu" aria-label="Seções do site">
-    <a href="#agenda"><img class="ic3d" src="icones/agenda.webp" alt="" aria-hidden="true">Agenda do mês</a><a href="#radio"><img class="ic3d" src="icones/radio.webp" alt="" aria-hidden="true">Rádio</a><a href="#tv"><img class="ic3d" src="icones/tv.webp" alt="" aria-hidden="true">TV OBPC</a><a href="#cultos"><img class="ic3d" src="icones/relogio.webp" alt="" aria-hidden="true">Cultos</a><a href="#avisos"><img class="ic3d" src="icones/avisos.webp" alt="" aria-hidden="true">Avisos</a><a href="#eventos"><img class="ic3d" src="icones/eventos.webp" alt="" aria-hidden="true">Eventos</a><a href="#palavra"><img class="ic3d" src="icones/biblia.webp" alt="" aria-hidden="true">Palavra do Pastor</a><a href="#videos"><img class="ic3d" src="icones/video.webp" alt="" aria-hidden="true">Vídeos</a><a href="#fotos"><img class="ic3d" src="icones/fotos.webp" alt="" aria-hidden="true">Fotos</a><a href="#oracao"><img class="ic3d" src="icones/oracao.webp" alt="" aria-hidden="true">Oração</a><a href="#contribua"><img class="ic3d" src="icones/coracao.webp" alt="" aria-hidden="true">Contribua</a><a href="#contato"><img class="ic3d" src="icones/celular.webp" alt="" aria-hidden="true">Contato</a>
+    <a href="#agenda"><img class="ic3d" src="icones/agenda.webp" alt="" aria-hidden="true">Agenda do mês</a><a href="#radio"><img class="ic3d" src="icones/radio.webp" alt="" aria-hidden="true">Rádio</a><a href="#momentos"><img class="ic3d" src="icones/camera.webp" alt="" aria-hidden="true">Momentos do culto</a><a href="#tv"><img class="ic3d" src="icones/tv.webp" alt="" aria-hidden="true">TV OBPC</a><a href="#cultos"><img class="ic3d" src="icones/relogio.webp" alt="" aria-hidden="true">Cultos</a><a href="#avisos"><img class="ic3d" src="icones/avisos.webp" alt="" aria-hidden="true">Avisos</a><a href="#eventos"><img class="ic3d" src="icones/eventos.webp" alt="" aria-hidden="true">Eventos</a><a href="#palavra"><img class="ic3d" src="icones/biblia.webp" alt="" aria-hidden="true">Palavra do Pastor</a><a href="#videos"><img class="ic3d" src="icones/video.webp" alt="" aria-hidden="true">Vídeos</a><a href="#fotos"><img class="ic3d" src="icones/fotos.webp" alt="" aria-hidden="true">Fotos</a><a href="#oracao"><img class="ic3d" src="icones/oracao.webp" alt="" aria-hidden="true">Oração</a><a href="#contribua"><img class="ic3d" src="icones/coracao.webp" alt="" aria-hidden="true">Contribua</a><a href="#contato"><img class="ic3d" src="icones/celular.webp" alt="" aria-hidden="true">Contato</a>
   </nav>
 </header>
 
 <section class="hero">
   <div class="hero-fotos" aria-hidden="true"><img class="hero-foto" alt=""><img class="hero-foto" alt=""></div>
-  <video class="hero-video" id="hero-video" muted playsinline autoplay preload="auto" aria-hidden="true"></video>
   <div class="hero-veu"></div>
   <canvas id="estrelas"></canvas>
   <div class="raios"></div>
@@ -586,6 +590,12 @@ footer li a{display:inline-flex;align-items:center}
       </div>
       <audio id="radio-audio" preload="none"></audio>
     </div>
+  </section>
+
+  <!-- MOMENTOS DO CULTO: vídeos do culto gravados no Estúdio de Mídia e os do painel (aba TV OBPC) -->
+  <section class="sec revela" id="momentos" data-sh="momentos:culto" hidden>
+    <div class="sec-cab"><div class="cab-ic"><img class="ic3d sec-ic" src="icones/camera.webp" alt="" aria-hidden="true"><div><small>Gravado na igreja</small><h2>Momentos do <em>culto</em></h2></div></div><div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center"><button class="bt-sh" onclick="compartilhar('momentos:culto')"><svg viewBox="0 0 24 24"><use href="#ic-sh"/></svg><span>Compartilhar</span></button><a href="tv-obpc.html">Ver na TV OBPC →</a></div></div>
+    <div class="grade" id="lista-momentos"></div>
   </section>
 
   <!-- TV OBPC: tudo o que o Estúdio de Mídia e os cultos publicam -->
@@ -800,7 +810,9 @@ function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){retur
 /* ícone 3D realista (pasta icones/) */
 function ic(n,c){return '<img class="ic3d'+(c?' '+c:'')+'" src="icones/'+n+'.webp" alt="" aria-hidden="true" decoding="async">';}
 function lista(x){if(!x)return[];var a=Array.isArray(x)?x:(typeof x==='object'?Object.keys(x).map(function(k){return x[k];}):[]);return a.filter(function(i){return i&&typeof i==='object';});}
-function vivo(i){return !i.expira||i.expira>AGORA;}
+/* publicações do Estúdio ficam 48 h no ar. As antigas (sem 'vh') foram gravadas com 24 h e ganham mais 24 h. */
+function fimDe(i){return !i||!i.expira?0:(i.vh?i.expira:i.expira+864e5);}
+function vivo(i){var f=fimDe(i);return !f||f>AGORA;}
 var MESES=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 var MES3=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
 var DIAS=['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
@@ -976,6 +988,8 @@ function midiaBloco(m,titulo){
 }
 /* imagem que representa uma mídia (para a prévia do compartilhamento) */
 function capaDe(m){var src=m&&(m.src||m.url);if(!urlOk(src))return '';var y=ytId(src);if(y)return 'https://img.youtube.com/vi/'+y+'/hqdefault.jpg';if(ehAudio(src))return '';if(m.tp==='video'||ehVideo(src))return m.thumb||thumbVideo(src);return src;}
+/* mídias de um culto do painel: fotos/vídeos enviados + links colados (que vêm como texto) */
+function midiasCulto(c){var md=boas(c.midias);if(!md.length){var u=c.urls;u=Array.isArray(u)?u:(u&&typeof u==='object'?Object.keys(u).map(function(k){return u[k];}):[]);md=boas(u.map(function(x){return typeof x==='string'?{src:x.trim()}:x;}).filter(function(x){return x&&typeof x==='object';}));}return md;}
 function boas(md){return lista(md).filter(function(m){var s=m.src||m.url;return s&&!m.local&&String(s).indexOf('idb:')!==0;});}
 
 /* ═════════ TV OBPC: tudo o que o Estúdio de Mídia e os cultos publicam ═════════
@@ -986,13 +1000,39 @@ function itensTV(){
   var it=[],gr={};
   lista(D.videos).forEach(function(v){if(!doEstudio(v)||!vivo(v)||!urlOk(v.url)||urlLocal(v.url))return;var aud=ehAudio(v.url);
     it.push({id:'e'+hid(v.url),t:v.titulo||v.tit||'Vídeo OBPC',d:v.desc||'',dt:v.data||'',q:quando(v),m:{src:v.url,tp:aud?'audio':'video'},cat:v.cat||(aud?'Podcast':'Vídeo'),ic:aud?'microfone':'video',ent:v.entrevistado,aud:aud});});
-  lista(D.galeria).forEach(function(x){if(!(x.autor!==undefined||x.expira!==undefined)||!vivo(x)||!urlOk(x.url)||urlLocal(x.url))return;
-    var t=x.titulo||x.tit||'Momento OBPC',k=t+'|'+(x.data||'')+'|'+(x.autor||'');
-    if(!gr[k]){gr[k]={id:'e'+hid(k),t:t,d:'',dt:x.data||'',q:quando(x),m:{src:x.url,tp:x.tp==='video'||ehVideo(x.url)?'video':'foto'},cat:'Fotos',ic:'fotos',n:0};it.push(gr[k]);}gr[k].n++;});
-  lista(D.cultos).forEach(function(c,i){var md=boas(c.midias);if(!md.length&&lista(c.urls).length)md=boas(c.urls);if(!md.length)return;
+  /* fotos do Estúdio não entram na TV: vão para a Galeria de fotos (aqui e na galeria.html) */
+  lista(D.cultos).forEach(function(c,i){var md=midiasCulto(c);if(!md.length)return;
     it.push({id:'c'+(c.ts||i),t:c.tit||c.titulo||'Momento do culto',d:c.rel||c.relato||'',dt:c.dt||c.data||'',q:c.ts||quando(c),m:md[0],cat:'Culto',ic:'camera',n:md.length});});
   it.sort(function(a,b){return (b.q||0)-(a.q||0);});
   return it;
+}
+/* ═════════ MOMENTOS DO CULTO ═════════
+   Vídeos do culto gravados no Estúdio de Mídia (ficam 48 h) + os cultos publicados no painel (aba TV OBPC).
+   Cada card abre o mesmo vídeo na TV OBPC; o compartilhar leva a capa do próprio vídeo ou foto. */
+function itensMomentos(){
+  var it=[];
+  lista(D.videos).forEach(function(v){if(!doEstudio(v)||!vivo(v)||!urlOk(v.url)||urlLocal(v.url)||ehAudio(v.url))return;if(!/culto/i.test(v.cat||''))return;
+    it.push({id:'e'+hid(v.url),t:v.titulo||v.tit||'Momento do culto',d:v.desc||'',dt:v.data||'',q:quando(v),m:{src:v.url,tp:'video'},autor:v.autor||''});});
+  lista(D.cultos).forEach(function(c,i){var md=midiasCulto(c);if(!md.length)return;
+    it.push({id:'c'+(c.ts||i),t:c.tit||c.titulo||'Momento do culto',d:c.rel||c.relato||'',dt:c.dt||c.data||'',q:c.ts||quando(c),m:md[0],n:md.length});});
+  it.sort(function(a,b){return (b.q||0)-(a.q||0);});
+  return it;
+}
+/* alguma foto para a imagem do compartilhar quando não há vídeo */
+function fotoQualquer(){var f='';lista(D.galeria).concat(lista(D.galeria_fotos)).some(function(x){if(urlOk(x.url)&&!urlLocal(x.url)&&vivo(x)&&x.tp!=='video'&&!ehVideo(x.url)){f=x.url;return true;}return false;});return f;}
+function rMomentos(){
+  var it=itensMomentos(),box=document.getElementById('lista-momentos');
+  var capa0='';it.some(function(v){capa0=capaDe(v.m);return !!capa0;});
+  reg({s:'momentos',id:'culto',t:'Momentos do culto',d:it.length?(it[0].t+(it.length>1?' e mais '+(it.length-1)+' momento'+(it.length>2?'s':''):'')):'Veja como foi o culto na OBPC Jardim São Fernando!',img:capa0||fotoQualquer(),tipo:'Momentos do culto',cta:'Toque para assistir',video:!!capa0,u:SITE+'?s=momentos&id=culto',ic3d:'camera'});
+  so('momentos',it.length>0);
+  if(!it.length){box.innerHTML='';return;}
+  box.innerHTML=it.slice(0,8).map(function(v,i){
+    var src=v.m.src||v.m.url,capa=capaDe(v.m),href='tv-obpc.html#'+v.id;
+    var thumb=capa?'<img src="'+esc(capa)+'" alt="" loading="lazy" onerror="this.remove()">':'<video src="'+esc(src)+'#t=1" preload="metadata" muted playsinline></video>';
+    var foto=!ytId(src)&&!(v.m.tp==='video'||ehVideo(src));
+    var k=reg({s:'momentos',id:v.id,t:v.t,d:v.d,img:capa||fotoQualquer(),dt:v.dt,tipo:'Momentos do culto',cta:foto?'Toque para ver as fotos':'Toque para assistir',video:!foto&&!!capa,u:SITE+href,ic3d:'camera'});
+    return '<article class="card tv-card" data-sh="'+k+'"><a class="midia" href="'+href+'" aria-label="Assistir na TV OBPC">'+thumb+'<div class="play"><i>'+(foto?'⤢':'▶')+'</i></div>'+(v.n>1?'<span class="n-fotos">+'+(v.n-1)+'</span>':'')+'</a><div class="card-c">'+(i===0?'<span class="selo selo-novo">Novo</span> ':'')+'<span class="selo">'+ic('camera','mi')+'Culto</span><h3><a href="'+href+'" style="text-decoration:none">'+esc(v.t)+'</a></h3>'+(v.d?'<p>'+esc(v.d.length>120?v.d.slice(0,120)+'…':v.d)+'</p>':'')+'<div class="meta">'+(v.dt?'<span>'+ic('agenda','mi')+fmtData(v.dt)+'</span>':'')+(v.autor?'<span>'+ic('camera','mi')+esc(v.autor)+'</span>':'')+'</div><div class="card-pe">'+btSh(k)+'</div></div></article>';
+  }).join('');
 }
 function rTV(){
   var it=itensTV(),box=document.getElementById('lista-tv');
@@ -1111,13 +1151,18 @@ function slideFotos(){
 /* Vídeos do estúdio: todos os que estão no ar, um depois do outro, no fundo do topo */
 var _hv={lista:[],i:0,chave:null};
 function rHeroVideo(){
-  var l=lista(D.videos).filter(function(v){return doEstudio(v)&&vivo(v)&&urlOk(v.url)&&!ehAudio(v.url)&&ehVideo(v.url);}).sort(function(a,b){return quando(b)-quando(a);}).map(function(v){return v.url;});
+  var l=lista(D.videos).filter(function(v){return doEstudio(v)&&vivo(v)&&urlOk(v.url)&&!urlLocal(v.url)&&!ehAudio(v.url)&&ehVideo(v.url);}).map(function(v){return {u:v.url,q:quando(v)};});
+  /* também os vídeos dos cultos publicados no painel (aba TV OBPC) */
+  lista(D.cultos).forEach(function(c){midiasCulto(c).forEach(function(m){var u=m.src||m.url;if(urlOk(u)&&!/^data:/.test(u)&&!ytId(u)&&(m.tp==='video'||ehVideo(u)))l.push({u:u,q:c.ts||quando(c)});});});
+  var vis={};l=l.sort(function(a,b){return b.q-a.q;}).map(function(x){return x.u;}).filter(function(u){if(vis[u])return false;vis[u]=1;return true;}).slice(0,20);
   var chave=l.join('|');if(chave===_hv.chave)return;
   _hv.chave=chave;_hv.lista=l;_hv.i=0;
   var v=document.getElementById('hero-video'),h=document.querySelector('.hero');
   if(!l.length){h.classList.remove('com-video');v.classList.remove('on');v.removeAttribute('src');v.load();slideFotos();return;}
   clearTimeout(_sl.t);h.classList.add('com-video');tocarHero(0);
 }
+/* economiza bateria: o vídeo de fundo para quando o site está escondido */
+document.addEventListener('visibilitychange',function(){var v=document.getElementById('hero-video');if(!v||!v.getAttribute('src'))return;if(document.hidden)v.pause();else{var p=v.play();if(p&&p.catch)p.catch(function(){});}});
 function tocarHero(i){
   var v=document.getElementById('hero-video'),h=document.querySelector('.hero'),l=_hv.lista;
   if(!l.length)return;
@@ -1130,7 +1175,7 @@ function tocarHero(i){
   v.onerror=function(){_hv.lista.splice(_hv.i,1);if(!_hv.lista.length){h.classList.remove('com-video');v.classList.remove('on');slideFotos();}else tocarHero(_hv.i);};
   var p=v.play();if(p&&p.catch)p.catch(function(){v.classList.add('on');});
 }
-function render(){AGORA=Date.now();[rInfo,rFixos,rHeroVideo,rAgendaMes,calcProx,rDestaque,rHoje,rHorarios,rProximos,rTV,rAvisos,rEventos,rPalavras,rSermoes,rVideos,rInformativos,rFotos,rAniv,rLideres].forEach(function(f){try{f();}catch(e){console.warn(f.name,e);}});marcarPulsa();}
+function render(){AGORA=Date.now();[rInfo,rFixos,rHeroVideo,rAgendaMes,calcProx,rDestaque,rHoje,rHorarios,rProximos,rMomentos,rTV,rAvisos,rEventos,rPalavras,rSermoes,rVideos,rInformativos,rFotos,rAniv,rLideres].forEach(function(f){try{f();}catch(e){console.warn(f.name,e);}});marcarPulsa();}
 
 /* ═════════ COMPARTILHAR ═════════
    Cada card tem um botão. Ele monta uma imagem bonita (1200×630) com a foto do próprio card,
@@ -1143,7 +1188,7 @@ var REDES={face:'https://www.facebook.com/profile.php?id=61561313550152',insta:'
 var CLOUD={nome:'dm0egn0ks',preset:'obpc_media',pasta:'obpc_compartilhar'};
 var SH={};
 /* ícone 3D usado na imagem de cada tipo de card */
-var ICS={hoje:'escala',agenda:'agenda',cultos:'relogio',culto:'sino',tv:'tv',video:'video',avisos:'avisos',eventos:'eventos',palavra:'biblia',sermao:'pergaminho',info:'jornal',foto:'fotos',aniv:'aniv',lider:'abraco',versiculo:'biblia',radio:'radio',site:'pomba',destaque:'estrela'};
+var ICS={momentos:'camera',hoje:'escala',agenda:'agenda',cultos:'relogio',culto:'sino',tv:'tv',video:'video',avisos:'avisos',eventos:'eventos',palavra:'biblia',sermao:'pergaminho',info:'jornal',foto:'fotos',aniv:'aniv',lider:'abraco',versiculo:'biblia',radio:'radio',site:'pomba',destaque:'estrela'};
 function hid(s){var h=5381;s=String(s);for(var i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return (h>>>0).toString(36);}
 function hash53(str){var h1=0xdeadbeef,h2=0x41c6ce57;for(var i=0;i<str.length;i++){var ch=str.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);}h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);return (4294967296*(2097151&h2)+(h1>>>0)).toString(36);}
 function idDe(){return hid(Array.prototype.slice.call(arguments).map(function(x){return x==null?'':String(x);}).join('|'));}
@@ -1254,7 +1299,7 @@ function gravarLink(o,img){
 function mensagem(o,link){
   var t=o.verso?o.t+'\n_'+o.ref+'_':'*'+String(o.t||'').replace(/\*/g,'')+'*';
   var inf=linhaInfo(o).join(' · ');
-  var ic={radio:'📻',tv:'📺',versiculo:'📖',agenda:'📅',hoje:'📋',cultos:'⛪',culto:'⛪',aniv:'🎉',foto:'📸',site:'🙌'}[o.s]||'✨';
+  var ic={momentos:'🎥',radio:'📻',tv:'📺',versiculo:'📖',agenda:'📅',hoje:'📋',cultos:'⛪',culto:'⛪',aniv:'🎉',foto:'📸',site:'🙌'}[o.s]||'✨';
   return ic+' '+t+(inf?'\n🗓️ '+inf:'')+'\n\n👉 '+(o.cta||'Toque e confira')+': '+link;
 }
 
@@ -1300,7 +1345,7 @@ function shRede(rede){
 }
 
 /* ── quem chega pelo link vai direto na publicação ── */
-var SEC_DE={hoje:'cultos',destaque:'destaque-sec',banner:'destaque-sec',agenda:'agenda',radio:'radio',tv:'tv',video:'tv',videos:'tv',avisos:'avisos',aviso:'avisos',eventos:'eventos',evento:'eventos',palavra:'palavra',palavras:'palavra',sermao:'sermoes-sec',info:'informativos-sec',foto:'fotos',galeria:'fotos',aniv:'aniv-sec',lider:'lideranca-sec',cultos:'cultos',culto:'cultos',versiculo:'versiculo',site:''};
+var SEC_DE={momentos:'momentos',hoje:'cultos',destaque:'destaque-sec',banner:'destaque-sec',agenda:'agenda',radio:'radio',tv:'tv',video:'tv',videos:'tv',avisos:'avisos',aviso:'avisos',eventos:'eventos',evento:'eventos',palavra:'palavra',palavras:'palavra',sermao:'sermoes-sec',info:'informativos-sec',foto:'fotos',galeria:'fotos',aniv:'aniv-sec',lider:'lideranca-sec',cultos:'cultos',culto:'cultos',versiculo:'versiculo',site:''};
 var _dl=(function(){try{var p=new URLSearchParams(location.search);var s=p.get('s');if(!s)return null;return {s:s,id:p.get('id')||'',n:0};}catch(e){return null;}})();
 var _pulsa=null;
 function marcarPulsa(){if(!_pulsa)return;if(Date.now()>_pulsa.ate){_pulsa=null;return;}var e=document.querySelector('[data-sh="'+_pulsa.k+'"]');if(e)e.classList.add('pulsa');}
