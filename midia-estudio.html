@@ -370,7 +370,7 @@ var CFG={
   aviso:3 /* alerta amarelo quando restarem este tanto de vagas ou menos */
 };
 var EQUIPE=['Júlia','Giovana','Eliza'];
-var VERSAO='2026-11-23b';
+var VERSAO='2026-11-23c';
 /* Hora em que a publicação some. As antigas (sem 'vh') foram gravadas com 24 h e ganham mais 24 h, ficando 48 h como as novas. */
 function fimDe(x){if(!x||!x.expira)return 0;return x.vh?x.expira:x.expira+24*36e5}
 function venceu(x,agora){var f=fimDe(x);return !!f&&f<=agora}
@@ -974,6 +974,15 @@ function imgPrevia(it,u){
   if(it.audio)return it.capaUrl||CFG.site+'og-banner.png';
   return u.replace('/video/upload/','/video/upload/so_2,w_1200,q_auto/').replace(/\.[a-z0-9]+(\?.*)?$/i,'.jpg');
 }
+/* pede já à Cloudinary a versão leve do vídeo que o site usa no fundo (e a foto dele), para ela ficar pronta
+   antes de a igreja abrir o site. Tem que ser a mesma receita de fundoLeve() e thumbVideo() do index.html. */
+function aquecerFundo(u){
+  try{
+    var base=u.replace(/\/video\/upload\/(?:[a-z]{1,3}_[^\/]*\/)*/,'/video/upload/');
+    fetch(base.replace('/video/upload/','/video/upload/w_640,q_auto:low,ac_none,du_20,vc_h264/').replace(/\.[a-z0-9]+(\?.*)?$/i,'.mp4'),{mode:'no-cors'}).catch(function(){});
+    new Image().src=base.replace('/video/upload/','/video/upload/so_2,w_720,q_auto/').replace(/\.[a-z0-9]+(\?.*)?$/i,'.jpg');
+  }catch(e){}
+}
 function publicar(it,onp){
   return getItem(it.id).then(function(cur){
     it=cur||it;
@@ -988,6 +997,7 @@ function publicar(it,onp){
           :fbLista('videos',{url:u,titulo:it.titulo,tit:it.titulo,cat:it.tipo==='culto'?'Culto':it.tipo==='podcast'?'Podcast':'Entrevista',plat:'OBPC',desc:it.desc||'',entrevistado:it.ent||'',data:dataISO,autor:it.quem||'',expira:it.expira||null,vh:it.vh||null}));
         return jaPub.then(function(){
           it.siteOk=true;it.status='publicado';it.urlSite=u;it.previa=imgPrevia(it,it.urlCloud);
+          if(!it.audio&&it.tipo!=='foto')aquecerFundo(u);
           return garantePrevia(it).then(function(){return putItem(it)});
         }).then(function(){onp(1,'Pronto!');return it});
       });
