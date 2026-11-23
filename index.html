@@ -484,6 +484,26 @@ footer li a{display:inline-flex;align-items:center}
   .atalho span{width:56px;height:56px}.atalho span .ic3d{width:40px;height:40px}
   .radio::after{bottom:4.6rem}
 }
+
+/* ── Podcast OBPC: cartão de estúdio com microfone, ondas e tocador ── */
+.pod-lista{display:grid;gap:1.1rem;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+.pod{position:relative;display:flex;gap:1rem;align-items:center;padding:1.1rem;border-radius:24px;overflow:hidden;background:radial-gradient(120% 140% at 0% 0%,rgba(242,193,78,.22),transparent 55%),radial-gradient(90% 120% at 100% 100%,rgba(120,70,200,.30),transparent 60%),linear-gradient(160deg,#1B1740,#0C0F26);border:1px solid rgba(242,193,78,.3);box-shadow:var(--sombra1),inset 0 1px 0 rgba(255,255,255,.1)}
+.pod-capa{position:relative;flex:none;width:96px;height:96px;border-radius:20px;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.22),rgba(242,193,78,.1) 55%,rgba(0,0,0,.25));box-shadow:inset 0 1px 0 rgba(255,255,255,.2),inset 0 -8px 14px rgba(0,0,0,.35),0 10px 20px rgba(0,0,0,.4)}
+.pod-capa .ic3d{width:70px;height:70px;filter:drop-shadow(0 8px 8px rgba(0,0,0,.5))}
+.pod.tocando .pod-capa{box-shadow:0 0 0 3px rgba(242,193,78,.7),0 0 30px rgba(242,193,78,.45),inset 0 -8px 14px rgba(0,0,0,.35)}
+.pod-c{flex:1;min-width:0}
+.pod-c .selo{margin-bottom:.35rem}
+.pod-c h3{font-family:var(--serif);font-weight:600;font-size:1.12rem;line-height:1.2;margin-bottom:.15rem;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.pod-c .meta{margin-top:.2rem}
+.pod-onda{display:flex;align-items:flex-end;gap:3px;height:30px;margin:.55rem 0 .35rem}
+.pod-onda i{flex:1;border-radius:3px;background:rgba(242,193,78,.28);transition:background .2s}
+.pod-onda i.ok{background:linear-gradient(180deg,#FFE29A,#F2C14E)}
+.pod.tocando .pod-onda i{animation:eq 1.2s ease-in-out infinite}
+.pod-ctrl{display:flex;align-items:center;gap:.6rem}
+.pod-play{flex:none;width:52px;height:52px;border-radius:50%;cursor:pointer;font-size:1.1rem;color:#2A1A00;background:radial-gradient(circle at 35% 30%,#FFF4CC,#F2C14E 45%,#A8701A 100%);border:2px solid #7A4F0C;box-shadow:inset 0 2px 2px rgba(255,255,255,.7),inset 0 -4px 8px rgba(90,50,0,.45),0 8px 18px rgba(0,0,0,.5)}
+.pod-tempo{font-size:.76rem;color:var(--txt3);font-variant-numeric:tabular-nums;flex:1}
+.pod .bt-sh{flex:none}
+@media(max-width:560px){.pod{flex-direction:column;align-items:stretch;text-align:left}.pod-capa{width:100%;height:120px}}
 @media(prefers-reduced-motion:reduce){*,*::before{animation:none!important;transition:none!important;scroll-behavior:auto!important}.revela{opacity:1;transform:none}}
 </style>
 </head>
@@ -518,7 +538,7 @@ footer li a{display:inline-flex;align-items:center}
     <button class="topo-radio" onclick="radioTocar()"><span class="pulso"></span>Rádio ao vivo</button>
   </div>
   <nav class="menu" aria-label="Seções do site">
-    <a href="#agenda"><img class="ic3d" src="icones/agenda.webp" alt="" aria-hidden="true">Agenda do mês</a><a href="#radio"><img class="ic3d" src="icones/radio.webp" alt="" aria-hidden="true">Rádio</a><a href="#momentos"><img class="ic3d" src="icones/camera.webp" alt="" aria-hidden="true">Momentos do culto</a><a href="#tv"><img class="ic3d" src="icones/tv.webp" alt="" aria-hidden="true">TV OBPC</a><a href="#cultos"><img class="ic3d" src="icones/relogio.webp" alt="" aria-hidden="true">Cultos</a><a href="#avisos"><img class="ic3d" src="icones/avisos.webp" alt="" aria-hidden="true">Avisos</a><a href="#eventos"><img class="ic3d" src="icones/eventos.webp" alt="" aria-hidden="true">Eventos</a><a href="#palavra"><img class="ic3d" src="icones/biblia.webp" alt="" aria-hidden="true">Palavra do Pastor</a><a href="#videos"><img class="ic3d" src="icones/video.webp" alt="" aria-hidden="true">Vídeos</a><a href="#fotos"><img class="ic3d" src="icones/fotos.webp" alt="" aria-hidden="true">Fotos</a><a href="#oracao"><img class="ic3d" src="icones/oracao.webp" alt="" aria-hidden="true">Oração</a><a href="#contribua"><img class="ic3d" src="icones/coracao.webp" alt="" aria-hidden="true">Contribua</a><a href="#contato"><img class="ic3d" src="icones/celular.webp" alt="" aria-hidden="true">Contato</a>
+    <a href="#agenda"><img class="ic3d" src="icones/agenda.webp" alt="" aria-hidden="true">Agenda do mês</a><a href="#radio"><img class="ic3d" src="icones/radio.webp" alt="" aria-hidden="true">Rádio</a><a href="#momentos"><img class="ic3d" src="icones/camera.webp" alt="" aria-hidden="true">Momentos do culto</a><a href="#podcast"><img class="ic3d" src="icones/microfone.webp" alt="" aria-hidden="true">Podcast</a><a href="#tv"><img class="ic3d" src="icones/tv.webp" alt="" aria-hidden="true">TV OBPC</a><a href="#cultos"><img class="ic3d" src="icones/relogio.webp" alt="" aria-hidden="true">Cultos</a><a href="#avisos"><img class="ic3d" src="icones/avisos.webp" alt="" aria-hidden="true">Avisos</a><a href="#eventos"><img class="ic3d" src="icones/eventos.webp" alt="" aria-hidden="true">Eventos</a><a href="#palavra"><img class="ic3d" src="icones/biblia.webp" alt="" aria-hidden="true">Palavra do Pastor</a><a href="#videos"><img class="ic3d" src="icones/video.webp" alt="" aria-hidden="true">Vídeos</a><a href="#fotos"><img class="ic3d" src="icones/fotos.webp" alt="" aria-hidden="true">Fotos</a><a href="#oracao"><img class="ic3d" src="icones/oracao.webp" alt="" aria-hidden="true">Oração</a><a href="#contribua"><img class="ic3d" src="icones/coracao.webp" alt="" aria-hidden="true">Contribua</a><a href="#contato"><img class="ic3d" src="icones/celular.webp" alt="" aria-hidden="true">Contato</a>
   </nav>
 </header>
 
@@ -596,6 +616,12 @@ footer li a{display:inline-flex;align-items:center}
   <section class="sec revela" id="momentos" data-sh="momentos:culto" hidden>
     <div class="sec-cab"><div class="cab-ic"><img class="ic3d sec-ic" src="icones/camera.webp" alt="" aria-hidden="true"><div><small>Gravado na igreja</small><h2>Momentos do <em>culto</em></h2></div></div><div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center"><button class="bt-sh" onclick="compartilhar('momentos:culto')"><svg viewBox="0 0 24 24"><use href="#ic-sh"/></svg><span>Compartilhar</span></button><a href="tv-obpc.html">Ver na TV OBPC →</a></div></div>
     <div class="grade" id="lista-momentos"></div>
+  </section>
+
+  <!-- PODCAST OBPC: áudios gravados no Estúdio de Mídia (podcast e entrevista em áudio), para ouvir aqui mesmo -->
+  <section class="sec revela" id="podcast" data-sh="podcast:canal" hidden>
+    <div class="sec-cab"><div class="cab-ic"><img class="ic3d sec-ic" src="icones/microfone.webp" alt="" aria-hidden="true"><div><small>Ouça agora</small><h2>Podcast <em>OBPC</em></h2></div></div><div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center"><button class="bt-sh" onclick="compartilhar('podcast:canal')"><svg viewBox="0 0 24 24"><use href="#ic-sh"/></svg><span>Compartilhar</span></button><a href="tv-obpc.html">Ver na TV OBPC →</a></div></div>
+    <div class="pod-lista" id="lista-podcast"></div>
   </section>
 
   <!-- TV OBPC: tudo o que o Estúdio de Mídia e os cultos publicam -->
@@ -865,7 +891,7 @@ var radio=document.getElementById('radio-audio');
 radio.volume=0.9;
 document.getElementById('radio-vol').addEventListener('input',function(){radio.volume=+this.value;});
 function radioUI(t){document.getElementById('radio-card').classList.toggle('tocando',t);document.getElementById('radio-play').textContent=t?'❚❚':'▶';document.getElementById('mini').classList.toggle('on',t);document.body.classList.toggle('com-mini',t);document.getElementById('mini-bt').textContent=t?'❚❚':'▶';}
-function radioTocar(){if(!radio.src||radio.src.indexOf('stream')<0){radio.src=RADIO_URL+'?t='+Date.now();}var p=radio.play();if(p&&p.catch)p.catch(function(){document.getElementById('radio-faixa').textContent='Toque no ▶ para ouvir';});radioUI(true);try{if('mediaSession' in navigator)navigator.mediaSession.metadata=new MediaMetadata({title:'Rádio OBPC',artist:'OBPC Jardim São Fernando',artwork:[{src:'favicon-512.png',sizes:'512x512',type:'image/png'}]});}catch(e){}radioFaixa();}
+function radioTocar(){try{if(_pod.a&&!_pod.a.paused)_pod.a.pause();}catch(e){}if(!radio.src||radio.src.indexOf('stream')<0){radio.src=RADIO_URL+'?t='+Date.now();}var p=radio.play();if(p&&p.catch)p.catch(function(){document.getElementById('radio-faixa').textContent='Toque no ▶ para ouvir';});radioUI(true);try{if('mediaSession' in navigator)navigator.mediaSession.metadata=new MediaMetadata({title:'Rádio OBPC',artist:'OBPC Jardim São Fernando',artwork:[{src:'favicon-512.png',sizes:'512x512',type:'image/png'}]});}catch(e){}radioFaixa();}
 function radioParar(){radio.pause();radio.removeAttribute('src');radio.load();radioUI(false);}
 function radioAlternar(){if(radio.paused||!radio.src)radioTocar();else radioParar();}
 radio.addEventListener('error',function(){if(radio.getAttribute('src')){document.getElementById('radio-faixa').textContent='Reconectando…';setTimeout(function(){if(!document.getElementById('radio-card').classList.contains('tocando'))return;radio.src=RADIO_URL+'?t='+Date.now();radio.play().catch(function(){});},3000);}});
@@ -1034,6 +1060,47 @@ function rMomentos(){
     return '<article class="card tv-card" data-sh="'+k+'"><a class="midia" href="'+href+'" aria-label="Assistir na TV OBPC">'+thumb+'<div class="play"><i>'+(foto?'⤢':'▶')+'</i></div>'+(v.n>1?'<span class="n-fotos">+'+(v.n-1)+'</span>':'')+'</a><div class="card-c">'+(i===0?'<span class="selo selo-novo">Novo</span> ':'')+'<span class="selo">'+ic('camera','mi')+'Culto</span><h3><a href="'+href+'" style="text-decoration:none">'+esc(v.t)+'</a></h3>'+(v.d?'<p>'+esc(v.d.length>120?v.d.slice(0,120)+'…':v.d)+'</p>':'')+'<div class="meta">'+(v.dt?'<span>'+ic('agenda','mi')+fmtData(v.dt)+'</span>':'')+(v.autor?'<span>'+ic('camera','mi')+esc(v.autor)+'</span>':'')+'</div><div class="card-pe">'+btSh(k)+'</div></div></article>';
   }).join('');
 }
+/* ═════════ PODCAST OBPC ═════════
+   Áudios do Estúdio de Mídia (podcast e entrevista em áudio). Toca aqui mesmo; a rádio pausa enquanto o podcast toca. */
+function itensPodcast(){
+  var it=[];
+  lista(D.videos).forEach(function(v){if(!doEstudio(v)||!vivo(v)||!urlOk(v.url)||urlLocal(v.url)||!ehAudio(v.url))return;
+    it.push({id:'e'+hid(v.url),t:v.titulo||v.tit||'Podcast OBPC',d:v.desc||'',dt:v.data||'',q:quando(v),u:v.url,cat:v.cat||'Podcast',ent:v.entrevistado||'',autor:v.autor||''});});
+  it.sort(function(a,b){return (b.q||0)-(a.q||0);});
+  return it;
+}
+var _pod={a:null,id:null};
+function podAudio(){if(!_pod.a){_pod.a=new Audio();_pod.a.preload='none';
+  _pod.a.addEventListener('timeupdate',podPinta);_pod.a.addEventListener('ended',function(){var c=podCard();if(c)c.classList.remove('tocando');podBt('▶');});
+  _pod.a.addEventListener('pause',function(){var c=podCard();if(c)c.classList.remove('tocando');podBt('▶');});
+  _pod.a.addEventListener('play',function(){var c=podCard();if(c)c.classList.add('tocando');podBt('❚❚');});}return _pod.a;}
+function podCard(){return _pod.id?document.querySelector('.pod[data-pid="'+_pod.id+'"]'):null;}
+function podBt(t){var c=podCard();if(c){var b=c.querySelector('.pod-play');if(b)b.textContent=t;}}
+function mmss(s){s=Math.max(0,Math.floor(s||0));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
+function podPinta(){var a=_pod.a,c=podCard();if(!a||!c)return;var d=a.duration||0,p=d?a.currentTime/d:0;
+  var is=c.querySelectorAll('.pod-onda i');for(var i=0;i<is.length;i++)is[i].classList.toggle('ok',i/is.length<p);
+  var t=c.querySelector('.pod-tempo');if(t)t.textContent=mmss(a.currentTime)+(d&&isFinite(d)?' / '+mmss(d):'');}
+function podTocar(id){
+  var x=null;itensPodcast().some(function(v){if(v.id===id){x=v;return true;}return false;});if(!x)return;
+  var a=podAudio();
+  if(_pod.id===id&&!a.paused){a.pause();return;}
+  if(_pod.id!==id){var old=podCard();if(old){old.classList.remove('tocando');var b=old.querySelector('.pod-play');if(b)b.textContent='▶';old.querySelectorAll('.pod-onda i').forEach(function(i){i.classList.remove('ok');});}
+    _pod.id=id;a.src=x.u;}
+  try{if(!radio.paused)radioParar();}catch(e){}
+  var p=a.play();if(p&&p.catch)p.catch(function(){toast('Toque de novo no ▶ para ouvir.');});
+}
+function rPodcast(){
+  var it=itensPodcast(),box=document.getElementById('lista-podcast');
+  reg({s:'podcast',id:'canal',t:'Podcast OBPC',d:it.length?it[0].t+(it.length>1?' e mais '+(it.length-1):''):'Áudios e entrevistas da OBPC Jardim São Fernando. Ouça agora!',tipo:'Podcast OBPC',cta:'Toque para ouvir',u:SITE+'?s=podcast&id=canal',ic3d:'microfone'});
+  so('podcast',it.length>0);
+  if(!it.length){box.innerHTML='';return;}
+  box.innerHTML=it.slice(0,6).map(function(v,i){
+    var k=reg({s:'podcast',id:v.id,t:v.t,d:v.d||(v.ent?'Entrevista com '+v.ent:''),dt:v.dt,tipo:'Podcast OBPC · '+v.cat,cta:'Toque para ouvir',u:SITE+'tv-obpc.html#'+v.id,ic3d:'microfone'});
+    var tocando=_pod.id===v.id&&_pod.a&&!_pod.a.paused;
+    return '<article class="pod'+(tocando?' tocando':'')+'" data-pid="'+v.id+'" data-sh="'+k+'"><div class="pod-capa">'+ic(v.cat==='Entrevista'?'entrevista':'microfone')+'</div><div class="pod-c">'+(i===0?'<span class="selo selo-novo">Novo</span> ':'')+'<span class="selo">'+esc(v.cat)+'</span><h3>'+esc(v.t)+'</h3><div class="meta">'+(v.ent?'<span>'+ic('entrevista','mi')+'com '+esc(v.ent)+'</span>':'')+(v.dt?'<span>'+ic('agenda','mi')+fmtData(v.dt)+'</span>':'')+'</div><div class="pod-onda">'+ondaHtml(v.t)+'</div><div class="pod-ctrl"><button class="pod-play" onclick="podTocar(\''+v.id+'\')" aria-label="Ouvir">'+(tocando?'❚❚':'▶')+'</button><span class="pod-tempo">Toque para ouvir</span>'+btSh(k,'ic')+'</div></div></article>';
+  }).join('');
+  if(_pod.id)podPinta();
+}
 function rTV(){
   var it=itensTV(),box=document.getElementById('lista-tv');
   reg({s:'tv',id:'canal',t:'TV OBPC',d:'Vídeos, podcasts e fotos da OBPC Jardim São Fernando. Assista agora!',img:it.length?capaDe(it[0].m):'',tipo:'TV OBPC',cta:'Toque para assistir',video:true,u:SITE+'tv-obpc.html'});
@@ -1175,7 +1242,7 @@ function tocarHero(i){
   v.onerror=function(){_hv.lista.splice(_hv.i,1);if(!_hv.lista.length){h.classList.remove('com-video');v.classList.remove('on');slideFotos();}else tocarHero(_hv.i);};
   var p=v.play();if(p&&p.catch)p.catch(function(){v.classList.add('on');});
 }
-function render(){AGORA=Date.now();[rInfo,rFixos,rHeroVideo,rAgendaMes,calcProx,rDestaque,rHoje,rHorarios,rProximos,rMomentos,rTV,rAvisos,rEventos,rPalavras,rSermoes,rVideos,rInformativos,rFotos,rAniv,rLideres].forEach(function(f){try{f();}catch(e){console.warn(f.name,e);}});marcarPulsa();}
+function render(){AGORA=Date.now();[rInfo,rFixos,rHeroVideo,rAgendaMes,calcProx,rDestaque,rHoje,rHorarios,rProximos,rMomentos,rPodcast,rTV,rAvisos,rEventos,rPalavras,rSermoes,rVideos,rInformativos,rFotos,rAniv,rLideres].forEach(function(f){try{f();}catch(e){console.warn(f.name,e);}});marcarPulsa();}
 
 /* ═════════ COMPARTILHAR ═════════
    Cada card tem um botão. Ele monta uma imagem bonita (1200×630) com a foto do próprio card,
@@ -1188,7 +1255,7 @@ var REDES={face:'https://www.facebook.com/profile.php?id=61561313550152',insta:'
 var CLOUD={nome:'dm0egn0ks',preset:'obpc_media',pasta:'obpc_compartilhar'};
 var SH={};
 /* ícone 3D usado na imagem de cada tipo de card */
-var ICS={momentos:'camera',hoje:'escala',agenda:'agenda',cultos:'relogio',culto:'sino',tv:'tv',video:'video',avisos:'avisos',eventos:'eventos',palavra:'biblia',sermao:'pergaminho',info:'jornal',foto:'fotos',aniv:'aniv',lider:'abraco',versiculo:'biblia',radio:'radio',site:'pomba',destaque:'estrela'};
+var ICS={podcast:'microfone',momentos:'camera',hoje:'escala',agenda:'agenda',cultos:'relogio',culto:'sino',tv:'tv',video:'video',avisos:'avisos',eventos:'eventos',palavra:'biblia',sermao:'pergaminho',info:'jornal',foto:'fotos',aniv:'aniv',lider:'abraco',versiculo:'biblia',radio:'radio',site:'pomba',destaque:'estrela'};
 function hid(s){var h=5381;s=String(s);for(var i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return (h>>>0).toString(36);}
 function hash53(str){var h1=0xdeadbeef,h2=0x41c6ce57;for(var i=0;i<str.length;i++){var ch=str.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);}h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);return (4294967296*(2097151&h2)+(h1>>>0)).toString(36);}
 function idDe(){return hid(Array.prototype.slice.call(arguments).map(function(x){return x==null?'':String(x);}).join('|'));}
@@ -1299,7 +1366,7 @@ function gravarLink(o,img){
 function mensagem(o,link){
   var t=o.verso?o.t+'\n_'+o.ref+'_':'*'+String(o.t||'').replace(/\*/g,'')+'*';
   var inf=linhaInfo(o).join(' · ');
-  var ic={momentos:'🎥',radio:'📻',tv:'📺',versiculo:'📖',agenda:'📅',hoje:'📋',cultos:'⛪',culto:'⛪',aniv:'🎉',foto:'📸',site:'🙌'}[o.s]||'✨';
+  var ic={podcast:'🎙️',momentos:'🎥',radio:'📻',tv:'📺',versiculo:'📖',agenda:'📅',hoje:'📋',cultos:'⛪',culto:'⛪',aniv:'🎉',foto:'📸',site:'🙌'}[o.s]||'✨';
   return ic+' '+t+(inf?'\n🗓️ '+inf:'')+'\n\n👉 '+(o.cta||'Toque e confira')+': '+link;
 }
 
@@ -1345,7 +1412,7 @@ function shRede(rede){
 }
 
 /* ── quem chega pelo link vai direto na publicação ── */
-var SEC_DE={momentos:'momentos',hoje:'cultos',destaque:'destaque-sec',banner:'destaque-sec',agenda:'agenda',radio:'radio',tv:'tv',video:'tv',videos:'tv',avisos:'avisos',aviso:'avisos',eventos:'eventos',evento:'eventos',palavra:'palavra',palavras:'palavra',sermao:'sermoes-sec',info:'informativos-sec',foto:'fotos',galeria:'fotos',aniv:'aniv-sec',lider:'lideranca-sec',cultos:'cultos',culto:'cultos',versiculo:'versiculo',site:''};
+var SEC_DE={podcast:'podcast',momentos:'momentos',hoje:'cultos',destaque:'destaque-sec',banner:'destaque-sec',agenda:'agenda',radio:'radio',tv:'tv',video:'tv',videos:'tv',avisos:'avisos',aviso:'avisos',eventos:'eventos',evento:'eventos',palavra:'palavra',palavras:'palavra',sermao:'sermoes-sec',info:'informativos-sec',foto:'fotos',galeria:'fotos',aniv:'aniv-sec',lider:'lideranca-sec',cultos:'cultos',culto:'cultos',versiculo:'versiculo',site:''};
 var _dl=(function(){try{var p=new URLSearchParams(location.search);var s=p.get('s');if(!s)return null;return {s:s,id:p.get('id')||'',n:0};}catch(e){return null;}})();
 var _pulsa=null;
 function marcarPulsa(){if(!_pulsa)return;if(Date.now()>_pulsa.ate){_pulsa=null;return;}var e=document.querySelector('[data-sh="'+_pulsa.k+'"]');if(e)e.classList.add('pulsa');}
