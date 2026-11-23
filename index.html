@@ -536,8 +536,8 @@ footer li a{display:inline-flex;align-items:center}
 .fotos img{position:relative;object-fit:contain}
 .foto-ab:hover img{transform:none}
 /* Vídeo do topo: numa moldura dourada, inteiro; no fundo do site fica só a foto dele, bem suave */
-.fundo-video .hero-fundo{position:absolute;inset:-30px;width:calc(100% + 60px);height:calc(100% + 60px);object-fit:cover;opacity:0;transition:opacity 1.2s;filter:blur(20px) brightness(.6);pointer-events:none}
-.fundo-video .hero-fundo.on{opacity:.5}
+.fundo-video .hero-fundo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.2s;pointer-events:none}
+.fundo-video .hero-fundo.on{opacity:.6}
 .hero-janela{position:relative;display:none;margin:1.6rem auto .2rem;padding:6px;border-radius:28px;text-decoration:none;max-width:min(88vw,620px);
   background:linear-gradient(145deg,#FFE29A,#E2B04A 40%,#9C6B1C 75%,#FFE29A);box-shadow:0 22px 46px -16px rgba(0,0,0,.85),0 0 0 6px rgba(242,193,78,.12)}
 .hero.com-video .hero-janela{display:inline-block}
@@ -586,7 +586,7 @@ footer li a{display:inline-flex;align-items:center}
 </svg>
 
 <!-- vídeos gravados passando ao fundo do site inteiro, um depois do outro, bem clarinhos -->
-<div class="fundo-video" aria-hidden="true"><img class="hero-fundo" id="hero-fundo" alt=""><div class="fundo-veu"></div></div>
+<div class="fundo-video" aria-hidden="true"><video class="hero-fundo" id="hero-fundo" muted playsinline autoplay loop preload="auto" disablepictureinpicture disableremoteplayback></video><div class="fundo-veu"></div></div>
 
 <header class="topo">
   <div class="topo-in">
@@ -1623,9 +1623,10 @@ if('serviceWorker' in navigator&&location.protocol==='https:'){try{navigator.ser
 (function(){
   /* fundo do site: a foto do vídeo que está tocando, desfocada */
   var _toca=tocarHero;
-  tocarHero=function(i){_toca(i);try{var f=document.getElementById('hero-fundo'),th=thumbVideo(_hv.lista[_hv.i]||'');if(f){if(th){f.src=th;f.classList.add('on');}else f.classList.remove('on');}}catch(e){}};
+  tocarHero=function(i){_toca(i);try{var f=document.getElementById('hero-fundo'),v=document.getElementById('hero-video'),th=thumbVideo(_hv.lista[_hv.i]||''),src=v&&v.getAttribute('src');if(f){if(th)f.poster=th;if(src&&f.getAttribute('src')!==src){f.src=src;var p=f.play();if(p&&p.catch)p.catch(function(){});}f.classList.add('on');}}catch(e){}}; /* vídeo de fundo do site volta (o mesmo da moldura) */
+  document.addEventListener('visibilitychange',function(){var f=document.getElementById('hero-fundo');if(!f||!f.getAttribute('src'))return;if(document.hidden)f.pause();else{var p=f.play();if(p&&p.catch)p.catch(function(){});}});
   var _rhv=rHeroVideo;
-  rHeroVideo=function(){_rhv();var f=document.getElementById('hero-fundo');if(f&&!(_hv.lista&&_hv.lista.length))f.classList.remove('on');};
+  rHeroVideo=function(){_rhv();var f=document.getElementById('hero-fundo');if(f&&!(_hv.lista&&_hv.lista.length)){f.classList.remove('on');f.pause();f.removeAttribute('src');}};
   /* galeria: a própria foto vira o fundo desfocado, para a foto inteira caber sem cortar */
   var _rf=rFotos;
   rFotos=function(){_rf();[].forEach.call(document.querySelectorAll('#lista-fotos .foto-ab img'),function(im){var u=im.getAttribute('src');if(u)im.parentNode.style.setProperty('--fundo','url("'+u.replace(/"/g,'%22')+'")');});};
