@@ -244,7 +244,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.6;}
   <a onclick="ir('ev',this)">&#128197; Eventos</a>
   <a onclick="ir('inf',this)">&#128240; Informativos</a>
   <a onclick="ir('ser',this)">&#128214; Serm&#245;es</a>
-  <a onclick="ir('clt',this)">&#128250; TV OBPC</a>
+  <a onclick="ir('clt',this)">&#128250; TV OBPC Jardim São Fernando</a>
   <a onclick="ir('pas',this)">&#127908; Palavra do Pastor</a>
   <div class="grp">Minist&#233;rio</div>
   <a onclick="ir('aniv',this)">&#127874; Aniversariantes</a>
@@ -757,8 +757,8 @@ Acesse a qualquer hora, do seu celular"></textarea>
 </div>
 <!-- CULTO FOI ASSIM -->
 <div id="aba-clt" class="aba">
-  <h2 style="border-bottom-color:#ff0000">&#128250; TV OBPC S&#227;o Fernando</h2>
-  <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;background:#0F4A34;border-bottom:3px solid #C98A2E;border-radius:10px;padding:.7rem .9rem;margin-bottom:.8rem"><span style="background:#ff0000;color:#fff;border-radius:6px;font-size:.7rem;padding:4px 9px;font-weight:700">&#9654; AO VIVO NO SITE</span><span style="color:#fff;font-size:.82rem;flex:1;min-width:150px">Filme na hora, tire fotos e publique. Aparece na TV OBPC para todos.</span><a href="tv-obpc.html" target="_blank" style="background:#C98A2E;color:#fff;font-weight:700;font-size:.8rem;border-radius:18px;padding:.4rem .9rem;text-decoration:none">&#128250; Ver a TV</a><button type="button" onclick="var u=new URL('tv-obpc.html',location.href).href;try{navigator.clipboard.writeText(u);showToast('Link da TV copiado!');}catch(e){prompt('Link da TV:',u);}" style="background:rgba(255,255,255,.15);color:#fff;border:0;font-weight:700;font-size:.8rem;border-radius:18px;padding:.4rem .9rem;cursor:pointer">&#128279; Copiar link</button><button type="button" onclick="var u=new URL('tv-obpc.html',location.href).href;window.open('https://wa.me/?text='+encodeURIComponent('\uD83D\uDCFA TV OBPC S\u00e3o Fernando \u2014 v\u00eddeos e fotos dos nossos cultos\n'+u),'_blank');" style="background:#25D366;color:#fff;border:0;font-weight:700;font-size:.8rem;border-radius:18px;padding:.4rem .9rem;cursor:pointer">&#128228; Compartilhar a TV</button></div>
+  <h2 style="border-bottom-color:#ff0000">&#128250; TV OBPC Jardim São Fernando</h2>
+  <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;background:#0F4A34;border-bottom:3px solid #C98A2E;border-radius:10px;padding:.7rem .9rem;margin-bottom:.8rem"><span style="background:#ff0000;color:#fff;border-radius:6px;font-size:.7rem;padding:4px 9px;font-weight:700">&#9654; AO VIVO NO SITE</span><span style="color:#fff;font-size:.82rem;flex:1;min-width:150px">Filme na hora, tire fotos e publique. Aparece na TV OBPC Jardim São Fernando para todos.</span><a href="tv-obpc.html" target="_blank" style="background:#C98A2E;color:#fff;font-weight:700;font-size:.8rem;border-radius:18px;padding:.4rem .9rem;text-decoration:none">&#128250; Ver a TV</a><button type="button" onclick="var u=new URL('tv-obpc.html',location.href).href;try{navigator.clipboard.writeText(u);showToast('Link da TV copiado!');}catch(e){prompt('Link da TV:',u);}" style="background:rgba(255,255,255,.15);color:#fff;border:0;font-weight:700;font-size:.8rem;border-radius:18px;padding:.4rem .9rem;cursor:pointer">&#128279; Copiar link</button><button type="button" onclick="var u=new URL('tv-obpc.html',location.href).href;window.open('https://wa.me/?text='+encodeURIComponent('\uD83D\uDCFA TV OBPC Jardim S\u00e3o Fernando \u2014 v\u00eddeos e fotos dos nossos cultos\n'+u),'_blank');" style="background:#25D366;color:#fff;border:0;font-weight:700;font-size:.8rem;border-radius:18px;padding:.4rem .9rem;cursor:pointer">&#128228; Compartilhar a TV</button></div>
   <div class="card">
     <div class="row"><div><label>T&#237;tulo</label><input id="clt-tit" placeholder="Culto de Domingo"></div><div><label>Data</label><input type="date" id="clt-dt"></div></div>
     <label>Descri&#231;&#227;o</label><textarea id="clt-rel" rows="3"></textarea>
@@ -1087,7 +1087,7 @@ Acesse a qualquer hora, do seu celular"></textarea>
   </div>
   <div class="card" style="border:1px solid #fecaca">
     <strong>&#128465; Apagar tudo o que a M&#237;dia publicou</strong>
-    <div style="font-size:.82rem;color:var(--muted);margin:.3rem 0 .7rem">Remove do site e da TV OBPC todas as fotos, v&#237;deos e &#225;udios publicados pelo App da M&#237;dia e apaga os arquivos do Cloudinary. N&#227;o mexe no que foi publicado por este painel. <b>N&#227;o d&#225; para desfazer.</b></div>
+    <div style="font-size:.82rem;color:var(--muted);margin:.3rem 0 .7rem">Remove do site e da TV OBPC Jardim São Fernando todas as fotos, v&#237;deos e &#225;udios publicados pelo App da M&#237;dia e apaga os arquivos do Cloudinary. N&#227;o mexe no que foi publicado por este painel. <b>N&#227;o d&#225; para desfazer.</b></div>
     <button type="button" class="btn bd" id="mapp-apg-btn" onclick="mappApagarTudo()">&#128465; Apagar tudo da M&#237;dia (site + Cloudinary)</button>
     <div id="mapp-apg-st" style="display:none;margin-top:.6rem;font-size:.82rem;line-height:1.5"></div>
   </div>
@@ -1225,7 +1225,7 @@ async function mappApagarTudo(){
     var g=await mappLer('galeria'),v=await mappLer('videos');
     var nG=g.arr.filter(mappEhDaMidia).length,nV=v.arr.filter(mappEhDaMidia).length;
     if(!nG&&!nV&&!pend.length){msg('✅ Não há nada da Mídia no site.','#16a34a');return;}
-    var t='APAGAR TUDO DA MÍDIA?\n\n📷 Fotos: '+nG+'\n🎥 Vídeos e áudios: '+nV+(pend.length?'\n☁️ Arquivos que ficaram pendentes no Cloudinary: '+pend.length:'')+'\n\nSai do site, da TV OBPC e do Cloudinary. NÃO dá para desfazer.';
+    var t='APAGAR TUDO DA MÍDIA?\n\n📷 Fotos: '+nG+'\n🎥 Vídeos e áudios: '+nV+(pend.length?'\n☁️ Arquivos que ficaram pendentes no Cloudinary: '+pend.length:'')+'\n\nSai do site, da TV OBPC Jardim São Fernando e do Cloudinary. NÃO dá para desfazer.';
     if(!confirm(t)){msg('Cancelado. Nada foi apagado.');return;}
     if((prompt('Para confirmar, digite APAGAR')||'').trim().toUpperCase()!=='APAGAR'){msg('Cancelado. Nada foi apagado.');return;}
     msg('Apagando do site…');
@@ -1360,7 +1360,7 @@ function pasMidiasHtml(p,i){
   }).join('')+'</div>';
 }
 function delMidiaPub(key,i,j){
-  if(!confirm('Excluir esta foto/vídeo? Ela também sai do site e da TV OBPC.'))return;
+  if(!confirm('Excluir esta foto/vídeo? Ela também sai do site e da TV OBPC Jardim São Fernando.'))return;
   var l=DB.g(key)||[];if(!l[i]||!l[i].midias)return;
   l[i].midias.splice(j,1);DB.s(key,l);
   if(key==='cultos'){if(typeof _rndCltPinta==='function')_rndCltPinta();}else rndPas();
@@ -1414,7 +1414,7 @@ function _roteiroGravar(k,v){try{var o=JSON.parse(localStorage.getItem('priv_rot
 function pasTextoAtual(){var t=_roteiroLer(_roteiroKey());if(t)return t;var l=DB.g('palavras')||[];return(_pasEdIdx!=null&&l[_pasEdIdx])?(l[_pasEdIdx].txt||''):'';}
 function pasAplicaTexto(txt){if(typeof txt!=='string'||!txt.trim())return;_roteiroGravar(_roteiroKey(),txt);}
 function edtPasEstudio(i){pasAbrirTeleprompter(i);}
-function pasCompTV(i){var l=DB.g('palavras')||[];var p=l[i];if(!p)return;var u=new URL('tv-obpc.html',location.href).href+'#p'+(p.ts||i);window.open('https://wa.me/?text='+encodeURIComponent('\uD83C\uDFA4 '+(p.tit||'Palavra do Pastor')+' \u2014 TV OBPC S\u00e3o Fernando\n'+u),'_blank');}
+function pasCompTV(i){var l=DB.g('palavras')||[];var p=l[i];if(!p)return;var u=new URL('tv-obpc.html',location.href).href+'#p'+(p.ts||i);window.open('https://wa.me/?text='+encodeURIComponent('\uD83C\uDFA4 '+(p.tit||'Palavra do Pastor')+' \u2014 TV OBPC Jardim S\u00e3o Fernando\n'+u),'_blank');}
 window.addEventListener('message',function(ev){
   var d=ev.data;if(!d||!d.tipo)return;
   if(location.protocol!=='file:'&&ev.origin!==location.origin)return;
@@ -1428,7 +1428,7 @@ window.addEventListener('message',function(ev){
     var idx=_pasEdIdx;if(typeof showToast==='function')showToast('\u2B06\uFE0F Enviando o v\u00eddeo... aguarde.');
     upArq(file,function(){},function(){}).then(function(m){
       var l=DB.g('palavras')||[];
-      if(m&&!m.local&&l[idx]){if(!Array.isArray(l[idx].midias))l[idx].midias=[];l[idx].midias.push(m);DB.s('palavras',l);rndPas();if(typeof showToast==='function')showToast('\u2705 V\u00eddeo adicionado! J\u00e1 aparece no site e na TV OBPC.');}
+      if(m&&!m.local&&l[idx]){if(!Array.isArray(l[idx].midias))l[idx].midias=[];l[idx].midias.push(m);DB.s('palavras',l);rndPas();if(typeof showToast==='function')showToast('\u2705 V\u00eddeo adicionado! J\u00e1 aparece no site e na TV OBPC Jardim São Fernando.');}
       else if(typeof showToast==='function')showToast('\u274C O v\u00eddeo n\u00e3o foi para a nuvem. Tente de novo.');
     });
     return;
@@ -1803,7 +1803,7 @@ function rndMig(){var k=localStorage.getItem('obpc_imgbb_key')||'882bf38d3bf0565
 function migSalvKey(){var k=(document.getElementById('mig-key').value||'').trim();if(!k||k.length<10){alert('Cole uma key válida.');return;}localStorage.setItem('obpc_imgbb_key',k);showToast('✅ Key salva!');}
 function expDados(){var cs=['info','horarios','avisos','eventos','informativos','sermoes','cultos','palavras','obreiros','lideranca','escala','escala_agenda','esc_listas','galeria','videos','diz-msg','aniversariantes','oracoes','banner_culto','proximos_cultos'];var d={};cs.forEach(function(k){var v=DB.g(k);if(v!==null)d[k]=v;});var json=JSON.stringify({obpc:d,ts:Date.now(),v:3});var blob=new Blob([json],{type:'application/json'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='OBPC_dados_'+new Date().toISOString().split('T')[0]+'.json';a.click();URL.revokeObjectURL(url);var ok=document.getElementById('exp-ok');if(ok){ok.style.display='block';setTimeout(function(){ok.style.display='none';},4000);}}
 function impDados(inp){var f=inp.files[0];if(!f)return;var ok=document.getElementById('imp-ok');var r=new FileReader();r.onload=function(e){try{var json=JSON.parse(e.target.result);var dados=json.obpc||json;var cnt=0;Object.keys(dados).forEach(function(k){try{localStorage.setItem('obpc_'+k,JSON.stringify(dados[k]));cnt++;}catch(e){}});if(ok){ok.style.display='block';ok.style.color='var(--verde)';ok.textContent='✅ '+cnt+' itens importados! Recarregando...';setTimeout(function(){location.reload();},1500);}}catch(e){if(ok){ok.style.display='block';ok.style.color='var(--verm)';ok.textContent='❌ Arquivo inválido.';}}};r.readAsText(f);}
-function del(key,i,fn){if(!confirm('Excluir este item? Ele também sai do site e da TV OBPC.'))return;var l=DB.g(key)||[];l.splice(i,1);DB.s(key,l);if(typeof fn==='function')fn();}
+function del(key,i,fn){if(!confirm('Excluir este item? Ele também sai do site e da TV OBPC Jardim São Fernando.'))return;var l=DB.g(key)||[];l.splice(i,1);DB.s(key,l);if(typeof fn==='function')fn();}
 (function tick(){var h=document.getElementById('hhor');if(h)h.textContent=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});setTimeout(tick,30000);})();
 /* ═══════════════════════════════════════════════════════════════
    DESTAQUE DO MÊS + PRÓXIMOS CULTOS — versão simples
