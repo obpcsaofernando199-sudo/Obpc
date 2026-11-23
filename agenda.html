@@ -317,6 +317,37 @@ body:not(.exportando) .period-nav{width:48px;height:48px;font-size:1.6rem}
 body:not(.exportando) .top-nav>div:nth-child(2){display:none}
 body:not(.exportando) .top-nav .btn-add{font-size:1.15rem!important;padding:16px!important}
 }
+
+/* ── IMPRIMIR ESCALA (2026-11-23): folha A4 deitada para o quadro de avisos ── */
+#btn-imprimir,#btn-pdf{background:#fff!important;color:#0C1328!important;border:1.5px solid #F2C14E!important}
+#btn-pdf{background:#E8F8EE!important;border-color:#25D366!important}
+@media (max-width:820px){body:not(.exportando) #btn-imprimir,body:not(.exportando) #btn-pdf{flex:1 1 100%;justify-content:center;font-size:1.05rem!important;padding:14px!important}}
+#folha-print{display:none}
+@page{size:A4 landscape;margin:8mm}
+@media print{
+  html,body{background:#fff!important;padding:0!important;margin:0!important}
+  body.imprimindo>*:not(#folha-print){display:none!important}
+  body.imprimindo #folha-print{display:block!important}
+}
+body.pdfando #folha-print{display:block!important;position:fixed;left:-20000px;top:0;width:1123px;padding:28px 30px;background:#fff;box-sizing:border-box}
+#folha-print{color:#151B2E;font-family:'DM Sans',Arial,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .fp-topo{display:flex;align-items:center;gap:14px;border-bottom:3px solid #C8902E;padding-bottom:6px;margin-bottom:8px}
+  .fp-topo img{width:58px;height:58px;object-fit:contain}
+  .fp-topo div{flex:1}
+  .fp-igreja{font:700 13pt 'Playfair Display',Georgia,serif;color:#0C1328;letter-spacing:.04em;text-transform:uppercase}
+  .fp-tema{font-size:9.5pt;font-style:italic;color:#5D6478}
+  .fp-mes{text-align:right;font:900 24pt 'Playfair Display',Georgia,serif;color:#0C1328;line-height:1}
+  .fp-mes small{display:block;font:800 8pt 'DM Sans',Arial,sans-serif;letter-spacing:.3em;color:#C8902E;margin-bottom:2px}
+  .fp-t{width:100%;border-collapse:collapse;table-layout:fixed}
+  .fp-t th{background:#0C1328;color:#FFE29A;font-size:.78em;letter-spacing:.06em;text-transform:uppercase;padding:5px 4px;border:1px solid #0C1328}
+  .fp-t td{border:1px solid #CBBF9F;padding:4px 5px;vertical-align:middle;text-align:center;line-height:1.2}
+  .fp-t tr:nth-child(even) td{background:#FBF7EC}
+  .fp-t td.fp-d{font-weight:900;font-size:1.25em;color:#0C1328;white-space:nowrap}
+  .fp-t td.fp-d small{display:block;font-size:.6em;font-weight:800;color:#8A6A1F;letter-spacing:.08em}
+  .fp-t td.fp-c{font-weight:800;text-align:left}
+  .fp-t tr.fp-dom td{background:#FFF1F2}
+  .fp-t tr.fp-reg td.fp-c{color:#5B21B6}
+  .fp-pe{margin-top:6px;display:flex;justify-content:space-between;font-size:8pt;color:#5D6478}
 </style>
 </head>
 <body>
@@ -324,6 +355,8 @@ body:not(.exportando) .top-nav .btn-add{font-size:1.15rem!important;padding:16px
 <div class="top-nav">
   <div style="display:flex;gap:8px;">
     <button class="btn btn-add" onclick="addRow()">➕ Novo Culto</button>
+    <button class="btn" id="btn-imprimir" onclick="imprimirEscala()">🖨️ Imprimir escala</button>
+    <button class="btn" id="btn-pdf" onclick="pdfEscala()">📄 PDF para compartilhar</button>
     <button class="btn btn-config so-pc" onclick="openConfig(true)">👥 Nomes e cultos</button>
     <button class="btn so-pc" id="btn-agenda-mes" style="background:#7C3AED;color:#fff" onclick="inserirAgendaRegional2026()" title="A Agenda Regional já é preenchida automaticamente. Use este botão só se apagar uma data regional por engano.">🔄 Reconferir Agenda Regional</button>
   </div>
@@ -519,6 +552,7 @@ body:not(.exportando) .top-nav .btn-add{font-size:1.15rem!important;padding:16px
 </div>
 
 <div id="toast-cel" role="status"></div>
+<div id="folha-print" aria-hidden="true"></div>
 <div id="eln-pick" role="dialog" aria-modal="true"></div>
 <div id="edit-linha-modal" style="position:fixed;inset:0;background:rgba(0,0,0,0.88);display:none;align-items:center;justify-content:center;z-index:8500">
   <div style="background:#1E293B;border:2px solid var(--blue);border-radius:14px;padding:24px;width:460px;max-width:92vw;max-height:88vh;overflow-y:auto">
@@ -1866,6 +1900,73 @@ window.onload = load;
   /* o botão de "acrescentar nomes" do editor some: agora dá para pôr o nome na própria lista de escolher */
   var lb=box.querySelector('.eln-lista-btn');if(lb)lb.style.display='none';
 })();
+/* ── IMPRIMIR ESCALA: monta uma folha A4 deitada só com os cultos do mês na tela ── */
+function montarFolha(){
+  var MES=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  var SEM=['DOM','SEG','TER','QUA','QUI','SEX','SÁB'];
+  function esc(t){return String(t||'').replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function nomes(v){return esc(String(v||'').split('\n').map(function(x){return x.trim();}).filter(Boolean).join(', '));}
+  var d=coletarDados(),m=periodoAtual.getMonth(),a=periodoAtual.getFullYear();
+  var rows=d.rows.filter(function(r){if(!r.dt)return false;var x=new Date(r.dt+'T00:00:00');return x.getMonth()===m&&x.getFullYear()===a;})
+    .sort(function(p,q){return p.dt<q.dt?-1:p.dt>q.dt?1:0;});
+  if(!rows.length){alert('Não há cultos com data em '+MES[m]+'.');return null;}
+  var temCel=rows.some(function(r){return String(r.cel||'').trim();});
+  /* letra menor quando o mês tem muitos cultos, para caber numa folha */
+  var n=rows.length,fs=n<=10?13:n<=13?11.5:n<=16?10.5:n<=20?9.5:n<=24?8.5:7.5;
+  var h='<div class="fp-topo"><img src="logo_obpc_transparente.png" alt=""><div><div class="fp-igreja">'+esc(d.church||'O Brasil Para Cristo — Jd. São Fernando')+'</div><div class="fp-tema">'+esc(d.theme||'')+'</div></div>'+
+    '<div class="fp-mes"><small>ESCALA DO MÊS</small>'+MES[m]+' '+a+'</div></div>'+
+    '<table class="fp-t" style="font-size:'+fs+'pt"><colgroup><col style="width:9%"><col style="width:'+(temCel?17:20)+'%"><col style="width:12%"><col style="width:13%"><col style="width:13%">'+(temCel?'<col style="width:10%">':'')+'<col style="width:13%"><col style="width:13%"></colgroup>'+
+    '<thead><tr><th>Data</th><th>Culto</th><th>Ensaio</th><th>Porta</th><th>Dirigente</th>'+(temCel?'<th>Celebração</th>':'')+'<th>Oportunidade</th><th>Ministrante</th></tr></thead><tbody>'+
+    rows.map(function(r){var x=new Date(r.dt+'T00:00:00');
+      return '<tr class="'+(x.getDay()===0?'fp-dom ':'')+(r.origem==='regional'?'fp-reg':'')+'"><td class="fp-d">'+('0'+x.getDate()).slice(-2)+'/'+('0'+(x.getMonth()+1)).slice(-2)+'<small>'+SEM[x.getDay()]+'</small></td>'+
+        '<td class="fp-c">'+nomes(r.clt)+'</td><td>'+nomes(r.ensaio)+'</td><td>'+nomes(r.p1)+'</td><td>'+nomes(r.dir)+'</td>'+(temCel?'<td>'+nomes(r.cel)+'</td>':'')+'<td>'+nomes(r.opt)+'</td><td>'+nomes(r.min)+'</td></tr>';}).join('')+
+    '</tbody></table><div class="fp-pe"><span>Igreja O Brasil Para Cristo — Jardim São Fernando</span><span>obpcsaofernando199-sudo.github.io/Obpc</span></div>';
+  var f=document.getElementById('folha-print');f.innerHTML=h;
+  return {f:f,nome:'Escala-OBPC-'+MES[m]+'-'+a,titulo:'Escala '+MES[m]+' '+a};
+}
+function imprimirEscala(){
+  var r=montarFolha();if(!r)return;var f=r.f;
+  document.body.classList.add('imprimindo');
+  function fim(){document.body.classList.remove('imprimindo');window.removeEventListener('afterprint',fim);}
+  window.addEventListener('afterprint',fim);
+  var img=f.querySelector('img');
+  function vai(){setTimeout(function(){window.print();setTimeout(fim,1500);},100);}
+  if(img&&!img.complete){var foi=false;var uma=function(){if(!foi){foi=true;vai();}};img.onload=img.onerror=uma;setTimeout(uma,2500);}else vai();
+}
+/* ── PDF PARA COMPARTILHAR (2026-11-23): a mesma folha deitada vira PDF e abre o compartilhar (WhatsApp) ── */
+function carregarJsPDF(){
+  return new Promise(function(ok,erro){
+    if(window.jspdf)return ok(window.jspdf);
+    var sc=document.createElement('script');sc.src='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+    sc.onload=function(){window.jspdf?ok(window.jspdf):erro();};sc.onerror=erro;document.head.appendChild(sc);
+  });
+}
+function pdfEscala(){
+  var r=montarFolha();if(!r)return;
+  var bt=document.getElementById('btn-pdf'),txt=bt?bt.innerHTML:'';
+  if(bt){bt.disabled=true;bt.innerHTML='⏳ Preparando o PDF…';}
+  function volta(){document.body.classList.remove('pdfando');if(bt){bt.disabled=false;bt.innerHTML=txt;}}
+  document.body.classList.add('pdfando');
+  var img=r.f.querySelector('img');
+  var espera=new Promise(function(ok){if(!img||img.complete)return ok();img.onload=img.onerror=ok;setTimeout(ok,2500);});
+  Promise.all([carregarJsPDF(),espera]).then(function(v){
+    return html2canvas(r.f,{scale:2,backgroundColor:'#ffffff',windowWidth:1123}).then(function(cv){
+      var doc=new v[0].jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
+      var W=297,H=210,mg=6,lw=W-2*mg,lh=lw*cv.height/cv.width;
+      if(lh>H-2*mg){lh=H-2*mg;lw=lh*cv.width/cv.height;}
+      doc.addImage(cv.toDataURL('image/jpeg',0.92),'JPEG',(W-lw)/2,mg,lw,lh);
+      var blob=doc.output('blob'),nome=r.nome+'.pdf';
+      volta();
+      var file=null;try{file=new File([blob],nome,{type:'application/pdf'});}catch(e){}
+      if(file&&navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
+        navigator.share({title:r.titulo,text:r.titulo+' — OBPC Jd. São Fernando',files:[file]}).catch(function(){});
+      }else{
+        var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=nome;document.body.appendChild(a);a.click();a.remove();
+        setTimeout(function(){alert('✅ O PDF da escala foi salvo (Downloads). Agora é só enviar pelo WhatsApp.');},300);
+      }
+    });
+  }).catch(function(){volta();alert('Não consegui montar o PDF agora. Verifique a internet e tente de novo.');});
+}
 /* foto/JPG: gera sempre o quadro largo (mesmo no celular) */
 (function(){var h=window.html2canvas;if(!h)return;
   window.html2canvas=function(el,o){var b=document.body;b.classList.add('exportando');o=Object.assign({windowWidth:1260},o||{});
