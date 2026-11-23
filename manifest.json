@@ -1,7 +1,7 @@
 {
-  "name": "OBPC Jardim São Fernando",
+  "name": "OBPC Jd. São Fernando",
   "short_name": "OBPC São Fernando",
-  "description": "Site oficial da Igreja O Brasil Para Cristo - Jardim São Fernando: cultos, avisos, agenda, palavra do pastor e mais.",
+  "description": "Site oficial da Igreja O Brasil Para Cristo - Jd. São Fernando: cultos, avisos, agenda, palavra do pastor e mais.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
