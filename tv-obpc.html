@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>TV OBPC Jardim São Fernando</title>
+<title>TV OBPC Jd. São Fernando</title>
 <meta name="theme-color" content="#0F4A34">
 <meta name="description" content="Vídeos e fotos dos cultos da OBPC Jardim São Fernando">
-<meta property="og:title" content="TV OBPC Jardim São Fernando"><meta property="og:description" content="Vídeos e fotos dos nossos cultos"><meta property="og:image" content="https://obpcsaofernando199-sudo.github.io/Obpc/og-banner.png">
+<meta property="og:title" content="TV OBPC Jd. São Fernando"><meta property="og:description" content="Vídeos e fotos dos nossos cultos"><meta property="og:image" content="https://obpcsaofernando199-sudo.github.io/Obpc/og-banner.png">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <script>try{var _t=localStorage.getItem('tvob_theme');if(_t)document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script>
 <style>
@@ -142,7 +142,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .pl .txt1 b{font:600 clamp(20px,4vw,32px)/1.2 Georgia,serif}
 </style>
 <style id="tv-noite-ouro">
-/* 23/11/2026: TV OBPC Jardim São Fernando no mesmo visual do site (Noite & Ouro). O botão ◐ ainda deixa clara. */
+/* 23/11/2026: TV OBPC Jd. São Fernando no mesmo visual do site (Noite & Ouro). O botão ◐ ainda deixa clara. */
 :root:not([data-theme="light"]){--bg:#0A0F1F;--tx:#F4F1EA;--mut:#AEB6CC;--sf:#141C36;--bd:rgba(242,193,78,.22);--ac:#F2C14E;--ouro:#F2C14E;--card:#121A33;--yt:#E11D48;color-scheme:dark}
 :root:not([data-theme="light"]) body{background:radial-gradient(70% 40% at 15% 0,rgba(46,90,190,.28),transparent 70%),radial-gradient(60% 35% at 100% 10%,rgba(242,193,78,.12),transparent 70%),#0A0F1F;background-attachment:fixed}
 :root:not([data-theme="light"]) .top{background:rgba(10,15,31,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:2px solid #C8902E}
@@ -164,9 +164,9 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 </head>
 <body>
 <header class="top">
-  <a class="brand" onclick="goHome()"><div class="lg" id="lg">⛪</div><span class="yt">▶</span><h1>TV OBPC<small>Jardim São Fernando</small></h1></a>
+  <a class="brand" onclick="goHome()"><div class="lg" id="lg">⛪</div><span class="yt">▶</span><h1>TV OBPC<small>Jd. São Fernando</small></h1></a>
   <div class="sr"><input id="q" type="search" placeholder="Pesquisar" aria-label="Pesquisar" oninput="Q=this.value;render()"></div>
-  <button class="ib" id="sh" title="Compartilhar a TV" aria-label="Compartilhar a TV OBPC Jardim São Fernando">↗</button><button class="ib" id="th" title="Tema" aria-label="Alternar tema">◐</button>
+  <button class="ib" id="sh" title="Compartilhar a TV" aria-label="Compartilhar a TV OBPC Jd. São Fernando">↗</button><button class="ib" id="th" title="Tema" aria-label="Alternar tema">◐</button>
 </header>
 <main id="home"><a class="faixa-urg hide" id="urg" href="#"></a><div class="chips" id="chips"></div><div class="grid" id="grid"></div><div class="empty hide" id="empty">Nenhum vídeo por aqui ainda.</div></main>
 <main id="watch" class="watch hide"></main>
@@ -336,7 +336,7 @@ function render(){
   let l=ITEMS.filter(matches);
   if(CHIP==='l')l=LATER.slice().reverse().map(id=>l.filter(x=>x.id===id)[0]).filter(Boolean);
   const em=$('empty');em.textContent=(Q.trim()&&!l.length)?'Nada encontrado para "'+Q.trim()+'".':(VAZIO[CHIP]||VAZIO.all);
-  if(!l.length&&!ITEMS.length&&!window._netOk)em.textContent='📺 Buscando os vídeos da TV OBPC Jardim São Fernando…\nSe demorar, confira a internet e puxe a tela para baixo.';
+  if(!l.length&&!ITEMS.length&&!window._netOk)em.textContent='📺 Buscando os vídeos da TV OBPC Jd. São Fernando…\nSe demorar, confira a internet e puxe a tela para baixo.';
   em.style.whiteSpace='pre-line';em.classList.toggle('hide',l.length>0);
   l.forEach(v=>{
     const c=document.createElement('div');c.className='card'+(v.u?' urg':'');c.tabIndex=0;c.appendChild(thumb(v));
@@ -373,13 +373,13 @@ function renderSide(v){
 }
 function show(v){
   CUR=v;$('home').classList.add('hide');const w=$('watch');w.classList.remove('hide');window.scrollTo(0,0);
-  document.title=v.t+' · TV OBPC Jardim São Fernando';
+  document.title=v.t+' · TV OBPC Jd. São Fernando';
   const opSp=[0.75,1,1.25,1.5,2].map(s=>'<option value="'+s+'"'+(s===SPEED?' selected':'')+'>'+String(s).replace('.',',')+'×</option>').join('');
   w.innerHTML='<div class="wl"><div><div class="pl" id="pl"></div><div class="ph" id="ph"></div><div class="info"><h2>'+esc(v.t)+'</h2><div class="mt">'+esc(NOME)+' · '+esc(fmtData(v.d,v.ts))+'</div>'
     +'<div class="act"><button class="b l" id="bl"></button><button class="b p" id="bw">✆ WhatsApp</button><button class="b r" id="bs">↗ Compartilhar</button><button class="b" id="bc">🔗 Copiar link</button><button class="b" onclick="goHome()">← Voltar</button></div>'
     +'<div class="ctl">'+(temVideo(v)?'<label>Velocidade <select id="sp" aria-label="Velocidade">'+opSp+'</select></label>':'')+'<label><input type="checkbox" id="au"'+(AUTO?' checked':'')+'> Reprodução automática</label></div>'
     +(v.r?'<div class="rel">'+esc(v.r)+'</div>':'')+'</div></div><aside class="side" id="side"></aside></div>';
-  const tx=(v.p?'🎤 ':'📺 ')+v.t+' — TV OBPC Jardim São Fernando',L=link(v);
+  const tx=(v.p?'🎤 ':'📺 ')+v.t+' — TV OBPC Jd. São Fernando',L=link(v);
   let PB=null;frameFile([v],f=>{PB=f;});
   $('bw').onclick=()=>{if(PB&&navigator.share&&navigator.canShare&&navigator.canShare({files:[PB]}))shareWith({title:v.t,text:tx+'\n'+L},PB);else window.open('https://wa.me/?text='+encodeURIComponent(tx+'\n'+L),'_blank');};
   $('bs').onclick=()=>{if(navigator.share)shareWith({title:v.t,text:tx+'\n'+L},PB);else cp(L);};
@@ -455,22 +455,22 @@ function onHash(){
   }else{
     const vinha=!!SHOWN;SHOWN='';CUR=null;
     $('watch').classList.add('hide');$('watch').innerHTML='';$('home').classList.remove('hide');
-    document.title='TV OBPC Jardim São Fernando';
+    document.title='TV OBPC Jd. São Fernando';
     _RS='';render();
     if(vinha)window.scrollTo(0,LASTY);
   }
 }
 function shareTV(){
-  const L=SITE+'tv-obpc.html',tx='📺 TV OBPC Jardim São Fernando — vídeos e fotos dos nossos cultos e a Palavra do Pastor',e=encodeURIComponent;
+  const L=SITE+'tv-obpc.html',tx='📺 TV OBPC Jd. São Fernando — vídeos e fotos dos nossos cultos e a Palavra do Pastor',e=encodeURIComponent;
   const ov=document.createElement('div');ov.className='ov';
-  ov.innerHTML='<div class="sheet"><h3>Compartilhar a TV OBPC Jardim São Fernando</h3><p>Envie o link da TV para quem você quiser.</p><div class="opts"><a style="background:#25D366" target="_blank" rel="noopener" href="https://wa.me/?text='+e(tx+'\n'+L)+'">✆ WhatsApp</a><a style="background:#1877F2" target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u='+e(L)+'">f Facebook</a><a style="background:#2AABEE" target="_blank" rel="noopener" href="https://t.me/share/url?url='+e(L)+'&text='+e(tx)+'">➤ Telegram</a><button id="shc" style="background:var(--ac);color:var(--bg)">🔗 Copiar link</button>'+(navigator.share?'<button id="shm" style="background:#FF0000;grid-column:1/3">⋯ Mais apps</button>':'')+'</div><button class="x" id="shx">Fechar</button></div>';
+  ov.innerHTML='<div class="sheet"><h3>Compartilhar a TV OBPC Jd. São Fernando</h3><p>Envie o link da TV para quem você quiser.</p><div class="opts"><a style="background:#25D366" target="_blank" rel="noopener" href="https://wa.me/?text='+e(tx+'\n'+L)+'">✆ WhatsApp</a><a style="background:#1877F2" target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u='+e(L)+'">f Facebook</a><a style="background:#2AABEE" target="_blank" rel="noopener" href="https://t.me/share/url?url='+e(L)+'&text='+e(tx)+'">➤ Telegram</a><button id="shc" style="background:var(--ac);color:var(--bg)">🔗 Copiar link</button>'+(navigator.share?'<button id="shm" style="background:#FF0000;grid-column:1/3">⋯ Mais apps</button>':'')+'</div><button class="x" id="shx">Fechar</button></div>';
   let TF=null;frameFile(ITEMS,f=>{TF=f;});document.body.appendChild(ov);
   const fecha=()=>{if(ov.parentNode)ov.parentNode.removeChild(ov);};
-  const wa=ov.querySelector('a');if(wa)wa.onclick=ev=>{if(TF&&navigator.share&&navigator.canShare&&navigator.canShare({files:[TF]})){ev.preventDefault();shareWith({title:'TV OBPC Jardim São Fernando',text:tx+'\n'+L},TF);fecha();}};
+  const wa=ov.querySelector('a');if(wa)wa.onclick=ev=>{if(TF&&navigator.share&&navigator.canShare&&navigator.canShare({files:[TF]})){ev.preventDefault();shareWith({title:'TV OBPC Jd. São Fernando',text:tx+'\n'+L},TF);fecha();}};
   ov.onclick=ev=>{if(ev.target===ov)fecha();};
   ov.querySelector('#shx').onclick=fecha;
   ov.querySelector('#shc').onclick=()=>{cp(L);fecha();};
-  const m=ov.querySelector('#shm');if(m)m.onclick=()=>{shareWith({title:'TV OBPC Jardim São Fernando',text:tx+'\n'+L},TF);fecha();};
+  const m=ov.querySelector('#shm');if(m)m.onclick=()=>{shareWith({title:'TV OBPC Jd. São Fernando',text:tx+'\n'+L},TF);fecha();};
 }
 $('sh').onclick=shareTV;
 window.addEventListener('hashchange',onHash);
