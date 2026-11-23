@@ -1922,7 +1922,7 @@ function montarFolha(){
     rows.map(function(r){var x=new Date(r.dt+'T00:00:00');
       return '<tr class="'+(x.getDay()===0?'fp-dom ':'')+(r.origem==='regional'?'fp-reg':'')+'"><td class="fp-d">'+('0'+x.getDate()).slice(-2)+'/'+('0'+(x.getMonth()+1)).slice(-2)+'<small>'+SEM[x.getDay()]+'</small></td>'+
         '<td class="fp-c">'+nomes(r.clt)+'</td><td>'+nomes(r.ensaio)+'</td><td>'+nomes(r.p1)+'</td><td>'+nomes(r.dir)+'</td>'+(temCel?'<td>'+nomes(r.cel)+'</td>':'')+'<td>'+nomes(r.opt)+'</td><td>'+nomes(r.min)+'</td></tr>';}).join('')+
-    '</tbody></table><div class="fp-pe"><span>Igreja O Brasil Para Cristo — Jardim São Fernando</span><span>obpcsaofernando199-sudo.github.io/Obpc</span></div>';
+    '</tbody></table><div class="fp-pe"><span>Igreja O Brasil Para Cristo — Jd. São Fernando</span><span>obpcsaofernando199-sudo.github.io/Obpc</span></div>';
   var f=document.getElementById('folha-print');f.innerHTML=h;
   return {f:f,nome:'Escala-OBPC-'+MES[m]+'-'+a,titulo:'Escala '+MES[m]+' '+a};
 }

@@ -163,7 +163,7 @@ video.pv,audio.pv{width:100%;border-radius:14px;background:#000}
 </head>
 <body>
 <header>
-  <div class="e">OBPC Jardim São Fernando</div>
+  <div class="e">OBPC Jd. São Fernando</div>
   <h1>Estúdio de Mídia</h1>
   <button type="button" class="quem-b" id="b-quem" hidden></button>
 </header>
@@ -1045,7 +1045,7 @@ function cartaoAudioCanvas(titulo,rotulo,ent){
   linhas.forEach(function(t,i){g.fillText(t,270,y0+i*lh)});
   if(ent){g.font='bold 34px '+FN;g.fillStyle='#F5C842';g.fillText('com '+String(ent).slice(0,40),270,y0+linhas.length*lh+8)}
   /* rodapé */
-  g.font='bold 28px '+FN;g.fillStyle='rgba(255,255,255,.82)';g.fillText('OBPC Jardim São Fernando',70,H-132);
+  g.font='bold 28px '+FN;g.fillStyle='rgba(255,255,255,.82)';g.fillText('OBPC Jd. São Fernando',70,H-132);
   var o='Ouça agora';g.font='bold 26px '+FN;var ow=g.measureText(o).width+88;
   g.fillStyle='rgba(255,255,255,.14)';rr(W-70-ow,H-160,ow,56,28);g.fill();
   g.fillStyle='#F5C842';g.beginPath();g.moveTo(W-70-ow+24,H-146);g.lineTo(W-70-ow+24,H-118);g.lineTo(W-70-ow+46,H-132);g.closePath();g.fill();
@@ -1075,7 +1075,7 @@ function linkCurto(it){
   var rec={s:it.tipo==='foto'?'galeria':'video'};
   if(it.tipo!=='foto')rec.id='0';
   rec.t=String(it.titulo||'OBPC').replace(/\*\*/g,'').slice(0,120);
-  rec.d=(it.tipo==='foto'?'Veja os momentos da nossa igreja!':(it.desc||'Assista na OBPC Jardim São Fernando')).replace(/\s+/g,' ').slice(0,220);
+  rec.d=(it.tipo==='foto'?'Veja os momentos da nossa igreja!':(it.desc||'Assista na OBPC Jd. São Fernando')).replace(/\s+/g,' ').slice(0,220);
   if(it.previa)rec.i=it.previa;
   /* quem toca no link cai direto neste vídeo/áudio na TV OBPC Jd. São Fernando (mesmo código 'e…' da tv-obpc.html) */
   if(it.tipo!=='foto'&&it.urlSite)rec.u=CFG.site+'tv-obpc.html#e'+hidTV(it.urlSite);
