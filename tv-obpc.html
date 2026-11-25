@@ -191,7 +191,9 @@ function isAud(s){return /\.mp3(\?|$)/i.test(s||'');}
 function poster(src){if(isAud(src))return '';const m=String(src||'').match(/^(https?:\/\/res\.cloudinary\.com\/[^\/]+\/video\/upload\/)(.+)$/);return m?m[1]+'so_1,w_480,q_auto,f_jpg/'+m[2].replace(/\.[a-z0-9]+(\?.*)?$/i,'.jpg'):'';}
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function toast(m){const e=$('msg');e.textContent=m;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),2400);}
-function ytId(u){const m=String(u||'').match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{11})/);return m?m[1]:'';}
+/* sem vídeo por link do YouTube/Facebook: só arquivos enviados */
+function ytId(u){return '';}
+const FORA=/youtu\.?be|facebook\.com|fb\.watch/i;
 function dataObj(d,ts){const x=d?new Date(d+'T12:00'):(ts?new Date(ts):null);return x&&!isNaN(x)?x:null;}
 function fmtData(d,ts){const x=dataObj(d,ts);return x?x.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'}):'';}
 function ago(d,ts){
@@ -221,7 +223,7 @@ function normP(p,i){
 /* Postagens do Estúdio de Mídia (Firebase: videos e galeria) */
 function lista(d){return !d||typeof d!=='object'?[]:Array.isArray(d)?d.filter(Boolean):Object.keys(d).map(k=>d[k]).filter(Boolean);}
 /* mídias de um culto/palavra: aceita lista ou objeto do Firebase, ignora o que só existe no aparelho de quem gravou */
-function mids(x){return lista(x).map(m=>typeof m==='string'?{src:m}:m).filter(m=>{const s=m&&(m.src||m.url)||'';return typeof s==='string'&&/^(https?:|data:)/.test(s);}).map(m=>{const s=m.src||m.url,y=ytId(s);return y?{k:'y',id:y,src:s}:{k:(m.tp==='video'||/\/video\/upload\/|\.(mp4|webm|mov|m4v|mp3|m4a)(\?|$)/i.test(s))?'v':'i',src:s};});}
+function mids(x){return lista(x).map(m=>typeof m==='string'?{src:m}:m).filter(m=>{const s=m&&(m.src||m.url)||'';return typeof s==='string'&&/^(https?:|data:)/.test(s)&&!FORA.test(s);}).map(m=>{const s=m.src||m.url,y=ytId(s);return y?{k:'y',id:y,src:s}:{k:(m.tp==='video'||/\/video\/upload\/|\.(mp4|webm|mov|m4v|mp3|m4a)(\?|$)/i.test(s))?'v':'i',src:s};});}
 function seguro(f,l){const o=[];l.forEach((x,i)=>{try{o.push(f(x,i));}catch(e){console.warn('item ignorado',e);}});return o;}
 function hid(s){let h=5381;s=String(s);for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return (h>>>0).toString(36);}
 function tsDe(x,i){const t=x.data?Date.parse(x.data+'T12:00'):0;return (isNaN(t)?0:t)-i*1000;}
@@ -229,7 +231,7 @@ function normE(){
   const out=[],gr={},agora=Date.now(),vivo=x=>!(x&&x.expira&&(x.vh?x.expira:x.expira+864e5)<=agora); /* 48 h no ar: as antigas (sem vh) eram de 24 h e ganham mais 24 h */
   /* os mais novos primeiro (o Firebase entrega na ordem de chegada; antes o corte de 12 deixava o vídeo novo de fora) */
   const novos=l=>l.map((x,i)=>({x:x,i:i,q:x.ts||x.timestamp||(x.data?Date.parse(x.data+'T12:00'):0)||0})).sort((a,b)=>(b.q-a.q)||(b.i-a.i)).map(o=>o.x);
-  novos(RV.filter(vivo)).slice(0,40).forEach((x,i)=>{if(!x.url||/^(idb:|blob:|mem:)/.test(x.url))return;
+  novos(RV.filter(vivo)).slice(0,40).forEach((x,i)=>{if(!x.url||/^(idb:|blob:|mem:)/.test(x.url)||FORA.test(x.url))return;
     const y=ytId(x.url);
     out.push({id:'e'+hid(x.url),ts:tsDe(x,i),t:x.titulo||x.tit||'Vídeo OBPC',d:x.data||'',r:[x.desc||x.dsc,x.entrevistado?'Entrevistado: '+x.entrevistado:''].filter(Boolean).join('\n'),a:x.autor||'',m:[y?{k:'y',id:y,src:x.url}:{k:'v',src:x.url}]});});
   /* as fotos do Estúdio vão para a Galeria de fotos (site e galeria.html); a TV fica só com vídeos e áudios */
