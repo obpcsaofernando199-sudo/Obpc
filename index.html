@@ -1313,7 +1313,7 @@ function rVideos(){
   itens.sort(function(a,b){return b.t-a.t;});
   so('videos',itens.length>0);
   document.getElementById('lista-videos').innerHTML=itens.slice(0,6).map(function(v){
-    var bl=v.m.fb?'<a class="midia" href="'+esc(v.m.fb)+'" target="_blank" rel="noopener">'+(urlOk(v.m.thumb)?'<img src="'+esc(v.m.thumb)+'" alt="">':'')+'<div class="play"><i>▶</i></div></a>':midiaBloco(v.m,v.tit);
+    var bl=v.m.fb?'<div class="midia" data-fb="'+esc(v.m.fb)+'" onclick="abrirMidias([{src:this.getAttribute(\'data-fb\')}],0,\'\',\'\')">'+(urlOk(v.m.thumb)?'<img src="'+esc(v.m.thumb)+'" alt="">':'')+'<div class="play"><i>▶</i></div></div>':midiaBloco(v.m,v.tit);
     var k=reg({s:'video',id:idDe(v.tit,v.m.src||v.m.fb),t:v.tit,d:v.txt,img:v.m.fb?(urlOk(v.m.thumb)?v.m.thumb:''):capaDe(v.m),tipo:'Vídeo',cta:'Toque para assistir',video:true});
     return '<article class="card" data-sh="'+k+'">'+bl+'<div class="card-c"><h3>'+esc(v.tit)+'</h3>'+(v.txt?'<p>'+esc(v.txt.length>140?v.txt.slice(0,140)+'…':v.txt)+'</p>':'')+'<div class="meta">'+(v.sub?'<span>'+esc(v.sub)+'</span>':'')+'</div><div class="card-pe">'+btSh(k)+'</div></div></article>';
   }).join('');
@@ -1688,12 +1688,18 @@ function abrirMidias(ms,i,tit,tv){
   var vd=document.querySelector('#janela-c video');if(vd){vd.onended=function(){if(_mx&&_mx.i<n-1)mxIr(1);};var p=vd.play();if(p&&p.catch)p.catch(function(){});}
 }
 function mxIr(d){if(!_mx)return;var n=_mx.l.length;abrirMidias(_mx.l,(_mx.i+d+n)%n,_mx.t,_mx.tv);}
-function tocarId(id){var r=midiasDoItem(id);if(!r)return false;abrirMidias(r.ms,0,r.t,'tv-obpc.html#'+id);return true;}
+/* abre a TV aqui mesmo: todos os vídeos mais novos em sequência */
+function tocarTV(){var l=(_hv&&_hv.lista||[]).map(function(u){return {src:u,tp:'video'};});if(l.length)abrirMidias(l,0,'TV OBPC Jd. São Fernando','');else{var t=document.getElementById('tv');if(t)t.scrollIntoView({behavior:'smooth'});}}
+function tocarId(id){var r=midiasDoItem(id);if(!r)return false;abrirMidias(r.ms,0,r.t,'');return true;}
 document.addEventListener('click',function(e){
   var a=e.target.closest&&e.target.closest('a[href]');if(!a||e.ctrlKey||e.metaKey||e.shiftKey)return;
   var h=a.getAttribute('href')||'',m=h.match(/^tv-obpc\.html#([\w-]+)$/);
-  if(m&&!a.closest('#janela')){if(tocarId(m[1]))e.preventDefault();return;}
-  if(a.classList.contains('hero-janela')){var v=document.getElementById('hero-video'),u=v&&(v.currentSrc||v.getAttribute('src'));if(u&&/^https?:/.test(u)){e.preventDefault();var id='e'+hid(u);if(!tocarId(id))abrirMidias([{src:u,tp:'video'}],0,'TV OBPC Jd. São Fernando','tv-obpc.html');}}
+  if(a.closest('#janela'))return;
+  /* nunca sai da home: vídeo abre aqui mesmo */
+  if(m){e.preventDefault();if(!tocarId(m[1]))tocarTV();return;}
+  if(a.classList.contains('hero-janela')){e.preventDefault();var v=document.getElementById('hero-video'),u=v&&(v.currentSrc||v.getAttribute('src'));if(u&&/^https?:/.test(u)){var id='e'+hid(u);if(!tocarId(id))abrirMidias([{src:u,tp:'video'}],0,'TV OBPC Jd. São Fernando','');}else tocarTV();return;}
+  if(/^tv-obpc\.html$/.test(h)){e.preventDefault();tocarTV();return;}
+  if(ytId(h)||/fb\.watch\/|facebook\.com\/.*(\/videos\/|\/watch|\/reel\/)|facebook\.com\/watch/i.test(h)){e.preventDefault();abrirMidias([{src:h}],0,(a.closest('.card')&&a.closest('.card').querySelector('h3')||{}).textContent||'Vídeo','');}
 });
 
 /* ═════════ COMPARTILHAR EM PÉ (9:16) — Status do WhatsApp, Reels e Stories ═════════
