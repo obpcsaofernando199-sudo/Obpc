@@ -631,7 +631,7 @@ footer li a{display:inline-flex;align-items:center}
     <button class="topo-radio" onclick="radioTocar()"><span class="pulso"></span>Rádio ao vivo</button>
   </div>
   <nav class="menu" aria-label="Seções do site">
-    <a href="#agenda" onclick="agTudo(true)"><img class="ic3d" src="icones/agenda.webp" alt="" aria-hidden="true">Agenda do mês</a><a href="#radio"><img class="ic3d" src="icones/radio.webp" alt="" aria-hidden="true">Rádio</a><a href="#momentos"><img class="ic3d" src="icones/camera.webp" alt="" aria-hidden="true">Momentos do culto</a><a href="#podcast"><img class="ic3d" src="icones/microfone.webp" alt="" aria-hidden="true">Podcast</a><a href="#tv"><img class="ic3d" src="icones/tv.webp" alt="" aria-hidden="true">TV OBPC Jd. São Fernando</a><a href="#cultos"><img class="ic3d" src="icones/relogio.webp" alt="" aria-hidden="true">Cultos</a><a href="#avisos"><img class="ic3d" src="icones/avisos.webp" alt="" aria-hidden="true">Avisos</a><a href="#eventos"><img class="ic3d" src="icones/eventos.webp" alt="" aria-hidden="true">Eventos</a><a href="#palavra"><img class="ic3d" src="icones/biblia.webp" alt="" aria-hidden="true">Palavra do Pastor</a><a href="#videos"><img class="ic3d" src="icones/video.webp" alt="" aria-hidden="true">Vídeos</a><a href="#fotos"><img class="ic3d" src="icones/fotos.webp" alt="" aria-hidden="true">Fotos</a><a href="#oracao"><img class="ic3d" src="icones/oracao.webp" alt="" aria-hidden="true">Oração</a><a href="#contribua"><img class="ic3d" src="icones/coracao.webp" alt="" aria-hidden="true">Contribua</a><a href="#contato"><img class="ic3d" src="icones/celular.webp" alt="" aria-hidden="true">Contato</a>
+    <a href="#agenda" onclick="agTudo(true)"><img class="ic3d" src="icones/agenda.webp" alt="" aria-hidden="true">Agenda do mês</a><a href="#radio"><img class="ic3d" src="icones/radio.webp" alt="" aria-hidden="true">Rádio</a><a href="#momentos"><img class="ic3d" src="icones/camera.webp" alt="" aria-hidden="true">Momentos do culto</a><a href="#podcast"><img class="ic3d" src="icones/microfone.webp" alt="" aria-hidden="true">Podcast</a><a href="#tv"><img class="ic3d" src="icones/tv.webp" alt="" aria-hidden="true">TV OBPC Jd. São Fernando</a><a href="#cultos"><img class="ic3d" src="icones/relogio.webp" alt="" aria-hidden="true">Cultos</a><a href="#avisos"><img class="ic3d" src="icones/avisos.webp" alt="" aria-hidden="true">Avisos</a><a href="#eventos"><img class="ic3d" src="icones/eventos.webp" alt="" aria-hidden="true">Eventos</a><a href="#palavra"><img class="ic3d" src="icones/biblia.webp" alt="" aria-hidden="true">Palavra do Pastor</a><a href="#campanhas"><img class="ic3d" src="icones/avisos.webp" alt="" aria-hidden="true">Campanhas</a><a href="#videos"><img class="ic3d" src="icones/video.webp" alt="" aria-hidden="true">Vídeos</a><a href="#fotos"><img class="ic3d" src="icones/fotos.webp" alt="" aria-hidden="true">Fotos</a><a href="#oracao"><img class="ic3d" src="icones/oracao.webp" alt="" aria-hidden="true">Oração</a><a href="#contribua"><img class="ic3d" src="icones/coracao.webp" alt="" aria-hidden="true">Contribua</a><a href="#contato"><img class="ic3d" src="icones/celular.webp" alt="" aria-hidden="true">Contato</a>
   </nav>
 </header>
 
@@ -771,9 +771,15 @@ footer li a{display:inline-flex;align-items:center}
     <div class="grade" id="lista-sermoes"></div>
   </section>
 
+  <!-- VÍDEOS CAMPANHAS -->
+  <section class="sec revela" id="campanhas" hidden>
+    <div class="sec-cab"><div class="cab-ic"><img class="ic3d sec-ic" src="icones/avisos.webp" alt="" aria-hidden="true"><div><small>Participe</small><h2>Nossas <em>campanhas</em></h2></div></div></div>
+    <div class="grade" id="lista-campanhas"></div>
+  </section>
+
   <!-- VÍDEOS E CULTOS -->
   <section class="sec revela" id="videos" hidden>
-    <div class="sec-cab"><div class="cab-ic"><img class="ic3d sec-ic" src="icones/video.webp" alt="" aria-hidden="true"><div><small>Assista</small><h2>Vídeos no <em>YouTube</em></h2></div></div><a href="https://www.youtube.com/@obpcjardimsaofernando4538" target="_blank" rel="noopener">YouTube →</a></div>
+    <div class="sec-cab"><div class="cab-ic"><img class="ic3d sec-ic" src="icones/video.webp" alt="" aria-hidden="true"><div><small>Assista</small><h2>Nossos <em>vídeos</em></h2></div></div></div>
     <div class="grade" id="lista-videos"></div>
   </section>
 
@@ -1303,13 +1309,23 @@ function rSermoes(){
 /* vídeos de fora do estúdio (YouTube, Facebook) — os cultos agora ficam na TV OBPC Jd. São Fernando */
 function rVideos(){
   var itens=[];
-  lista(D.videos).forEach(function(v,i){if(doEstudio(v)||!urlOk(v.url))return;var y=v.yid||ytId(v.url);itens.push({t:v.ts||i,tit:v.tit||v.titulo||'Vídeo',sub:v.cat||'',txt:v.dsc||v.desc||'',m:y?{src:'https://youtu.be/'+y}:(/facebook\.com|fb\.watch/.test(v.url)?{fb:v.url,thumb:v.thumb}:{src:v.url,tp:'video',thumb:v.thumb})});});
+  lista(D.videos).forEach(function(v,i){if(doEstudio(v)||!urlOk(v.url)||v.plat==='youtube'||ytId(v.url))return;var y='';itens.push({t:v.ts||i,tit:v.tit||v.titulo||'Vídeo',sub:v.cat||'',txt:v.dsc||v.desc||'',m:y?{src:'https://youtu.be/'+y}:(/facebook\.com|fb\.watch/.test(v.url)?{fb:v.url,thumb:v.thumb}:{src:v.url,tp:'video',thumb:v.thumb})});});
   itens.sort(function(a,b){return b.t-a.t;});
   so('videos',itens.length>0);
   document.getElementById('lista-videos').innerHTML=itens.slice(0,6).map(function(v){
     var bl=v.m.fb?'<a class="midia" href="'+esc(v.m.fb)+'" target="_blank" rel="noopener">'+(urlOk(v.m.thumb)?'<img src="'+esc(v.m.thumb)+'" alt="">':'')+'<div class="play"><i>▶</i></div></a>':midiaBloco(v.m,v.tit);
     var k=reg({s:'video',id:idDe(v.tit,v.m.src||v.m.fb),t:v.tit,d:v.txt,img:v.m.fb?(urlOk(v.m.thumb)?v.m.thumb:''):capaDe(v.m),tipo:'Vídeo',cta:'Toque para assistir',video:true});
     return '<article class="card" data-sh="'+k+'">'+bl+'<div class="card-c"><h3>'+esc(v.tit)+'</h3>'+(v.txt?'<p>'+esc(v.txt.length>140?v.txt.slice(0,140)+'…':v.txt)+'</p>':'')+'<div class="meta">'+(v.sub?'<span>'+esc(v.sub)+'</span>':'')+'</div><div class="card-pe">'+btSh(k)+'</div></div></article>';
+  }).join('');
+}
+/* vídeos de campanhas enviados do computador (MP4, 16:9 ou 9:16) — aparecem inteiros, sem corte */
+function rCampanhas(){
+  var l=lista(D.campanhas).filter(function(v){return urlOk(v.url)&&!urlLocal(v.url)&&vivo(v);}).sort(function(a,b){return (b.ts||0)-(a.ts||0);});
+  so('campanhas',l.length>0);
+  document.getElementById('lista-campanhas').innerHTML=l.slice(0,6).map(function(v){
+    var m={src:v.url,tp:'video',thumb:v.thumb};
+    var k=reg({s:'campanha',id:v.ts?String(v.ts):idDe(v.tit,v.url),t:v.tit||'Campanha',d:v.dsc,img:capaDe(m),tipo:'Campanha',cta:'Toque para assistir',video:true});
+    return '<article class="card" data-sh="'+k+'">'+midiaBloco(m,v.tit).replace('class="midia"','class="midia'+(v.fmt==='9:16'?' fmt vert':'')+'"')+'<div class="card-c"><h3>'+esc(v.tit||'Campanha')+'</h3>'+(v.dsc?'<p>'+esc(v.dsc.length>160?v.dsc.slice(0,160)+'…':v.dsc)+'</p>':'')+'<div class="meta">'+(v.cat?'<span>'+ic('agenda','mi')+esc(v.cat)+'</span>':'')+'</div><div class="card-pe">'+btSh(k)+'</div></div></article>';
   }).join('');
 }
 function rInformativos(){
@@ -1395,7 +1411,7 @@ function tocarHero(i){
     _hv.lista.splice(_hv.i,1);if(!_hv.lista.length){h.classList.remove('com-video');v.classList.remove('on');slideFotos();}else tocarHero(_hv.i);};
   var p=v.play();if(p&&p.catch)p.catch(function(){v.classList.add('on');});
 }
-function render(){AGORA=Date.now();[rInfo,rFixos,rHeroVideo,rAgendaMes,calcProx,rDestaque,rHoje,rHorarios,rProximos,rMomentos,rPodcast,rTV,rAvisos,rEventos,rPalavras,rSermoes,rVideos,rInformativos,rFotos,rAniv,rLideres].forEach(function(f){try{f();}catch(e){console.warn(f.name,e);}});marcarPulsa();setTimeout(formatoTodos,50);}
+function render(){AGORA=Date.now();[rInfo,rFixos,rHeroVideo,rAgendaMes,calcProx,rDestaque,rHoje,rHorarios,rProximos,rMomentos,rPodcast,rTV,rAvisos,rEventos,rPalavras,rSermoes,rCampanhas,rVideos,rInformativos,rFotos,rAniv,rLideres].forEach(function(f){try{f();}catch(e){console.warn(f.name,e);}});marcarPulsa();setTimeout(formatoTodos,50);}
 
 /* ═════════ COMPARTILHAR ═════════
    Cada card tem um botão. Ele monta uma imagem bonita (1200×630) com a foto do próprio card,
@@ -1615,7 +1631,7 @@ function shRede(rede){
 }
 
 /* ── quem chega pelo link vai direto na publicação ── */
-var SEC_DE={podcast:'podcast',momentos:'momentos',hoje:'cultos',destaque:'destaque-sec',banner:'destaque-sec',agenda:'agenda',radio:'radio',tv:'tv',video:'tv',videos:'tv',avisos:'avisos',aviso:'avisos',eventos:'eventos',evento:'eventos',palavra:'palavra',palavras:'palavra',sermao:'sermoes-sec',info:'informativos-sec',foto:'fotos',galeria:'fotos',aniv:'aniv-sec',lider:'lideranca-sec',cultos:'cultos',culto:'cultos',versiculo:'versiculo',site:''};
+var SEC_DE={podcast:'podcast',momentos:'momentos',hoje:'cultos',destaque:'destaque-sec',banner:'destaque-sec',agenda:'agenda',radio:'radio',tv:'tv',video:'tv',videos:'tv',campanha:'campanhas',campanhas:'campanhas',avisos:'avisos',aviso:'avisos',eventos:'eventos',evento:'eventos',palavra:'palavra',palavras:'palavra',sermao:'sermoes-sec',info:'informativos-sec',foto:'fotos',galeria:'fotos',aniv:'aniv-sec',lider:'lideranca-sec',cultos:'cultos',culto:'cultos',versiculo:'versiculo',site:''};
 var _dl=(function(){try{var p=new URLSearchParams(location.search);var s=p.get('s');if(!s)return null;return {s:s,id:p.get('id')||'',n:0};}catch(e){return null;}})();
 var _pulsa=null;
 if(_dl){try{history.scrollRestoration='manual';}catch(e){}}
@@ -1750,7 +1766,7 @@ function enviarVisita(){var n=document.getElementById('vi-nome').value.trim(),e=
 function copiarPix(b){var c=document.getElementById('pix-chave').textContent.replace(/\D/g,'');(navigator.clipboard?navigator.clipboard.writeText(c):Promise.reject()).then(function(){b.textContent='Copiado ✓';setTimeout(function(){b.textContent='Copiar';},2000);}).catch(function(){prompt('Copie a chave PIX:',c);});}
 
 /* ── carregar dados (e atualizar sozinho quando algo novo é publicado) ── */
-var CHAVES=/^(info|banner_culto|proximos_cultos|horarios|avisos|eventos|palavras|sermoes|videos|cultos|informativos|galeria_fotos|galeria|aniversariantes|lideranca|obreiros|escala_agenda|escala_pro)$/;
+var CHAVES=/^(info|banner_culto|proximos_cultos|horarios|avisos|eventos|palavras|sermoes|videos|campanhas|cultos|informativos|galeria_fotos|galeria|aniversariantes|lideranca|obreiros|escala_agenda|escala_pro)$/;
 function guardar(){try{var leve={};Object.keys(D).forEach(function(k){if(CHAVES.test(k))leve[k]=D[k];});localStorage.setItem('obpc_site_cache',JSON.stringify(leve));}catch(e){}}
 function carregar(){
   return fetch(FB+'.json?t='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){D=d||{};document.getElementById('aviso-net').style.display='none';render();guardar();}).catch(function(){document.getElementById('aviso-net').style.display='block';});
@@ -1758,7 +1774,7 @@ function carregar(){
 /* escuta mudanças em tempo real (gravação nova no estúdio aparece na hora) */
 function escutar(){
   if(!window.EventSource)return;
-  ['videos','galeria','banner_culto','avisos','palavras','cultos'].forEach(function(k){try{var es=new EventSource(FB+'/'+k+'.json');var primeiro=true,t=null;function mudou(){if(primeiro){primeiro=false;return;}clearTimeout(t);t=setTimeout(carregar,1500);}es.addEventListener('put',mudou);es.addEventListener('patch',function(){primeiro=false;mudou();});es.onerror=function(){primeiro=true;};}catch(e){}});
+  ['videos','campanhas','galeria','banner_culto','avisos','palavras','cultos'].forEach(function(k){try{var es=new EventSource(FB+'/'+k+'.json');var primeiro=true,t=null;function mudou(){if(primeiro){primeiro=false;return;}clearTimeout(t);t=setTimeout(carregar,1500);}es.addEventListener('put',mudou);es.addEventListener('patch',function(){primeiro=false;mudou();});es.onerror=function(){primeiro=true;};}catch(e){}});
 }
 try{var c=JSON.parse(localStorage.getItem('obpc_site_cache')||'null');if(c)D=c;}catch(e){}
 render();irDeepLink(false);
