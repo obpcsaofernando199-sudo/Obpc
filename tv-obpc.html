@@ -6,7 +6,7 @@
 <title>TV OBPC Jd. São Fernando</title>
 <meta name="theme-color" content="#0F4A34">
 <meta name="description" content="Vídeos e fotos dos cultos da OBPC Jd. São Fernando">
-<meta property="og:title" content="TV OBPC Jd. São Fernando"><meta property="og:description" content="Vídeos e fotos dos nossos cultos"><meta property="og:image" content="https://obpcsaofernando199-sudo.github.io/Obpc/og-banner.png">
+<meta property="og:title" content="TV OBPC Jd. São Fernando"><meta property="og:description" content="Vídeos e fotos dos nossos cultos"><meta property="og:image" content="https://obpcsaofernando199-sudo.github.io/Obpc/og-site.jpg?v=2">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <script>try{var _t=localStorage.getItem('tvob_theme');if(_t)document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script>
 <style>
@@ -356,7 +356,15 @@ function frameFile(items,cb){let m=null;for(let i=0;i<items.length&&!m;i++){m=it
   if(!m||!window.fetch)return cb(null);
   fetch(poster(m.src).replace('w_480','w_1080')).then(r=>r.ok?r.blob():null).then(b=>{cb(b?new File([b],'video.jpg',{type:'image/jpeg'}):null);}).catch(()=>cb(null));}
 function shareWith(d,f){if(f&&navigator.canShare&&navigator.canShare({files:[f]}))d.files=[f];navigator.share(d).catch(()=>{});}
-function link(v){return SITE+'tv-obpc.html#'+v.id;}
+function link(v){return SITE+'?s=tv&id='+encodeURIComponent(v.id);}
+/* link curto com a imagem do próprio vídeo/foto (nunca a logo). Ao abrir, o site já vai direto no card e toca o vídeo. */
+const OGW='https://obpc-og.obpcsaofernando199.workers.dev';
+function hash53(str){let h1=0xdeadbeef,h2=0x41c6ce57;for(let i=0;i<str.length;i++){const ch=str.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);}h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);return (4294967296*(2097151&h2)+(h1>>>0)).toString(36);}
+function imgDe(lst){for(const v of lst){for(const m of (v.m||[])){if(m.k==='v'&&poster(m.src))return poster(m.src).replace('w_480','w_1200');if(m.k==='i'&&/^https?:/.test(m.src||''))return m.src;}}return SITE+'og-site.jpg?v=2';}
+function curto(rec){const code=hash53(JSON.stringify(rec)).slice(0,7),l=OGW+'/'+code;
+  return Promise.race([fetch(FB+'links/'+code+'.json',{method:'PUT',body:JSON.stringify(rec)}).then(r=>r.ok?l:rec.u),new Promise(r=>setTimeout(()=>r(rec.u),5000))]).catch(()=>rec.u);}
+function curtoItem(v){return curto({s:'tv',id:String(v.id),t:String(v.t||'TV OBPC').slice(0,120),d:String(v.r||'TV OBPC Jd. São Fernando').replace(/\s+/g,' ').slice(0,200),i:imgDe([v]),u:link(v)});}
+function curtoCanal(){return curto({s:'tv',id:'canal',t:'TV OBPC Jd. São Fernando',d:'Vídeos dos nossos cultos e a Palavra do Pastor. Assista agora!',i:imgDe(ITEMS.filter(temVideo).slice(0,5)),u:SITE+'?s=tv&id=canal'});}
 function cp(t){try{navigator.clipboard.writeText(t).then(()=>toast('Link copiado!'));}catch(e){toast(t);}}
 
 /* ---------- tela de assistir ---------- */
@@ -381,7 +389,7 @@ function show(v){
     +'<div class="act"><button class="b l" id="bl"></button><button class="b p" id="bw">✆ WhatsApp</button><button class="b r" id="bs">↗ Compartilhar</button><button class="b" id="bc">🔗 Copiar link</button><button class="b" onclick="goHome()">← Voltar</button></div>'
     +'<div class="ctl">'+(temVideo(v)?'<label>Velocidade <select id="sp" aria-label="Velocidade">'+opSp+'</select></label>':'')+'<label><input type="checkbox" id="au"'+(AUTO?' checked':'')+'> Reprodução automática</label></div>'
     +(v.r?'<div class="rel">'+esc(v.r)+'</div>':'')+'</div></div><aside class="side" id="side"></aside></div>';
-  const tx=(v.p?'🎤 ':'📺 ')+v.t+' — TV OBPC Jd. São Fernando',L=link(v);
+  const tx=(v.p?'🎤 ':'📺 ')+v.t+' — TV OBPC Jd. São Fernando';let L=link(v);curtoItem(v).then(l=>{L=l;});
   let PB=null;frameFile([v],f=>{PB=f;});
   $('bw').onclick=()=>{if(PB&&navigator.share&&navigator.canShare&&navigator.canShare({files:[PB]}))shareWith({title:v.t,text:tx+'\n'+L},PB);else window.open('https://wa.me/?text='+encodeURIComponent(tx+'\n'+L),'_blank');};
   $('bs').onclick=()=>{if(navigator.share)shareWith({title:v.t,text:tx+'\n'+L},PB);else cp(L);};
@@ -462,8 +470,8 @@ function onHash(){
     if(vinha)window.scrollTo(0,LASTY);
   }
 }
-function shareTV(){
-  const L=SITE+'tv-obpc.html',tx='📺 TV OBPC Jd. São Fernando — vídeos e fotos dos nossos cultos e a Palavra do Pastor',e=encodeURIComponent;
+async function shareTV(){
+  toast('Preparando o link…');const L=await curtoCanal(),tx='📺 TV OBPC Jd. São Fernando — vídeos e fotos dos nossos cultos e a Palavra do Pastor',e=encodeURIComponent;
   const ov=document.createElement('div');ov.className='ov';
   ov.innerHTML='<div class="sheet"><h3>Compartilhar a TV OBPC Jd. São Fernando</h3><p>Envie o link da TV para quem você quiser.</p><div class="opts"><a style="background:#25D366" target="_blank" rel="noopener" href="https://wa.me/?text='+e(tx+'\n'+L)+'">✆ WhatsApp</a><a style="background:#1877F2" target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u='+e(L)+'">f Facebook</a><a style="background:#2AABEE" target="_blank" rel="noopener" href="https://t.me/share/url?url='+e(L)+'&text='+e(tx)+'">➤ Telegram</a><button id="shc" style="background:var(--ac);color:var(--bg)">🔗 Copiar link</button>'+(navigator.share?'<button id="shm" style="background:#FF0000;grid-column:1/3">⋯ Mais apps</button>':'')+'</div><button class="x" id="shx">Fechar</button></div>';
   let TF=null;frameFile(ITEMS,f=>{TF=f;});document.body.appendChild(ov);
