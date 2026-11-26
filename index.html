@@ -583,6 +583,25 @@ footer li a{display:inline-flex;align-items:center}
 .tv-card .midia{border-bottom:5px solid #E2B04A}
 .card .midia .play{z-index:2}
 </style>
+<style id="redes-cores">
+/* 26/11/2026: botões das redes nas cores oficiais de cada rede (rodapé e "Vídeos das nossas redes") */
+.redes a.rd-yt,.redes a.rd-ig,.redes a.rd-fb{color:#fff;border:none;text-shadow:0 1px 1px rgba(0,0,0,.3);box-shadow:0 2px 0 rgba(0,0,0,.35),0 8px 18px rgba(0,0,0,.3)}
+.redes a.rd-yt{background:#FF0000}
+.redes a.rd-ig{background:radial-gradient(circle at 30% 107%,#fdf497 0%,#fdf497 5%,#fd5949 45%,#d6249f 60%,#285AEB 90%)}
+.redes a.rd-fb{background:#1877F2}
+.redes a.rd-yt:hover,.redes a.rd-ig:hover,.redes a.rd-fb:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.redes-grandes{justify-content:center;margin-top:1rem}
+.redes-grandes a{font-size:1rem;padding:.8rem 1.3rem;text-decoration:none}
+/* player que fica sempre passando os vídeos */
+.rtv-player{position:relative;max-width:820px;margin:0 auto;aspect-ratio:16/9;background:#000;border:5px solid #E2B04A;border-radius:20px;overflow:hidden;box-shadow:0 0 0 1px #9C6B1C,0 16px 30px -14px rgba(0,0,0,.9)}
+.rtv-player #rtv-tela,.rtv-player video,.rtv-player iframe{position:absolute;inset:0;width:100%;height:100%;border:0;object-fit:contain;background:#000}
+.rtv-som{position:absolute;right:10px;bottom:10px;z-index:3}
+.rtv-tit{text-align:center;margin:.7rem auto 0;font-weight:800;color:var(--txt2);max-width:820px}
+/* subir comprovante */
+.comp-up{margin-top:.9rem}
+.comp-bt{cursor:pointer;font-size:.95rem}
+.comp-msg{font-size:.85rem;margin-top:.5rem}
+</style>
 <style id="destaques-inicio">
 /* 23/11/2026: três botões em destaque (Bíblia, Harpa Cristã, Abrir agenda), no estilo dos atalhos do site */
 .destaques{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;margin-top:1.4rem}
@@ -848,6 +867,18 @@ footer li a{display:inline-flex;align-items:center}
     </div>
   </section>
 
+  <!-- VÍDEOS DAS NOSSAS REDES: um vídeo atrás do outro, sempre passando (sem som até a pessoa tocar) -->
+  <section class="sec revela" id="redes-tv" hidden>
+    <div class="sec-cab"><div class="cab-ic"><img class="ic3d sec-ic" src="icones/tv.webp" alt="" aria-hidden="true"><div><small><span class="pulso"></span>Passando agora</small><h2>Vídeos das nossas <em>redes</em></h2></div></div><a href="tv-obpc.html">Ver todos na TV OBPC →</a></div>
+    <div class="rtv-player"><div id="rtv-tela"></div><button class="bt bt-vidro bt-sm rtv-som" id="rtv-som" onclick="rtvSom()">🔇 Ligar o som</button></div>
+    <p class="rtv-tit" id="rtv-tit"></p>
+    <div class="redes redes-grandes">
+      <a class="rd-yt" data-rd="yt" href="https://www.youtube.com/@obpcjardimsaofernando4538" target="_blank" rel="noopener">▶ YouTube</a>
+      <a class="rd-ig" data-rd="ig" href="https://www.instagram.com/obpc.saofernando/" target="_blank" rel="noopener">◎ Instagram</a>
+      <a class="rd-fb" data-rd="fb" href="https://www.facebook.com/profile.php?id=61561313550152" target="_blank" rel="noopener">f Facebook</a>
+    </div>
+  </section>
+
   <!-- CONTRIBUA -->
   <section class="sec revela" id="contribua">
     <div class="pix">
@@ -856,6 +887,12 @@ footer li a{display:inline-flex;align-items:center}
         <p>Sua contribuição mantém a obra de Deus no Jd. São Fernando. Faça pelo PIX e envie o comprovante pelo WhatsApp.</p>
         <div class="chave"><div><small>Chave PIX (CNPJ) · Igreja Sede</small><b id="pix-chave">03.360.287/0001-59</b></div><button class="bt bt-ouro bt-sm" onclick="copiarPix(this)">Copiar</button></div>
         <a class="bt bt-wpp bt-sm" id="pix-wpp" href="https://wa.me/5511993509109?text=Ol%C3%A1!%20Segue%20o%20comprovante%20da%20minha%20contribui%C3%A7%C3%A3o%20%F0%9F%99%8F" target="_blank" rel="noopener">Enviar comprovante</a>
+        <!-- SUBIR COMPROVANTE: foto ou PDF do PIX. No celular abre o WhatsApp já com o arquivo; no computador sobe o arquivo e manda o link. -->
+        <div class="comp-up">
+          <label class="bt bt-ouro bt-sm comp-bt" for="comp-arq">📎 Subir comprovante (foto ou PDF)</label>
+          <input type="file" id="comp-arq" accept="image/*,application/pdf" hidden onchange="subirComprovante(this)">
+          <p class="comp-msg" id="comp-msg">Escolha a foto ou o PDF do comprovante do PIX. Ele vai para o WhatsApp da igreja.</p>
+        </div>
       </div>
       <blockquote>“Cada um dê conforme determinou em seu coração, não com tristeza nem por obrigação, pois Deus ama quem dá com alegria.”<cite>2 Coríntios 9:7</cite></blockquote>
     </div>
@@ -883,9 +920,9 @@ footer li a{display:inline-flex;align-items:center}
       <h4 id="rod-nome">OBPC Jd. São Fernando</h4>
       <p id="rod-sobre" style="max-width:420px">Igreja Evangélica Pentecostal O Brasil para Cristo. Uma família que ama a Palavra de Deus e acolhe você.</p>
       <div class="redes" style="margin-top:1rem">
-        <a id="rd-yt" href="https://www.youtube.com/@obpcjardimsaofernando4538" target="_blank" rel="noopener">▶ YouTube</a>
-        <a id="rd-ig" href="https://www.instagram.com/obpc.saofernando/" target="_blank" rel="noopener">◎ Instagram</a>
-        <a id="rd-fb" href="https://www.facebook.com/profile.php?id=61561313550152" target="_blank" rel="noopener">f Facebook</a>
+        <a id="rd-yt" class="rd-yt" href="https://www.youtube.com/@obpcjardimsaofernando4538" target="_blank" rel="noopener">▶ YouTube</a>
+        <a id="rd-ig" class="rd-ig" href="https://www.instagram.com/obpc.saofernando/" target="_blank" rel="noopener">◎ Instagram</a>
+        <a id="rd-fb" class="rd-fb" href="https://www.facebook.com/profile.php?id=61561313550152" target="_blank" rel="noopener">f Facebook</a>
       </div>
     </div>
     <div>
@@ -1345,6 +1382,53 @@ function rVideos(){
 /* vídeos de campanhas enviados do computador (MP4, 16:9 ou 9:16) — aparecem inteiros, sem corte */
 /* links dos canais da igreja (painel: aba YouTube e Facebook) */
 function rRedes(){var r=D.redes||{};['yt','fb','ig'].forEach(function(k){var a=document.getElementById('rd-'+k);if(a&&typeof r[k]==='string'&&/^https:\/\//.test(r[k]))a.href=r[k];});}
+/* os botões grandes de "Vídeos das nossas redes" usam os mesmos links do rodapé */
+function rRedes2(){var r=D.redes||{};document.querySelectorAll('[data-rd]').forEach(function(a){var k=a.getAttribute('data-rd');if(typeof r[k]==='string'&&/^https:\/\//.test(r[k]))a.href=r[k];});}
+/* ═════════ VÍDEOS DAS NOSSAS REDES (26/11/2026) ═════════
+   Fica sempre passando, um vídeo atrás do outro, sem som até a pessoa tocar em "Ligar o som".
+   Usa os vídeos da TV OBPC (Estúdio de Mídia e cultos).
+   Se um dia colocar o código do canal do YouTube (começa com UC) em YT_CANAL ou no Firebase (redes/yt_canal),
+   passa a mostrar também os vídeos do canal do YouTube, sozinhos, em sequência. */
+var YT_CANAL='UCBQW-TCMHcX2YHmULZtQGxQ';
+var _rtv={lista:[],i:0,ass:'',som:false,vis:true};
+function rRedesTV(){
+  var sec=document.getElementById('redes-tv'),tela=document.getElementById('rtv-tela');if(!sec||!tela)return;
+  var r=D.redes||{},canal=String(r.yt_canal||YT_CANAL||'').trim();
+  if(/^UC[A-Za-z0-9_-]{22}$/.test(canal)){
+    var ass='yt:'+canal;if(_rtv.ass===ass)return;_rtv.ass=ass;_rtv.lista=[];
+    sec.hidden=false;document.getElementById('rtv-som').hidden=true;document.getElementById('rtv-tit').textContent='Canal da igreja no YouTube';
+    tela.innerHTML='<iframe src="https://www.youtube.com/embed/videoseries?list=UU'+esc(canal.slice(2))+'&autoplay=1&mute=1&loop=1&playsinline=1&rel=0" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy" title="Vídeos do YouTube da igreja"></iframe>';
+    return;
+  }
+  var l=itensTV().filter(function(v){var s=v.m.src||v.m.url;return !v.aud&&(v.m.tp==='video'||ehVideo(s))&&urlOk(s);}).slice(0,12);
+  var ass2=l.map(function(v){return v.m.src||v.m.url;}).join('|');
+  if(!l.length){sec.hidden=true;_rtv.ass='';_rtv.lista=[];tela.innerHTML='';return;}
+  sec.hidden=false;if(_rtv.ass===ass2)return; /* nada mudou: não reinicia o vídeo que está passando */
+  _rtv.ass=ass2;_rtv.lista=l;_rtv.i=0;
+  tela.innerHTML='<video id="rtv-video" muted playsinline preload="metadata"></video>';
+  rtvTocar(0);
+}
+function rtvTocar(i){
+  var v=document.getElementById('rtv-video'),l=_rtv.lista;if(!v||!l.length)return;
+  _rtv.i=((i%l.length)+l.length)%l.length;var it=l[_rtv.i],src=it.m.src||it.m.url;
+  v.muted=!_rtv.som;v.loop=l.length===1;
+  var th=thumbVideo(src);if(th)v.poster=th;else v.removeAttribute('poster');
+  v.src=src;
+  document.getElementById('rtv-tit').textContent='▶ '+(it.t||'Vídeo OBPC')+(l.length>1?'  ·  '+(_rtv.i+1)+' de '+l.length:'');
+  v.onended=function(){rtvTocar(_rtv.i+1);};
+  v.onerror=function(){if(l.length>1)setTimeout(function(){rtvTocar(_rtv.i+1);},800);};
+  if(_rtv.vis){var p=v.play();if(p&&p.catch)p.catch(function(){});}
+}
+function rtvSom(){
+  var v=document.getElementById('rtv-video'),b=document.getElementById('rtv-som');if(!v)return;
+  _rtv.som=!_rtv.som;v.muted=!_rtv.som;b.textContent=_rtv.som?'🔊 Desligar o som':'🔇 Ligar o som';
+  var p=v.play();if(p&&p.catch)p.catch(function(){});
+}
+/* economiza internet e bateria: só passa quando o player está na tela */
+(function(){try{var sec=document.getElementById('redes-tv');if(!sec||!('IntersectionObserver' in window))return;
+  new IntersectionObserver(function(es){es.forEach(function(e){_rtv.vis=e.isIntersecting;var v=document.getElementById('rtv-video');if(!v)return;if(_rtv.vis&&!document.hidden){var p=v.play();if(p&&p.catch)p.catch(function(){});}else v.pause();});},{threshold:.25}).observe(sec);
+  document.addEventListener('visibilitychange',function(){var v=document.getElementById('rtv-video');if(!v)return;if(document.hidden)v.pause();else if(_rtv.vis){var p=v.play();if(p&&p.catch)p.catch(function(){});}});
+}catch(e){}})();
 function rCampanhas(){
   var l=lista(D.campanhas).filter(function(v){return urlOk(v.url)&&!urlLocal(v.url)&&vivo(v);}).sort(function(a,b){return (b.ts||0)-(a.ts||0);});
   so('campanhas',l.length>0);
@@ -1441,7 +1525,7 @@ function tocarHero(i){
     _hv.lista.splice(_hv.i,1);if(!_hv.lista.length){h.classList.remove('com-video');v.classList.remove('on');slideFotos();}else tocarHero(_hv.i);};
   var p=v.play();if(p&&p.catch)p.catch(function(){v.classList.add('on');});
 }
-function render(){AGORA=Date.now();[rInfo,rFixos,rHeroVideo,rAgendaMes,calcProx,rDestaque,rBannerCulto,rHoje,rHorarios,rProximos,rMomentos,rPodcast,rTV,rAvisos,rEventos,rPalavras,rSermoes,rCampanhas,rRedes,rVideos,rInformativos,rFotos,rAniv,rLideres].forEach(function(f){try{f();}catch(e){console.warn(f.name,e);}});marcarPulsa();setTimeout(formatoTodos,50);}
+function render(){AGORA=Date.now();[rInfo,rFixos,rHeroVideo,rAgendaMes,calcProx,rDestaque,rBannerCulto,rHoje,rHorarios,rProximos,rMomentos,rPodcast,rTV,rAvisos,rEventos,rPalavras,rSermoes,rCampanhas,rRedes,rRedes2,rRedesTV,rVideos,rInformativos,rFotos,rAniv,rLideres].forEach(function(f){try{f();}catch(e){console.warn(f.name,e);}});marcarPulsa();setTimeout(formatoTodos,50);}
 
 /* ═════════ COMPARTILHAR ═════════
    Cada card tem um botão. Ele monta uma imagem bonita (1200×630) com a foto do próprio card,
@@ -1799,6 +1883,32 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){fecharJanel
 function abrirWpp(t){window.open('https://wa.me/'+WPP+'?text='+encodeURIComponent(t),'_blank');}
 function enviarOracao(){var n=document.getElementById('or-nome').value.trim(),t=document.getElementById('or-txt').value.trim();if(!t){alert('Escreva o seu pedido de oração.');return;}abrirWpp('🙏 *PEDIDO DE ORAÇÃO*\n\n'+(n?'👤 '+n+'\n':'👤 Anônimo\n')+'\n'+t);}
 function enviarVisita(){var n=document.getElementById('vi-nome').value.trim(),e=document.getElementById('vi-end').value.trim();if(!n||!e){alert('Preencha o nome e o endereço.');return;}var d=document.getElementById('vi-dia').value,p=document.getElementById('vi-per').value,m=document.getElementById('vi-mot').value.trim();abrirWpp('🏠 *VISITA DO PASTOR*\n\n👤 '+n+'\n📍 '+e+(d?'\n📅 '+fmtData(d):'')+'\n🕐 '+p+(m?'\n📝 '+m:''));}
+/* ═════════ SUBIR COMPROVANTE DO PIX (26/11/2026) ═════════
+   No celular: abre a janela de compartilhar já com a foto/PDF (a pessoa escolhe o WhatsApp da igreja).
+   No computador: sobe o arquivo para a Cloudinary e abre o WhatsApp da igreja com o link do comprovante. */
+function numIgreja(){var a=document.getElementById('pix-wpp'),m=a&&/wa\.me\/(\d+)/.exec(a.href);return m?m[1]:'5511993509109';}
+function compMsg(t){var e=document.getElementById('comp-msg');if(e)e.innerHTML=t;}
+function subirComprovante(inp){
+  var f=inp.files&&inp.files[0];inp.value='';if(!f)return;
+  if(!/^image\//.test(f.type)&&f.type!=='application/pdf'&&!/\.pdf$/i.test(f.name)){compMsg('⚠️ Escolha uma <b>foto</b> ou um <b>PDF</b>.');return;}
+  if(f.size>15*1024*1024){compMsg('⚠️ Arquivo grande demais (máx. 15 MB). Tire um print da tela do comprovante e tente de novo.');return;}
+  var txt='Olá! Segue o comprovante da minha contribuição 🙏';
+  if(podeArquivo(f)){
+    navigator.share({files:[f],text:txt}).then(function(){compMsg('✅ Pronto! Obrigado pela sua contribuição. Deus abençoe!');},function(){compMsg('Se não enviou, toque de novo em <b>Subir comprovante</b> e escolha o WhatsApp.');});
+    compMsg('Escolha o <b>WhatsApp</b> e a conversa da igreja.');return;
+  }
+  compMsg('⏳ Enviando o comprovante… aguarde.');
+  var fd=new FormData();fd.append('file',f,f.name||'comprovante');fd.append('upload_preset',CLOUD.preset);fd.append('folder','obpc_comprovantes');
+  Promise.race([fetch('https://api.cloudinary.com/v1_1/'+CLOUD.nome+'/auto/upload',{method:'POST',body:fd}).then(function(r){return r.json();}).then(function(j){if(!j.secure_url)throw 0;return j.secure_url;}),new Promise(function(_,e){setTimeout(e,60000);})])
+  .then(function(u){
+    var w='https://wa.me/'+numIgreja()+'?text='+encodeURIComponent(txt+'\n'+u);
+    compMsg('✅ Comprovante enviado! <a class="bt bt-wpp bt-sm" href="'+esc(w)+'" target="_blank" rel="noopener">Abrir o WhatsApp da igreja</a>');
+    try{window.open(w,'_blank','noopener');}catch(e){}
+  },function(){
+    var w='https://wa.me/'+numIgreja()+'?text='+encodeURIComponent(txt);
+    compMsg('⚠️ Não deu para subir agora. <a class="bt bt-wpp bt-sm" href="'+esc(w)+'" target="_blank" rel="noopener">Abrir o WhatsApp</a> e anexe o comprovante pelo clipe 📎.');
+  });
+}
 function copiarPix(b){var c=document.getElementById('pix-chave').textContent.replace(/\D/g,'');(navigator.clipboard?navigator.clipboard.writeText(c):Promise.reject()).then(function(){b.textContent='Copiado ✓';setTimeout(function(){b.textContent='Copiar';},2000);}).catch(function(){prompt('Copie a chave PIX:',c);});}
 
 /* ── carregar dados (e atualizar sozinho quando algo novo é publicado) ── */
