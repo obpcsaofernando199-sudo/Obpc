@@ -544,6 +544,8 @@ footer li a{display:inline-flex;align-items:center}
 @keyframes toqueLogo{50%{transform:scale(.88);filter:brightness(1.4)}}
 .logo.toque{animation:toqueLogo .25s ease}
 .aniv-banner{position:relative;max-width:520px;margin:0 auto 1.4rem;border-radius:22px;overflow:hidden;border:1px solid rgba(242,193,78,.35);box-shadow:0 2px 2px rgba(0,0,0,.3),0 24px 60px -18px rgba(0,0,0,.8)}
+.bculto-banner{position:relative;max-width:400px;margin:0 auto;border-radius:22px;overflow:hidden;border:1px solid rgba(242,193,78,.35);box-shadow:0 2px 2px rgba(0,0,0,.3),0 24px 60px -18px rgba(0,0,0,.8)}
+.bculto-banner img{width:100%;aspect-ratio:9/16;object-fit:cover;cursor:zoom-in;display:block}
 .aniv-banner img{width:100%;aspect-ratio:4/5;object-fit:cover;cursor:zoom-in;display:block}
 </style>
 <style id="midia-charme">
@@ -734,6 +736,12 @@ footer li a{display:inline-flex;align-items:center}
   <section class="sec revela" id="destaque-sec" hidden>
     <div class="sec-cab"><div class="cab-ic"><img class="ic3d sec-ic" src="icones/estrela.webp" alt="" aria-hidden="true"><div><small>Não perca</small><h2>Destaque do <em>mês</em></h2></div></div></div>
     <div id="destaque"></div>
+  </section>
+
+  <!-- BANNER DO CULTO (feito em Ferramentas > Banners de culto) -->
+  <section class="sec revela" id="bculto-sec" hidden>
+    <div class="sec-cab"><div class="cab-ic"><img class="ic3d sec-ic" src="icones/estrela.webp" alt="" aria-hidden="true"><div><small>Você é nosso convidado</small><h2>Banner do <em>culto</em></h2></div></div></div>
+    <div id="bculto"></div>
   </section>
 
   <!-- CULTOS -->
@@ -1073,6 +1081,15 @@ function rDestaque(){
   var vert0=/shorts\//.test(b.bgUrl||'')||b.fmt==='9:16'||b.bgFmt==='9:16';
   var md=bg?'<div class="dq-midia'+(vert0?' vert':'')+'"'+(img?' style="--fundo:url(&quot;'+esc(img)+'&quot;)"':'')+'>'+bg.replace('class="destaque-bg"','class="dq-el"')+'</div>':'';
   box.innerHTML='<div class="destaque'+(md?' dq':'')+(vert0?' vert':'')+'" data-sh="'+k+'">'+(md||'<div class="destaque-ov"></div>')+'<div class="destaque-c">'+(b.badge?'<span class="selo">'+esc(b.badge)+'</span>':'')+(b.titulo?'<h3>'+esc(b.titulo)+'</h3>':'')+(b.subtit?'<p>'+esc(b.subtit)+'</p>':'')+(meta.length?'<div class="meta" style="color:var(--txt2)">'+meta.map(function(m){return '<span>'+m+'</span>';}).join('')+'</div>':'')+'<div style="margin-top:1.1rem;display:flex;gap:.6rem;flex-wrap:wrap;align-items:center">'+(b.cta?'<a class="bt bt-ouro bt-sm" href="#cultos">'+esc(b.cta)+'</a>':'')+btSh(k)+'</div></div></div>';
+}
+
+/* ── banner do culto (Ferramentas > Banners de culto) ── */
+function rBannerCulto(){
+  var b=D.banner_culto_img,ok=!!(b&&b.visivel!==false&&urlOk(b.img));so('bculto-sec',ok);var bx=document.getElementById('bculto');
+  if(!ok){bx.innerHTML='';return;}
+  var t=b.titulo||'Culto',d=[b.dia,b.data,b.horario].filter(Boolean).join(' · ');
+  var k=reg({s:'bculto',id:'banner-'+(b.ts||0),t:t,d:d||b.versiculo||'Venha adorar conosco!',img:b.img,tipo:'Culto',cta:'Venha participar',foto:b.img});
+  bx.innerHTML='<figure class="bculto-banner" data-sh="'+k+'"><img src="'+esc(b.img)+'" alt="'+esc(t+(d?' — '+d:''))+'" loading="lazy" onclick="abrirFoto(this.src)">'+btSh(k,'canto')+'</figure>';
 }
 
 /* ── agenda do mês (destaque) ── */
@@ -1422,7 +1439,7 @@ function tocarHero(i){
     _hv.lista.splice(_hv.i,1);if(!_hv.lista.length){h.classList.remove('com-video');v.classList.remove('on');slideFotos();}else tocarHero(_hv.i);};
   var p=v.play();if(p&&p.catch)p.catch(function(){v.classList.add('on');});
 }
-function render(){AGORA=Date.now();[rInfo,rFixos,rHeroVideo,rAgendaMes,calcProx,rDestaque,rHoje,rHorarios,rProximos,rMomentos,rPodcast,rTV,rAvisos,rEventos,rPalavras,rSermoes,rCampanhas,rRedes,rVideos,rInformativos,rFotos,rAniv,rLideres].forEach(function(f){try{f();}catch(e){console.warn(f.name,e);}});marcarPulsa();setTimeout(formatoTodos,50);}
+function render(){AGORA=Date.now();[rInfo,rFixos,rHeroVideo,rAgendaMes,calcProx,rDestaque,rBannerCulto,rHoje,rHorarios,rProximos,rMomentos,rPodcast,rTV,rAvisos,rEventos,rPalavras,rSermoes,rCampanhas,rRedes,rVideos,rInformativos,rFotos,rAniv,rLideres].forEach(function(f){try{f();}catch(e){console.warn(f.name,e);}});marcarPulsa();setTimeout(formatoTodos,50);}
 
 /* ═════════ COMPARTILHAR ═════════
    Cada card tem um botão. Ele monta uma imagem bonita (1200×630) com a foto do próprio card,
@@ -1642,7 +1659,7 @@ function shRede(rede){
 }
 
 /* ── quem chega pelo link vai direto na publicação ── */
-var SEC_DE={podcast:'podcast',momentos:'momentos',hoje:'cultos',destaque:'destaque-sec',banner:'destaque-sec',agenda:'agenda',radio:'radio',tv:'tv',video:'tv',videos:'tv',campanha:'campanhas',campanhas:'campanhas',avisos:'avisos',aviso:'avisos',eventos:'eventos',evento:'eventos',palavra:'palavra',palavras:'palavra',sermao:'sermoes-sec',info:'informativos-sec',foto:'fotos',galeria:'fotos',aniv:'aniv-sec',lider:'lideranca-sec',cultos:'cultos',culto:'cultos',versiculo:'versiculo',site:''};
+var SEC_DE={podcast:'podcast',momentos:'momentos',hoje:'cultos',destaque:'destaque-sec',bculto:'bculto-sec',banner:'destaque-sec',agenda:'agenda',radio:'radio',tv:'tv',video:'tv',videos:'tv',campanha:'campanhas',campanhas:'campanhas',avisos:'avisos',aviso:'avisos',eventos:'eventos',evento:'eventos',palavra:'palavra',palavras:'palavra',sermao:'sermoes-sec',info:'informativos-sec',foto:'fotos',galeria:'fotos',aniv:'aniv-sec',lider:'lideranca-sec',cultos:'cultos',culto:'cultos',versiculo:'versiculo',site:''};
 var _dl=(function(){try{var p=new URLSearchParams(location.search);var s=p.get('s');if(!s)return null;return {s:s,id:p.get('id')||'',n:0};}catch(e){return null;}})();
 var _pulsa=null;
 if(_dl){try{history.scrollRestoration='manual';}catch(e){}}
@@ -1783,7 +1800,7 @@ function enviarVisita(){var n=document.getElementById('vi-nome').value.trim(),e=
 function copiarPix(b){var c=document.getElementById('pix-chave').textContent.replace(/\D/g,'');(navigator.clipboard?navigator.clipboard.writeText(c):Promise.reject()).then(function(){b.textContent='Copiado ✓';setTimeout(function(){b.textContent='Copiar';},2000);}).catch(function(){prompt('Copie a chave PIX:',c);});}
 
 /* ── carregar dados (e atualizar sozinho quando algo novo é publicado) ── */
-var CHAVES=/^(info|banner_culto|proximos_cultos|horarios|avisos|eventos|palavras|sermoes|videos|campanhas|redes|banner_aniversario|cultos|informativos|galeria_fotos|galeria|aniversariantes|lideranca|obreiros|escala_agenda|escala_pro)$/;
+var CHAVES=/^(info|banner_culto|banner_culto_img|proximos_cultos|horarios|avisos|eventos|palavras|sermoes|videos|campanhas|redes|banner_aniversario|cultos|informativos|galeria_fotos|galeria|aniversariantes|lideranca|obreiros|escala_agenda|escala_pro)$/;
 function guardar(){try{var leve={};Object.keys(D).forEach(function(k){if(CHAVES.test(k))leve[k]=D[k];});localStorage.setItem('obpc_site_cache',JSON.stringify(leve));}catch(e){}}
 function carregar(){
   return fetch(FB+'.json?t='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){D=d||{};document.getElementById('aviso-net').style.display='none';render();guardar();}).catch(function(){document.getElementById('aviso-net').style.display='block';});
@@ -1791,7 +1808,7 @@ function carregar(){
 /* escuta mudanças em tempo real (gravação nova no estúdio aparece na hora) */
 function escutar(){
   if(!window.EventSource)return;
-  ['videos','campanhas','galeria','banner_culto','avisos','palavras','cultos'].forEach(function(k){try{var es=new EventSource(FB+'/'+k+'.json');var primeiro=true,t=null;function mudou(){if(primeiro){primeiro=false;return;}clearTimeout(t);t=setTimeout(carregar,1500);}es.addEventListener('put',mudou);es.addEventListener('patch',function(){primeiro=false;mudou();});es.onerror=function(){primeiro=true;};}catch(e){}});
+  ['videos','campanhas','galeria','banner_culto','banner_culto_img','avisos','palavras','cultos'].forEach(function(k){try{var es=new EventSource(FB+'/'+k+'.json');var primeiro=true,t=null;function mudou(){if(primeiro){primeiro=false;return;}clearTimeout(t);t=setTimeout(carregar,1500);}es.addEventListener('put',mudou);es.addEventListener('patch',function(){primeiro=false;mudou();});es.onerror=function(){primeiro=true;};}catch(e){}});
 }
 try{var c=JSON.parse(localStorage.getItem('obpc_site_cache')||'null');if(c)D=c;}catch(e){}
 render();irDeepLink(false);

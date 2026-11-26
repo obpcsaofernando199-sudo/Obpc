@@ -164,7 +164,10 @@
 <div class="btns" style="margin-top:10px;">
   <button class="act publish" id="btnPublicar">🌐 Publicar no Site</button>
 </div>
-<p class="note" id="notaPublicar" style="display:none;color:#8fd9c4;">✅ Publicado! Esse banner já está no "Destaque do Mês" do site.</p>
+<div class="btns" style="margin-top:10px;">
+  <button class="act" id="btnTirar" style="background:transparent;border:1px solid rgba(214,178,102,.45);color:#F2DCA4">🗑️ Tirar banner do site</button>
+</div>
+<p class="note" id="notaPublicar" style="display:none;color:#8fd9c4;">✅ Publicado! O banner já aparece no site, na parte "Banner do culto" (logo abaixo do Destaque do mês).</p>
 <p class="note" id="nota">A imagem é gerada na hora, direto no navegador. O botão Compartilhar envia o arquivo de imagem (não texto) para WhatsApp e outras redes.</p>
 
 <script src="banner3d.js"></script>
@@ -393,20 +396,20 @@ document.getElementById('btnPublicar').addEventListener('click', async ()=>{
     const url = data.secure_url;
     const audioUrlFinal = document.getElementById('audioUrl').value.trim();
 
+    const vv=id=>document.getElementById(id).value.trim();
     const dados = {
-      badge:'', titulo:'', subtit:'', dt:'', hora:'', local:'', cta:'',
-      cor:'#D4A843', tpl:'', bgUrl:url, bgTp:'img', bgFmt:'9:16',
-      ov1:'#0a1e35', ov2:'#1E3A5F', opac:75, ts: Date.now(),
-      audioUrl: audioUrlFinal, audioLoop:true, audioVol:0.5
+      img:url, titulo:THEMES[temaAtual].titulo, dia:vv('dia'), data:vv('data'), horario:vv('horario'), local:vv('local'),
+      versiculo:vv('versiculo'), referencia:vv('referencia'), tema:temaAtual, visivel:true, ts: Date.now(),
+      audioUrl: audioUrlFinal
     };
-    const resp2 = await fetch('https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com/obpc/banner_culto.json', {
+    const resp2 = await fetch('https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com/obpc/banner_culto_img.json', {
       method:'PUT',
       body: JSON.stringify(dados),
       headers: {'Content-Type':'application/json'}
     });
     if(!resp2.ok) throw new Error('servidor recusou ('+resp2.status+')');
     // confere se o servidor realmente guardou
-    const conf = await (await fetch('https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com/obpc/banner_culto.json?x='+Date.now(), {cache:'no-store'})).json();
+    const conf = await (await fetch('https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com/obpc/banner_culto_img.json?x='+Date.now(), {cache:'no-store'})).json();
     if(!conf || conf.ts !== dados.ts) throw new Error('o servidor não confirmou');
 
     btn.textContent = '✅ Publicado!';
@@ -417,6 +420,15 @@ document.getElementById('btnPublicar').addEventListener('click', async ()=>{
     btn.textContent = original;
     alert('Não foi publicado: '+(e&&e.message?e.message:'sem conexão')+'. Verifique a internet e tente de novo.');
   }
+});
+
+document.getElementById('btnTirar').addEventListener('click', async ()=>{
+  if(!confirm('Tirar o banner do culto do site?')) return;
+  try{
+    const r = await fetch('https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com/obpc/banner_culto_img.json', {method:'DELETE'});
+    if(!r.ok) throw new Error('servidor recusou ('+r.status+')');
+    alert('Pronto! O banner do culto saiu do site.');
+  }catch(e){ alert('Não foi possível tirar: '+(e&&e.message?e.message:'sem conexão')); }
 });
 
 if(document.fonts && document.fonts.ready){
