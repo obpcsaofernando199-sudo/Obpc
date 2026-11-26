@@ -164,32 +164,56 @@ function aniversario(cv,o){
   });
 }
 
-/* ═══ CULTO (1080×1920) ═══ */
+/* ═══ CULTO (1080×1920) ═══
+   Cada culto tem visual próprio: cores do fundo, da luz, das bolinhas de luz e do metal do título.
+   topo = palavra pequena acima do título; sub = frase abaixo do título. Sempre só Bíblia ao fundo. */
+var ESTILOS={
+  celebracao:{topo:'CULTO DE',sub:'Venha celebrar ao Senhor conosco',c1:'#2A1A06',c2:'#0B0702',luz:'#FFC94D',bk:['#FFD36B','#FFB03A','#FFF0B8'],nBk:34,pal:'OURO'},
+  familia:{topo:'CULTO DA',sub:'Traga toda a sua família',c1:'#2B1A10',c2:'#0C0704',luz:'#F0B070',bk:['#F5C08A','#E89A55','#FFE2B8'],nBk:22,pal:'OURO'},
+  ensino:{topo:'CULTO DE',sub:'Crescendo na Palavra de Deus',c1:'#14223F',c2:'#050914',luz:'#F2C14E',bk:['#F2C14E','#FFE29A'],nBk:16,pal:'OURO'},
+  estudo:{topo:'QUARTA-FEIRA',sub:'Abra a sua Bíblia e venha aprender',c1:'#1C2A2E',c2:'#060B0C',luz:'#F4D7A0',bk:['#F4D7A0','#D9B77A'],nBk:12,pal:'OURO'},
+  qoracao:{topo:'QUARTA-FEIRA',sub:'Buscando a face de Deus',c1:'#141A3A',c2:'#04050F',luz:'#AFC2FF',bk:['#AFC2FF','#E3E8FF','#7F95E0'],nBk:20,pal:'PRATA'},
+  oracao:{topo:'CULTO DE',sub:'Buscando a face de Deus',c1:'#141A3A',c2:'#04050F',luz:'#AFC2FF',bk:['#AFC2FF','#E3E8FF'],nBk:20,pal:'PRATA'},
+  quarta:{topo:'QUARTA-FEIRA',sub:'Uma noite de adoração',c1:'#251238',c2:'#0A0414',luz:'#D8B4E8',bk:['#D8B4E8','#B58AE0','#FFE29A'],nBk:28,pal:'OURO'},
+  louvor:{topo:'CULTO DE',sub:'Cante ao Senhor um cântico novo',c1:'#2E1608',c2:'#0D0602',luz:'#E9C877',bk:['#E9C877','#FFB45A','#FFF0C0'],nBk:36,pal:'OURO'},
+  ceia:{topo:'CULTO DE',sub:'Fazei isto em memória de mim',c1:'#2A0B12',c2:'#0D0306',luz:'#E9C877',bk:['#E9C877','#B0485A'],nBk:14,pal:'OURO'},
+  missoes:{topo:'CULTO DE',sub:'Ide por todo o mundo',c1:'#0E2B26',c2:'#03100D',luz:'#8FD9C4',bk:['#8FD9C4','#F2C14E'],nBk:22,pal:'OURO'},
+  jubrac:{topo:'JUBRAC',sub:'Juventude que adora a Deus',c1:'#3A0D22',c2:'#0E0308',luz:'#FF7A3D',bk:['#FF7A3D','#FF3D7F','#FFD36B'],nBk:44,pal:'OURO'},
+  menibrac:{topo:'MENIBRAC',sub:'Deixai vir a mim as crianças',c1:'#0D2A44',c2:'#04101C',luz:'#FFE08A',bk:['#FFE08A','#6FD3FF','#FF8FC7','#9BF07A'],nBk:46,pal:'OURO'},
+  ufebrac:{topo:'UFEBRAC',sub:'Mulheres que servem ao Senhor',c1:'#3A1028',c2:'#10040B',luz:'#F3B6C9',bk:['#F3B6C9','#E58AAE','#FFE0EA'],nBk:30,pal:'ROSE'},
+  umasbrac:{topo:'UMASBRAC',sub:'Homens de fé e de oração',c1:'#14202E',c2:'#04070B',luz:'#B9C6D8',bk:['#B9C6D8','#7E93AE'],nBk:14,pal:'PRATA'},
+  especial:{topo:'CULTO',sub:'Você é nosso convidado',c1:'#121B36',c2:'#04060E',luz:'#F2C14E',bk:['#F2C14E','#FFE29A'],nBk:22,pal:'OURO'}
+};
 var MESES=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
 function culto(cv,o){
-  o=o||{};var W=cv.width,H=cv.height,g=cv.getContext('2d'),cor=o.cor||'#F2C14E',seed=hashStr((o.titulo||'')+(o.tema||''));
+  o=o||{};var es=ESTILOS[o.tema]||ESTILOS.especial,PAL={OURO:OURO,ROSE:ROSE,PRATA:PRATA}[es.pal]||OURO;
+  var W=cv.width,H=cv.height,g=cv.getContext('2d'),cor=es.luz||o.cor||'#F2C14E',seed=hashStr((o.titulo||'')+(o.tema||''));
+  var topo=o.topo!=null?o.topo:es.topo,sub=o.sub!=null?o.sub:es.sub,t1=hexRgb(es.c1),t2=hexRgb(es.c2);
+  function tint(a,c){c=c||t2;return 'rgba('+c[0]+','+c[1]+','+c[2]+','+a+')';}
   var fotoUrl=o.fundo||BIBLIAS[seed%BIBLIAS.length];
   return Promise.all([fontesProntas(),carregar(fotoUrl).catch(function(){return null;})]).then(function(r){
     var bib=r[1];
-    var bg=g.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#121B36');bg.addColorStop(1,'#04060E');g.fillStyle=bg;g.fillRect(0,0,W,H);
+    var bg=g.createLinearGradient(0,0,0,H);bg.addColorStop(0,es.c1);bg.addColorStop(1,es.c2);g.fillStyle=bg;g.fillRect(0,0,W,H);
     if(bib){
       // Bíblia aberta: nítida no meio, desfocada em volta (profundidade de câmera)
       fotoDesfocada(g,bib,W,H,2.2);
       g.save();var m=g.createLinearGradient(0,H*.18,0,H*.72);m.addColorStop(0,'rgba(0,0,0,0)');m.addColorStop(.35,'rgba(0,0,0,1)');m.addColorStop(.75,'rgba(0,0,0,1)');m.addColorStop(1,'rgba(0,0,0,0)');
       var c=document.createElement('canvas');c.width=W;c.height=H;var cg=c.getContext('2d');fotoNitida(cg,bib,0,0,W,H);cg.globalCompositeOperation='destination-in';cg.fillStyle=m;cg.fillRect(0,0,W,H);g.globalAlpha=.85;g.drawImage(c,0,0);g.restore();
-      var esc=g.createLinearGradient(0,0,0,H);esc.addColorStop(0,'rgba(4,6,14,.82)');esc.addColorStop(.3,'rgba(4,6,14,.45)');esc.addColorStop(.62,'rgba(4,6,14,.55)');esc.addColorStop(1,'rgba(4,6,14,.95)');g.fillStyle=esc;g.fillRect(0,0,W,H);
-    }else{bokeh(g,W,H,40,seed,[cor,'#FFE29A','#C8902E'],0,H);}
+      var esc=g.createLinearGradient(0,0,0,H);esc.addColorStop(0,tint(.84,t1));esc.addColorStop(.3,tint(.5,t1));esc.addColorStop(.62,tint(.58));esc.addColorStop(1,tint(.95));g.fillStyle=esc;g.fillRect(0,0,W,H);
+    }else{bokeh(g,W,H,40,seed,es.bk,0,H);}
     luz(g,W,H,cor,-60);
-    bokeh(g,W,H,18,seed+3,[cor,'#FFE29A'],0,H*.35);
+    bokeh(g,W,H,es.nBk||18,seed+3,es.bk,0,H*.42);
+    bokeh(g,W,H,Math.round((es.nBk||18)/2),seed+7,es.bk,H*.62,H);
     vinheta(g,W,H,.65);
     // topo
-    espacado(g,'CULTO',W/2,260,"700 40px 'Manrope'",OURO[1],18);
-    filete(g,W/2,300,420);
+    if(topo){espacado(g,String(topo).toUpperCase(),W/2,260,"800 40px 'Manrope'",PAL[1],16);filete(g,W/2,300,420,PAL);}
     // título em relevo
     var tit=String(o.titulo||'CULTO').toUpperCase();
     g.font="900 10px 'Cinzel'";var palavras=tit.split(/\s+/),linhas=[],tam=150;
     while(tam>70){g.font="900 "+tam+"px 'Cinzel'";linhas=juntarCurtas(quebrar(g,tit,W*.86));if(linhas.length<=3&&linhas.every(function(l){return g.measureText(l).width<=W*.88;}))break;tam-=6;}
-    var y=420+tam*.8;linhas.forEach(function(l){texto3D(g,l,W/2,y,"900 "+tam+"px 'Cinzel'",tam,{});y+=tam*1.12;});
+    var y=420+tam*.8;linhas.forEach(function(l){texto3D(g,l,W/2,y,"900 "+tam+"px 'Cinzel'",tam,{paleta:PAL});y+=tam*1.12;});
+    if(sub){g.save();g.textAlign='center';g.font="italic 500 50px 'EB Garamond'";g.fillStyle=rgba(cor,.95);g.shadowColor='rgba(0,0,0,.7)';g.shadowBlur=12;
+      var sl=quebrar(g,String(sub),W*.8).slice(0,2);sl.forEach(function(l,i){g.fillText(l,W/2,y+6+i*58);});g.restore();y+=sl.length*58+10;}
     // versículo
     var vers=String(o.versiculo||'').trim(),ref=String(o.referencia||'').trim();
     if(vers){g.font="italic 500 46px 'EB Garamond'";var vl=quebrar(g,'“'+vers.replace(/^["“]|["”]$/g,'')+'”',W*.74).slice(0,4);
@@ -199,11 +223,11 @@ function culto(cv,o){
     // bloco de data/hora
     var data=String(o.data||'').trim(),dia='',mes='';var md=data.match(/^(\d{1,2})[\/\-.](\d{1,2})/);if(md){dia=String(+md[1]);mes=MESES[(+md[2]-1)%12]||'';}
     var by=H-470,bh=320;placa(g,W*.06,by,W*.88,bh,40,cor);
-    var temMed=!!dia;if(temMed)medalhaData(g,W*.06+170,by+bh/2,118,dia,mes);
+    var temMed=!!dia;if(temMed)medalhaData(g,W*.06+170,by+bh/2,118,dia,mes,PAL);
     var tx=temMed?W*.06+330:W/2,al=temMed?'left':'center';
     g.save();g.textAlign=al;g.fillStyle='#FFFFFF';g.font="800 64px 'Manrope'";g.shadowColor='rgba(0,0,0,.6)';g.shadowBlur=10;
     var diaSem=String(o.dia||'').trim();g.fillText(diaSem||'Venha adorar',tx,by+118);
-    g.font="800 58px 'Manrope'";g.fillStyle=OURO[1];var hr=String(o.horario||'').trim();if(hr)g.fillText('às '+hr.replace(/^às\s*/i,''),tx,by+196);
+    g.font="800 58px 'Manrope'";g.fillStyle=PAL[1];var hr=String(o.horario||'').trim();if(hr)g.fillText('às '+hr.replace(/^às\s*/i,''),tx,by+196);
     var loc=String(o.local||'').trim();if(loc){g.font="600 30px 'Manrope'";g.fillStyle='rgba(244,241,234,.8)';var ll=quebrar(g,loc,temMed?W*.5:W*.78).slice(0,2);ll.forEach(function(l,i){g.fillText(l,tx,by+250+i*38);});}
     g.restore();
     // rodapé
@@ -212,5 +236,5 @@ function culto(cv,o){
     return cv;
   });
 }
-window.Banner3D={aniversario:aniversario,culto:culto};
+window.Banner3D={aniversario:aniversario,culto:culto,estilos:ESTILOS};
 })();
