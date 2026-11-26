@@ -1394,7 +1394,10 @@ var _rtv={lista:[],i:0,ass:'',som:false,vis:true};
 function rRedesTV(){
   var sec=document.getElementById('redes-tv'),tela=document.getElementById('rtv-tela');if(!sec||!tela)return;
   var r=D.redes||{},canal=String(r.yt_canal||YT_CANAL||'').trim();
-  if(/^UC[A-Za-z0-9_-]{22}$/.test(canal)){
+  /* primeiro os vídeos da própria igreja (cultos e Estúdio): no celular eles tocam sozinhos sem falhar.
+     O YouTube só entra quando não houver nenhum, porque o celular muitas vezes não deixa o YouTube começar sozinho. */
+  var proprios=itensTV().some(function(v){var s=v.m.src||v.m.url;return !v.aud&&(v.m.tp==='video'||ehVideo(s))&&urlOk(s);});
+  if(!proprios&&/^UC[A-Za-z0-9_-]{22}$/.test(canal)){
     var ass='yt:'+canal;if(_rtv.ass===ass)return;_rtv.ass=ass;_rtv.lista=[];
     sec.hidden=false;document.getElementById('rtv-som').hidden=true;document.getElementById('rtv-tit').textContent='Canal da igreja no YouTube';
     tela.innerHTML='<iframe src="https://www.youtube.com/embed/videoseries?list=UU'+esc(canal.slice(2))+'&autoplay=1&mute=1&loop=1&playsinline=1&rel=0" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy" title="Vídeos do YouTube da igreja"></iframe>';
@@ -1404,8 +1407,8 @@ function rRedesTV(){
   var ass2=l.map(function(v){return v.m.src||v.m.url;}).join('|');
   if(!l.length){sec.hidden=true;_rtv.ass='';_rtv.lista=[];tela.innerHTML='';return;}
   sec.hidden=false;if(_rtv.ass===ass2)return; /* nada mudou: não reinicia o vídeo que está passando */
-  _rtv.ass=ass2;_rtv.lista=l;_rtv.i=0;
-  tela.innerHTML='<video id="rtv-video" muted playsinline preload="metadata"></video>';
+  _rtv.ass=ass2;document.getElementById('rtv-som').hidden=false;_rtv.lista=l;_rtv.i=0;
+  tela.innerHTML='<video id="rtv-video" muted autoplay playsinline preload="metadata"></video>';
   rtvTocar(0);
 }
 function rtvTocar(i){
