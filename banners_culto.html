@@ -74,7 +74,7 @@ input:focus{outline:2px solid var(--ouro);outline-offset:1px}
 </style>
 </head>
 <body>
-<header class="topo"><a href="painel.html" onclick="if(window.opener){window.close();return false;}">← Painel</a><h1>Gerar banner</h1></header>
+<header class="topo"><a href="painel.html" onclick="if(window.opener){window.close();return false;}">← Painel</a><h1>Gerar banner</h1><span data-versao hidden style="font-size:.72rem;font-weight:700;color:#F2C14E;border:1px solid rgba(242,193,78,.45);padding:3px 9px;border-radius:999px;white-space:nowrap"></span></header>
 <main class="wrap">
 
 <p class="intro">Preencha os 2 passos e toque em <b>Gerar banner</b>.</p>
@@ -265,5 +265,6 @@ $('tirarDest').onclick=async()=>{if(!confirm('Tirar o Destaque do mês do site?'
 verNoSite();
 if(document.fonts&&document.fonts.load){document.fonts.load("900 100px 'Cinzel'");document.fonts.load("italic 40px 'EB Garamond'");}
 </script>
+<script src="versao.js" defer></script>
 </body>
 </html>

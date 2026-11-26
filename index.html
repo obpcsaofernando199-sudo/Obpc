@@ -590,6 +590,7 @@ footer li a{display:inline-flex;align-items:center}
 .redes a.rd-ig{background:radial-gradient(circle at 30% 107%,#fdf497 0%,#fdf497 5%,#fd5949 45%,#d6249f 60%,#285AEB 90%)}
 .redes a.rd-fb{background:#1877F2}
 .redes a.rd-yt:hover,.redes a.rd-ig:hover,.redes a.rd-fb:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.topo-nome .versao{display:table;text-transform:none;margin-top:2px;font-size:.66rem;font-weight:700;color:#F2C14E;border:1px solid rgba(242,193,78,.4);border-radius:999px;padding:0 7px;letter-spacing:.2px;width:max-content}
 .redes-grandes{justify-content:center;margin-top:1rem}
 .redes-grandes a{font-size:1rem;padding:.8rem 1.3rem;text-decoration:none}
 /* player que fica sempre passando os vídeos */
@@ -650,7 +651,7 @@ footer li a{display:inline-flex;align-items:center}
 <header class="topo">
   <div class="topo-in">
     <div class="logo" id="logo" title="OBPC Jd. São Fernando" role="img" aria-label="Logo da igreja"><svg><use href="#biblia-icone"/></svg></div>
-    <div class="topo-nome"><b id="topo-nome">OBPC Jd. São Fernando</b><small>O Brasil para Cristo</small></div>
+    <div class="topo-nome"><b id="topo-nome">OBPC Jd. São Fernando</b><small>O Brasil para Cristo</small><small class="versao" data-versao hidden></small></div>
     <button class="topo-radio" onclick="radioTocar()"><span class="pulso"></span>Rádio ao vivo</button>
   </div>
   <nav class="menu" aria-label="Seções do site">
@@ -872,11 +873,6 @@ footer li a{display:inline-flex;align-items:center}
     <div class="sec-cab"><div class="cab-ic"><img class="ic3d sec-ic" src="icones/tv.webp" alt="" aria-hidden="true"><div><small><span class="pulso"></span>Passando agora</small><h2>Vídeos das nossas <em>redes</em></h2></div></div><a href="tv-obpc.html">Ver todos na TV OBPC →</a></div>
     <div class="rtv-player"><div id="rtv-tela"></div><button class="bt bt-vidro bt-sm rtv-som" id="rtv-som" onclick="rtvSom()">🔇 Ligar o som</button></div>
     <p class="rtv-tit" id="rtv-tit"></p>
-    <div class="redes redes-grandes">
-      <a class="rd-yt" data-rd="yt" href="https://www.youtube.com/@obpcjardimsaofernando4538" target="_blank" rel="noopener">▶ YouTube</a>
-      <a class="rd-ig" data-rd="ig" href="https://www.instagram.com/obpc.saofernando/" target="_blank" rel="noopener">◎ Instagram</a>
-      <a class="rd-fb" data-rd="fb" href="https://www.facebook.com/profile.php?id=61561313550152" target="_blank" rel="noopener">f Facebook</a>
-    </div>
   </section>
 
   <!-- CONTRIBUA -->
@@ -1397,7 +1393,15 @@ function rRedesTV(){
   /* primeiro os vídeos da própria igreja (cultos e Estúdio): no celular eles tocam sozinhos sem falhar.
      O YouTube só entra quando não houver nenhum, porque o celular muitas vezes não deixa o YouTube começar sozinho. */
   var proprios=itensTV().some(function(v){var s=v.m.src||v.m.url;return !v.aud&&(v.m.tp==='video'||ehVideo(s))&&urlOk(s);});
-  if(!proprios&&/^UC[A-Za-z0-9_-]{22}$/.test(canal)){
+  /* vídeo escolhido no painel (aba YouTube e Facebook): toca dentro do site, sem som até tocar no player */
+  var mv=String(r.yt_video||'').match(/(?:youtu\.be\/|[?&]v=|\/(?:embed|shorts|live)\/)([A-Za-z0-9_-]{11})/);
+  if(mv){var assv='ytv:'+mv[1];if(_rtv.ass===assv)return;_rtv.ass=assv;_rtv.lista=[];
+    sec.hidden=false;document.getElementById('rtv-som').hidden=true;document.getElementById('rtv-tit').textContent='▶ Vídeo da igreja no YouTube';
+    tela.innerHTML='<iframe src="https://www.youtube.com/embed/'+mv[1]+'?autoplay=1&mute=1&loop=1&playlist='+mv[1]+'&playsinline=1&rel=0" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen title="Vídeo do YouTube da igreja"></iframe>';
+    return;}
+  /* 26/11: o Pastor pediu o vídeo do YouTube passando na home: o canal da igreja vem primeiro (sem som, tocando sozinho).
+     Os vídeos da própria igreja só entram aqui se não houver canal configurado. */
+  if(/^UC[A-Za-z0-9_-]{22}$/.test(canal)){
     var ass='yt:'+canal;if(_rtv.ass===ass)return;_rtv.ass=ass;_rtv.lista=[];
     sec.hidden=false;document.getElementById('rtv-som').hidden=true;document.getElementById('rtv-tit').textContent='Canal da igreja no YouTube';
     tela.innerHTML='<iframe src="https://www.youtube.com/embed/videoseries?list=UU'+esc(canal.slice(2))+'&autoplay=1&mute=1&loop=1&playsinline=1&rel=0" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy" title="Vídeos do YouTube da igreja"></iframe>';
@@ -1986,5 +1990,6 @@ if('serviceWorker' in navigator&&location.protocol==='https:'){try{navigator.ser
   try{render();}catch(e){}
 })();
 </script>
+<script src="versao.js" defer></script>
 </body>
 </html>
