@@ -622,6 +622,16 @@ footer li a{display:inline-flex;align-items:center}
 .mapa-end{text-align:center;margin:.9rem 0 .2rem;font-weight:700;color:var(--ouro2,#FFE29A)}
 .mapa-bts{display:flex;flex-wrap:wrap;justify-content:center;gap:.65rem;margin-top:.8rem}
 @media(max-width:560px){.mapa-cx{aspect-ratio:4/3}.mapa-bts .bt{flex:1 1 100%;justify-content:center}}
+
+/* ═══ COMPUTADOR (26/11/2026): cartões, vídeos e fotos centralizados (antes ficavam no canto esquerdo quando havia poucos). O celular continua igual. ═══ */
+@media(min-width:760px){
+  .grade{grid-template-columns:repeat(auto-fit,minmax(280px,360px))!important;justify-content:center!important}
+  .pod-lista{grid-template-columns:repeat(auto-fit,minmax(300px,380px))!important;justify-content:center!important}
+  .grade-sm{grid-template-columns:repeat(auto-fit,minmax(150px,190px))!important;justify-content:center!important}
+  .fotos{grid-template-columns:repeat(auto-fit,minmax(170px,240px))!important;justify-content:center!important}
+  .atalhos{grid-template-columns:repeat(auto-fit,minmax(150px,210px))!important;justify-content:center!important}
+}
+.rtv-som[hidden]{display:none!important}
 </style>
 </head>
 <body>
@@ -752,6 +762,13 @@ footer li a{display:inline-flex;align-items:center}
     <div class="grade" id="lista-tv"></div>
   </section>
 
+  <!-- VÍDEOS DAS NOSSAS REDES: um vídeo atrás do outro, sempre passando (sem som até a pessoa tocar) -->
+  <section class="sec revela" id="redes-tv" hidden>
+    <div class="sec-cab"><div class="cab-ic"><img class="ic3d sec-ic" src="icones/tv.webp" alt="" aria-hidden="true"><div><small><span class="pulso"></span>Passando agora</small><h2>Vídeos das nossas <em>redes</em></h2></div></div><a href="tv-obpc.html">Ver todos na TV OBPC →</a></div>
+    <div class="rtv-player"><div id="rtv-tela"></div><button class="bt bt-vidro bt-sm rtv-som" id="rtv-som" onclick="rtvSom()">🔇 Ligar o som</button></div>
+    <p class="rtv-tit" id="rtv-tit"></p>
+  </section>
+
   <!-- DESTAQUE DO MÊS -->
   <section class="sec revela" id="destaque-sec" hidden>
     <div class="sec-cab"><div class="cab-ic"><img class="ic3d sec-ic" src="icones/estrela.webp" alt="" aria-hidden="true"><div><small>Não perca</small><h2>Destaque do <em>mês</em></h2></div></div></div>
@@ -868,12 +885,6 @@ footer li a{display:inline-flex;align-items:center}
     </div>
   </section>
 
-  <!-- VÍDEOS DAS NOSSAS REDES: um vídeo atrás do outro, sempre passando (sem som até a pessoa tocar) -->
-  <section class="sec revela" id="redes-tv" hidden>
-    <div class="sec-cab"><div class="cab-ic"><img class="ic3d sec-ic" src="icones/tv.webp" alt="" aria-hidden="true"><div><small><span class="pulso"></span>Passando agora</small><h2>Vídeos das nossas <em>redes</em></h2></div></div><a href="tv-obpc.html">Ver todos na TV OBPC →</a></div>
-    <div class="rtv-player"><div id="rtv-tela"></div><button class="bt bt-vidro bt-sm rtv-som" id="rtv-som" onclick="rtvSom()">🔇 Ligar o som</button></div>
-    <p class="rtv-tit" id="rtv-tit"></p>
-  </section>
 
   <!-- CONTRIBUA -->
   <section class="sec revela" id="contribua">
