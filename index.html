@@ -1579,7 +1579,7 @@ function gravarLink(o,img){
   if(o.t)rec.t=String(o.t).slice(0,120);
   var d=o.d||'';if(!d){var inf=linhaInfo(o);d=inf.join(' · ');}
   if(d)rec.d=String(d).replace(/\s+/g,' ').slice(0,200);
-  if(img)rec.i=img;if(o.dt)rec.dt=String(o.dt).slice(0,40);if(o.h)rec.h=String(o.h).slice(0,20);if(o.l)rec.l=String(o.l).slice(0,80);
+  rec.i=img||(o.img&&urlOk(o.img)&&!/^data:/.test(o.img)?o.img:SITE+'og-site.jpg?v=2'); /* nunca a logo */if(o.dt)rec.dt=String(o.dt).slice(0,40);if(o.h)rec.h=String(o.h).slice(0,20);if(o.l)rec.l=String(o.l).slice(0,80);
   rec.u=destinoDe(o);
   var code=hash53(JSON.stringify(rec)).slice(0,7),link=OG_WORKER+'/'+code;
   var ok=lerJ('obpc_sh_ok');if(ok[code])return Promise.resolve(link);
