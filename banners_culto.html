@@ -17,14 +17,18 @@ body{background:radial-gradient(ellipse at 50% -10%,rgba(242,193,78,.16),transpa
 .topo a{color:var(--ouro);text-decoration:none;font-weight:700;font-size:.95rem;padding:8px 12px;border:1px solid var(--borda);border-radius:999px}
 .topo h1{font-family:'Cinzel',serif;font-size:1.1rem;margin:0;color:var(--ouro2);flex:1}
 .wrap{max-width:560px;margin:0 auto}
+#resultado{scroll-margin-top:70px}
 .card{background:var(--sup);border:1px solid var(--borda);border-radius:18px;padding:16px;margin-bottom:14px}
 .passo{display:flex;align-items:center;gap:10px;margin:0 0 12px}
 .passo b{width:32px;height:32px;border-radius:50%;background:var(--ourog);color:#0A0B0F;display:grid;place-items:center;font-size:1rem;flex:none}
 .passo h2{font-size:1.08rem;margin:0;font-weight:800}
+.intro{text-align:center;color:var(--txt2);margin:4px 0 14px;font-size:1rem}.intro b{color:var(--ouro2)}
+.bt-gerar{font-size:1.2rem;padding:20px;margin:4px 0 18px}
+.nosite-box summary,.mais summary{list-style:none}
+.nosite-box summary{cursor:pointer;font-weight:800;color:var(--ouro2)}
 .passo small{display:block;color:var(--txt2);font-weight:500;font-size:.85rem}
-.grade{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-@media(min-width:460px){.grade{grid-template-columns:repeat(3,1fr)}}
-.chip{border:1px solid rgba(255,255,255,.1);background:var(--sup2);color:var(--txt);border-radius:14px;padding:12px 8px;font:700 .92rem 'Manrope',sans-serif;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;min-height:70px;justify-content:center;text-align:center}
+.grade{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.chip{border:1px solid rgba(255,255,255,.1);background:var(--sup2);color:var(--txt);border-radius:14px;padding:12px 8px;font:700 .92rem 'Manrope',sans-serif;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;min-height:64px;justify-content:center;text-align:center}
 .chip span{font-size:1.4rem;line-height:1}
 .chip.on{border-color:var(--ouro);background:rgba(242,193,78,.14);box-shadow:0 0 0 2px rgba(242,193,78,.35) inset;color:var(--ouro2)}
 label{display:block;font-size:.88rem;color:var(--ouro);font-weight:700;margin:12px 0 5px}
@@ -71,49 +75,47 @@ input:focus{outline:2px solid var(--ouro);outline-offset:1px}
 <header class="topo"><a href="painel.html" onclick="if(window.opener){window.close();return false;}">← Painel</a><h1>Gerar banner</h1></header>
 <main class="wrap">
 
+<p class="intro">Preencha os 2 passos e toque em <b>Gerar banner</b>.</p>
+
 <section class="card">
-  <div class="passo"><b>1</b><div><h2>Qual culto?</h2><small>Toque em um</small></div></div>
+  <div class="passo"><b>1</b><div><h2>Qual culto?</h2></div></div>
   <div class="grade" id="tipos"></div>
 </section>
 
 <section class="card">
-  <div class="passo"><b>2</b><div><h2>Dia e horário</h2><small>O dia da semana sai sozinho da data</small></div></div>
+  <div class="passo"><b>2</b><div><h2>Quando?</h2></div></div>
   <div class="duas">
     <div><label for="data">Data</label><input type="date" id="data"></div>
     <div><label for="horario">Horário</label><input id="horario" value="18h" placeholder="18h"></div>
   </div>
-  <label for="dia">Dia da semana</label><input id="dia" value="Domingo">
-  <details class="mais"><summary>➕ Versículo e endereço (opcional)</summary>
+  <input type="hidden" id="dia" value="Domingo">
+  <details class="mais"><summary>➕ Mais opções (versículo, endereço, outro nome)</summary>
     <label for="versiculo">Versículo</label><input id="versiculo" placeholder='"Onde estiverem dois ou três reunidos em meu nome..."'>
     <label for="referencia">Referência</label><input id="referencia" placeholder="Mateus 18:20">
     <label for="local">Local</label><input id="local" placeholder="Rua Senador José Ermírio de Moraes, 199">
-    <label for="titLivre">Outro nome de culto (se não estiver na lista)</label><input id="titLivre" placeholder="Ex.: Culto de Ação de Graças">
+    <label for="titLivre">Outro nome de culto</label><input id="titLivre" placeholder="Ex.: Culto de Ação de Graças">
   </details>
 </section>
 
-<section class="card">
-  <div class="passo"><b>3</b><div><h2>Veja como ficou</h2><small>Atualiza sozinho</small></div></div>
+<button class="bt bt-ouro bt-gerar" id="btnGerar">🎨 Gerar banner</button>
+
+<section class="card" id="resultado" hidden>
+  <div class="passo"><b>3</b><div><h2>Seu banner</h2><small>Gostou? Toque em Publicar.</small></div></div>
   <div class="previa"><canvas id="banner" width="1080" height="1920"></canvas><div class="carregando" id="carregando">Desenhando…</div></div>
-</section>
-
-<section class="card">
-  <div class="passo"><b>4</b><div><h2>Onde colocar no site?</h2></div></div>
-  <div class="onde">
-    <label class="opc on"><input type="radio" name="onde" value="culto" checked><div><b>📌 Banner do culto</b><small>Aparece na parte "Banner do culto" da página inicial.</small></div></label>
-    <label class="opc"><input type="radio" name="onde" value="destaque"><div><b>⭐ Destaque do mês</b><small>Troca o Destaque do mês atual por este banner.</small></div></label>
-  </div>
-  <div style="margin-top:14px"><button class="bt bt-ouro" id="btnPublicar">🌐 Publicar no site</button></div>
+  <div style="margin-top:16px"><button class="bt bt-ouro" id="btnPublicar">🌐 Publicar no site</button></div>
   <div class="sts" id="sts"><ol id="stsLista"></ol><div class="fim" id="stsFim"></div></div>
-  <div class="linha"><button class="bt bt-zap" id="btnShare">📲 Compartilhar</button><button class="bt bt-lin" id="btnBaixar">⬇️ Baixar</button></div>
+  <div class="linha"><button class="bt bt-zap" id="btnShare">📲 WhatsApp</button><button class="bt bt-lin" id="btnBaixar">⬇️ Baixar</button></div>
+  <details class="mais"><summary>⚙️ Publicar como Destaque do mês</summary>
+    <label class="opc"><input type="checkbox" id="comoDest"><div><b>⭐ Usar como Destaque do mês</b><small>Marque e toque em Publicar. Troca o Destaque atual por este banner.</small></div></label>
+  </details>
 </section>
 
-<section class="card">
-  <div class="passo"><b>✓</b><div><h2>No site agora</h2><small>Conferido direto no servidor</small></div></div>
-  <div class="nosite">
+<details class="card nosite-box"><summary>👁️ Ver o que está no site agora</summary>
+  <div class="nosite" style="margin-top:12px">
     <div class="mini"><b>Banner do culto</b><div class="img" id="agoraCulto">…</div><button id="tirarCulto" disabled>Tirar do site</button></div>
     <div class="mini"><b>Destaque do mês</b><div class="img" id="agoraDest">…</div><button id="tirarDest" disabled>Tirar do site</button></div>
   </div>
-</section>
+</details>
 
 </main>
 <script src="banner3d.js"></script>
@@ -149,7 +151,7 @@ const lsSet=(k,x)=>{try{localStorage.setItem(k,x);}catch(e){}};
 
 /* passo 1 */
 TIPOS.forEach(t=>{const b=document.createElement('button');b.type='button';b.className='chip';b.dataset.k=t[0];b.innerHTML='<span>'+t[1]+'</span>'+t[2];
-  b.onclick=()=>{tipo=t;marcar();lsSet('obpc_bnr_tipo',t[0]);desenhar();};$('tipos').appendChild(b);});
+  b.onclick=()=>{tipo=t;marcar();lsSet('obpc_bnr_tipo',t[0]);mudou();};$('tipos').appendChild(b);});
 function marcar(){document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.k===tipo[0]));}
 const salvo=TIPOS.find(t=>t[0]===lsGet('obpc_bnr_tipo'));if(salvo)tipo=salvo;marcar();
 
@@ -157,8 +159,8 @@ const salvo=TIPOS.find(t=>t[0]===lsGet('obpc_bnr_tipo'));if(salvo)tipo=salvo;mar
 function proxDomingo(){const d=new Date();d.setDate(d.getDate()+((7-d.getDay())%7));return d.toISOString().slice(0,10);}
 $('data').value=proxDomingo();
 function dataBR(){const s=v('data');if(!/^\d{4}-\d\d-\d\d$/.test(s))return '';const p=s.split('-');return p[2]+'/'+p[1];}
-$('data').addEventListener('change',()=>{const s=v('data');if(s){const d=new Date(s+'T12:00:00');$('dia').value=DIAS[d.getDay()];}desenhar();});
-['dia','horario','versiculo','referencia','local','titLivre'].forEach(id=>$(id).addEventListener('input',()=>{clearTimeout(window._t);window._t=setTimeout(desenhar,300);}));
+$('data').addEventListener('change',()=>{const s=v('data');if(s){const d=new Date(s+'T12:00:00');$('dia').value=DIAS[d.getDay()];}mudou();});
+['dia','horario','versiculo','referencia','local','titLivre'].forEach(id=>$(id).addEventListener('input',mudou));
 (function(){const s=v('data');if(s)$('dia').value=DIAS[new Date(s+'T12:00:00').getDay()];})();
 
 /* passo 3: desenho */
@@ -173,8 +175,13 @@ async function desenhar(){
 function blobJPG(){return new Promise((res,rej)=>{try{cv.toBlob(b=>b?res(b):rej(new Error('não consegui gerar a imagem')),'image/jpeg',.9);}catch(e){rej(new Error('não consegui gerar a imagem'));}});}
 
 /* passo 4 */
-document.querySelectorAll('input[name=onde]').forEach(r=>r.addEventListener('change',()=>document.querySelectorAll('.opc').forEach(o=>o.classList.toggle('on',o.querySelector('input').checked))));
-function onde(){return document.querySelector('input[name=onde]:checked').value;}
+$('comoDest').addEventListener('change',()=>$('comoDest').closest('.opc').classList.toggle('on',$('comoDest').checked));
+function onde(){return $('comoDest').checked?'destaque':'culto';}
+/* botão Gerar banner: desenha e mostra o resultado */
+let gerado=false;
+$('btnGerar').onclick=async()=>{const b=$('btnGerar');b.disabled=true;b.textContent='⏳ Gerando…';$('resultado').hidden=false;$('sts').classList.remove('vis');
+  $('resultado').scrollIntoView({behavior:'smooth',block:'start'});await desenhar();gerado=true;b.disabled=false;b.textContent='🔄 Gerar de novo';};
+function mudou(){if(gerado){$('btnGerar').textContent='🔄 Gerar de novo (mudou algo)';}}
 
 const PASSOS=['Gerar a imagem','Enviar a imagem para a internet','Gravar no site','Conferir se ficou gravado'];
 function sts(i,est,extra){const ol=$('stsLista');if(i===0&&est==='agora'){ol.innerHTML=PASSOS.map(p=>'<li>○ '+p+'</li>').join('');$('stsFim').innerHTML='';}
@@ -190,6 +197,7 @@ async function fb(caminho,metodo,corpo){const r=await fetch(FB+'/'+caminho+'.jso
 
 $('btnPublicar').onclick=async()=>{
   const btn=$('btnPublicar'),orig=btn.textContent,alvo=onde();
+  if(!gerado){alert('Primeiro toque em "Gerar banner".');return;}
   if(alvo==='destaque'&&!confirm('Isso vai trocar o Destaque do mês atual por este banner. Continuar?'))return;
   btn.disabled=true;btn.textContent='⏳ Publicando…';let i=0;
   try{
@@ -245,8 +253,7 @@ $('tirarDest').onclick=async()=>{if(!confirm('Tirar o Destaque do mês do site?'
   try{const d=await fb('banner_culto','GET');if(d&&d.culto3d)await fb('banner_culto','PUT',{culto3d:d.culto3d});else await fb('banner_culto','DELETE');await verNoSite();alert('Pronto! O Destaque saiu do site.');}catch(e){alert('Não consegui tirar: '+e.message);}};
 
 verNoSite();
-if(document.fonts&&document.fonts.ready)document.fonts.ready.then(desenhar);else desenhar();
-setTimeout(desenhar,1500);
+if(document.fonts&&document.fonts.load){document.fonts.load("900 100px 'Cinzel'");document.fonts.load("italic 40px 'EB Garamond'");}
 </script>
 </body>
 </html>
