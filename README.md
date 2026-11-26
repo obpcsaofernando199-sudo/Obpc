@@ -48,3 +48,8 @@ Endereço: Rua Senador José Ermírio de Moraes, 199, Ferraz de Vasconcelos, SP
 ## Observação importante
 
 Qualquer alteração neste projeto deve partir sempre do arquivo original já existente. Nunca reescrever do zero — apenas alterar exatamente o que for solicitado.
+
+## Número da versão
+
+O topo do site mostra "Versão N · data" (em `index.html`, procure `topo-ver`).
+A cada publicação, aumente o número em 1 e troque a data. A versão 65 é de 26/11/2026.

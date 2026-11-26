@@ -58,6 +58,8 @@ button{font-family:inherit;color:inherit}
 .topo-nome{line-height:1.15;min-width:0}
 .topo-nome b{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;font-family:var(--serif);font-weight:600;font-size:1rem;line-height:1.12;overflow:hidden}
 .topo-nome small{color:var(--ouro);font-size:.64rem;letter-spacing:.16em;text-transform:uppercase}
+/* número da versão do site: aparece sempre, até no celular */
+.topo-nome small.topo-ver{display:block;margin-top:2px;font-size:.62rem;letter-spacing:.04em;text-transform:none;opacity:.85}
 .topo-radio{margin-left:auto;flex-shrink:0;display:inline-flex;align-items:center;gap:7px;padding:.48rem .9rem;border-radius:999px;border:1px solid rgba(242,193,78,.45);background:rgba(242,193,78,.08);font-weight:800;font-size:.76rem;cursor:pointer;color:var(--ouro2)}
 .pulso{width:8px;height:8px;border-radius:50%;background:#FF4D5E;box-shadow:0 0 0 0 rgba(255,77,94,.6);animation:pulso 1.6s infinite}
 @keyframes pulso{0%{box-shadow:0 0 0 0 rgba(255,77,94,.55)}70%{box-shadow:0 0 0 9px rgba(255,77,94,0)}100%{box-shadow:0 0 0 0 rgba(255,77,94,0)}}
@@ -650,7 +652,7 @@ footer li a{display:inline-flex;align-items:center}
 <header class="topo">
   <div class="topo-in">
     <div class="logo" id="logo" title="OBPC Jd. São Fernando" role="img" aria-label="Logo da igreja"><svg><use href="#biblia-icone"/></svg></div>
-    <div class="topo-nome"><b id="topo-nome">OBPC Jd. São Fernando</b><small>O Brasil para Cristo</small></div>
+    <div class="topo-nome"><b id="topo-nome">OBPC Jd. São Fernando</b><small>O Brasil para Cristo</small><!-- VERSÃO DO SITE: aumentar 1 a cada publicação --><small class="topo-ver" id="topo-ver">Versão 65 · 26/11/2026</small></div>
     <button class="topo-radio" onclick="radioTocar()"><span class="pulso"></span>Rádio ao vivo</button>
   </div>
   <nav class="menu" aria-label="Seções do site">
