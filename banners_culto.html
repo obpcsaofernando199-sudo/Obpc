@@ -30,6 +30,8 @@ body{background:radial-gradient(ellipse at 50% -10%,rgba(242,193,78,.16),transpa
 .grade{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .chip{border:1px solid rgba(255,255,255,.1);background:var(--sup2);color:var(--txt);border-radius:14px;padding:12px 8px;font:700 .92rem 'Manrope',sans-serif;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;min-height:64px;justify-content:center;text-align:center}
 .chip span{font-size:1.4rem;line-height:1}
+.chip small{display:block;font-size:.74rem;font-weight:600;color:var(--txt2);margin-top:1px}
+.chip.on small{color:var(--ouro2)}
 .chip.on{border-color:var(--ouro);background:rgba(242,193,78,.14);box-shadow:0 0 0 2px rgba(242,193,78,.35) inset;color:var(--ouro2)}
 label{display:block;font-size:.88rem;color:var(--ouro);font-weight:700;margin:12px 0 5px}
 input{width:100%;padding:13px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:#060914;color:var(--txt);font:500 1rem 'Manrope',sans-serif}
@@ -128,19 +130,22 @@ input:focus{outline:2px solid var(--ouro);outline-offset:1px}
 const FB='https://obpc-saofernando-1d6f3-default-rtdb.firebaseio.com/obpc';
 const CLOUD='https://api.cloudinary.com/v1_1/dm0egn0ks/image/upload';
 const SITE='https://obpcsaofernando199-sudo.github.io/Obpc/';
+/* [chave, ícone, nome no botão, título no banner, cor, dia da semana (0=domingo, 3=quarta), horário sugerido] */
 const TIPOS=[
-  ['familia','👨‍👩‍👧‍👦','Família','CULTO DA FAMÍLIA','#E8A95C'],
-  ['ensino','📖','Ensino','CULTO DE ENSINO','#F2C14E'],
-  ['oracao','🙏','Oração','CULTO DE ORAÇÃO','#9FB4E8'],
-  ['louvor','🕊️','Louvor','CULTO DE LOUVOR','#E9C877'],
-  ['ceia','🍷','Santa Ceia','SANTA CEIA E PRIMÍCIAS','#E9C877'],
-  ['quarta','🙌','4ª de Adoração','QUARTA DE ADORAÇÃO','#D8B4E8'],
-  ['missoes','🌍','Missões','CULTO DE MISSÕES','#8FD9C4'],
-  ['jubrac','🔥','Jubrac','JUBRAC','#F5A75C'],
-  ['menibrac','🎈','Menibrac','MENIBRAC','#FFE08A'],
-  ['umasbrac','🤝','Umasbrac','UMASBRAC','#9FC4E8'],
-  ['ufebrac','🌸','Ufebrac','UFEBRAC','#E8A9D0'],
-  ['especial','✨','Especial','CULTO ESPECIAL','#F2C14E']
+  ['celebracao','🎉','Celebração','CELEBRAÇÃO','#FFC94D',0,'18h'],
+  ['familia','👨‍👩‍👧‍👦','Família','FAMÍLIA','#F0B070',0,'18h'],
+  ['ensino','📖','Ensino','ENSINO','#F2C14E',0,''],
+  ['estudo','📚','Quarta · Estudo Bíblico','ESTUDO BÍBLICO','#F4D7A0',3,''],
+  ['qoracao','🙏','Quarta · Oração','CULTO DE ORAÇÃO','#AFC2FF',3,''],
+  ['quarta','🙌','Quarta · Adoração','ADORAÇÃO','#D8B4E8',3,''],
+  ['louvor','🕊️','Louvor','LOUVOR','#E9C877',0,''],
+  ['ceia','🍷','Santa Ceia','SANTA CEIA E PRIMÍCIAS','#E9C877',0,''],
+  ['missoes','🌍','Missões','MISSÕES','#8FD9C4',0,''],
+  ['jubrac','🔥','Jubrac · Jovens','CULTO DE JOVENS','#FF7A3D',-1,''],
+  ['menibrac','🎈','Menibrac · Crianças','CULTO DAS CRIANÇAS','#FFE08A',-1,''],
+  ['ufebrac','🌸','Ufebrac · Mulheres','CULTO DAS MULHERES','#F3B6C9',-1,''],
+  ['umasbrac','🤝','Umasbrac · Homens','CULTO DOS HOMENS','#B9C6D8',-1,''],
+  ['especial','✨','Especial','CULTO ESPECIAL','#F2C14E',-1,'']
 ];
 const DIAS=['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
 let tipo=TIPOS[0];
@@ -150,25 +155,30 @@ const lsGet=k=>{try{return localStorage.getItem(k)||'';}catch(e){return '';}};
 const lsSet=(k,x)=>{try{localStorage.setItem(k,x);}catch(e){}};
 
 /* passo 1 */
-TIPOS.forEach(t=>{const b=document.createElement('button');b.type='button';b.className='chip';b.dataset.k=t[0];b.innerHTML='<span>'+t[1]+'</span>'+t[2];
-  b.onclick=()=>{tipo=t;marcar();lsSet('obpc_bnr_tipo',t[0]);mudou();};$('tipos').appendChild(b);});
+TIPOS.forEach(t=>{const b=document.createElement('button');b.type='button';b.className='chip';b.dataset.k=t[0];const nm=t[2].split(' · ');b.innerHTML='<span>'+t[1]+'</span>'+nm[0]+(nm[1]?'<small>'+nm[1]+'</small>':'');
+  b.onclick=()=>{tipo=t;marcar();lsSet('obpc_bnr_tipo',t[0]);ajustarDia();mudou();};$('tipos').appendChild(b);});
 function marcar(){document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.k===tipo[0]));}
 const salvo=TIPOS.find(t=>t[0]===lsGet('obpc_bnr_tipo'));if(salvo)tipo=salvo;marcar();
 
 /* passo 2: data → dia da semana */
-function proxDomingo(){const d=new Date();d.setDate(d.getDate()+((7-d.getDay())%7));return d.toISOString().slice(0,10);}
+function proxDia(w){const d=new Date();d.setHours(12);d.setDate(d.getDate()+((7+w-d.getDay())%7));return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function proxDomingo(){return proxDia(0);}
+/* ao escolher um culto de quarta, a data pula para a próxima quarta (e domingo para o próximo domingo) */
+function ajustarDia(){if(tipo[5]>=0){const atual=v('data');const w=atual?new Date(atual+'T12:00:00').getDay():-1;if(w!==tipo[5]){$('data').value=proxDia(tipo[5]);$('dia').value=DIAS[tipo[5]];}}if(tipo[6]&&!v('horario'))$('horario').value=tipo[6];}
 $('data').value=proxDomingo();
 function dataBR(){const s=v('data');if(!/^\d{4}-\d\d-\d\d$/.test(s))return '';const p=s.split('-');return p[2]+'/'+p[1];}
 $('data').addEventListener('change',()=>{const s=v('data');if(s){const d=new Date(s+'T12:00:00');$('dia').value=DIAS[d.getDay()];}mudou();});
 ['dia','horario','versiculo','referencia','local','titLivre'].forEach(id=>$(id).addEventListener('input',mudou));
 (function(){const s=v('data');if(s)$('dia').value=DIAS[new Date(s+'T12:00:00').getDay()];})();
+ajustarDia();
 
 /* passo 3: desenho */
 const cv=$('banner'),ctx=cv.getContext('2d');let nDes=0;
 function titulo(){return (v('titLivre')||tipo[3]).toUpperCase();}
+function textosExtras(){return v('titLivre')?{topo:'CULTO',sub:''}:{};}
 async function desenhar(){
   const n=++nDes,off=document.createElement('canvas');off.width=1080;off.height=1920;$('carregando').style.display='grid';
-  try{await Banner3D.culto(off,{titulo:titulo(),versiculo:v('versiculo'),referencia:v('referencia'),dia:v('dia'),data:dataBR(),horario:v('horario'),local:v('local'),tema:tipo[0],cor:tipo[4]});}
+  try{await Banner3D.culto(off,{titulo:titulo(),versiculo:v('versiculo'),referencia:v('referencia'),dia:v('dia'),data:dataBR(),horario:v('horario'),local:v('local'),tema:tipo[0],cor:tipo[4],...textosExtras()});}
   catch(e){console.warn(e);}
   if(n!==nDes)return;ctx.clearRect(0,0,1080,1920);ctx.drawImage(off,0,0);$('carregando').style.display='none';
 }
