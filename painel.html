@@ -270,7 +270,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.6;}
   <a onclick="ir('redes',this)">&#128279; YouTube e Facebook</a>
   <a onclick="ir('div',this)">&#128227; Divulgar o site</a>
   <a onclick="ir('ens',this)">&#127925; Ensaio de louvor</a>
-  <a href="banners_culto.html" target="_blank">&#127912; Banners de culto</a>
+  <a href="banners_culto.html" target="_blank">&#127912; Gerar banner do culto</a>
   <a href="carta.html" target="_blank">&#128231; Carta / convite</a>
   <a onclick="ir('mig',this)" class="nav-tec">&#128295; Manuten&#231;&#227;o das m&#237;dias</a>
 </nav>
@@ -310,6 +310,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.6;}
   <!-- ══ 1) DESTAQUE DO MÊS (versão simples: 3 passos) ══ -->
   <h2>&#11088; Destaque do m&#234;s</h2>
   <p class="dq-ajuda">&#201; o cart&#227;o grande do site. Siga os 3 passos e toque em <b>Publicar</b>.</p>
+  <a href="banners_culto.html" target="_blank" style="display:flex;align-items:center;gap:10px;margin:0 0 14px;padding:14px 16px;border-radius:14px;border:1px solid rgba(242,193,78,.4);background:rgba(242,193,78,.08);color:#FFE08A;font-weight:800;text-decoration:none">&#127912; Quer um banner pronto em 3D (culto)? Toque aqui para gerar &#8594;</a>
   <div id="dm-status" class="dq-status">&#9203; Conferindo o que est&#225; no site...</div>
   <div class="dq-grade">
     <div class="dq-form">
@@ -1973,7 +1974,7 @@ function dmPublicar(){
   var dados={badge:d.badge,titulo:d.titulo,subtit:d.subtit,dt:d.dt,hora:d.hora,local:d.local,cta:d.cta,cor:_dm.cor,bgUrl:_dm.bgUrl||'',bgTp:_dm.bgUrl?(_dm.bgTp||sgTipo(_dm.bgUrl)):'img',bgFmt:_dm.bgUrl?(_dm.fmt||''):'',ov1:'#070B18',ov2:'#0C1328',opac:op,ts:Date.now()};
   if(_dm.audioUrl){dados.audioUrl=_dm.audioUrl;dados.audioLoop=_dm.audioLoop;dados.audioVol=_dm.audioVol;}
   var btn=document.getElementById('dm-btn-pub');if(btn){btn.disabled=true;btn.textContent='⏳ Publicando...';}
-  sgPut('banner_culto',dados).then(function(){return sgGet('banner_culto');}).then(function(v){
+  sgGet('banner_culto').catch(function(){return null;}).then(function(cur){if(cur&&cur.culto3d)dados.culto3d=cur.culto3d;return sgPut('banner_culto',dados);}).then(function(){return sgGet('banner_culto');}).then(function(v){
     if(!v||v.ts!==dados.ts)throw new Error('o servidor não confirmou a gravação');
     sgCache('banner_culto',dados);dmStatus(v);
     sgMsg('dm-ok','✅ Publicado e conferido no servidor! Já está no site.',true);showToast('✅ Destaque publicado no site!');
@@ -1982,8 +1983,9 @@ function dmPublicar(){
 }
 function dmRemover(){
   if(!confirm('Tirar o Destaque do Mês do site?'))return;
-  sgDel('banner_culto').then(function(){return sgGet('banner_culto');}).then(function(v){
-    if(v)throw new Error('o servidor não confirmou');
+  /* o banner do culto (culto3d) pode morar dentro desta chave: tirar só o Destaque */
+  sgGet('banner_culto').catch(function(){return null;}).then(function(cur){return cur&&cur.culto3d?sgPut('banner_culto',{culto3d:cur.culto3d}):sgDel('banner_culto');}).then(function(){return sgGet('banner_culto');}).then(function(v){
+    if(v&&(v.titulo||v.bgUrl||v.subtit))throw new Error('o servidor não confirmou');
     sgCache('banner_culto',null);
     _dm.bgUrl='';_dm.bgTp='img';_dm.fmt='';_dm.audioUrl='';_dm.pv=null;
     ['dm-badge','dm-tit','dm-sub','dm-dt','dm-hora','dm-loc','dm-cta','dm-url'].forEach(function(i){sgSet(i,'');});

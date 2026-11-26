@@ -1085,7 +1085,9 @@ function rDestaque(){
 
 /* ── banner do culto (Ferramentas > Banners de culto) ── */
 function rBannerCulto(){
-  var b=D.banner_culto_img,ok=!!(b&&b.visivel!==false&&urlOk(b.img));so('bculto-sec',ok);var bx=document.getElementById('bculto');
+  var b1=D.banner_culto_img,b2=D.banner_culto&&D.banner_culto.culto3d;
+  var b=(b1&&b1.img&&(!b2||!b2.img||(b1.ts||0)>=(b2.ts||0)))?b1:b2;
+  var ok=!!(b&&b.visivel!==false&&urlOk(b.img));so('bculto-sec',ok);var bx=document.getElementById('bculto');
   if(!ok){bx.innerHTML='';return;}
   var t=b.titulo||'Culto',d=[b.dia,b.data,b.horario].filter(Boolean).join(' · ');
   var k=reg({s:'bculto',id:'banner-'+(b.ts||0),t:t,d:d||b.versiculo||'Venha adorar conosco!',img:b.img,tipo:'Culto',cta:'Venha participar',foto:b.img});
