@@ -124,7 +124,7 @@
 <body>
 
 <h1>Banners de Culto</h1>
-<p class="sub">Escolha o estilo, ajuste os dados e compartilhe a imagem — não só a mensagem</p>
+<p class="sub">Banner realista em 3D, com a Bíblia ao fundo. Escolha o culto, preencha e compartilhe.</p>
 
 <div class="tabs" id="tabs"></div>
 
@@ -155,7 +155,7 @@
   <canvas id="banner" width="1080" height="1920" style="width:100%;display:block;border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,.5);"></canvas>
   <canvas id="overlay" width="1080" height="1920" style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:14px;pointer-events:none;"></canvas>
 </div>
-<p class="note" id="notaAnim" style="display:none;">✨ A animação (cor e movimento combinando com o estilo) só aparece aqui na prévia — a imagem baixada/compartilhada/publicada continua sendo uma foto parada.</p>
+<p class="note" id="notaAnim" style="display:none!important;">✨ A animação (cor e movimento combinando com o estilo) só aparece aqui na prévia — a imagem baixada/compartilhada/publicada continua sendo uma foto parada.</p>
 
 <div class="btns">
   <button class="act dl" id="btnBaixar">⬇️ Baixar imagem</button>
@@ -167,6 +167,7 @@
 <p class="note" id="notaPublicar" style="display:none;color:#8fd9c4;">✅ Publicado! Esse banner já está no "Destaque do Mês" do site.</p>
 <p class="note" id="nota">A imagem é gerada na hora, direto no navegador. O botão Compartilhar envia o arquivo de imagem (não texto) para WhatsApp e outras redes.</p>
 
+<script src="banner3d.js"></script>
 <script>
 const THEMES = {
   familia:   { tab:'Família',              titulo:'FAMÍLIA',                 icon:'👨‍👩‍👧‍👦', top:'#3a2416', mid:'#5c3a1e', bottom:'#1c1108', accent:'#e8a95c', accent2:'#c9793a',
@@ -218,59 +219,8 @@ const octx = ov.getContext('2d');
 let rafId = null;
 let particles = [];
 
-function novoConjuntoParticulas(cfg){
-  const arr = [];
-  for(let i=0;i<cfg.count;i++){
-    arr.push({
-      x: Math.random()*W,
-      y: cfg.dir==='down' ? Math.random()*H : H*0.35 + Math.random()*H*0.65,
-      r: cfg.sizeMin + Math.random()*(cfg.sizeMax-cfg.sizeMin),
-      speed: cfg.speedMin + Math.random()*(cfg.speedMax-cfg.speedMin),
-      drift: (Math.random()-0.5)*cfg.driftMax*2,
-      alpha: 0.2 + Math.random()*0.6,
-      flicker: Math.random()*Math.PI*2
-    });
-  }
-  return arr;
-}
-
-function desenharParticulas(context, arr, cfg){
-  arr.forEach(p=>{
-    if(cfg.dir==='down'){ p.y += p.speed; } else { p.y -= p.speed; }
-    p.x += p.drift;
-    p.flicker += 0.08;
-    if(cfg.dir==='down' && p.y > H*0.98){ p.y = -H*0.02; p.x = Math.random()*W; }
-    if(cfg.dir==='up' && p.y < H*0.08){ p.y = H*0.98; p.x = Math.random()*W; }
-    const a = p.alpha * (0.6 + 0.4*Math.sin(p.flicker));
-    context.beginPath();
-    const grad = context.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*3);
-    grad.addColorStop(0, `rgba(${cfg.color},${a})`);
-    grad.addColorStop(1, `rgba(${cfg.color},0)`);
-    context.fillStyle = grad;
-    context.arc(p.x,p.y,p.r*3,0,Math.PI*2);
-    context.fill();
-  });
-}
-
-function animarOverlay(){
-  octx.clearRect(0,0,W,H);
-  desenharParticulas(octx, particles, THEMES[temaAtual].part);
-  rafId = requestAnimationFrame(animarOverlay);
-}
-
-function atualizarAnimacao(){
-  if(rafId){ cancelAnimationFrame(rafId); rafId = null; }
-  octx.clearRect(0,0,W,H);
-  const notaAnim = document.getElementById('notaAnim');
-  const cfg = THEMES[temaAtual].part;
-  if(cfg){
-    particles = novoConjuntoParticulas(cfg);
-    animarOverlay();
-    notaAnim.style.display = 'block';
-  } else {
-    notaAnim.style.display = 'none';
-  }
-}
+/* banner parado: sem animação */
+function atualizarAnimacao(){if(typeof octx!=='undefined')octx.clearRect(0,0,W,H);}
 
 function wrapText(text, maxWidth, font){
   ctx.font = font;
@@ -314,123 +264,18 @@ function drawSpaced(text, x, y, font, color, spacing){
   }
 }
 
+/* banner realista em 3D (luz, profundidade, dourado em relevo e a Bíblia aberta ao fundo) — banner3d.js */
+let _rv=0;
 async function render(){
-  const t = THEMES[temaAtual];
-
-  const bg = ctx.createLinearGradient(0,0,0,H);
-  bg.addColorStop(0, t.top);
-  bg.addColorStop(0.55, t.mid);
-  bg.addColorStop(1, t.bottom);
-  ctx.fillStyle = bg;
-  ctx.fillRect(0,0,W,H);
-
-  const glow = ctx.createRadialGradient(W/2,H*0.18,50,W/2,H*0.18,W*0.9);
-  glow.addColorStop(0,'rgba(255,235,190,0.35)');
-  glow.addColorStop(1,'rgba(255,235,190,0)');
-  ctx.fillStyle = glow;
-  ctx.fillRect(0,0,W,H);
-
-  ctx.save();
-  ctx.globalAlpha = 0.10;
-  ctx.strokeStyle = '#ffffff';
-  for(let i=-6;i<=6;i++){
-    ctx.beginPath();
-    ctx.moveTo(W/2, -50);
-    ctx.lineTo(W/2 + i*120, H*0.6);
-    ctx.lineWidth = 6;
-    ctx.stroke();
-  }
-  ctx.restore();
-
-  const vig = ctx.createRadialGradient(W/2,H/2,H*0.3,W/2,H/2,H*0.75);
-  vig.addColorStop(0,'rgba(0,0,0,0)');
-  vig.addColorStop(1,'rgba(0,0,0,0.55)');
-  ctx.fillStyle = vig;
-  ctx.fillRect(0,0,W,H);
-
-  ctx.textAlign = 'center';
-  drawSpaced('C U L T O', W/2, 330, "600 34px 'EB Garamond'", t.accent, 4);
-
-  ctx.beginPath();
-  ctx.strokeStyle = t.accent;
-  ctx.lineWidth = 2;
-  ctx.moveTo(W/2-70,365); ctx.lineTo(W/2+70,365);
-  ctx.stroke();
-
-  const maxTitleWidth = W*0.86;
-  const { fontSize, lines } = fitTitle(t.titulo, maxTitleWidth, 118, 56);
-  const titleGrad = ctx.createLinearGradient(0,420,0,420+fontSize*lines.length+120);
-  titleGrad.addColorStop(0, t.accent);
-  titleGrad.addColorStop(1, t.accent2);
-  ctx.fillStyle = titleGrad;
-  ctx.textAlign = 'center';
-  ctx.font = `900 ${fontSize}px 'Cinzel'`;
-  let ty = 430 + fontSize*0.55;
-  lines.forEach(word=>{
-    ctx.fillText(word, W/2, ty);
-    ty += fontSize*1.08;
-  });
-
-  const versiculo = document.getElementById('versiculo').value.trim();
-  const referencia = document.getElementById('referencia').value.trim();
-  let ty2 = ty;
-  if(versiculo){
-    ctx.fillStyle = '#f4ece0';
-    ctx.font = "italic 40px 'EB Garamond'";
-    const vlines = wrapText(versiculo, W*0.72, "italic 40px 'EB Garamond'");
-    let vy = ty2 + 40;
-    vlines.forEach(l=>{ ctx.fillText(l, W/2, vy); vy += 52; });
-    if(referencia){
-      ctx.font = "600 32px 'EB Garamond'";
-      ctx.fillStyle = t.accent;
-      ctx.fillText(referencia, W/2, vy + 20);
-      vy += 20;
-    }
-    ty2 = vy + 30;
-  }
-
-  ctx.font = "220px sans-serif";
-  ctx.textAlign = 'center';
-  ctx.save();
-  const iconGlow = ctx.createRadialGradient(W/2,H*0.72,20,W/2,H*0.72,260);
-  iconGlow.addColorStop(0,'rgba(255,220,150,0.35)');
-  iconGlow.addColorStop(1,'rgba(255,220,150,0)');
-  ctx.fillStyle = iconGlow;
-  ctx.fillRect(W/2-280,H*0.72-280,560,560);
-  ctx.restore();
-  ctx.fillText(t.icon, W/2, H*0.78);
-
-  const dia = document.getElementById('dia').value.trim();
-  const data = document.getElementById('data').value.trim();
-  const horario = document.getElementById('horario').value.trim();
-  const local = document.getElementById('local').value.trim();
-
-  const barY = H - (local ? 260 : 190);
-  ctx.fillStyle = 'rgba(0,0,0,0.45)';
-  ctx.fillRect(0, barY, W, local ? 260 : 190);
-
-  ctx.fillStyle = '#f4ece0';
-  ctx.font = "700 56px 'EB Garamond'";
-  ctx.textAlign = 'center';
-  let diaCompleto = [dia, data].filter(Boolean).join(' - ');
-  let linhaHorario = [diaCompleto, horario].filter(Boolean).join('  |  ');
-  ctx.fillText(linhaHorario, W/2, barY + 90);
-
-  if(local){
-    ctx.font = "36px 'Manrope'";
-    ctx.fillStyle = '#d8c9b8';
-    const lls = wrapText(local, W*0.8, "36px 'Manrope'");
-    let ly = barY + 150;
-    lls.forEach(l=>{ ctx.fillText(l, W/2, ly); ly += 46; });
-  }
-
-  ctx.font = "600 30px 'Manrope'";
-  ctx.fillStyle = 'rgba(244,236,224,0.6)';
-  ctx.fillText('OBPC Jd. São Fernando', W/2, H-30);
+  const t=THEMES[temaAtual],n=++_rv,off=document.createElement('canvas');off.width=W;off.height=H;
+  const v=id=>document.getElementById(id).value.trim();
+  try{await Banner3D.culto(off,{titulo:t.titulo,versiculo:v('versiculo'),referencia:v('referencia'),dia:v('dia'),data:v('data'),horario:v('horario'),local:v('local'),tema:temaAtual,cor:t.accent});}catch(e){console.warn(e);return;}
+  if(n!==_rv)return;ctx.clearRect(0,0,W,H);ctx.drawImage(off,0,0);
 }
+let _rt=null;function renderLogo(){clearTimeout(_rt);_rt=setTimeout(render,250);}
 
 ['versiculo','referencia','dia','data','horario','local'].forEach(id=>{
-  document.getElementById(id).addEventListener('input', render);
+  document.getElementById(id).addEventListener('input', renderLogo);
 });
 
 const audioUrlInput = document.getElementById('audioUrl');
@@ -466,7 +311,7 @@ audioFileInput.addEventListener('change', async ()=>{
     fd.append('upload_preset', 'obpc_media');
     fd.append('folder', 'obpc_sao_fernando');
     fd.append('resource_type', 'video');
-    const resp = await fetch('https://api.cloudinary.com/v1_1/dvvxiri22/video/upload', { method:'POST', body: fd });
+    const resp = await fetch('https://api.cloudinary.com/v1_1/dm0egn0ks/video/upload', { method:'POST', body: fd });
     const data = await resp.json();
     if(!data.secure_url) throw new Error('sem url');
     audioUrlInput.value = data.secure_url;
@@ -538,25 +383,19 @@ document.getElementById('btnPublicar').addEventListener('click', async ()=>{
   nota.style.display = 'none';
   try{
     const blob = await new Promise(resolve => cv.toBlob(resolve, 'image/png', 1.0));
-    const base64 = await new Promise((resolve, reject)=>{
-      const r = new FileReader();
-      r.onload = e => resolve(e.target.result.split(',')[1]);
-      r.onerror = reject;
-      r.readAsDataURL(blob);
-    });
-    const key = '882bf38d3bf05650732a78da66c23568';
     const fd = new FormData();
-    fd.append('image', base64);
-    fd.append('name', 'banner_'+temaAtual+'_'+Date.now());
-    const resp = await fetch('https://api.imgbb.com/1/upload?key='+key, {method:'POST', body:fd});
+    fd.append('file', blob, 'banner_'+temaAtual+'.png');
+    fd.append('upload_preset', 'obpc_media');
+    fd.append('folder', 'obpc_sao_fernando');
+    const resp = await fetch('https://api.cloudinary.com/v1_1/dm0egn0ks/image/upload', {method:'POST', body:fd});
     const data = await resp.json();
-    if(!data.success) throw new Error('upload falhou');
-    const url = data.data.url;
+    if(!data.secure_url) throw new Error('upload falhou');
+    const url = data.secure_url;
     const audioUrlFinal = document.getElementById('audioUrl').value.trim();
 
     const dados = {
       badge:'', titulo:'', subtit:'', dt:'', hora:'', local:'', cta:'',
-      cor:'#D4A843', tpl:'', bgUrl:url, bgTp:'img',
+      cor:'#D4A843', tpl:'', bgUrl:url, bgTp:'img', bgFmt:'9:16',
       ov1:'#0a1e35', ov2:'#1E3A5F', opac:75, ts: Date.now(),
       audioUrl: audioUrlFinal, audioLoop:true, audioVol:0.5
     };

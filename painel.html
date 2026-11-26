@@ -863,7 +863,7 @@ Acesse a qualquer hora, do seu celular"></textarea>
           <label>Mensagem personalizada</label>
           <textarea id="bnranv-msg" rows="3" oninput="anvBnrAtualiza()" placeholder="Que Deus te abençoe neste novo ano de vida!">Que Deus te abençoe neste novo ano de vida! &#127775;&#128591;</textarea>
           <label>Rodap&#233;</label>
-          <input id="bnranv-rodape" value="Com carinho, Fam&#237;lia OBPC S&#227;o Fernando" oninput="anvBnrAtualiza()">
+          <input id="bnranv-rodape" value="Com carinho, Fam&#237;lia OBPC Jd. S&#227;o Fernando" oninput="anvBnrAtualiza()">
           <label style="margin-top:.5rem">Foto (opcional)</label>
           <div class="upbox" style="height:65px" onclick="document.getElementById('bnranv-foto-inp').click()">
             <span>&#128247;</span><p>Upload foto do aniversariante</p>
@@ -874,9 +874,9 @@ Acesse a qualquer hora, do seu celular"></textarea>
         <div class="card">
           <strong style="font-size:.82rem;color:var(--azul);display:block;margin-bottom:.6rem">&#127752; Tema de Cores</strong>
           <div style="display:flex;gap:.4rem;flex-wrap:wrap">
-            <button type="button" class="anv-tema-btn sel" data-tema="m" onclick="anvSetTema(this)" style="background:linear-gradient(135deg,#8A5A10,#1E88E5);color:#fff">&#128100; Masculino</button>
-            <button type="button" class="anv-tema-btn" data-tema="f" onclick="anvSetTema(this)" style="background:linear-gradient(135deg,#d63384,#f06292);color:#fff">&#128101; Feminino</button>
-            <button type="button" class="anv-tema-btn" data-tema="k" onclick="anvSetTema(this)" style="background:linear-gradient(135deg,#ff6f00,#ffb300,#43a047);color:#fff">&#128103; Infantil &#127776;</button>
+            <button type="button" class="anv-tema-btn sel" data-tema="m" onclick="anvSetTema(this)" style="background:linear-gradient(135deg,#0C1328,#C8902E);color:#fff">&#10024; Dourado</button>
+            <button type="button" class="anv-tema-btn" data-tema="f" onclick="anvSetTema(this)" style="background:linear-gradient(135deg,#2A1322,#C98470);color:#fff">&#127801; Ros&#233;</button>
+            <button type="button" class="anv-tema-btn" data-tema="k" onclick="anvSetTema(this)" style="background:linear-gradient(135deg,#0E2233,#7FE0D0);color:#fff">&#127880; Infantil</button>
           </div>
         </div>
         <div class="card" style="display:flex;gap:.5rem;flex-direction:column">
@@ -890,23 +890,8 @@ Acesse a qualquer hora, do seu celular"></textarea>
       </div>
       <div style="flex:1;min-width:280px">
         <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:.4rem">&#128065; Preview</div>
-        <div id="anv-bnr-prev" style="width:100%;max-width:380px;min-height:420px;border-radius:16px;overflow:hidden;position:relative;background:linear-gradient(135deg,#8A5A10 0%,#1E88E5 50%,#0d47a1 100%);box-shadow:0 8px 32px rgba(0,0,0,.2)">
-          <div id="anv-bnr-bg" style="position:absolute;inset:0;overflow:hidden;pointer-events:none"></div>
-          <div style="position:relative;z-index:2;padding:28px 20px 22px;display:flex;flex-direction:column;align-items:center;min-height:420px">
-            <div id="anv-bnr-deco-top" style="font-size:2rem;margin-bottom:6px">&#127881; &#127874; &#127881;</div>
-            <div id="anv-bnr-foto-wrap" style="width:110px;height:110px;border-radius:50%;border:5px solid rgba(255,255,255,.9);overflow:hidden;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;margin-bottom:12px;box-shadow:0 4px 20px rgba(0,0,0,.3)">
-              <span id="anv-bnr-foto-icon" style="font-size:3rem">&#128100;</span>
-              <img id="anv-bnr-foto-img" src="" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:50%">
-            </div>
-            <div style="font-size:.72rem;font-weight:900;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,.75);margin-bottom:4px" id="anv-bnr-label">&#127775; PARAB&#201;NS &#127775;</div>
-            <div id="anv-bnr-nm" style="font-size:1.6rem;font-weight:900;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.3);text-align:center;margin-bottom:10px;line-height:1.2">Nome do Aniversariante</div>
-            <div id="anv-bnr-sep" style="width:60px;height:3px;background:rgba(255,255,255,.5);border-radius:10px;margin-bottom:12px"></div>
-            <div id="anv-bnr-msg" style="font-size:.85rem;color:rgba(255,255,255,.92);text-align:center;line-height:1.55;padding:0 8px;margin-bottom:14px">Que Deus te abençoe neste novo ano de vida! &#127775;&#128591;</div>
-            <div style="font-size:1.4rem;margin-bottom:10px">&#128214;</div>
-            <div id="anv-bnr-verso" style="font-size:.72rem;color:rgba(255,255,255,.7);text-align:center;font-style:italic;padding:0 12px;margin-bottom:14px">"Este &#233; o dia que o SENHOR fez; alegremo-nos nele." — Sl 118:24</div>
-            <div id="anv-bnr-rodape" style="font-size:.72rem;font-weight:700;color:rgba(255,255,255,.8);text-align:center;background:rgba(0,0,0,.2);border-radius:20px;padding:5px 14px;margin-top:auto">Com carinho, Fam&#237;lia OBPC S&#227;o Fernando</div>
-          </div>
-        </div>
+        <canvas id="anv-bnr-cv" width="1080" height="1350" style="width:100%;max-width:400px;display:block;border-radius:18px;box-shadow:0 18px 40px -16px rgba(7,11,24,.6);background:#0C1328"></canvas>
+        <div style="font-size:.8rem;color:var(--muted);margin-top:.5rem;max-width:400px">Banner parado, com luz e dourado em relevo. A imagem baixada e a do site s&#227;o iguais a esta.</div>
       </div>
     </div>
   </div>
@@ -2153,15 +2138,25 @@ function agTirarAudio(){_ag.audioUrl='';agInfo();}
 /* ═══ BANNER ANIVERSARIANTE ═══ */
 var _anvTema='m';var _anvFotoB64='';
 var ANV_TEMAS={m:{bg:'linear-gradient(135deg,#8A5A10 0%,#1E88E5 50%,#0d47a1 100%)',deco:'🎉 🎂 🎉',icon:'👨',sep:'rgba(255,255,255,.5)',confeti:['#90CAF9','#42A5F5','#fff','#FFF176'],label:'✨ PARABÉNS ✨'},f:{bg:'linear-gradient(135deg,#AD1457 0%,#E91E63 45%,#F48FB1 100%)',deco:'💐 🎂 💐',icon:'👩',sep:'rgba(255,255,255,.6)',confeti:['#F48FB1','#fff','#FCE4EC'],label:'🌸 PARABÉNS 🌸'},k:{bg:'linear-gradient(135deg,#E65100 0%,#FF8F00 40%,#43A047 100%)',deco:'🎈 🎉 🎈',icon:'👧',sep:'rgba(255,255,255,.6)',confeti:['#FFB300','#F4511E','#43A047','#fff'],label:'🎊 PARABÉNS 🎊'}};
-function anvTab(id,btn){document.getElementById('anv-painel-cadastro').style.display=id==='cadastro'?'':'none';document.getElementById('anv-painel-banner').style.display=id==='banner'?'':'none';document.querySelectorAll('.anv-tab-btn').forEach(function(b){b.classList.remove('ativo');});if(btn)btn.classList.add('ativo');if(id==='banner'){anvBnrAtualiza();anvBnrConfeti();}}
+var _anvT=null;
+function anvTab(id,btn){document.getElementById('anv-painel-cadastro').style.display=id==='cadastro'?'':'none';document.getElementById('anv-painel-banner').style.display=id==='banner'?'':'none';document.querySelectorAll('.anv-tab-btn').forEach(function(b){b.classList.remove('ativo');});if(btn)btn.classList.add('ativo');if(id==='banner'){anvBnrAtualiza();}}
 function anvSelGen(btn){document.querySelectorAll('.anv-gen-btn').forEach(function(b){b.classList.remove('sel');});btn.classList.add('sel');var g=btn.getAttribute('data-gen');var hid=document.getElementById('anv-gen');if(hid)hid.value=g;}
-function anvSetTema(btn){document.querySelectorAll('.anv-tema-btn').forEach(function(b){b.classList.remove('sel');});btn.classList.add('sel');_anvTema=btn.getAttribute('data-tema');anvBnrAtualiza();anvBnrConfeti();}
+function anvSetTema(btn){document.querySelectorAll('.anv-tema-btn').forEach(function(b){b.classList.remove('sel');});btn.classList.add('sel');_anvTema=btn.getAttribute('data-tema');anvBnrAtualiza();}
 function anvBnrUpFoto(inp){var f=inp.files[0];if(!f)return;var r=new FileReader();r.onload=function(e){_anvFotoB64=e.target.result;var icon=document.getElementById('anv-bnr-foto-icon');var img=document.getElementById('anv-bnr-foto-img');var pv=document.getElementById('bnranv-foto-pv');if(img){img.src=_anvFotoB64;img.style.display='block';}if(icon)icon.style.display='none';if(pv)pv.innerHTML='<img src="'+_anvFotoB64+'" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid var(--azul2)">';anvBnrAtualiza();};r.readAsDataURL(f);}
-function anvBnrAtualiza(){var tema=ANV_TEMAS[_anvTema]||ANV_TEMAS.m;var prev=document.getElementById('anv-bnr-prev');if(prev)prev.style.background=tema.bg;var deco=document.getElementById('anv-bnr-deco-top');if(deco)deco.textContent=tema.deco;var lbl=document.getElementById('anv-bnr-label');if(lbl)lbl.textContent=tema.label;var sep=document.getElementById('anv-bnr-sep');if(sep)sep.style.background=tema.sep;var icon=document.getElementById('anv-bnr-foto-icon');if(icon&&!_anvFotoB64)icon.textContent=tema.icon;var nm=(document.getElementById('bnranv-nm')||{}).value||'Nome do Aniversariante';var nmEl=document.getElementById('anv-bnr-nm');if(nmEl)nmEl.textContent=nm;var msg=(document.getElementById('bnranv-msg')||{}).value||'';var msgEl=document.getElementById('anv-bnr-msg');if(msgEl)msgEl.innerHTML=msg.replace(/\n/g,'<br>');var rod=(document.getElementById('bnranv-rodape')||{}).value||'';var rodEl=document.getElementById('anv-bnr-rodape');if(rodEl)rodEl.textContent=rod;}
-function anvBnrConfeti(){var bg=document.getElementById('anv-bnr-bg');if(!bg)return;var tema=ANV_TEMAS[_anvTema]||ANV_TEMAS.m;var cores=tema.confeti;var html='';for(var i=0;i<22;i++){var c=cores[i%cores.length];var x=Math.random()*100;var delay=(Math.random()*4).toFixed(2);var dur=(2.5+Math.random()*2.5).toFixed(2);var sz=(7+Math.random()*8).toFixed(0);html+='<div style="position:absolute;left:'+x+'%;top:-20px;width:'+sz+'px;height:'+sz+'px;background:'+c+';opacity:.8;border-radius:50%;animation:confeti '+dur+'s '+delay+'s linear infinite"></div>';}bg.innerHTML=html;if(!document.getElementById('anv-confeti-css')){var st=document.createElement('style');st.id='anv-confeti-css';st.textContent='@keyframes confeti{0%{transform:translateY(-20px) rotate(0deg);opacity:.9}100%{transform:translateY(460px) rotate(720deg);opacity:0}}';document.head.appendChild(st);}}
-function anvBnrDownload(){var alvo=document.getElementById('anv-bnr-prev');if(!alvo){alert('Preview não encontrado');return;}var nm=(document.getElementById('bnranv-nm')||{}).value||'aniversariante';var s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';s.onload=function(){html2canvas(alvo,{useCORS:true,allowTaint:true,scale:3,logging:false}).then(function(canvas){var url=canvas.toDataURL('image/png',1.0);var a=document.createElement('a');a.href=url;a.download='aniversario-'+nm.replace(/\s+/g,'-')+'.png';a.click();showToast('✅ Banner baixado!');});};if(window.html2canvas){s.onload();}else{document.head.appendChild(s);}}
+/* banner realista em 3D (banner3d.js), parado */
+function anvB3d(){return window.Banner3D?Promise.resolve():new Promise(function(ok,no){var sc=document.createElement('script');sc.src='banner3d.js?v=1';sc.onload=ok;sc.onerror=no;document.head.appendChild(sc);});}
+function anvBnrDados(){return {nome:((document.getElementById('bnranv-nm')||{}).value||'').trim(),msg:(document.getElementById('bnranv-msg')||{}).value||'',rodape:(document.getElementById('bnranv-rodape')||{}).value||'',foto:_anvFotoB64||'',tema:_anvTema};}
+function anvBnrDesenhar(){var cv=document.getElementById('anv-bnr-cv');if(!cv)return Promise.resolve(null);return anvB3d().then(function(){var off=document.createElement('canvas');off.width=cv.width;off.height=cv.height;return Banner3D.aniversario(off,anvBnrDados()).then(function(){cv.getContext('2d').drawImage(off,0,0);return cv;});});}
+function anvBnrAtualiza(){clearTimeout(_anvT);_anvT=setTimeout(function(){anvBnrDesenhar().catch(function(e){console.warn(e);});},250);}
+function anvBnrConfeti(){}
+function anvBnrDownload(){anvBnrDesenhar().then(function(cv){if(!cv)return;var nm=((document.getElementById('bnranv-nm')||{}).value||'aniversariante').trim();cv.toBlob(function(b){var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='aniversario-'+nm.replace(/\s+/g,'-')+'.jpg';a.click();showToast('✅ Banner baixado!');},'image/jpeg',.92);});}
 function anvBnrCopiar(){var nm=(document.getElementById('bnranv-nm')||{}).value||'';var msg=(document.getElementById('bnranv-msg')||{}).value||'';var rod=(document.getElementById('bnranv-rodape')||{}).value||'';var txt='🎂 *FELIZ ANIVERSÁRIO, '+nm.toUpperCase()+'!* 🎂\n\n'+msg+'\n\n"Este é o dia que o SENHOR fez; alegremo-nos nele." — Sl 118:24\n\n🙏 '+rod;navigator.clipboard.writeText(txt).then(function(){showToast('📋 Mensagem copiada!');}).catch(function(){var ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast('📋 Copiado!');});}
-function anvBnrPublicar(){var alvo=document.getElementById('anv-bnr-prev');if(!alvo){alert('Preview não encontrado');return;}var nm=(document.getElementById('bnranv-nm')||{}).value||'';var msg=(document.getElementById('bnranv-msg')||{}).value||'';var rod=(document.getElementById('bnranv-rodape')||{}).value||'';var s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';s.onload=function(){html2canvas(alvo,{useCORS:true,allowTaint:true,scale:2,logging:false}).then(function(canvas){var dados={nm:nm,msg:msg,rodape:rod,tema:_anvTema,fotoB64:_anvFotoB64||'',pngB64:canvas.toDataURL('image/png',0.92),visivel:true,ts:Date.now()};DB.s('banner_aniversario',dados);var ok=document.getElementById('anv-bnr-ok');if(ok){ok.style.display='block';setTimeout(function(){ok.style.display='none';},4000);}showToast('🎂 Banner publicado no site!');});};if(window.html2canvas){s.onload();}else{document.head.appendChild(s);}}
+function anvBnrPublicar(){var d=anvBnrDados();if(!d.nome){showToast('⚠️ Escreva o nome do aniversariante.');return;}showToast('⏳ Publicando o banner...');
+  anvBnrDesenhar().then(function(cv){return new Promise(function(ok){cv.toBlob(ok,'image/jpeg',.9);});}).then(function(b){return upCloudImg(new File([b],'aniversario.jpg',{type:'image/jpeg'}));}).then(function(url){
+    if(!url){showToast('❌ Não consegui enviar o banner. Tente de novo.');return;}
+    DB.s('banner_aniversario',{nm:d.nome,msg:d.msg,rodape:d.rodape,tema:_anvTema,img:url,visivel:true,ts:Date.now()});
+    var ok=document.getElementById('anv-bnr-ok');if(ok){ok.style.display='block';setTimeout(function(){ok.style.display='none';},4000);}showToast('🎂 Banner publicado no site!');
+  }).catch(function(){showToast('❌ Não consegui publicar. Tente de novo.');});}
 /* ═══ WEBCAM PASTOR ═══ */
 var _wcmStream=null,_wcmRec=null,_wcmChunks=[];
 var _wcmTimerInt=null,_wcmSegundos=0,_wcmMaxSeg=900; /* 900s = 15 minutos de gravação */

@@ -543,6 +543,8 @@ footer li a{display:inline-flex;align-items:center}
 @media(prefers-reduced-motion:reduce){*,*::before{animation:none!important;transition:none!important;scroll-behavior:auto!important}.revela{opacity:1;transform:none}}
 @keyframes toqueLogo{50%{transform:scale(.88);filter:brightness(1.4)}}
 .logo.toque{animation:toqueLogo .25s ease}
+.aniv-banner{position:relative;max-width:520px;margin:0 auto 1.4rem;border-radius:22px;overflow:hidden;border:1px solid rgba(242,193,78,.35);box-shadow:0 2px 2px rgba(0,0,0,.3),0 24px 60px -18px rgba(0,0,0,.8)}
+.aniv-banner img{width:100%;aspect-ratio:4/5;object-fit:cover;cursor:zoom-in;display:block}
 </style>
 <style id="midia-charme">
 /* ── 23/11/2026: fotos inteiras, vídeo em moldura dourada e podcast que toca de verdade ── */
@@ -798,6 +800,7 @@ footer li a{display:inline-flex;align-items:center}
   <!-- ANIVERSARIANTES -->
   <section class="sec revela" id="aniv-sec" hidden>
     <div class="sec-cab"><div class="cab-ic"><img class="ic3d sec-ic" src="icones/aniv.webp" alt="" aria-hidden="true"><div><small>Parabéns!</small><h2>Aniversariantes de <em id="aniv-mes">mês</em></h2></div></div></div>
+    <div id="aniv-banner" hidden></div>
     <div class="grade-sm" id="lista-aniv"></div>
   </section>
 
@@ -1353,7 +1356,11 @@ function rFotos(){
 function rAniv(){
   var m=new Date().getMonth()+1;
   var l=lista(D.aniversariantes).filter(function(a){var p=String(a.dt||'').split('-');return p.length>=2&&+(p.length===3?p[1]:p[0])===m;}).sort(function(a,b){return +String(a.dt).split('-').pop()-+String(b.dt).split('-').pop();});
-  so('aniv-sec',l.length>0);document.getElementById('aniv-mes').textContent=MESES[m-1];
+  var bn=D.banner_aniversario,temBn=!!(bn&&bn.visivel!==false&&urlOk(bn.img));
+  so('aniv-sec',l.length>0||temBn);document.getElementById('aniv-mes').textContent=MESES[m-1];
+  var bx=document.getElementById('aniv-banner');
+  if(bx){if(temBn){var kb=reg({s:'aniv',id:'banner-'+(bn.ts||0),t:'Feliz aniversário'+(bn.nm?', '+bn.nm:'')+'!',d:bn.msg||'Deus abençoe sua vida!',img:bn.img,tipo:'Aniversariante',cta:'Deixe seu abraço',foto:bn.img});
+    bx.innerHTML='<figure class="aniv-banner" data-sh="'+kb+'"><img src="'+esc(bn.img)+'" alt="Feliz aniversário'+(bn.nm?', '+esc(bn.nm):'')+'" loading="lazy" onclick="abrirFoto(this.src)">'+btSh(kb,'canto')+'</figure>';bx.hidden=false;}else{bx.innerHTML='';bx.hidden=true;}}
   document.getElementById('lista-aniv').innerHTML=l.map(function(a){var dia=String(a.dt).split('-').pop();
     var k=reg({s:'aniv',id:idDe(a.nm,a.dt),t:'Feliz aniversário, '+(a.nm||'')+'!',d:'Dia '+dia+' de '+MESES[m-1]+'. Deus abençoe sua vida!',img:urlOk(a.foto)?a.foto:'',tipo:'Aniversariante',cta:'Deixe seu abraço'});
     return '<div class="card pessoa" data-sh="'+k+'">'+btSh(k,'canto')+(urlOk(a.foto)?'<img class="avatar" src="'+esc(a.foto)+'" alt="">':'<div class="avatar">'+esc(iniciais(a.nm))+'</div>')+'<b>'+esc(a.nm)+'</b><small>'+ic('aniv','mi')+'dia '+esc(dia)+(a.fn?' · '+esc(a.fn):'')+'</small></div>';}).join('');
@@ -1776,7 +1783,7 @@ function enviarVisita(){var n=document.getElementById('vi-nome').value.trim(),e=
 function copiarPix(b){var c=document.getElementById('pix-chave').textContent.replace(/\D/g,'');(navigator.clipboard?navigator.clipboard.writeText(c):Promise.reject()).then(function(){b.textContent='Copiado ✓';setTimeout(function(){b.textContent='Copiar';},2000);}).catch(function(){prompt('Copie a chave PIX:',c);});}
 
 /* ── carregar dados (e atualizar sozinho quando algo novo é publicado) ── */
-var CHAVES=/^(info|banner_culto|proximos_cultos|horarios|avisos|eventos|palavras|sermoes|videos|campanhas|redes|cultos|informativos|galeria_fotos|galeria|aniversariantes|lideranca|obreiros|escala_agenda|escala_pro)$/;
+var CHAVES=/^(info|banner_culto|proximos_cultos|horarios|avisos|eventos|palavras|sermoes|videos|campanhas|redes|banner_aniversario|cultos|informativos|galeria_fotos|galeria|aniversariantes|lideranca|obreiros|escala_agenda|escala_pro)$/;
 function guardar(){try{var leve={};Object.keys(D).forEach(function(k){if(CHAVES.test(k))leve[k]=D[k];});localStorage.setItem('obpc_site_cache',JSON.stringify(leve));}catch(e){}}
 function carregar(){
   return fetch(FB+'.json?t='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){D=d||{};document.getElementById('aviso-net').style.display='none';render();guardar();}).catch(function(){document.getElementById('aviso-net').style.display='block';});
