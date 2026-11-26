@@ -1394,7 +1394,14 @@ function rRedesTV(){
      O YouTube só entra quando não houver nenhum, porque o celular muitas vezes não deixa o YouTube começar sozinho. */
   var proprios=itensTV().some(function(v){var s=v.m.src||v.m.url;return !v.aud&&(v.m.tp==='video'||ehVideo(s))&&urlOk(s);});
   /* vídeo escolhido no painel (aba YouTube e Facebook): toca dentro do site, sem som até tocar no player */
-  var mv=String(r.yt_video||'').match(/(?:youtu\.be\/|[?&]v=|\/(?:embed|shorts|live)\/)([A-Za-z0-9_-]{11})/);
+  /* playlist (list=...) ou link de canal com o código UC...: passa um vídeo atrás do outro, sem parar */
+  var yv=String(r.yt_video||''),ml=yv.match(/[?&]list=([A-Za-z0-9_-]{10,})/),mc=yv.match(/\/channel\/(UC[A-Za-z0-9_-]{22})/)||yv.trim().match(/^(UC[A-Za-z0-9_-]{22})$/);
+  var lista=ml?ml[1]:(mc?'UU'+mc[1].slice(2):'');
+  if(lista){var assl='ytl:'+lista;if(_rtv.ass===assl)return;_rtv.ass=assl;_rtv.lista=[];
+    sec.hidden=false;document.getElementById('rtv-som').hidden=true;document.getElementById('rtv-tit').textContent='▶ Vídeos da igreja no YouTube, um atrás do outro';
+    tela.innerHTML='<iframe src="https://www.youtube.com/embed/videoseries?list='+esc(lista)+'&autoplay=1&mute=1&loop=1&playsinline=1&rel=0" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen title="Vídeos do YouTube da igreja"></iframe>';
+    return;}
+  var mv=yv.match(/(?:youtu\.be\/|[?&]v=|\/(?:embed|shorts|live)\/)([A-Za-z0-9_-]{11})/);
   if(mv){var assv='ytv:'+mv[1];if(_rtv.ass===assv)return;_rtv.ass=assv;_rtv.lista=[];
     sec.hidden=false;document.getElementById('rtv-som').hidden=true;document.getElementById('rtv-tit').textContent='▶ Vídeo da igreja no YouTube';
     tela.innerHTML='<iframe src="https://www.youtube.com/embed/'+mv[1]+'?autoplay=1&mute=1&loop=1&playlist='+mv[1]+'&playsinline=1&rel=0" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen title="Vídeo do YouTube da igreja"></iframe>';
